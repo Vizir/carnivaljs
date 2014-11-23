@@ -1,0 +1,7 @@
+{
+  "node": true,
+  "regexp": true,
+  "globals": {
+    "angular": false
+  }
+}

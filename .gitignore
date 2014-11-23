@@ -1,0 +1,13 @@
+node_modules
+tmp
+npm-debug.log
+migration/db/
+*.orig
+dump.rdb
+newrelic_agent.log
+.DS_Store
+_ign*
+infra/public/components/
+infra/client/components/
+.env
+bower_components
