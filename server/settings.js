@@ -3,10 +3,9 @@ var resolvedPath = path.resolve(__dirname, "../");
 
 module.exports = {
   server: {
-    port: 8888
+    port: 3010
   },
   statics: [
-    { name: '/', path: path.join(resolvedPath, '/') },
-    { name: '/', path: path.join(resolvedPath, '/bower_components') }
+    { name: '/', path: path.join(resolvedPath, '/') }
   ]
 };
