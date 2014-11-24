@@ -445,6 +445,47 @@ var requirejs, require, define;
 
 define("bower_components/almond/almond.js", function(){});
 
+define('config/ApiConfig.js',[],function () {
+
+  var ApiConfig = function () {
+    
+    var baseApiUrl = null;
+
+    return {
+
+      setBaseApiUrl: function (url) {
+        url.replace(/\/$/, '');
+        baseApiUrl = url;
+      },
+
+      $get: function () {
+        return {
+
+          getBaseApiUrl: function () {
+            return baseApiUrl;
+          }
+
+        };
+      }
+
+    };
+
+  };
+
+  return ApiConfig;
+
+});
+define('CarnivalConfig',['require','angular','config/ApiConfig.js'],function (require) {
+
+  var angular = require('angular');
+
+  var config = angular.module('config', []);
+
+  config.provider('CarnivalConfig', require('config/ApiConfig.js'));
+
+  return config;
+
+});
 define('angular', [], function () {
 
   return angular;
@@ -452,14 +493,17 @@ define('angular', [], function () {
 });
 
 require.config({
-
+  paths: {
+    'CarnivalConfig': 'config/CarnivalConfig'
+  }
 });
 
-define('carnival',['require','angular'],function (require) {
+define('carnival',['require','angular','CarnivalConfig'],function (require) {
 
   var angular = require('angular');
+  require('CarnivalConfig');
 
-  angular.module('carnival', []);
+  angular.module('carnival', ['config']);
 
 });
   return require('carnival');
