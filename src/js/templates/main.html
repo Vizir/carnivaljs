@@ -1,0 +1,13 @@
+<div class="navbar navbar-default">
+  <div class="container">
+  <a class="navbar-brand">{{ applicationName }}</a>
+  <ul class="nav navbar-nav">
+    <li ui-sref-active="active" ng-repeat="item in menuItems">
+      <a ui-sref="main.list({ entity: item.name })">{{ item.label }}</a>
+    </li>
+  </ul>
+  </div>
+</div>
+
+<div ui-view></div>
+

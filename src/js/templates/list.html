@@ -1,0 +1,31 @@
+<div class="container">
+  <div class="col-md-10" style="text-align:left">
+    <h3>List of {{ entityLabel }}</h3>
+  </div>
+  <div class="col-md-2" style="text-align:right">
+    <a ng-show="checkShow('create')" class="btn btn-success" ui-sref="main.create({ entity: entityName })">Create</a>
+  </div>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th ng-repeat="field in entityFields">
+          {{ field.label }}
+        </th>
+        <th>
+          Actions
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="content in entityContent">
+        <td ng-repeat="field in entityFields">
+          {{ content[field.name] }}
+        </td>
+        <td>
+          <a ng-show="checkShow('edit')" class="btn btn-primary btn-xs" ui-sref="main.edit({ entity: entityName, id: content.id })">Edit</a>
+          <a ng-show="checkShow('delete')" ng-click="deleteItem(content.id)" class="btn btn-danger btn-xs">Delete</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

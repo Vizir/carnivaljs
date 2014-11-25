@@ -2,6 +2,10 @@ module.exports = function (grunt) {
 
   grunt.initConfig({
 
+    jshint: {
+      all: ['Gruntfile.js', 'src/js/carnival.js', 'src/js/providers/**/*.js', 'src/js/controllers/**/*.js']
+    },
+
     requirejs: {
       compile: {
         options: {
@@ -38,9 +42,10 @@ module.exports = function (grunt) {
 
   });
 
+  grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-requirejs');
   grunt.loadNpmTasks('grunt-contrib-uglify');
 
-  grunt.registerTask('build', ['requirejs', 'uglify']);
+  grunt.registerTask('build', ['jshint', 'requirejs', 'uglify']);
 
 };
