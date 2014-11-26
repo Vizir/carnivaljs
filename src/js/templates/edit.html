@@ -1,5 +1,10 @@
 <div class="container">
+
   <h3>Edit {{ entityLabel }}</h3>
+
+  <div ng-repeat="error in errors" class="alert alert-danger" role="alert">
+    {{ error }}
+  </div>
 
   <form class="simple-form form-horizontal" novalidate>
     <div class="form-group" ng-repeat="field in entityFields">

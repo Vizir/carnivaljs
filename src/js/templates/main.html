@@ -1,3 +1,38 @@
+<style type="text/css">
+  .loading {
+    position: fixed;
+    width: 90px;
+    height: 90px;
+    top: calc(50% - 50px);
+    left: calc(50% - 50px);
+    background: transparent;
+    border: solid 5px rgba(0,0,0,0.25);
+    border-radius: 50%;
+    border-top-color: rgba(0,0,0,0.75);
+    z-index: 100;
+  }
+  .spinner {
+    -webkit-animation: ani 1000ms ease-in-out infinite;
+            animation: ani 1000ms ease-in-out infinite;
+  }
+  @-webkit-keyframes ani {
+    100%{
+      -webkit-transform: rotate(359deg);
+    }
+  }
+
+  @keyframes ani {
+    100%{ transform: rotate(359deg); }
+  }
+
+  .transparent {
+    zoom: 1;
+    filter: alpha(opacity=20);
+    opacity: 0.2;
+  }
+</style>
+
+
 <div class="navbar navbar-default">
   <div class="container">
   <a class="navbar-brand">{{ applicationName }}</a>
@@ -9,5 +44,14 @@
   </div>
 </div>
 
-<div ui-view></div>
+<div class="container" ng-repeat="notification in notifications">
+  <div ng-show="notification.type === 'success'" class="alert alert-success" notification>{{ notification.message }}</div>
+  <div ng-show="notification.type === 'warning'" class="alert alert-warning" notification>{{ notification.message }}</div>
+  <div ng-show="notification.type === 'error'" class="alert alert-danger" notification>{{ notification.message }}</div>
+</div>
 
+<div class="loading spinner" ng-hide="loading === 0"></div>
+
+<div ng-class="{ transparent: loading !== 0 }">
+  <div ui-view></div>
+</div>

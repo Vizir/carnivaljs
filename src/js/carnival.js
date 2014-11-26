@@ -9,8 +9,6 @@ require.config({
   paths: {
     
     'angular-ui-router': 'bower_components/angular-ui-router/release/angular-ui-router',
-    'restangular': 'bower_components/restangular/dist/restangular',
-    'lodash': 'bower_components/lodash/dist/lodash.min',
     'text': 'bower_components/requirejs-text/text',
 
     'Config': 'providers/config',
@@ -22,10 +20,6 @@ require.config({
 
     'angular-ui-router': {
       deps: ['angular']
-    },
-
-    'restangular': {
-      deps: ['angular', 'lodash']
     }
     
   }
@@ -37,8 +31,9 @@ define(function (require) {
   var angular = require('angular');
   require('Config');
   require('Router');
-  require('restangular');
+  require('factories/shared-data');
+  require('directives/directives');
 
-  angular.module('carnival', ['config', 'router', 'restangular']);
+  angular.module('carnival', ['config', 'router', 'shared-data', 'directives']);
 
 });

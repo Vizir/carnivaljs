@@ -5,8 +5,9 @@ define(function (require) {
                   '$state',
                   'Api',
                   'Entity',
+                  'SharedData',
                   '$http',
-  function ($scope, $stateParams, $state, Api, Entity, $http) {
+  function ($scope, $stateParams, $state, Api, Entity, SharedData, $http) {
 
     var entity = Entity.getEntity($stateParams.entity);
     var fields = entity.getFields();
@@ -21,9 +22,15 @@ define(function (require) {
       }
     });
 
+    SharedData.loading++;
     $http.get(Api.getBaseApiUrl() + '/' + entity.name)
     .success(function (data, status, headers, config) {
+      SharedData.loading--;
       $scope.entityContent = data;
+    })
+    .error(function (data, status, headers, config) {
+      SharedData.loading--;
+      SharedData.notifications.push({ message: data.error.message, type: 'error' });
     });
 
     $scope.checkShow = function (action) {
@@ -31,9 +38,16 @@ define(function (require) {
     };
 
     $scope.deleteItem = function (index) {
+      SharedData.loading++;
       $http.delete(Api.getBaseApiUrl() + '/' + entity.name + '/' + index)
       .success(function (data, status, headers, config) {
+        SharedData.loading--;
+        SharedData.notifications.push({ message: 'Success on delete!', type: 'warning' });
         $state.reload();
+      })
+      .error(function (data, status, headers, config) {
+        SharedData.loading--;
+        SharedData.notifications.push({ message: data.error.message, type: 'error' });
       });
     };
 

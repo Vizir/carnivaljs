@@ -20,6 +20,7 @@ define(function () {
                 return entities[i];
               }
             }
+            return 'Entity not found!';
           },
 
           getEntities: function () {

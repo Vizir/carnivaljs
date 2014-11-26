@@ -35,12 +35,6 @@ define(function (require) {
         controller: require('controllers/edit.js')
       });
 
-      // .state('main.delete', {
-      //   url: 'edit/:entity/:id',
-      //   template: require('text!templates/delete.html'),
-      //   controller: require('controllers/delete.js')
-      // });
-
   }]);
 
   return router;

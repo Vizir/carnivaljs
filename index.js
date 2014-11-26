@@ -3,82 +3,53 @@ var app = angular.module('exampleApp', ['carnival']);
 app.config(function (ApiProvider, EntityProvider) {
 
   ApiProvider.setAppName('Carnival Example');
-  ApiProvider.setBaseApiUrl('http://localhost:3000');
+  ApiProvider.setBaseApiUrl('http://localhost:3000/api');
   
-  EntityProvider.addEntity('courses', {
+  EntityProvider.addEntity('posts', {
 
-    label: 'Courses',
+    label: 'Posts',
 
     fields: {
       'id': {
+        identifier: true,
         label: 'Id',
-        type: 'number',
+        type: 'text',
         views: ['delete']
       },
-
-      'name': {
-        label: 'Name',
-        type: 'text',
-        views: ['create' ,'list', 'edit']
-      }
-    }
-
-  });
-
-  EntityProvider.addEntity('pages', {
-
-    label: 'Pages',
-
-    fields: {
-      'id': {
-        label: 'Id',
-        type: 'number',
-        views: ['list', 'edit', 'delete']
-      },
-
       'title': {
         label: 'Title',
         type: 'text',
-        views: ['list', 'create', 'edit', 'delete']
+        views: ['create', 'list', 'edit']
       },
-
       'content': {
         label: 'Content',
         type: 'text',
-        views: ['list', 'create', 'edit', 'delete']
+        views: ['create', 'list', 'edit']
       }
     }
 
   });
 
-  EntityProvider.addEntity('files', {
+  EntityProvider.addEntity('comments', {
 
-    label: 'Files',
+    label: 'Comments',
 
     fields: {
-
       'id': {
+        identifier: true,
         label: 'Id',
-        type: 'number',
-        views: ['list']
-      },
-
-      'fileName': {
-        label: 'File Name',
         type: 'text',
-        views: ['list', 'create', 'delete']
+        views: ['delete']
       },
-
-      'fileSize': {
-        label: 'File Size',
+      'email': {
+        label: 'Email',
         type: 'text',
-        views: ['list']
+        views: ['list', 'create', 'edit']
       },
-
-      'original': {
-        label: 'Link',
+      'content': {
+        label: 'Content',
         type: 'text',
-        views: []
+        views: ['list', 'create', 'edit']
       }
     }
 
@@ -90,15 +61,15 @@ app.config(function (ApiProvider, EntityProvider) {
 
     fields: {
       'id': {
+        identifier: true,
         label: 'Id',
-        type: 'number',
-        views: ['list']
+        type: 'text',
+        views: ['delete']
       },
-
       'name': {
         label: 'Name',
         type: 'text',
-        views: ['list', 'edit', 'create', 'delete']
+        views: ['list', 'create', 'edit']
       }
     }
 

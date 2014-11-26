@@ -5,10 +5,6 @@ define(function () {
     var appName = null;
     var baseApiUrl = null;
 
-    var getBaseApiUrl = function () {
-      return baseApiUrl;
-    };
-
     return {
 
       setBaseApiUrl: function (url) {
@@ -20,12 +16,12 @@ define(function () {
         appName = name;
       },
 
-      getBaseApiUrl: getBaseApiUrl,
-
       $get: function () {
         return {
 
-          getBaseApiUrl: getBaseApiUrl,
+          getBaseApiUrl: function () {
+            return baseApiUrl;
+          },
 
           getAppName: function () {
             return appName;

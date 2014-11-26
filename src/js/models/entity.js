@@ -6,21 +6,46 @@ define(function (require) {
 
     this.name = name;
     this.label = options.label;
+    this.identifier = null;
     this.actions = [];
     this.fields = [];
+    this.relations = [];
+
     Object.keys(options.fields).forEach(function (field) {
+
       that.fields.push({
         name: field,
         type: options.fields[field].type || 'text',
         label: options.fields[field].label || field,
         views: options.fields[field].views || ['list', 'edit', 'create', 'delete']
       });
+
+      if (options.fields[field].identifier) {
+        that.identifier = field;
+      }
+
       options.fields[field].views.forEach(function (view) {
         if (that.actions.indexOf(view) < 0) {
           that.actions.push(view);
         }
       });
+
     });
+
+    if (!this.identifier) {
+      this.identifier = 'id';
+      this.fields.push({
+        name: 'id',
+        type: 'number',
+        label: 'id',
+        views: ['list', 'edit', 'create', 'delete']
+      });
+      this.actions = ['list', 'edit', 'create', 'delete'];
+    }
+  }
+
+  if (options.relations) {
+
   }
 
   Entity.prototype.getFields = function () {
