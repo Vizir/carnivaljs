@@ -26,6 +26,15 @@ app.config(function (ApiProvider, EntityProvider) {
         type: 'text',
         views: ['create', 'list', 'edit']
       }
+    },
+
+    relations: {
+      'comments': {
+        type: 'hasMany'
+      },
+      'tags': {
+        type: 'hasMany'
+      }
     }
 
   });
@@ -51,6 +60,12 @@ app.config(function (ApiProvider, EntityProvider) {
         type: 'text',
         views: ['list', 'create', 'edit']
       }
+    },
+
+    relations: {
+      'posts': {
+        type: 'belongsTo'
+      }
     }
 
   });
@@ -70,6 +85,12 @@ app.config(function (ApiProvider, EntityProvider) {
         label: 'Name',
         type: 'text',
         views: ['list', 'create', 'edit']
+      }
+    },
+
+    relations: {
+      'posts': {
+        type: 'hasMany'
       }
     }
 

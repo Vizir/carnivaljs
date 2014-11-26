@@ -11,3 +11,4 @@ infra/public/components/
 infra/client/components/
 .env
 bower_components
+dist

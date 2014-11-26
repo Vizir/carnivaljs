@@ -44,10 +44,6 @@ define(function (require) {
     }
   }
 
-  if (options.relations) {
-
-  }
-
   Entity.prototype.getFields = function () {
     return this.fields;
   };

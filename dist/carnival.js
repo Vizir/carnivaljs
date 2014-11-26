@@ -495,6 +495,7 @@ define('models/entity.js',['require'],function (require) {
     this.identifier = null;
     this.actions = [];
     this.fields = [];
+    this.relations = [];
 
     Object.keys(options.fields).forEach(function (field) {
 
@@ -5259,7 +5260,7 @@ define('controllers/main.js',[],function () {
 
 });
 
-define('text!templates/list.html',[],function () { return '<div class="container">\n  <div class="col-md-10" style="text-align:left">\n    <h3>List of {{ entityLabel }}</h3>\n  </div>\n  <div class="col-md-2" style="text-align:right">\n    <a ng-show="checkShow(\'create\')" class="btn btn-success" ui-sref="main.create({ entity: entityName })">Create</a>\n  </div>\n  <table class="table table-hover">\n    <thead>\n      <tr>\n        <th ng-repeat="field in entityFields">\n          {{ field.label }}\n        </th>\n        <th>\n          Actions\n        </th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr ng-repeat="content in entityContent">\n        <td ng-repeat="field in entityFields">\n          {{ content[field.name] }}\n        </td>\n        <td>\n          <a ng-show="checkShow(\'edit\')" class="btn btn-primary btn-xs" ui-sref="main.edit({ entity: entityName, id: content.id })">Edit</a>\n          <a ng-show="checkShow(\'delete\')" ng-click="deleteItem(content.id)" class="btn btn-danger btn-xs">Delete</a>\n        </td>\n      </tr>\n    </tbody>\n  </table>\n</div>\n';});
+define('text!templates/list.html',[],function () { return '<div class="container">\n  <div class="col-md-10" style="text-align:left">\n    <h3>List of {{ entityLabel }}</h3>\n  </div>\n  <div class="col-md-2" style="text-align:right">\n    <a ng-show="checkShow(\'create\')" class="btn btn-success" ui-sref="main.create({ entity: entityName })">Create</a>\n  </div>\n  <table class="table table-hover">\n    <thead>\n      <tr>\n        <th ng-repeat="field in entityFields">\n          {{ field.label }}\n        </th>\n        <th>\n          Actions\n        </th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr ng-repeat="content in entityContent">\n        <td ng-repeat="field in entityFields">\n          {{ content[field.name] }}\n        </td>\n        <td>\n          <a ng-show="checkShow(\'edit\')" class="btn btn-primary btn-xs" ui-sref="main.edit({ entity: entityName, id: content[entityIdentifier] })">Edit</a>\n          <a ng-show="checkShow(\'delete\')" ng-click="deleteItem(content[entityIdentifier])" class="btn btn-danger btn-xs">Delete</a>\n        </td>\n      </tr>\n    </tbody>\n  </table>\n</div>\n';});
 
 define('controllers/list.js',['require'],function (require) {
 
@@ -5276,6 +5277,7 @@ define('controllers/list.js',['require'],function (require) {
     var fields = entity.getFields();
 
     $scope.entityName = entity.name;
+    $scope.entityIdentifier = entity.identifier;
     $scope.entityLabel = entity.label;
     $scope.entityFields = [];
 

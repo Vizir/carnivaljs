@@ -13,6 +13,7 @@ define(function (require) {
     var fields = entity.getFields();
 
     $scope.entityName = entity.name;
+    $scope.entityIdentifier = entity.identifier;
     $scope.entityLabel = entity.label;
     $scope.entityFields = [];
 
