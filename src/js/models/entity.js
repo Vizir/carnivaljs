@@ -1,64 +1,60 @@
 define(function (require) {
 
-  function Entity (name, options) {
-
-    var that = this;
-
-    this.name = name;
-    this.label = options.label;
-    this.identifier = null;
-    this.actions = [];
-    this.fields = [];
-    this.relations = [];
-
-    Object.keys(options.fields).forEach(function (field) {
-
+  var buildFields = function (fields, that) {
+    Object.keys(fields).forEach(function (field) {
       that.fields.push({
         name: field,
-        type: options.fields[field].type || 'text',
-        label: options.fields[field].label || field,
-        views: options.fields[field].views || ['list', 'edit', 'create', 'delete']
+        type: fields[field].type || 'text',
+        label: fields[field].label || field,
+        views: fields[field].views || ['list', 'edit', 'create', 'delete']
       });
-
-      if (options.fields[field].identifier) {
+      if (fields[field].identifier) {
         that.identifier = field;
       }
-
-      options.fields[field].views.forEach(function (view) {
+      fields[field].views.forEach(function (view) {
         if (that.actions.indexOf(view) < 0) {
           that.actions.push(view);
         }
       });
-
     });
-
-    if (!this.identifier) {
-      this.identifier = 'id';
-      this.fields.push({
+    if (!that.identifier) {
+      that.identifier = 'id';
+      that.fields.push({
         name: 'id',
         type: 'number',
         label: 'id',
         views: ['list', 'edit', 'create', 'delete']
       });
-      this.actions = ['list', 'edit', 'create', 'delete'];
+      that.actions = ['list', 'edit', 'create', 'delete'];
     }
+  };
 
-    if (options.relations) {
-      Object.keys(options.relations).forEach(function (relation) {
-        that.relations.push({
-          target: relation,
-          type: options.relations[relation].type,
-        });
+  var buildRelations = function (relations, that) {
+    Object.keys(relations).forEach(function (relation) {
+      that.relations.push({
+        target: relation,
+        type: relations[relation].type,
       });
-    }
+    });
+  };
 
-    console.log(this.relations);
+  function Entity (name, options) {
+
+    this.name = name;
+    this.label = options.label;
+
+    this.identifier = null;
+    this.fields = [];
+    this.actions = [];
+    buildFields(options.fields, this);
+    
+    if (options.relations) {
+      this.relations = [];
+      buildRelations(options.relations, this);
+      console.log(this.relations);
+    }
 
   }
-
-  Entity.prototype.getFields = function () {
-    return this.fields;
-  };
 
   Entity.prototype.checkFieldView = function (field, view) {
     var _field;
@@ -75,6 +71,11 @@ define(function (require) {
 
   Entity.prototype.checkEntityAction = function (action) {
     return (this.actions.indexOf(action) >= 0) ? true : false;
+  };
+
+  Entity.prototype.httpGet = function () {
+    return $q(function (resolve, reject) {
+    });
   };
 
   return Entity;

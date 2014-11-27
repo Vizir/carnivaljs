@@ -11,8 +11,10 @@ require.config({
     'angular-ui-router': 'bower_components/angular-ui-router/release/angular-ui-router',
     'text': 'bower_components/requirejs-text/text',
 
-    'Config': 'providers/config',
-    'Router': 'router'
+    'Router': 'router',
+    'Config': 'providers/index',
+    'Services': 'services/index',
+    'Directives': 'directives/index'
 
   },
 
@@ -31,9 +33,9 @@ define(function (require) {
   var angular = require('angular');
   require('Config');
   require('Router');
-  require('factories/shared-data');
-  require('directives/directives');
+  require('Services');
+  require('Directives');
 
-  angular.module('carnival', ['config', 'router', 'shared-data', 'directives']);
+  angular.module('carnival', ['config', 'router', 'services', 'directives']);
 
 });

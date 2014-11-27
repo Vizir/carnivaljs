@@ -1,16 +1,15 @@
-define(function (require) {
+define(function () {
 
   var editCtrl = ['$scope',
                   '$stateParams',
                   '$state',
-                  'Api',
                   'Entity',
                   'SharedData',
-                  '$http',
-  function ($scope, $stateParams, $state, Api, Entity, SharedData, $http) {
+                  'http',
+  function ($scope, $stateParams, $state, Entity, SharedData, http) {
 
     var entity = Entity.getEntity($stateParams.entity);
-    var fields = entity.getFields();
+    var fields = entity.fields;
     var id = $stateParams.id;
     
     $scope.entityName = entity.name;
@@ -18,37 +17,27 @@ define(function (require) {
     $scope.entityRelations = entity.relations;
     $scope.entityFields = [];
     
+    $scope.save = function () {
+      var values = angular.copy($scope.form);
+      http.put(entity, id, values).then(function (data) {
+        SharedData.notifications.push({ message: 'Success on edit!', type: 'success' });
+        $scope.form = data;
+      }).catch(function (data) {
+        SharedData.notifications.push({ message: data.error.message, type: 'error' });
+      });
+    };
+
     fields.forEach(function (field) {
       if (entity.checkFieldView(field.name, 'edit')) {
         $scope.entityFields.push(field);
       }
     });
 
-    SharedData.loading++;
-    $http.get(Api.getBaseApiUrl() + '/' + entity.name + '/' + id)
-    .success(function (data, status, headers, config) {
-      SharedData.loading--;
+    http.getOne(entity, id).then(function (data) {
       $scope.form = data;
-    })
-    .error(function (data, status, headers, config) {
-      SharedData.loading--;
+    }).catch(function (data) {
       SharedData.notifications.push({ message: data.error.message, type: 'error' });
     });
-
-    $scope.save = function () {
-      var values = angular.copy($scope.form);
-      SharedData.loading++;
-      $http.put(Api.getBaseApiUrl() + '/' + entity.name + '/' + id, values)
-      .success(function (data, status, headers, config) {
-        SharedData.loading--;
-        SharedData.notifications.push({ message: 'Success on edit!', type: 'success' });
-        $state.reload();
-      })
-      .error(function (data, status, headers, config) {
-        SharedData.loading--;
-        SharedData.notifications.push({ message: data.error.message, type: 'error' });
-      });
-    };
 
   }];
 
