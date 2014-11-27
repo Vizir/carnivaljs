@@ -73,11 +73,6 @@ define(function (require) {
     return (this.actions.indexOf(action) >= 0) ? true : false;
   };
 
-  Entity.prototype.httpGet = function () {
-    return $q(function (resolve, reject) {
-    });
-  };
-
   return Entity;
 
 });
