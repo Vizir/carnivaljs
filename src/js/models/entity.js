@@ -42,6 +42,18 @@ define(function (require) {
       });
       this.actions = ['list', 'edit', 'create', 'delete'];
     }
+
+    if (options.relations) {
+      Object.keys(options.relations).forEach(function (relation) {
+        that.relations.push({
+          target: relation,
+          type: options.relations[relation].type,
+        });
+      });
+    }
+
+    console.log(this.relations);
+
   }
 
   Entity.prototype.getFields = function () {

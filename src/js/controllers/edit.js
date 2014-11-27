@@ -15,6 +15,7 @@ define(function (require) {
     
     $scope.entityName = entity.name;
     $scope.entityLabel = entity.label;
+    $scope.entityRelations = entity.relations;
     $scope.entityFields = [];
     
     fields.forEach(function (field) {
