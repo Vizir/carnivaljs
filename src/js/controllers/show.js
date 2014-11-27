@@ -16,19 +16,17 @@ define(function () {
     $scope.entityLabel = entity.label;
     $scope.entityRelations = entity.relations;
     $scope.entityFields = [];
-    
-    $scope.save = function () {
-      var values = angular.copy($scope.form);
-      http.put(entity, id, values).then(function (data) {
-        SharedData.notifications.push({ message: 'Success on edit!', type: 'success' });
-        $state.go('main.show', { entity: entity.name, id: id }, {reload: true});
-      }).catch(function (data) {
-        SharedData.notifications.push({ message: data.error.message, type: 'error' });
-      });
+
+    $scope.checkShow = function (action) {
+      return entity.checkEntityAction(action);
+    };
+
+    $scope.edit = function () {
+      $state.go('main.edit', { entity: entity.name, id: id }, {reload: true});
     };
 
     fields.forEach(function (field) {
-      if (entity.checkFieldView(field.name, 'edit')) {
+      if (entity.checkFieldView(field.name, 'show')) {
         $scope.entityFields.push(field);
       }
     });

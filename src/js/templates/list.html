@@ -22,7 +22,8 @@
           {{ content[field.name] }}
         </td>
         <td>
-          <a ng-show="checkShow('edit')" class="btn btn-primary btn-xs" ui-sref="main.edit({ entity: entityName, id: content[entityIdentifier] })">Edit</a>
+          <a ng-show="checkShow('show')" class="btn btn-primary btn-xs" ui-sref="main.show({ entity: entityName, id: content[entityIdentifier] })">Show</a>
+          <a ng-show="checkShow('edit')" class="btn btn-warning btn-xs" ui-sref="main.edit({ entity: entityName, id: content[entityIdentifier] })">Edit</a>
           <a ng-show="checkShow('delete')" ng-click="deleteItem(content[entityIdentifier])" class="btn btn-danger btn-xs">Delete</a>
         </td>
       </tr>

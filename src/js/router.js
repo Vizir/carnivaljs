@@ -23,6 +23,12 @@ define(function (require) {
         controller: require('controllers/list.js')
       })
 
+      .state('main.show', {
+        url: 'show/:entity/:id',
+        template: require('text!templates/show.html'),
+        controller: require('controllers/show.js')
+      })
+
       .state('main.create', {
         url: 'create/:entity',
         template: require('text!templates/create.html'),

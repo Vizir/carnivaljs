@@ -19,12 +19,12 @@ app.config(function (ApiProvider, EntityProvider) {
       'title': {
         label: 'Title',
         type: 'text',
-        views: ['create', 'list', 'edit']
+        views: ['show', 'create', 'list', 'edit']
       },
       'content': {
         label: 'Content',
         type: 'text',
-        views: ['create', 'list', 'edit']
+        views: ['show', 'create', 'list', 'edit']
       }
     },
 
@@ -53,12 +53,12 @@ app.config(function (ApiProvider, EntityProvider) {
       'email': {
         label: 'Email',
         type: 'text',
-        views: ['list', 'create', 'edit']
+        views: ['show', 'list', 'create', 'edit']
       },
       'content': {
         label: 'Content',
         type: 'text',
-        views: ['list', 'create', 'edit']
+        views: ['show', 'list', 'create', 'edit']
       }
     },
 
@@ -84,7 +84,7 @@ app.config(function (ApiProvider, EntityProvider) {
       'name': {
         label: 'Name',
         type: 'text',
-        views: ['list', 'create', 'edit']
+        views: ['show', 'list', 'create', 'edit']
       }
     },
 
