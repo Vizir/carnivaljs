@@ -1,49 +1,38 @@
-define(function (require) {
+angular.module('list', [])
+.controller('listCtrl', ['$scope', '$stateParams', '$state', 'Entity', 'SharedData', 'http', function ($scope, $stateParams, $state, Entity, SharedData, http) {
 
-  var listCtrl = ['$scope',
-                  '$stateParams',
-                  '$state',
-                  'Entity',
-                  'SharedData',
-                  'http',
-  function ($scope, $stateParams, $state, Entity, SharedData, http) {
+  var entity = Entity.getEntity($stateParams.entity);
+  var fields = entity.fields;
+  var relations = entity.relations;
 
-    var entity = Entity.getEntity($stateParams.entity);
-    var fields = entity.fields;
-    var relations = entity.relations;
+  $scope.entityName = entity.name;
+  $scope.entityIdentifier = entity.identifier;
+  $scope.entityLabel = entity.label;
+  $scope.entityFields = [];
+  
+  $scope.checkShow = function (action) {
+    return entity.checkEntityAction(action);
+  };
 
-    $scope.entityName = entity.name;
-    $scope.entityIdentifier = entity.identifier;
-    $scope.entityLabel = entity.label;
-    $scope.entityFields = [];
-    
-    $scope.checkShow = function (action) {
-      return entity.checkEntityAction(action);
-    };
-
-    $scope.deleteItem = function (index) {
-      http.destroy(entity, index).then(function () {
-        SharedData.notifications.push({ message: 'Success on delete!', type: 'success'});
-        $state.reload();
-      }).catch(function (data) {
-        SharedData.notifications.push({ message: data.error.message, type: 'error'});
-      });
-    };
-
-    fields.forEach(function (field) {
-      if (entity.checkFieldView(field.name, 'list')) {
-        $scope.entityFields.push(field);
-      }
-    });
-
-    http.get(entity).then(function (data, status, headers, config) {
-      $scope.entityContent = data;
-    }).catch(function (data, status, headers, config) {
+  $scope.deleteItem = function (index) {
+    http.destroy(entity, index).then(function () {
+      SharedData.notifications.push({ message: 'Success on delete!', type: 'success'});
+      $state.reload();
+    }).catch(function (data) {
       SharedData.notifications.push({ message: data.error.message, type: 'error'});
     });
+  };
 
-  }];
+  fields.forEach(function (field) {
+    if (entity.checkFieldView(field.name, 'list')) {
+      $scope.entityFields.push(field);
+    }
+  });
 
-  return listCtrl;
+  http.get(entity).then(function (data, status, headers, config) {
+    $scope.entityContent = data;
+  }).catch(function (data, status, headers, config) {
+    SharedData.notifications.push({ message: data.error.message, type: 'error'});
+  });
 
-});
+}]);

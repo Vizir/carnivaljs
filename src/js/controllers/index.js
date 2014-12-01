@@ -1,0 +1,1 @@
+angular.module('controllers', ['main', 'show', 'list', 'edit', 'create']);
