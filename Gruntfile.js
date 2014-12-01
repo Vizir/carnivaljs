@@ -15,11 +15,12 @@ module.exports = function (grunt) {
     },
 
     concat: {
-      options: {
-        separator: ';'
-      },
       dist: {
-        src: ['src/js/*.js', 'src/js/**/*.js', 'dist/tmp/*.js'],
+        src: ['src/js/*.js',
+              'src/js/**/*.js',
+              'dist/tmp/*.js',
+              'bower_components/angular-ui-router/release/angular-ui-router.js'
+        ],
         dest: 'dist/carnival.js'
       }
     },
@@ -48,6 +49,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-html2js');
 
   grunt.registerTask('test', ['jshint']);
-  grunt.registerTask('build', ['jshint', 'html2js:dist', 'concat:dist', 'uglify:dist']);
+  grunt.registerTask('build', ['jshint', 'html2js:dist', 'concat:dist', 'uglify:dist', 'clean:tmp']);
 
 };
