@@ -1,41 +1,43 @@
 define(function (require) {
 
   var buildFields = function (fields, that) {
+
     Object.keys(fields).forEach(function (field) {
+             
       that.fields.push({
         name: field,
+        endpoint: fields[field].endpoint || field,
+        foreignKey: fields[field].foreignKey,
         type: fields[field].type || 'text',
         label: fields[field].label || field,
         views: fields[field].views || ['list', 'edit', 'create', 'delete']
       });
-      if (fields[field].identifier) {
+      
+      if (fields[field].identifier && !(fields[field].type === 'hasMany' || fields[field].type === 'belongsTo')) {
         that.identifier = field;
       }
+
+      if (fields[field].type === 'hasMany' || fields[field].type === 'belongsTo') {
+        
+        that.relations.push({
+          name: field,
+          endpoint: fields[field].endpoint || field,
+          foreignKey: fields[field].foreignKey,
+          type: fields[field].type,
+          label: fields[field].label || field,
+          views: fields[field].views || ['edit', 'show']
+        });
+      
+      }
+          
       fields[field].views.forEach(function (view) {
         if (that.actions.indexOf(view) < 0) {
           that.actions.push(view);
         }
       });
+    
     });
-    if (!that.identifier) {
-      that.identifier = 'id';
-      that.fields.push({
-        name: 'id',
-        type: 'number',
-        label: 'id',
-        views: ['list', 'edit', 'create', 'delete']
-      });
-      that.actions = ['list', 'edit', 'create', 'delete'];
-    }
-  };
-
-  var buildRelations = function (relations, that) {
-    Object.keys(relations).forEach(function (relation) {
-      that.relations.push({
-        target: relation,
-        type: relations[relation].type,
-      });
-    });
+  
   };
 
   function Entity (name, options) {
@@ -46,13 +48,8 @@ define(function (require) {
     this.identifier = null;
     this.fields = [];
     this.actions = [];
+    this.relations = [];
     buildFields(options.fields, this);
-    
-    if (options.relations) {
-      this.relations = [];
-      buildRelations(options.relations, this);
-      console.log(this.relations);
-    }
 
   }
 

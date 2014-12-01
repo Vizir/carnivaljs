@@ -1,8 +1,9 @@
 var app = angular.module('exampleApp', ['carnival']);
 
 app.config(function (ApiProvider, EntityProvider) {
-
+ 
   ApiProvider.setAppName('Carnival Example');
+
   ApiProvider.setBaseApiUrl('http://localhost:3000/api');
   
   EntityProvider.addEntity('posts', {
@@ -25,15 +26,16 @@ app.config(function (ApiProvider, EntityProvider) {
         label: 'Content',
         type: 'text',
         views: ['show', 'create', 'list', 'edit']
-      }
-    },
-
-    relations: {
+      },
       'comments': {
-        type: 'hasMany'
+        label: 'Comments',
+        type: 'hasMany',
+        views: ['show', 'edit']
       },
       'tags': {
-        type: 'hasMany'
+        label: 'Tags',
+        type: 'hasMany',
+        views: ['show', 'edit']
       }
     }
 
@@ -59,12 +61,13 @@ app.config(function (ApiProvider, EntityProvider) {
         label: 'Content',
         type: 'text',
         views: ['show', 'list', 'create', 'edit']
-      }
-    },
-
-    relations: {
+      },
       'posts': {
-        type: 'belongsTo'
+        endpoint: 'post',
+        label: 'Post',
+        type: 'belongsTo',
+        foreignKey: 'postId',
+        views: ['show', 'edit']
       }
     }
 
@@ -85,12 +88,12 @@ app.config(function (ApiProvider, EntityProvider) {
         label: 'Name',
         type: 'text',
         views: ['show', 'list', 'create', 'edit']
-      }
-    },
-
-    relations: {
+      },
       'posts': {
-        type: 'hasMany'
+        endpoint: 'posts',
+        label: 'Post',
+        type: 'hasMany',
+        views: ['show', 'edit']
       }
     }
 

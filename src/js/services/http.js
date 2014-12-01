@@ -76,10 +76,25 @@ define(function () {
           })
           .error(function (data, status, headers, config) {
             SharedData.loading--;
-            reject(data, status, headers, config);});
+            reject(data, status, headers, config);
+          });
+        });
+      },
+
+      getRel: function (entity, id, rel) {
+        return $q(function (resolve, reject) {
+          SharedData.loading++;
+          $http.get(Api.getBaseApiUrl() + '/' + entity.name + '/' + id + '/' + rel)
+          .success(function (data, status, headers, config) {
+            SharedData.loading--;
+            resolve(data, status, headers, config);
+          })
+          .error(function (data, status, headers, config) {
+            SharedData.loading--;
+            reject(data, status, headers, config);
+          });
         });
       }
-
 
     };
 

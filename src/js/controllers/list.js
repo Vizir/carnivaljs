@@ -10,6 +10,7 @@ define(function (require) {
 
     var entity = Entity.getEntity($stateParams.entity);
     var fields = entity.fields;
+    var relations = entity.relations;
 
     $scope.entityName = entity.name;
     $scope.entityIdentifier = entity.identifier;
