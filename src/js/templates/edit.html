@@ -24,8 +24,7 @@
           <tbody>
             <tr ng-repeat="relData in relationsDatas[field.name]">
               <td>
-                <!-- <input type="radio" ng-model="form[field.foreignKey]" value="relData[relField.name]"/> -->
-                {{ relField }}
+              <input for="field.name" type="radio" ng-model="form[field.foreignKey]" ng-value="relData[relationIdentifier]"/>
               </td>
               <td ng-repeat="relField in relationsFields[field.name]">
                 {{ relData[relField.name] }}

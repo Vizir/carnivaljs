@@ -44,6 +44,7 @@ angular.module('edit', [])
     relations.forEach(function (relation) {
 
       var relationEntity = Entity.getEntity(relation.name);
+      $scope.relationIdentifier = relationEntity.identifier;
 
       relationsFields[relationEntity.name] = angular.copy(relationEntity.fields);
 
@@ -67,7 +68,6 @@ angular.module('edit', [])
       });
 
     });
-
     $scope.relationsFields = relationsFields;
     $scope.relationsDatas = relationsDatas;
     $scope.relationSelDatas = relationSelDatas;
