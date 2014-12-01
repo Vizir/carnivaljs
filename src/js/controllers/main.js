@@ -1,27 +1,18 @@
-define(function () {
+angular.module('main', [])
+.controller('mainCtrl', ['$scope', 'Api', 'Entity', 'SharedData', function ($scope, Api, Entity, SharedData) {
 
-  var mainCtrl = ['$scope',
-                  'Api',
-                  'Entity',
-                  'SharedData',
-  function ($scope, Api, Entity, SharedData) {
+  var entities = Entity.getEntities();
 
-    var entities = Entity.getEntities();
+  $scope.applicationName = Api.getAppName();
+  $scope.notifications = SharedData.notifications;
+  $scope.loading = SharedData.loading;
+  $scope.menuItems = [];
 
-    $scope.applicationName = Api.getAppName();
-    $scope.notifications = SharedData.notifications;
-    $scope.loading = SharedData.loading;
-    $scope.menuItems = [];
-
-    entities.forEach(function (entity) {
-      $scope.menuItems.push({
-        name: entity.name,
-        label: entity.label
-      });
+  entities.forEach(function (entity) {
+    $scope.menuItems.push({
+      name: entity.name,
+      label: entity.label
     });
+  });
 
-  }];
-
-  return mainCtrl;
-
-});
+}]);

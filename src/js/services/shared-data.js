@@ -1,12 +1,8 @@
-define(function () {
-  
-  var sharedData = function () {
-    return {
-      notifications: [],
-      loading: 0
-    };
-  };
+angular.module('shared-data', [])
 
-  return sharedData;
-  
+.factory('SharedData', function () {
+  return {
+    notifications: [],
+    loading: 0
+  };
 });

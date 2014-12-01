@@ -1,39 +1,34 @@
-define(function () {
+angular.module('api',[])
+.provider('Api', function () {
+  
+  var appName = null;
+  var baseApiUrl = null;
 
-  var ApiConfig = function () {
-    
-    var appName = null;
-    var baseApiUrl = null;
+  return {
 
-    return {
+    setBaseApiUrl: function (url) {
+      url.replace(/\/$/, '');
+      baseApiUrl = url;
+    },
 
-      setBaseApiUrl: function (url) {
-        url.replace(/\/$/, '');
-        baseApiUrl = url;
-      },
+    setAppName: function (name) {
+      appName = name;
+    },
 
-      setAppName: function (name) {
-        appName = name;
-      },
+    $get: function () {
+      return {
 
-      $get: function () {
-        return {
+        getBaseApiUrl: function () {
+          return baseApiUrl;
+        },
 
-          getBaseApiUrl: function () {
-            return baseApiUrl;
-          },
+        getAppName: function () {
+          return appName;
+        }
 
-          getAppName: function () {
-            return appName;
-          }
-
-        };
-      }
-
-    };
+      };
+    }
 
   };
-
-  return ApiConfig;
 
 });

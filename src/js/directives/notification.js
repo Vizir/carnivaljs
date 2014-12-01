@@ -1,13 +1,10 @@
-define(function () {
+angular.module('notification', [])
+.directive('notification', ['$timeout', 'SharedData', function ($timeout, SharedData) {
 
-  var notification = ['$timeout', 'SharedData', function ($timeout, SharedData) {
-    return function () {
-      $timeout(function () {
-        SharedData.notifications.shift();
-      }, 5000);
-    };
-  }];
+  return function () {
+    $timeout(function () {
+      SharedData.notifications.shift();
+    }, 5000);
+  };
 
-  return notification;
-
-});
+}]);
