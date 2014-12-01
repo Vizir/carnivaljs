@@ -1,4 +1,4 @@
-angular.module('router', ['ui.router', 'controllers'])
+angular.module('router', ['templates-dist', 'ui.router', 'controllers'])
 
 .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
 

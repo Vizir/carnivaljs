@@ -1,4 +1,4 @@
-angular.module('api',[])
+angular.module('providers.api',[])
 .provider('Api', function () {
   
   var appName = null;

@@ -37,10 +37,31 @@ module.exports = function (grunt) {
       tmp: {
         src: ['dist/tmp']
       }
+    },
+
+    watch: {
+      dev: {
+        files: ['Gruntfile.js', 'src/js/*.js', 'src/js/**/*.js', 'src/js/**/*.html', 'src/js/*.html'],
+        tasks: ['jshint', 'html2js:dist', 'concat:dist', 'clean:tmp']
+      },
+      options: {
+        atBegin: true
+      }
+    },
+
+    connect: {
+      server: {
+        options: {
+          hostname: 'localhost',
+          port: 3010
+        }
+      }
     }
 
   });
 
+  grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-compress');
@@ -48,6 +69,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-html2js');
 
+  grunt.registerTask('dev', ['connect', 'watch:dev']);
   grunt.registerTask('test', ['jshint']);
   grunt.registerTask('build', ['jshint', 'html2js:dist', 'concat:dist', 'uglify:dist', 'clean:tmp']);
 

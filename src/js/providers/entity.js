@@ -1,4 +1,4 @@
-angular.module('entity', [])
+angular.module('providers.entity', [])
 
 .provider('Entity', function () {
 

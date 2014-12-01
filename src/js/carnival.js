@@ -1,1 +1,1 @@
-angular.module('carnival', ['templates-dist', 'config', 'router', 'services']);
+angular.module('carnival', ['router', 'providers', 'services']);

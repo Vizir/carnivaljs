@@ -1,1 +1,1 @@
-angular.module('config', ['api', 'entity']);
+angular.module('providers', ['providers.api', 'providers.entity']);
