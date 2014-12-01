@@ -1,1 +1,1 @@
-angular.module('directives', ['notification']);
+angular.module('directives', ['directives.notification']);

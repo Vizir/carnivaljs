@@ -1,4 +1,4 @@
-angular.module('http', [])
+angular.module('services.http', [])
 
 .factory('http', ['$http', '$q', 'Api', 'SharedData', function ($http, $q, Api, SharedData) {
 

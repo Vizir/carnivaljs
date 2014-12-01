@@ -1,4 +1,4 @@
-angular.module('shared-data', [])
+angular.module('services.shared-data', [])
 
 .factory('SharedData', function () {
   return {
