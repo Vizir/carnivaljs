@@ -24,7 +24,31 @@
           <tbody>
             <tr ng-repeat="relData in relationsDatas[field.name]">
               <td>
-              <input for="field.name" type="radio" ng-model="form[field.foreignKey]" ng-value="relData[relationIdentifier]"/>
+                <input for="field.name" type="radio" ng-model="form[field.foreignKey]" ng-value="relData[relationIdentifier]"/>
+              </td>
+              <td ng-repeat="relField in relationsFields[field.name]">
+                {{ relData[relField.name] }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table ng-if="field.type === 'hasMany'" class="table table-hover">
+          <thead>
+            <tr>
+              <th>
+              </th>
+              <th ng-repeat="relField in relationsFields[field.name]">
+                {{ relField.label }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="relData in relationsDatas[field.name]">
+              <td>
+                <input for="field.name" type="checkbox" ng-checked="checkIfIsSelected(field.name, relData[relationIdentifier])"/>
+                {{ relData[relationIdentifier] }}
+                {{ relationSelDatas[field.name] }}
               </td>
               <td ng-repeat="relField in relationsFields[field.name]">
                 {{ relData[relField.name] }}
@@ -45,23 +69,6 @@
             <tr ng-repeat="relData in relationsDatas[field.name]">
               <td ng-repeat="relField in relationsFields[field.name]">
                 {{ relData[relField.name] }}
-              </td>
-            </tr>
-          </tbody>
-        </table> -->
-
-        <!-- <table ng-if="field.type === 'belongsTo'" class="table table-hover">
-          <thead>
-            <tr>
-              <th ng-repeat="relField in relationsFields[field.name]">
-                {{ relField.label }}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td ng-repeat="relField in relationsFields[field.name]">
-                {{ relationsDatas[field.name][relField.name] }}
               </td>
             </tr>
           </tbody>

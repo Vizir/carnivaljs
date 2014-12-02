@@ -9,6 +9,7 @@ angular.module('edit', [])
   
   $scope.entityName = entity.name;
   $scope.entityLabel = entity.label;
+  $scope.identifier = entity.identifier;
   $scope.entityFields = [];
   
   $scope.form = {};
@@ -40,6 +41,7 @@ angular.module('edit', [])
     var relationsFields = {};
     var relationsDatas = {};
     var relationSelDatas = {};
+    var relationTable = {};
 
     relations.forEach(function (relation) {
 
@@ -54,7 +56,7 @@ angular.module('edit', [])
           relationsFields[relationEntity.name].splice(i, 1);
         }
       }
-    
+
       http.get(relationEntity).then(function (data) {
         relationsDatas[relationEntity.name] = data;
       }).catch(function (data) {
@@ -68,6 +70,7 @@ angular.module('edit', [])
       });
 
     });
+    
     $scope.relationsFields = relationsFields;
     $scope.relationsDatas = relationsDatas;
     $scope.relationSelDatas = relationSelDatas;

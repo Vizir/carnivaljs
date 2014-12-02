@@ -30,11 +30,13 @@ app.config(function (ApiProvider, EntityProvider) {
       'comments': {
         label: 'Comments',
         type: 'hasMany',
+        foreignKey: 'id',
         views: ['show', 'edit']
       },
       'tags': {
         label: 'Tags',
         type: 'hasMany',
+        foreignKey: 'id',
         views: ['show', 'edit']
       }
     }
@@ -93,6 +95,7 @@ app.config(function (ApiProvider, EntityProvider) {
         endpoint: 'posts',
         label: 'Post',
         type: 'hasMany',
+        foreignKey: 'id',
         views: ['show', 'edit']
       }
     }
