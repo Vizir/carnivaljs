@@ -1,0 +1,16 @@
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th ng-repeat="field in relation.fields">
+        {{ field.label }}
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="data in relation.datas">
+      <td ng-repeat="field in relation.fields">
+        {{ data[field.name] }}
+      </td>
+    </tr>
+  </tbody>
+</table>

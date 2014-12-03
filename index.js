@@ -1,6 +1,6 @@
 var app = angular.module('exampleApp', ['carnival']);
 
-app.config(function (ApiProvider, EntityProvider) {
+app.config(function (ApiProvider, EntityProvider, HttpAdapterProvider) {
  
   ApiProvider.setAppName('Carnival Example');
 
@@ -9,13 +9,14 @@ app.config(function (ApiProvider, EntityProvider) {
   EntityProvider.addEntity('posts', {
 
     label: 'Posts',
+    identifier: 'id',
+    actions: ['show', 'create', 'edit', 'delete'],
 
     fields: {
       'id': {
-        identifier: true,
         label: 'Id',
         type: 'text',
-        views: ['delete']
+        views: []
       },
       'title': {
         label: 'Title',
@@ -28,12 +29,14 @@ app.config(function (ApiProvider, EntityProvider) {
         views: ['show', 'create', 'list', 'edit']
       },
       'comments': {
+        endpoint: 'comments',
         label: 'Comments',
         type: 'hasMany',
         foreignKey: 'id',
         views: ['show', 'edit']
       },
       'tags': {
+        endpoint: 'tags',
         label: 'Tags',
         type: 'hasMany',
         foreignKey: 'id',
@@ -46,6 +49,7 @@ app.config(function (ApiProvider, EntityProvider) {
   EntityProvider.addEntity('comments', {
 
     label: 'Comments',
+    identifier: 'id',
 
     fields: {
       'id': {
@@ -78,6 +82,7 @@ app.config(function (ApiProvider, EntityProvider) {
   EntityProvider.addEntity('tags', {
 
     label: 'Tags',
+    identifier: 'id',
 
     fields: {
       'id': {
@@ -100,6 +105,13 @@ app.config(function (ApiProvider, EntityProvider) {
       }
     }
 
+  });
+
+  HttpAdapterProvider.getList(function (apiUrl, entity) {
+    return {
+      query: apiUrl + '/' + entity,
+      options: {}
+    };
   });
 
 });

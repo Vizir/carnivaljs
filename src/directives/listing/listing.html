@@ -1,0 +1,24 @@
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th ng-repeat="field in fields">
+        {{ field.label }}
+      </th>
+      <th ng-if="actions" style="width: 30%">
+        Actions
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="data in datas">
+      <td ng-repeat="field in fields">
+        {{ data[field.name] }}
+      </td>
+      <td>
+        <carnival-show-btn ng-if="actions.show" entity-name="entityName" id="data[identifier]"></carnival-show-btn>
+        <carnival-edit-btn ng-if="actions.edit" entity-name="entityName" id="data[identifier]"></carnival-edit-btn>
+        <carnival-delete-btn ng-if="actions.delete" entity-name="entityName" id="data[identifier]"></carnival-delete-btn>
+      </td>
+    </tr>
+  </tbody>
+</table>

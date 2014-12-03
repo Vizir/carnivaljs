@@ -1,1 +1,0 @@
-angular.module('services', ['services.http', 'services.shared-data']);

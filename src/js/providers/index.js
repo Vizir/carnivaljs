@@ -1,1 +1,0 @@
-angular.module('providers', ['providers.api', 'providers.entity']);

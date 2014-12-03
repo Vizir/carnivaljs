@@ -1,1 +1,0 @@
-angular.module('carnival', ['router', 'providers', 'services', 'directives']);
