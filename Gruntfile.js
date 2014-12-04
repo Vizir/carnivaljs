@@ -14,13 +14,26 @@ module.exports = function (grunt) {
       }
     },
 
+    karma: {
+      options: {
+        configFile: 'karma/conf.js'
+      },
+      unit: {
+        singleRun: true
+      },
+      continuous: {
+        singleRun: false,
+        autoWatch: true
+      }
+    },
+
     concat: {
       dist: {
-        src: ['Grunt/intro.js',
+        src: ['grunt/intro.js',
               'src/*.js',
               'src/**/*.js',
               'dist/tmp/*.js',
-              'Grunt/outro.js',
+              'grunt/outro.js',
               'bower_components/angular-ui-router/release/angular-ui-router.js'
         ],
         dest: 'dist/carnival.js'
@@ -70,9 +83,10 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-html2js');
+  grunt.loadNpmTasks('grunt-karma');
 
   grunt.registerTask('dev', ['connect', 'watch:dev']);
-  grunt.registerTask('test', ['jshint']);
-  grunt.registerTask('build', ['jshint', 'html2js:dist', 'concat:dist', 'uglify:dist', 'clean:tmp']);
+  grunt.registerTask('test', ['jshint', 'karma:continuous']);
+  grunt.registerTask('build', ['jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'uglify:dist', 'clean:tmp']);
 
 };

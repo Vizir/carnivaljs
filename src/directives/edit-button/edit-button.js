@@ -5,7 +5,8 @@ angular.module('carnival.directives')
     replace: true,
     scope: {
       entityName: '=',
-      id: '='
+      id: '=',
+      size: '='
     },
     templateUrl: 'directives/edit-button/edit-button.html'
   };

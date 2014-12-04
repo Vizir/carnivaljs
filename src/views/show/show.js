@@ -6,10 +6,12 @@ angular.module('carnival.controllers')
 
   entity.model = new EntityModel(entity_params.name, entity_params.options);
 
+  entity.id = $stateParams.id;
   entity.name = entity.model.name;
   entity.label = entity.model.label;
   entity.identifier = entity.model.identifier;
   entity.fields = [];
+  entity.editable = entity.model.checkAction('edit');
 
   for (var i = entity.model.fields.length - 1; i >= 0; i -= 1) {
     if (entity.model.checkFieldView(entity.model.fields[i].name, 'edit')) {
@@ -17,13 +19,13 @@ angular.module('carnival.controllers')
     }
   }
 
-  entity.model.getOne($stateParams.id)
+  entity.model.getOne(entity.id)
   .success(function (data) {
     entity.datas = data;
   });
 
   if (entity.model.relations.length > 0) {
-    var relations = $scope.relations = {};
+    var relations  = {};
 
     entity.model.relations.forEach(function (rel) {
 
@@ -44,10 +46,9 @@ angular.module('carnival.controllers')
         }
       }
 
-      entity.model.getRelList($stateParams.id, relation.endpoint)
+      entity.model.getRelList(entity.id, relation.endpoint)
       .success(function (data) {
         relation.datas = data;
-        console.log(data);
       });
 
     });
@@ -55,57 +56,5 @@ angular.module('carnival.controllers')
     entity.relations = relations;
 
   }
-
-
-  // $scope.checkShow = function (action) {
-  //   return entity.checkEntityAction(action);
-  // };
-
-  // $scope.edit = function () {
-  //   $state.go('main.edit', { entity: entity.name, id: id }, {reload: true});
-  // };
-
-  // fields.forEach(function (field) {
-  //   if (entity.checkFieldView(field.name, 'show')) {
-  //     $scope.entityFields.push(field);
-  //   }
-  // });
-
-  // http.getOne(entity, id).then(function (data) {
-  //   $scope.entityData = data;
-  // }).catch(function (data) {
-  //   SharedData.notifications.push({ message: data.error.message, type: 'error' });
-  // });
-
-  // if (relations.length > 0) {
-
-  //   var relationsFields = {};
-  //   var relationsDatas = {};
-
-  //   relations.forEach(function (relation) {
-
-  //     var relationEntity = Entity.getEntity(relation.name);
-
-  //     relationsFields[relationEntity.name] = angular.copy(relationEntity.fields);
-
-  //     for (var i = relationsFields[relationEntity.name].length - 1; i >= 0; i -= 1) {
-  //       if (relationsFields[relationEntity.name][i].type === 'hasMany' ||
-  //           relationsFields[relationEntity.name][i].type === 'belongsTo') {
-  //         relationsFields[relationEntity.name].splice(i, 1);
-  //       }
-  //     }
-
-  //     http.getRel(entity, id, relation.endpoint).then(function (data) {
-  //       relationsDatas[relationEntity.name] = data;
-  //     }).catch(function (data) {
-  //       SharedData.notifications.push({ message: data.error.message, type: 'error' });
-  //     });
-
-  //   });
-
-  //   $scope.relationsFields = relationsFields;
-  //   $scope.relationsDatas = relationsDatas;
-
-  // }
 
 }]);
