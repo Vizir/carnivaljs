@@ -108,6 +108,7 @@ app.config(function (ApiProvider, EntityProvider, HttpAdapterProvider) {
   });
 
   HttpAdapterProvider.getList(function (apiUrl, entity) {
+    console.log(apiUrl + '/' + entity);
     return {
       query: apiUrl + '/' + entity,
       options: {}
