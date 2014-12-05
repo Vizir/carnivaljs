@@ -38,6 +38,7 @@ module.exports = function (grunt) {
       dist: {
         src: ['app/**/*.js',
               '!app/**/*.spec.js',
+              '!app/karma.js',
               'dist/tmp/*.js',
               'bower_components/angular-ui-router/release/angular-ui-router.js'
         ],
