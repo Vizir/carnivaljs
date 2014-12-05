@@ -1,4 +1,4 @@
-angular.module('carnival.componetns.listing', [])
+angular.module('carnival.components.listing', [])
 .directive('carnivalListing', function () {
   return {
     restrict: 'E',
