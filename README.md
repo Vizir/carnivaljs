@@ -7,6 +7,10 @@ Install dependencies
 
     $ npm install
 
+Install bower
+
+
+    $ npm run bower:install
 
 Install client dependencies
 
