@@ -1,11 +1,11 @@
 var app = angular.module('exampleApp', ['carnival']);
 
 app.config(function (ApiProvider, EntityProvider, HttpAdapterProvider) {
- 
+
   ApiProvider.setAppName('Carnival Example');
 
-  ApiProvider.setBaseApiUrl('http://localhost:3000/api');
-  
+  ApiProvider.setBaseApiUrl('http://private-baead-carnivaljs.apiary-mock.com');
+
   EntityProvider.addEntity('posts', {
 
     // defaultField:{
@@ -15,7 +15,7 @@ app.config(function (ApiProvider, EntityProvider, HttpAdapterProvider) {
     //         search: {operator: "equal"}
     //     },
     //     edit: {
-          
+
 
     //     }
     //   }
@@ -82,83 +82,83 @@ app.config(function (ApiProvider, EntityProvider, HttpAdapterProvider) {
             enable: true
           }
         }
-      },
-
-      'comments': {
-        endpoint: 'comments',
-        label: 'Comments',
-        type: 'hasMany',
-        views: {
-          index: {
-            enable: false
-          },
-          create: {
-            enable: false
-          },
-          show: {
-            enable: true,
-            nested: {
-              mode:['new', 'associate', 'deassociate', 'edit']
-            }
-          },
-          edit: {
-            enable: true,
-            nested: {
-              mode:['new', 'associate', 'deassociate', 'edit']
-            }
-          }
-        }
-
-      },
-
-      'tags': {
-        endpoint: 'tags',
-        label: 'Tags',
-        type: 'hasMany',
-        views: {
-          index: {
-            enable: false
-          },
-          create: {
-            enable: false
-          },
-          show: {
-            enable: true,
-            nested: {
-              mode:['new', 'associate', 'deassociate', 'edit']
-            }
-          },
-          edit: {
-            enable: true,
-            nested: {
-              mode:['new', 'associate', 'deassociate', 'edit']
-            }
-          }
-        }
-      },
-
-      'status': {
-        type: 'enum',
-        enumValues: {
-          'draft': 0,
-          'published': 1,
-          'archived': 2
-        },
-        views: {
-          index: {
-            enable: true
-          },
-          create: {
-            enable: true
-          },
-          show: {
-            enable: true
-          },
-          edit: {
-            enable: true
-          }
-        }
       }
+
+      // 'comments': {
+      //   endpoint: 'comments',
+      //   label: 'Comments',
+      //   type: 'hasMany',
+      //   views: {
+      //     index: {
+      //       enable: false
+      //     },
+      //     create: {
+      //       enable: false
+      //     },
+      //     show: {
+      //       enable: true,
+      //       nested: {
+      //         mode:['new', 'associate', 'deassociate', 'edit']
+      //       }
+      //     },
+      //     edit: {
+      //       enable: true,
+      //       nested: {
+      //         mode:['new', 'associate', 'deassociate', 'edit']
+      //       }
+      //     }
+      //   }
+
+      // },
+
+      // 'tags': {
+      //   endpoint: 'tags',
+      //   label: 'Tags',
+      //   type: 'hasMany',
+      //   views: {
+      //     index: {
+      //       enable: false
+      //     },
+      //     create: {
+      //       enable: false
+      //     },
+      //     show: {
+      //       enable: true,
+      //       nested: {
+      //         mode:['new', 'associate', 'deassociate', 'edit']
+      //       }
+      //     },
+      //     edit: {
+      //       enable: true,
+      //       nested: {
+      //         mode:['new', 'associate', 'deassociate', 'edit']
+      //       }
+      //     }
+      //   }
+      // },
+
+      // 'status': {
+      //   type: 'enum',
+      //   enumValues: {
+      //     'draft': 0,
+      //     'published': 1,
+      //     'archived': 2
+      //   },
+      //   views: {
+      //     index: {
+      //       enable: true
+      //     },
+      //     create: {
+      //       enable: true
+      //     },
+      //     show: {
+      //       enable: true
+      //     },
+      //     edit: {
+      //       enable: true
+      //     }
+      //   }
+      // }
     }
   });
 
@@ -167,7 +167,7 @@ app.config(function (ApiProvider, EntityProvider, HttpAdapterProvider) {
     label: 'Comments',
     identifier: 'id',
     filters: ['published', 'draft', 'archived'],
-    
+
     fields: {
 
       'id': {
