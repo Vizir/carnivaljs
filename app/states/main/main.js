@@ -1,4 +1,4 @@
-angular.module('carnival.controllers')
+angular.module('carnival')
 .controller('MainController', function ($scope, Configuration, EntityModel) {
 
   var app_name = $scope.app_name = Configuration.getAppName(),

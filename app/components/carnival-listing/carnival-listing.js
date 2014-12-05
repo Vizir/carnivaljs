@@ -1,4 +1,4 @@
-angular.module('carnival.directives')
+angular.module('carnival.components.listing', [])
 .directive('carnivalListing', function () {
   return {
     restrict: 'E',
@@ -10,6 +10,6 @@ angular.module('carnival.directives')
       identifier: '=',
       entityName: '='
     },
-    templateUrl: 'components/listing/listing.html'
+    templateUrl: 'components/carnival-listing/carnival-listing.html'
   };
 });

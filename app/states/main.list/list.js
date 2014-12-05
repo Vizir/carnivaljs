@@ -1,4 +1,4 @@
-angular.module('carnival.controllers')
+angular.module('carnival')
 .controller('ListController', function ($scope, $stateParams, $state, Configuration, EntityModel) {
 
   var entity = $scope.entity = {},

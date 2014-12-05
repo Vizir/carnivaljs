@@ -1,5 +1,5 @@
-angular.module('carnival.controllers')
-.controller('CreateController', function ($scope, $stateParams, Configuration, EntityModel) {
+angular.module('carnival')
+.controller('CreateController', function ($scope, $stateParams, $state, Configuration, EntityModel) {
 
   var entity = $scope.entity = {},
       entity_params = Configuration.getEntity($stateParams.entity);
@@ -14,21 +14,25 @@ angular.module('carnival.controllers')
 
   var init = function () {
     entity.model = new EntityModel(entity_params.name, entity_params.options);
+    entity.name = entity.model.name;
     entity.label = entity.model.label;
     entity.fields = [];
+    entity.data = {};
 
     buildFields();
   };
 
   var onSave = function () {
-    console.log('Save!');
+    entity.model.create(entity.data)
+    .success(function () {
+      $state.go('main.list', { entity: entity.name });
+    });
   };
 
   entity.action = {
     label: 'Create',
     click: onSave
   };
-
 
   init();
 

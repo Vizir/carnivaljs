@@ -1,4 +1,4 @@
-angular.module('carnival.directives')
+angular.module('carnival.components.belongstofield', [])
 .directive('carnivalBelongstoField', function () {
   return {
     restrict: 'E',

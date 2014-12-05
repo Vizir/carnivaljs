@@ -1,4 +1,4 @@
-angular.module('carnival.directives')
+angular.module('carnival.components.textfield', [])
 .directive('carnivalTextField', function () {
   return {
     restrict: 'E',

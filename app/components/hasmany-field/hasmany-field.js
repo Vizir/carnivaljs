@@ -1,4 +1,4 @@
-angular.module('carnival.directives')
+angular.module('carnival.components.hasmanyfield', [])
 .directive('carnivalHasmanyField', function () {
   return {
     restrict: 'E',

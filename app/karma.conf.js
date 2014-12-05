@@ -1,7 +1,7 @@
 module.exports = function(config) {
   config.set({
     basePath: '../',
-    frameworks: ['jasmine'],
+    frameworks: ['chai', 'mocha'],
     files: [
       // Carnival
       'bower_components/angular/angular.min.js',
@@ -22,11 +22,6 @@ module.exports = function(config) {
     logLevel: config.LOG_INFO,
     autoWatch: false,
     browsers: ['PhantomJS'],
-    singleRun: false,
-    plugins: [
-      'karma-phantomjs-launcher',
-      'karma-jasmine',
-      'karma-ng-html2js-preprocessor'
-    ]
+    singleRun: false
   });
 };

@@ -1,4 +1,4 @@
-angular.module('carnival.models')
+angular.module('carnival')
 
 .factory('EntityModel', function ($http, Configuration, HttpAdapter) {
 
@@ -98,11 +98,11 @@ angular.module('carnival.models')
     if (typeof HttpAdapter.create === 'function') {
       request = HttpAdapter.create(Configuration.getBaseApiUrl(), this.name, data);
     } else {
-      request.query = Configuration.getBaseApiUrl() + '/' + this.name + '/';
+      request.query = Configuration.getBaseApiUrl() + '/' + this.name;
       request.data = data;
       request.options = {};
     }
-    return $http.create(request.query, request.data, request.options);
+    return $http.post(request.query, request.data, request.options);
   };
 
   Entity.prototype.update = function (id, data) {

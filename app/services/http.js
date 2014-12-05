@@ -1,4 +1,4 @@
-angular.module('carnival.services')
+angular.module('carnival')
 
 .provider('HttpAdapter', function () {
 
