@@ -1,5 +1,5 @@
 angular.module('carnival.directives')
-.directive('carnivalDeleteBtn', function () {
+.directive('carnivalDeleteButton', function () {
   return {
     restrict: 'E',
     replace: true,
