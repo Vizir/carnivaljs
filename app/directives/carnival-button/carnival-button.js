@@ -1,13 +1,12 @@
 angular.module('carnival.directives')
-
-.directive('carnivalCreateBtn', function () {
+.directive('carnivalButton', function () {
   return {
     restrict: 'E',
     replace: true,
     scope: {
-      label: '@',
+      label: '=',
       style: '@',
-      onClick: '&'
+      onClick: '='
     },
     templateUrl: 'directives/carnival-button/carnival-button.html'
   };

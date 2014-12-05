@@ -5,7 +5,7 @@ angular.module('carnival.directives')
     replace: true,
     scope: {
       fields: '=',
-      action: '@'
+      action: '='
     },
     templateUrl: 'directives/carnival-form/carnival-form.html'
   };

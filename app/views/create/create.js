@@ -20,6 +20,16 @@ angular.module('carnival.controllers')
     buildFields();
   };
 
+  var onSave = function () {
+    console.log('Save!');
+  };
+  
+  entity.action = {
+    label: 'Create',
+    click: onSave
+  };
+
+
   init();
 
 });

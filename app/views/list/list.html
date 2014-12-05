@@ -3,7 +3,7 @@
     <h3>List of {{ entity.label }}</h3>
   </div>
   <div class="col-md-2" style="text-align:right">
-    <carnival-create-btn ng-if="entity.actions.create" entity-name="entity.name"></carnival-create-btn>
+    <carnival-button label="Create" style="success"></carnival-button>
   </div>
   <carnival-listing entity-name="entity.name" actions="entity.actions" identifier="entity.identifier" datas="entity.datas" fields="entity.fields"></carnival-listing>
 </div>
