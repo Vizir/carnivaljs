@@ -1,5 +1,5 @@
 angular.module('carnival.controllers')
-.controller('ListController', ['$scope', '$stateParams', '$state', 'Entity', 'EntityModel', function ($scope, $stateParams, $state, Entity, EntityModel) {
+.controller('ListController', function ($scope, $stateParams, $state, Entity, EntityModel) {
 
   var entity = $scope.entity = {},
       entity_params = Entity.getEntity($stateParams.entity);
@@ -11,7 +11,7 @@ angular.module('carnival.controllers')
   entity.fields = [];
 
   for (var i = entity.model.fields.length - 1; i >= 0; i -= 1) {
-    if (!(entity.model.fields[i].type === 'hasMany' || 
+    if (!(entity.model.fields[i].type === 'hasMany' ||
           entity.model.fields[i].type === 'belongsTo')) {
       if (entity.model.checkFieldView(entity.model.fields[i].name, 'index')) {
         entity.fields.unshift(entity.model.fields[i]);
@@ -29,9 +29,6 @@ angular.module('carnival.controllers')
   entity.model.getList()
   .success(function (data, status, headers, config) {
     entity.datas = data;
-  })
-  .error(function (data, status, headers, config) {
-    console.log(data);
   });
 
-}]);
+});

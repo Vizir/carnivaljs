@@ -1,5 +1,5 @@
 angular.module('carnival.controllers')
-.controller('ShowController', ['$scope', '$stateParams', 'Entity', 'EntityModel', function ($scope, $stateParams, Entity, EntityModel) {
+.controller('ShowController', function ($scope, $stateParams, Entity, EntityModel) {
 
   var entity = $scope.entity = {},
       entity_params = Entity.getEntity($stateParams.entity);
@@ -31,7 +31,7 @@ angular.module('carnival.controllers')
 
       var relation_params = Entity.getEntity(rel.name),
           relation = relations[relation_params.name] = {};
-      
+
       relation.model = new EntityModel(relation_params.name, relation_params.options);
       relation.endpoint = rel.endpoint;
       relation.name = relation.model.name;
@@ -52,9 +52,9 @@ angular.module('carnival.controllers')
       });
 
     });
-    
+
     entity.relations = relations;
 
   }
 
-}]);
+});

@@ -6,7 +6,7 @@ angular.module('carnival', [
   'carnival.directives',
   'carnival.controllers'
 ])
-.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+.config(function ($stateProvider, $urlRouterProvider) {
 
   $urlRouterProvider.otherwise('/');
   $stateProvider
@@ -36,7 +36,7 @@ angular.module('carnival', [
       controller: 'EditController'
     });
 
-}]);
+});
 
 angular.module('carnival.controllers', []);
 angular.module('carnival.services', []);
