@@ -19,11 +19,13 @@ angular.module('carnival.controllers')
     }
   }
 
+  var clickCreate = function () {
+    $state.go('main.create({ entity:' + entity.name + '})');
+  };
+
   entity.actions = {
-    create: entity.model.checkAction('create'),
-    edit: entity.model.checkAction('edit'),
-    show: entity.model.checkAction('show'),
-    delete: entity.model.checkAction('delete')
+    label: 'Create',
+    click: clickCreate
   };
 
   entity.model.getList()
