@@ -12,27 +12,27 @@ angular.module('carnival', [
   $stateProvider
     .state('main', {
       url: '/',
-      templateUrl: 'views/main/main.html',
+      templateUrl: 'states/main/main.html',
       controller: 'MainController'
     })
     .state('main.list', {
       url: 'list/:entity',
-      templateUrl: 'views/list/list.html',
+      templateUrl: 'states/main.list/list.html',
       controller: 'ListController'
     })
     .state('main.show', {
       url: 'show/:entity/:id',
-      templateUrl: 'views/show/show.html',
+      templateUrl: 'states/main.show/show.html',
       controller: 'ShowController'
     })
     .state('main.create', {
       url: 'create/:entity',
-      templateUrl: 'views/create/create.html',
+      templateUrl: 'states/main.create/create.html',
       controller: 'CreateController'
     })
     .state('main.edit', {
       url: 'edit/:entity/:id',
-      templateUrl: 'views/edit/edit.html',
+      templateUrl: 'states/main.edit/edit.html',
       controller: 'EditController'
     });
 
