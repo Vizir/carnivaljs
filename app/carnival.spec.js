@@ -6,7 +6,7 @@ describe('Midway: Test Modules', function () {
         dependencies = module.requires;
 
     it('should be registered', function () {
-      expect(module).to.not.be.null();
+      expect(module).to.exist();
     });
 
     describe('Dependencies:', function () {
