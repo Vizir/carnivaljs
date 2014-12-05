@@ -5,8 +5,10 @@ angular.module('carnival.directives')
     restrict: 'E',
     replace: true,
     scope: {
-      entityName: '='
+      label: '@',
+      style: '@',
+      onClick: '&'
     },
-    templateUrl: 'directives/create-button/create-button.html'
+    templateUrl: 'directives/carnival-button/carnival-button.html'
   };
 });
