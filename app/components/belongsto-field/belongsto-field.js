@@ -1,11 +1,11 @@
 angular.module('carnival.directives')
-.directive('carnivalHasmanyField', function () {
+.directive('carnivalBelongstoField', function () {
   return {
     restrict: 'E',
     replace: true,
     scope: {
       relation: '='
     },
-    templateUrl: 'directives/hasmany-field/hasmany-field.html'
+    templateUrl: 'components/belongsto-field/belongsto-field.html'
   };
 });

@@ -1,9 +1,9 @@
 angular.module('carnival.controllers')
-.controller('MainController', function ($scope, Api, Entity, EntityModel) {
+.controller('MainController', function ($scope, Configuration, EntityModel) {
 
-  var app_name = $scope.app_name = Api.getAppName(),
+  var app_name = $scope.app_name = Configuration.getAppName(),
       menu_items = $scope.menu_items = [],
-      entities = Entity.getEntities();
+      entities = Configuration.getEntities();
 
   for (var i = 0, x = entities.length; i < x; i += 1) {
     menu_items.push({

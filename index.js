@@ -1,12 +1,12 @@
 var app = angular.module('exampleApp', ['carnival']);
 
-app.config(function (ApiProvider, EntityProvider, HttpAdapterProvider) {
+app.config(function (ConfigurationProvider, ConfigurationProvider, HttpAdapterProvider) {
 
-  ApiProvider.setAppName('Carnival Example');
+  ConfigurationProvider.setAppName('Carnival Example');
 
-  ApiProvider.setBaseApiUrl('http://private-614d1-carnivaljs.apiary-mock.com');
+  ConfigurationProvider.setBaseApiUrl('http://private-614d1-carnivaljs.apiary-mock.com');
 
-  EntityProvider.addEntity('posts', {
+  ConfigurationProvider.addEntity('posts', {
 
     // defaultField:{
     //   views: {
@@ -162,7 +162,7 @@ app.config(function (ApiProvider, EntityProvider, HttpAdapterProvider) {
     }
   });
 
-  EntityProvider.addEntity('comments', {
+  ConfigurationProvider.addEntity('comments', {
 
     label: 'Comments',
     identifier: 'id',
@@ -280,7 +280,7 @@ app.config(function (ApiProvider, EntityProvider, HttpAdapterProvider) {
     }
   });
 
-  EntityProvider.addEntity('tags', {
+  ConfigurationProvider.addEntity('tags', {
 
     label: 'Tags',
     identifier: 'id',

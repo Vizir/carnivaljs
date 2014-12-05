@@ -1,8 +1,8 @@
 angular.module('carnival.controllers')
-.controller('ListController', function ($scope, $stateParams, $state, Entity, EntityModel) {
+.controller('ListController', function ($scope, $stateParams, $state, Configuration, EntityModel) {
 
   var entity = $scope.entity = {},
-      entity_params = Entity.getEntity($stateParams.entity);
+      entity_params = Configuration.getEntity($stateParams.entity);
 
   var buildFields = function () {
     for (var i = entity.model.fields.length - 1; i >= 0; i -= 1) {

@@ -7,8 +7,8 @@ angular.module('carnival.directives')
       id: '=',
       entityName: '='
     },
-    templateUrl: 'directives/delete-button/delete-button.html',
-    controller: function ($scope, Entity, EntityModel, $state) {
+    templateUrl: 'components/delete-button/delete-button.html',
+    controller: function ($scope, Configuration, EntityModel, $state) {
 
       $scope.isDeleting = false;
 
@@ -21,7 +21,7 @@ angular.module('carnival.directives')
       };
 
       $scope.confirm = function () {
-        var entity_params = Entity.getEntity($scope.entityName),
+        var entity_params = Configuration.getEntity($scope.entityName),
             entity_model = new EntityModel(entity_params.name, entity_params.options);
         entity_model.delete($scope.id)
         .success(function () {
