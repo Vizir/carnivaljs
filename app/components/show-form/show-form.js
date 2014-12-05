@@ -1,4 +1,4 @@
-angular.module('carnival.directives')
+angular.module('carnival.components.showform', [])
 .directive('carnivalShowForm', function () {
   return {
     restrict: 'E',

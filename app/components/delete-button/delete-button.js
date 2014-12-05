@@ -1,4 +1,4 @@
-angular.module('carnival.directives')
+angular.module('carnival.components.delete-button', [])
 .directive('carnivalDeleteButton', function () {
   return {
     restrict: 'E',

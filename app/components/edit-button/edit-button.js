@@ -1,5 +1,5 @@
-angular.module('carnival.directives')
-.directive('carnivalEditBtn', function () {
+angular.module('carnival.components.edit-button', [])
+.directive('carnivalEditButton', function () {
   return {
     restrict: 'E',
     replace: true,

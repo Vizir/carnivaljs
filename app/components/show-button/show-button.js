@@ -1,5 +1,5 @@
-angular.module('carnival.directives')
-.directive('carnivalShowBtn', function () {
+angular.module('carnival.components.showbutton', [])
+.directive('carnivalShowButton', function () {
   return {
     restrict: 'E',
     replace: true,

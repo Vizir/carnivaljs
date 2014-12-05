@@ -1,10 +1,7 @@
 angular.module('carnival', [
   'templates-dist',
   'ui.router',
-  'carnival.models',
-  'carnival.services',
-  'carnival.directives',
-  'carnival.controllers',
+  'carnival.components',
   'gettext'
 ])
 .config(function ($stateProvider, $urlRouterProvider) {
@@ -42,11 +39,6 @@ angular.module('carnival', [
   gettextCatalog.currentLanguage = Configuration.getLanguage();
   gettextCatalog.debug = true;
 });
-
-angular.module('carnival.controllers', []);
-angular.module('carnival.services', []);
-angular.module('carnival.models', []);
-angular.module('carnival.directives', []);
 
 // Sample
 // http://[base_api_url]/:entity?sortField=title&sortDir=desc
