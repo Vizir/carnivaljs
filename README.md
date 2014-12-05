@@ -19,7 +19,7 @@ Install client dependencies
 
 Run the command
 
-  $ npm run start:watch
+    $ npm run start:watch
 
 
 Open the following url
