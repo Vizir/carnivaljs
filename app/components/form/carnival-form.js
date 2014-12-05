@@ -5,7 +5,8 @@ angular.module('carnival.components.form', [])
     replace: true,
     scope: {
       fields: '=',
-      action: '='
+      action: '=',
+      datas: '='
     },
     templateUrl: 'components/form/carnival-form.html'
   };
