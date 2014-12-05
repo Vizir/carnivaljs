@@ -86,7 +86,8 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-karma');
 
   grunt.registerTask('dev', ['connect', 'watch:dev']);
-  grunt.registerTask('test', ['jshint', 'karma:continuous']);
+  grunt.registerTask('test', ['jshint', 'karma:unit']);
+  grunt.registerTask('test:watch', ['jshint', 'karma:continuous']);
   grunt.registerTask('build', ['jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'uglify:dist', 'clean:tmp']);
 
 };
