@@ -15,9 +15,9 @@
         {{ data[field.name] }}
       </td>
       <td>
-        <carnival-show-btn ng-if="actions.show" entity-name="entityName" id="data[identifier]"></carnival-show-btn>
-        <carnival-edit-btn ng-if="actions.edit" size="'small'" entity-name="entityName" id="data[identifier]"></carnival-edit-btn>
-        <carnival-delete-btn ng-if="actions.delete" entity-name="entityName" id="data[identifier]"></carnival-delete-btn>
+        <carnival-button label="actions.show.label" style="primary" size="xs" ng-click="actions.show.click(data[identifier])"></carnival-button>
+        <carnival-button label="actions.edit.label" style="warning" size="xs" ng-click="actions.edit.click(data[identifier])"></carnival-button>
+        <carnival-button label="'Delete'" style="danger" size="xs"></carnival-button>
       </td>
     </tr>
   </tbody>
