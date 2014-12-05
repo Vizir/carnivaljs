@@ -8,8 +8,11 @@ module.exports = function (grunt) {
     },
 
     html2js: {
+      options: {
+        base: 'app'
+      },
       dist: {
-        src: ['app/**/*.html'],
+        src: 'app/**/*.html',
         dest: 'dist/tmp/templates.js'
       }
     },
