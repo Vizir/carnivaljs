@@ -1,28 +1,25 @@
 angular.module('carnival.controllers')
-.controller('CreateController', ['$scope', '$stateParams', '$state', 'Entity', 'SharedData', 'http', function ($scope, $stateParams, $state, Entity, SharedData, http) {
-    
-  var entity = Entity.getEntity($stateParams.entity);
-  var fields = entity.fields;
+.controller('CreateController', function ($scope, $stateParams, Entity, EntityModel) {  
 
-  $scope.entityName = entity.name;
-  $scope.entityLabel = entity.label;
-  $scope.entityFields = [];
-  $scope.form = {};
+  var entity = $scope.entity = {},
+      entity_params = Entity.getEntity($stateParams.entity);
 
-  fields.forEach(function (field) {
-    if (entity.checkFieldView(field.name, 'create')) {
-      $scope.entityFields.push(field);
+  var buildFields = function () {
+    for (var i = entity.model.fields.length - 1; i >= 0; i -= 1) {
+      if (entity.model.checkFieldView(entity.model.fields[i].name, 'create')) {
+        entity.fields.unshift(entity.model.fields[i]);
+      }
     }
-  });
+  };
+  
+  var init = function () {
+    entity.model = new EntityModel(entity_params.name, entity_params.options);
+    entity.label = entity.model.label;
+    entity.fields = [];
 
-  $scope.save = function () {
-    var values = angular.copy($scope.form);
-    http.post(entity, values).then(function () {
-      SharedData.notifications.push({ message: 'Success on create!', type: 'success' });
-      $state.go('main.list', { entity: entity.name }, {reload: true});
-    }).catch(function (data) {
-      SharedData.notifications.push({ message: data.error.message, type: 'error' });
-    });
+    buildFields();
   };
 
-}]);
+  init();
+
+});
