@@ -2,6 +2,7 @@ angular.module('carnival').provider('Configuration', function() {
 
   var appName = null;
   var baseApiUrl = null;
+  var appLanguage = 'en';
   var entities = [];
 
   return {
@@ -12,6 +13,10 @@ angular.module('carnival').provider('Configuration', function() {
 
     setAppName: function (name) {
       appName = name;
+    },
+
+    setLanguage: function (lang) {
+      appLanguage = lang;
     },
 
     addEntity: function (entityName, entityOptions) {
@@ -27,6 +32,10 @@ angular.module('carnival').provider('Configuration', function() {
 
         getAppName: function () {
           return appName;
+        },
+
+        getLanguage: function () {
+          return appLanguage;
         },
 
         getEntity: function (entityName) {
