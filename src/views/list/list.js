@@ -13,7 +13,7 @@ angular.module('carnival.controllers')
   for (var i = entity.model.fields.length - 1; i >= 0; i -= 1) {
     if (!(entity.model.fields[i].type === 'hasMany' || 
           entity.model.fields[i].type === 'belongsTo')) {
-      if (entity.model.checkFieldView(entity.model.fields[i].name, 'list')) {
+      if (entity.model.checkFieldView(entity.model.fields[i].name, 'index')) {
         entity.fields.unshift(entity.model.fields[i]);
       }
     }
