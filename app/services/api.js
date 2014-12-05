@@ -1,9 +1,10 @@
 angular.module('carnival.services')
 
 .provider('Api', function () {
-  
+
   var appName = null;
   var baseApiUrl = null;
+  var appLanguage = 'en';
 
   return {
 
@@ -16,6 +17,10 @@ angular.module('carnival.services')
       appName = name;
     },
 
+    setLanguage: function (lang) {
+      appLanguage = lang;
+    },
+
     $get: function () {
       return {
 
@@ -25,6 +30,10 @@ angular.module('carnival.services')
 
         getAppName: function () {
           return appName;
+        },
+
+        getLanguage: function () {
+          return appLanguage;
         }
 
       };

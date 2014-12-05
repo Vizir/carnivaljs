@@ -6,6 +6,8 @@ app.config(function (ApiProvider, EntityProvider, HttpAdapterProvider) {
 
   ApiProvider.setBaseApiUrl('http://private-614d1-carnivaljs.apiary-mock.com');
 
+  ApiProvider.setLanguage('en');
+
   EntityProvider.addEntity('posts', {
 
     // defaultField:{

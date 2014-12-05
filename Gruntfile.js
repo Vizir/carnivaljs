@@ -40,7 +40,8 @@ module.exports = function (grunt) {
               '!app/**/*.spec.js',
               '!app/karma.js',
               'dist/tmp/*.js',
-              'bower_components/angular-ui-router/release/angular-ui-router.js'
+              'bower_components/angular-ui-router/release/angular-ui-router.js',
+              'bower_components/angular-gettext/dist/angular-gettext.js'
         ],
         dest: 'dist/carnival.js'
       }
@@ -90,6 +91,22 @@ module.exports = function (grunt) {
       },
     },
 
+    nggettext_extract: {
+      pot: {
+        files: {
+          'app/locales/template.pot': ['**/*.html']
+        }
+      },
+    },
+
+    nggettext_compile: {
+      all: {
+        files: {
+          'dist/tmp/translations.js': ['app/locales/*.po']
+        }
+      },
+    },
+
   });
 
   grunt.loadNpmTasks('grunt-contrib-watch');
@@ -102,10 +119,11 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-html2js');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-ng-annotate');
+  grunt.loadNpmTasks('grunt-angular-gettext');
 
   grunt.registerTask('dev', ['connect', 'watch:dev']);
   grunt.registerTask('test', ['jshint', 'karma:unit']);
   grunt.registerTask('test:watch', ['jshint', 'karma:continuous']);
-  grunt.registerTask('build', ['jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'ngAnnotate:dist', 'uglify:dist', 'clean:tmp']);
+  grunt.registerTask('build', ['jshint', 'karma:unit', 'nggettext_extract', 'nggettext_compile', 'html2js:dist', 'concat:dist', 'ngAnnotate:dist', 'uglify:dist', 'clean:tmp']);
 
 };

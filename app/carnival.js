@@ -4,7 +4,8 @@ angular.module('carnival', [
   'carnival.models',
   'carnival.services',
   'carnival.directives',
-  'carnival.controllers'
+  'carnival.controllers',
+  'gettext'
 ])
 .config(function ($stateProvider, $urlRouterProvider) {
 
@@ -36,6 +37,10 @@ angular.module('carnival', [
       controller: 'EditController'
     });
 
+})
+.run(function (gettextCatalog, Api){
+  gettextCatalog.currentLanguage = Api.getLanguage();
+  gettextCatalog.debug = true;
 });
 
 angular.module('carnival.controllers', []);
