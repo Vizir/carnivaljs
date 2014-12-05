@@ -5,14 +5,26 @@
 Install dependencies
 
 
-    npm install
+    $ npm install
 
 
 Install client dependencies
 
 
-    bower install
+    $ bower install
 
+
+## Run the project
+
+
+Run the command
+
+  $ npm run start:watch
+
+
+Open the following url
+
+    http://localhost:3010/
 
 ## Grunt tasks
 
