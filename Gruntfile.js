@@ -71,7 +71,18 @@ module.exports = function (grunt) {
           port: 3010
         }
       }
-    }
+    },
+
+    ngAnnotate: {
+      options: {
+        // Task-specific options go here.
+      },
+      dist: {
+        files: {
+          'dist/carnival.js': ['dist/carnival.js']
+        }
+      },
+    },
 
   });
 
@@ -84,10 +95,11 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-html2js');
   grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-ng-annotate');
 
   grunt.registerTask('dev', ['connect', 'watch:dev']);
   grunt.registerTask('test', ['jshint', 'karma:unit']);
   grunt.registerTask('test:watch', ['jshint', 'karma:continuous']);
-  grunt.registerTask('build', ['jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'uglify:dist', 'clean:tmp']);
+  grunt.registerTask('build', ['jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'ngAnnotate:dist', 'uglify:dist', 'clean:tmp']);
 
 };

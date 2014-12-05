@@ -1,13 +1,13 @@
 angular.module('carnival.models')
 
-.factory('EntityModel', ['$http', 'Api', 'HttpAdapter', function ($http, Api, HttpAdapter) {
+.factory('EntityModel', function ($http, Api, HttpAdapter) {
 
   var buildFields = function (fields, that) {
     var _fields = [],
         _relations = [];
 
     Object.keys(fields).forEach(function (field_name) {
-      
+
       _fields.push({
         name:  field_name,
         label: fields[field_name].label,
@@ -46,11 +46,9 @@ angular.module('carnival.models')
   Entity.prototype.checkFieldView = function (name, view) {
     for (var i = 0, x = this.fields.length; i < x; i += 1) {
       if (this.fields[i].name === name) {
-        console.log(view);
-        console.log(this.fields[i].views);
         if (this.fields[i].views[view].enable) {
           return true;
-        } 
+        }
       }
     }
     return false;
@@ -60,7 +58,7 @@ angular.module('carnival.models')
     return this.actions.indexOf(action) >= 0 ? true : false;
   };
 
-  // http 
+  // http
 
   Entity.prototype.getList = function () {
     var request = {};
@@ -87,7 +85,6 @@ angular.module('carnival.models')
   Entity.prototype.delete = function (id) {
     var request = {};
     if (typeof HttpAdapter.delete === 'function') {
-      console.log('fooo');
       request = HttpAdapter.delete(Api.getBaseApiUrl(), this.name, id);
     } else {
       request.query = Api.getBaseApiUrl() + '/' + this.name + '/' + id;
@@ -132,4 +129,4 @@ angular.module('carnival.models')
 
   return Entity;
 
-}]);
+});

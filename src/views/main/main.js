@@ -1,5 +1,5 @@
 angular.module('carnival.controllers')
-.controller('MainController', ['$scope', 'Api', 'Entity', 'EntityModel', function ($scope, Api, Entity, EntityModel) {
+.controller('MainController', function ($scope, Api, Entity, EntityModel) {
 
   var app_name = $scope.app_name = Api.getAppName(),
       menu_items = $scope.menu_items = [],
@@ -12,4 +12,4 @@ angular.module('carnival.controllers')
     });
   }
 
-}]);
+});

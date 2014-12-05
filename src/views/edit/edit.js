@@ -1,17 +1,17 @@
 angular.module('carnival.controllers')
-.controller('EditController', ['$scope', '$stateParams', '$state', 'Entity', 'SharedData', 'http', function ($scope, $stateParams, $state, Entity, SharedData, http) {
+.controller('EditController', function ($scope, $stateParams, $state, Entity, SharedData, http) {
 
   var entity = Entity.getEntity($stateParams.entity);
   var fields = entity.fields;
   var relations = entity.relations;
-  
+
   var id = $stateParams.id;
-  
+
   $scope.entityName = entity.name;
   $scope.entityLabel = entity.label;
   $scope.identifier = entity.identifier;
   $scope.entityFields = [];
-  
+
   $scope.form = {};
 
   $scope.save = function () {
@@ -70,11 +70,11 @@ angular.module('carnival.controllers')
       });
 
     });
-    
+
     $scope.relationsFields = relationsFields;
     $scope.relationsDatas = relationsDatas;
     $scope.relationSelDatas = relationSelDatas;
 
   }
 
-}]);
+});

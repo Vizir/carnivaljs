@@ -1,6 +1,6 @@
 angular.module('carnival.controllers')
-.controller('CreateController', ['$scope', '$stateParams', '$state', 'Entity', 'SharedData', 'http', function ($scope, $stateParams, $state, Entity, SharedData, http) {
-    
+.controller('CreateController', function ($scope, $stateParams, $state, Entity, SharedData, http) {
+
   var entity = Entity.getEntity($stateParams.entity);
   var fields = entity.fields;
 
@@ -25,4 +25,4 @@ angular.module('carnival.controllers')
     });
   };
 
-}]);
+});
