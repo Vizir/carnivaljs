@@ -64,7 +64,7 @@ module.exports = function (grunt) {
     watch: {
       dev: {
         files: ['Gruntfile.js', '!app/**/*.spec.js', 'app/**/*.js', 'app/**/*.html'],
-        tasks: ['jshint', 'html2js:dist', 'concat:dist', 'clean:tmp']
+        tasks: ['jshint', 'nggettext_extract', 'nggettext_compile', 'html2js:dist', 'concat:dist', 'clean:tmp']
       },
       options: {
         atBegin: true
@@ -94,15 +94,18 @@ module.exports = function (grunt) {
     nggettext_extract: {
       pot: {
         files: {
-          'app/locales/template.pot': ['**/*.html']
+          'locales/template.pot': ['app/**/*.html']
         }
       },
     },
 
     nggettext_compile: {
       all: {
+        options: {
+          module: 'carnival'
+        },
         files: {
-          'dist/tmp/translations.js': ['app/locales/*.po']
+          'dist/tmp/translations.js': ['locales/*.po']
         }
       },
     },

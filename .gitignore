@@ -5,5 +5,5 @@ tmp
 npm-debug.log
 .DS_Store
 .env
-app/locales/*.mo
-app/locales/*.pot
+locales/*.mo
+locales/*.pot
