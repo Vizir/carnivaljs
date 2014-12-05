@@ -3,6 +3,12 @@ module.exports = function(config) {
     basePath: '../',
     frameworks: ['jasmine'],
     files: [
+      // Carnival
+      'bower_components/angular/angular.min.js',
+      'bower_components/angular-ui-router/release/angular-ui-router.min.js',
+      'bower_components/angular-mocks/angular-mocks.js',
+      'src/carnival.js',
+      // Tests
       'tests/**/*.js',
       'tests/*.js'
     ],

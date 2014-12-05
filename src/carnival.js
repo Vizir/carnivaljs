@@ -42,3 +42,9 @@ angular.module('carnival.controllers', []);
 angular.module('carnival.services', []);
 angular.module('carnival.models', []);
 angular.module('carnival.directives', []);
+
+// Sample
+// http://[base_api_url]/:entity?sortField=title&sortDir=desc
+// http://[base_api_url]/:entity?filter[status]=2&filter[title]=example
+// http://[base_api_url]/:entity?offset=1&limit=2
+// http://[base_api_url]/:entity?sortField=title&sortDir=desc

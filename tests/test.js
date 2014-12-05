@@ -1,4 +1,4 @@
-describe('Teste de teste', function () {
+describe('Testing...', function () {
   
   it('do something!', function () {
 

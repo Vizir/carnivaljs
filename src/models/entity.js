@@ -58,6 +58,8 @@ angular.module('carnival.models')
     return this.actions.indexOf(action) >= 0 ? true : false;
   };
 
+  // http 
+
   Entity.prototype.getList = function () {
     var request = {};
     if (typeof HttpAdapter.getList === 'function') {
