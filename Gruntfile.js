@@ -31,12 +31,14 @@ module.exports = function (grunt) {
     },
 
     concat: {
+      options: {
+        banner: '/* CARNIVAL.JS */\n(function () {\n"use strict";\n',
+        footer: '})();'
+      },
       dist: {
-        src: ['grunt/intro.js',
-              'app/**/*.js',
+        src: ['app/**/*.js',
               '!app/**/*.spec.js',
               'dist/tmp/*.js',
-              'grunt/outro.js',
               'bower_components/angular-ui-router/release/angular-ui-router.js'
         ],
         dest: 'dist/carnival.js'
