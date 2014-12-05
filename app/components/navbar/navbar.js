@@ -1,4 +1,4 @@
-angular.module('carnival.directives')
+angular.module('carnival.components.navbar', [])
 .directive('carnivalNavbar', function () {
   return {
     restrict: 'E',

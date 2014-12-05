@@ -1,4 +1,4 @@
-angular.module('carnival.directives')
+angular.module('carnival.components.form', [])
 .directive('carnivalForm', function () {
   return {
     restrict: 'E',
@@ -7,6 +7,6 @@ angular.module('carnival.directives')
       fields: '=',
       action: '='
     },
-    templateUrl: 'components/carnival-form/carnival-form.html'
+    templateUrl: 'components/form/carnival-form.html'
   };
 });

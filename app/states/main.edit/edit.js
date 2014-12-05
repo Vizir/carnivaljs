@@ -1,4 +1,4 @@
-angular.module('carnival.controllers')
+angular.module('carnival')
 .controller('EditController', function ($scope, $stateParams, $state, Configuration, SharedData, http) {
 
   var entity = Configuration.getEntity($stateParams.entity);

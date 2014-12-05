@@ -1,4 +1,4 @@
-angular.module('carnival.directives')
+angular.module('carnival.components.button', [])
 .directive('carnivalButton', function () {
   return {
     restrict: 'E',
@@ -8,6 +8,6 @@ angular.module('carnival.directives')
       style: '@',
       size: '@'
     },
-    templateUrl: 'components/carnival-button/carnival-button.html'
+    templateUrl: 'components/button/carnival-button.html'
   };
 });

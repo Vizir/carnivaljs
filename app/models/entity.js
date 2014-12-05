@@ -1,4 +1,4 @@
-angular.module('carnival.models')
+angular.module('carnival')
 
 .factory('EntityModel', function ($http, Configuration, HttpAdapter) {
 

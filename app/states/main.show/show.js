@@ -1,4 +1,4 @@
-angular.module('carnival.controllers')
+angular.module('carnival')
 .controller('ShowController', function ($scope, $stateParams, Configuration, EntityModel) {
 
   var entity = $scope.entity = {},
