@@ -1,20 +1,34 @@
 # Carnival JS
 
+## Installation
+
+Install dependencies
+
+
+    npm install
+
+
+Install client dependencies
+
+
+    bower install
+
+
 ## Grunt tasks
 
 run server and file watcher
 
 
-    $ grunt dev
+    $ npm run start:watch
 
 
 run tests
 
 
-    $ grunt test
+    $ npm test:watch
 
 
 create carnival.js and carnival.min.js on 'dist' folder
 
 
-    $ grunt build
+    $ npm run build
