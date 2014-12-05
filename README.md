@@ -37,6 +37,12 @@ run server and file watcher
 run tests
 
 
+    $ npm test
+
+
+run tests and file watcher
+
+
     $ npm test:watch
 
 
