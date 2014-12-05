@@ -4,7 +4,7 @@ app.config(function (ApiProvider, EntityProvider, HttpAdapterProvider) {
 
   ApiProvider.setAppName('Carnival Example');
 
-  ApiProvider.setBaseApiUrl('http://private-baead-carnivaljs.apiary-mock.com');
+  ApiProvider.setBaseApiUrl('http://private-614d1-carnivaljs.apiary-mock.com');
 
   EntityProvider.addEntity('posts', {
 
