@@ -38,8 +38,8 @@ angular.module('carnival', [
     });
 
 })
-.run(function (gettextCatalog, Api){
-  gettextCatalog.currentLanguage = Api.getLanguage();
+.run(function (gettextCatalog, Configuration){
+  gettextCatalog.currentLanguage = Configuration.getLanguage();
   gettextCatalog.debug = true;
 });
 

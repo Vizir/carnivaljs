@@ -11,6 +11,6 @@ angular.module('carnival.directives')
       relations: '=',
       editable: '='
     },
-    templateUrl: 'directives/show-form/show-form.html'
+    templateUrl: 'components/show-form/show-form.html'
   };
 });

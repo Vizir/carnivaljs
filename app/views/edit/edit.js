@@ -1,7 +1,7 @@
 angular.module('carnival.controllers')
-.controller('EditController', function ($scope, $stateParams, $state, Entity, SharedData, http) {
+.controller('EditController', function ($scope, $stateParams, $state, Configuration, SharedData, http) {
 
-  var entity = Entity.getEntity($stateParams.entity);
+  var entity = Configuration.getEntity($stateParams.entity);
   var fields = entity.fields;
   var relations = entity.relations;
 
@@ -45,7 +45,7 @@ angular.module('carnival.controllers')
 
     relations.forEach(function (relation) {
 
-      var relationEntity = Entity.getEntity(relation.name);
+      var relationEntity = Configuration.getEntity(relation.name);
       $scope.relationIdentifier = relationEntity.identifier;
 
       relationsFields[relationEntity.name] = angular.copy(relationEntity.fields);

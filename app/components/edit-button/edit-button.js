@@ -1,12 +1,13 @@
 angular.module('carnival.directives')
-.directive('carnivalShowBtn', function () {
+.directive('carnivalEditBtn', function () {
   return {
     restrict: 'E',
     replace: true,
     scope: {
       entityName: '=',
-      id: '='
+      id: '=',
+      size: '='
     },
-    templateUrl: 'directives/show-button/show-button.html'
+    templateUrl: 'components/edit-button/edit-button.html'
   };
 });
