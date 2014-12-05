@@ -19,7 +19,7 @@ module.exports = function (grunt) {
 
     karma: {
       options: {
-        configFile: 'app/karma.js'
+        configFile: 'app/karma.conf.js'
       },
       unit: {
         singleRun: true
@@ -38,7 +38,7 @@ module.exports = function (grunt) {
       dist: {
         src: ['app/**/*.js',
               '!app/**/*.spec.js',
-              '!app/karma.js',
+              '!app/karma.conf.js',
               'dist/tmp/*.js',
               'bower_components/angular-ui-router/release/angular-ui-router.js',
               'bower_components/angular-gettext/dist/angular-gettext.js'
