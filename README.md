@@ -1,6 +1,20 @@
-#Carnival JS
+# Carnival JS
 
 ## Grunt tasks
-- "grunt dev" (run server and file watcher)
-- "grunt test" (run tests)
-- "grunt build" (create carnival.js and carnival.min.js on 'dist' folder)
+
+run server and file watcher
+
+
+    $ grunt dev
+
+
+run tests
+
+
+    $ grunt test
+
+
+create carnival.js and carnival.min.js on 'dist' folder
+
+
+    $ grunt build
