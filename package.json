@@ -7,7 +7,8 @@
     "start:watch": "grunt dev",
     "test": "grunt test:unit",
     "test:watch": "grunt test:watch",
-    "build": "grunt build"
+    "build": "grunt build",
+    "bower:install": "bower install"
   },
   "author": "",
   "license": "MIT",
@@ -15,6 +16,7 @@
     "express": "^4.10.4"
   },
   "devDependencies": {
+    "bower": "^1.3.12",
     "grunt": "^0.4.5",
     "grunt-cli": "^0.1.13",
     "grunt-contrib-clean": "^0.6.0",
