@@ -1,8 +1,8 @@
 angular.module('carnival.controllers')
-.controller('ListController', function ($scope, $stateParams, $state, Entity, EntityModel) {
+.controller('ListController', function ($scope, $stateParams, $state, Configuration, EntityModel) {
 
   var entity = $scope.entity = {},
-      entity_params = Entity.getEntity($stateParams.entity);
+      entity_params = Configuration.getEntity($stateParams.entity);
 
   entity.model = new EntityModel(entity_params.name, entity_params.options);
   entity.name = entity.model.name;

@@ -7,6 +7,6 @@ angular.module('carnival.directives')
       fields: '=',
       action: '='
     },
-    templateUrl: 'directives/carnival-form/carnival-form.html'
+    templateUrl: 'components/carnival-form/carnival-form.html'
   };
 });

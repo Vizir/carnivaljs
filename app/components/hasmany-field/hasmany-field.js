@@ -6,6 +6,6 @@ angular.module('carnival.directives')
     scope: {
       relation: '='
     },
-    templateUrl: 'directives/hasmany-field/hasmany-field.html'
+    templateUrl: 'components/hasmany-field/hasmany-field.html'
   };
 });

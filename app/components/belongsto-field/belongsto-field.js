@@ -6,6 +6,6 @@ angular.module('carnival.directives')
     scope: {
       relation: '='
     },
-    templateUrl: 'directives/belongsto-field/belongsto-field.html'
+    templateUrl: 'components/belongsto-field/belongsto-field.html'
   };
 });

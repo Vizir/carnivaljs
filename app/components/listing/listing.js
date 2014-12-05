@@ -10,6 +10,6 @@ angular.module('carnival.directives')
       identifier: '=',
       entityName: '='
     },
-    templateUrl: 'directives/listing/listing.html'
+    templateUrl: 'components/listing/listing.html'
   };
 });

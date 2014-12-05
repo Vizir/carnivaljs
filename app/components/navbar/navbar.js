@@ -7,6 +7,6 @@ angular.module('carnival.directives')
       appName: '=',
       menuItems: '='
     },
-    templateUrl: 'directives/navbar/navbar.html'
+    templateUrl: 'components/navbar/navbar.html'
   };
 });

@@ -1,8 +1,8 @@
 angular.module('carnival.controllers')
-.controller('ShowController', function ($scope, $stateParams, Entity, EntityModel) {
+.controller('ShowController', function ($scope, $stateParams, Configuration, EntityModel) {
 
   var entity = $scope.entity = {},
-      entity_params = Entity.getEntity($stateParams.entity);
+      entity_params = Configuration.getEntity($stateParams.entity);
 
   entity.model = new EntityModel(entity_params.name, entity_params.options);
 
@@ -29,7 +29,7 @@ angular.module('carnival.controllers')
 
     entity.model.relations.forEach(function (rel) {
 
-      var relation_params = Entity.getEntity(rel.name),
+      var relation_params = Configuration.getEntity(rel.name),
           relation = relations[relation_params.name] = {};
 
       relation.model = new EntityModel(relation_params.name, relation_params.options);

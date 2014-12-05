@@ -8,6 +8,6 @@ angular.module('carnival.directives')
       id: '=',
       size: '='
     },
-    templateUrl: 'directives/edit-button/edit-button.html'
+    templateUrl: 'components/edit-button/edit-button.html'
   };
 });

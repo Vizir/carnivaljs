@@ -7,6 +7,6 @@ angular.module('carnival.directives')
       entityName: '=',
       id: '='
     },
-    templateUrl: 'directives/show-button/show-button.html'
+    templateUrl: 'components/show-button/show-button.html'
   };
 });

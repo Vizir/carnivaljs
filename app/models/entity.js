@@ -1,6 +1,6 @@
 angular.module('carnival.models')
 
-.factory('EntityModel', function ($http, Api, HttpAdapter) {
+.factory('EntityModel', function ($http, Configuration, HttpAdapter) {
 
   var buildFields = function (fields, that) {
     var _fields = [],
@@ -63,9 +63,9 @@ angular.module('carnival.models')
   Entity.prototype.getList = function () {
     var request = {};
     if (typeof HttpAdapter.getList === 'function') {
-      request = HttpAdapter.getList(Api.getBaseApiUrl(), this.name);
+      request = HttpAdapter.getList(Configuration.getBaseApiUrl(), this.name);
     } else {
-      request.query = Api.getBaseApiUrl() + '/' + this.name;
+      request.query = Configuration.getBaseApiUrl() + '/' + this.name;
       request.options = {};
     }
     return $http.get(request.query, request.options);
@@ -74,9 +74,9 @@ angular.module('carnival.models')
   Entity.prototype.getOne = function (id) {
     var request = {};
     if (typeof HttpAdapter.getOne === 'function') {
-      request = HttpAdapter.getOne(Api.getBaseApiUrl(), this.name, id);
+      request = HttpAdapter.getOne(Configuration.getBaseApiUrl(), this.name, id);
     } else {
-      request.query = Api.getBaseApiUrl() + '/' + this.name + '/' + id;
+      request.query = Configuration.getBaseApiUrl() + '/' + this.name + '/' + id;
       request.options = {};
     }
     return $http.get(request.query, request.options);
@@ -85,9 +85,9 @@ angular.module('carnival.models')
   Entity.prototype.delete = function (id) {
     var request = {};
     if (typeof HttpAdapter.delete === 'function') {
-      request = HttpAdapter.delete(Api.getBaseApiUrl(), this.name, id);
+      request = HttpAdapter.delete(Configuration.getBaseApiUrl(), this.name, id);
     } else {
-      request.query = Api.getBaseApiUrl() + '/' + this.name + '/' + id;
+      request.query = Configuration.getBaseApiUrl() + '/' + this.name + '/' + id;
       request.options = {};
     }
     return $http.delete(request.query, request.options);
@@ -96,9 +96,9 @@ angular.module('carnival.models')
   Entity.prototype.create = function (data) {
     var request = {};
     if (typeof HttpAdapter.create === 'function') {
-      request = HttpAdapter.create(Api.getBaseApiUrl(), this.name, data);
+      request = HttpAdapter.create(Configuration.getBaseApiUrl(), this.name, data);
     } else {
-      request.query = Api.getBaseApiUrl() + '/' + this.name + '/';
+      request.query = Configuration.getBaseApiUrl() + '/' + this.name + '/';
       request.data = data;
       request.options = {};
     }
@@ -108,9 +108,9 @@ angular.module('carnival.models')
   Entity.prototype.update = function (id, data) {
     var request = {};
     if (typeof HttpAdapter.update === 'function') {
-      request = HttpAdapter.update(Api.getBaseApiUrl(), this.name, id, data);
+      request = HttpAdapter.update(Configuration.getBaseApiUrl(), this.name, id, data);
     } else {
-      request.query = Api.getBaseApiUrl() + '/' + this.name + '/' + id;
+      request.query = Configuration.getBaseApiUrl() + '/' + this.name + '/' + id;
       request.data = data;
       request.options = {};
     }
@@ -120,9 +120,9 @@ angular.module('carnival.models')
   Entity.prototype.getRelList = function (id, rel) {
     var request = {};
     if (typeof HttpAdapter.getRelList === 'function') {
-      request = HttpAdapter.getRelList(Api.getBaseApiUrl(), this.name, id, rel);
+      request = HttpAdapter.getRelList(Configuration.getBaseApiUrl(), this.name, id, rel);
     } else {
-      request.query = Api.getBaseApiUrl() + '/' + this.name + '/' + id + '/' + rel;
+      request.query = Configuration.getBaseApiUrl() + '/' + this.name + '/' + id + '/' + rel;
     }
     return $http.get(request.query);
   };
