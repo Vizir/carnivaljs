@@ -46,8 +46,6 @@ angular.module('carnival.models')
   Entity.prototype.checkFieldView = function (name, view) {
     for (var i = 0, x = this.fields.length; i < x; i += 1) {
       if (this.fields[i].name === name) {
-        console.log(view);
-        console.log(this.fields[i].views);
         if (this.fields[i].views[view].enable) {
           return true;
         } 
