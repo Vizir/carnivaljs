@@ -4,12 +4,12 @@ module.exports = function (grunt) {
     pkg: grunt.file.readJSON('package.json'),
 
     jshint: {
-      all: ['Gruntfile.js', 'app/*.js', 'app/**/*.js']
+      all: ['Gruntfile.js', '!app/**/*.spec.js', 'app/**/*.js']
     },
 
     html2js: {
       dist: {
-        src: ['app/*.html' ,'app/**/*.html'],
+        src: ['app/**/*.html'],
         dest: 'dist/tmp/templates.js'
       }
     },
@@ -30,8 +30,8 @@ module.exports = function (grunt) {
     concat: {
       dist: {
         src: ['grunt/intro.js',
-              'app/*.js',
               'app/**/*.js',
+              '!app/**/*.spec.js',
               'dist/tmp/*.js',
               'grunt/outro.js',
               'bower_components/angular-ui-router/release/angular-ui-router.js'
@@ -56,7 +56,7 @@ module.exports = function (grunt) {
 
     watch: {
       dev: {
-        files: ['Gruntfile.js', 'app/*.js', 'app/**/*.js', 'app/**/*.html', 'app/*.html'],
+        files: ['Gruntfile.js', '!app/**/*.spec.js', 'app/**/*.js', 'app/**/*.html'],
         tasks: ['jshint', 'html2js:dist', 'concat:dist', 'clean:tmp']
       },
       options: {
