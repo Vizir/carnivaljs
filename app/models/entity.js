@@ -103,7 +103,7 @@ angular.module('carnival')
       request.data = data;
       request.options = {};
     }
-    return $http.update(request.query, request.data = data, request.options);
+    return $http.put(request.query, request.data = data, request.options);
   };
 
   Entity.prototype.getRelList = function (id, rel) {
