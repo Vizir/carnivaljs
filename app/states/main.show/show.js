@@ -22,7 +22,7 @@ angular.module('carnival')
   init();
 
   var onEdit = function () {
-    $state.go('main.edit', { entity: entity.name, id: $stateParams.id });
+    $state.go('main.edit', { entity: entity.model.name, id: $stateParams.id });
   };
 
   entity.action = {
