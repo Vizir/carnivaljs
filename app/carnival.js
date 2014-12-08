@@ -1,5 +1,5 @@
 angular.module('carnival', [
-  'templates-dist',
+  'carnival.templates',
   'ui.router',
   'carnival.components',
   'gettext'

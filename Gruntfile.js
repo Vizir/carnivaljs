@@ -9,7 +9,8 @@ module.exports = function (grunt) {
 
     html2js: {
       options: {
-        base: 'app'
+        base: 'app',
+        module: 'carnival.templates'
       },
       dist: {
         src: 'app/**/*.html',
