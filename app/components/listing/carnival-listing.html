@@ -17,7 +17,7 @@
       <td>
         <carnival-button label="actions.show.label" style="primary" size="xs" ng-click="actions.show.click(data[identifier])"></carnival-button>
         <carnival-button label="actions.edit.label" style="warning" size="xs" ng-click="actions.edit.click(data[identifier])"></carnival-button>
-        <carnival-delete-button></carnival-delete-button>
+        <carnival-delete-button item-id="data[identifier]" action="actions.delete.click"></carnival-button>
       </td>
     </tr>
   </tbody>

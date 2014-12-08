@@ -15,20 +15,9 @@ angular.module('carnival')
         views: fields[field_name].views
       });
 
-      // if (fields[field_name].type === 'hasMany' || fields[field_name].type === 'belongsTo') {
-      //   _relations.push({
-      //     name: field_name,
-      //     label: fields[field_name].label,
-      //     type: fields[field_name].type,
-      //     foreignKey: fields[field_name].foreignKey,
-      //     endpoint: fields[field_name].endpoint
-      //   });
-      // }
-
     });
 
     that.fields = _fields;
-    // that.relations = _relations;
   };
 
   function Entity (name, options) {
@@ -114,7 +103,7 @@ angular.module('carnival')
       request.data = data;
       request.options = {};
     }
-    return $http.update(request.query, request.data = data, request.options);
+    return $http.put(request.query, request.data = data, request.options);
   };
 
   Entity.prototype.getRelList = function (id, rel) {

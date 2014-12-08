@@ -8,7 +8,7 @@ angular.module('carnival')
   for (var i = 0, x = entities.length; i < x; i += 1) {
     menu_items.push({
       name: entities[i].name,
-      label: entities[i].options.label
+      label: entities[i].label
     });
   }
 

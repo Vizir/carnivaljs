@@ -4,8 +4,8 @@ angular.module('carnival.components.delete-button', [])
     restrict: 'E',
     replace: true,
     scope: {
-      id: '=',
-      entityName: '='
+      action: '=',
+      itemId: '='
     },
     templateUrl: 'components/delete-button/delete-button.html',
     controller: function ($scope, Configuration, EntityModel, $state) {
@@ -21,12 +21,7 @@ angular.module('carnival.components.delete-button', [])
       };
 
       $scope.confirm = function () {
-        var entity_params = Configuration.getEntity($scope.entityName),
-            entity_model = new EntityModel(entity_params.name, entity_params.options);
-        entity_model.delete($scope.id)
-        .success(function () {
-          $state.reload();
-        });
+        $scope.action($scope.itemId);
       };
     }
   };
