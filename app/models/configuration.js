@@ -26,6 +26,8 @@ angular.module('carnival').provider('Configuration', function() {
     $get: function () {
       return {
 
+        entities: entities,
+
         getBaseApiUrl: function () {
           return baseApiUrl;
         },

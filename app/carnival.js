@@ -35,9 +35,14 @@ angular.module('carnival', [
     });
 
 })
-.run(function (gettextCatalog, Configuration){
+.run(function (gettextCatalog, Configuration, EntityModel){
+  // Set language Options
   gettextCatalog.currentLanguage = Configuration.getLanguage();
   gettextCatalog.debug = true;
+  // Model entities
+  for (var i = 0, entities = Configuration.entities, x = entities.length; i < x; i++) {
+    entities[i] = new EntityModel(entities[i].name, entities[i].options);
+  }
 });
 
 // Sample
