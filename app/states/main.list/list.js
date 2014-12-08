@@ -24,7 +24,7 @@ angular.module('carnival')
     entity.fields = [];
 
     buildFields();
-  
+
   };
 
   init();
@@ -41,6 +41,11 @@ angular.module('carnival')
     $state.go('main.show', { entity: entity.name, id: id });
   };
 
+  var clickDelete = function (id) {
+    entity.model.delete(id);
+    $state.reload();
+  };
+
   entity.actions = {
     create: {
       label: 'Create',
@@ -53,6 +58,9 @@ angular.module('carnival')
     show: {
       label: 'Show',
       click: clickShow
+    },
+    delete: {
+      click: clickDelete
     }
   };
 
