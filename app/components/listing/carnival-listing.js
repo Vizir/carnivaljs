@@ -10,6 +10,6 @@ angular.module('carnival.components.listing', [])
       identifier: '=',
       entityName: '='
     },
-    templateUrl: 'components/carnival-listing/carnival-listing.html'
+    templateUrl: 'components/listing/carnival-listing.html'
   };
 });
