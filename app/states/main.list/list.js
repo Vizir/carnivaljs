@@ -14,57 +14,58 @@ angular.module('carnival')
     }
   };
 
+  var onCreate = function () {
+    $state.go('main.create', { entity: entity.name });
+  };
+
+  var onEdit = function (id) {
+    $state.go('main.edit', { entity: entity.name, id: id });
+  };
+
+  var onShow = function (id) {
+    $state.go('main.show', { entity: entity.name, id: id });
+  };
+
+  var onDelete = function (id) {
+    entity.model.delete(id);
+    $state.reload();
+  };
+
   var init = function () {
     entity.model = Configuration.getEntity($stateParams.entity);
     entity.name = entity.model.name;
     entity.label = entity.model.label;
     entity.identifier = entity.model.identifier;
     entity.fields = [];
+    entity.datas = {};
 
     buildFields();
+
+    entity.actions = {
+      create: {
+        label: 'Create',
+        click: onCreate
+      },
+      edit: {
+        label: 'Edit',
+        click: onEdit
+      },
+      show: {
+        label: 'Show',
+        click: onShow
+      },
+      delete: {
+        click: onDelete
+      }
+    };
+
+    entity.model.getList()
+    .success(function (data, status, headers, config) {
+      entity.datas = data;
+    });
 
   };
 
   init();
-
-  var clickCreate = function () {
-    $state.go('main.create', { entity: entity.name });
-  };
-
-  var clickEdit = function (id) {
-    $state.go('main.edit', { entity: entity.name, id: id });
-  };
-
-  var clickShow = function (id) {
-    $state.go('main.show', { entity: entity.name, id: id });
-  };
-
-  var clickDelete = function (id) {
-    entity.model.delete(id);
-    $state.reload();
-  };
-
-  entity.actions = {
-    create: {
-      label: 'Create',
-      click: clickCreate
-    },
-    edit: {
-      label: 'Edit',
-      click: clickEdit
-    },
-    show: {
-      label: 'Show',
-      click: clickShow
-    },
-    delete: {
-      click: clickDelete
-    }
-  };
-
-  entity.model.getList()
-  .success(function (data, status, headers, config) {
-    entity.datas = data;
-  });
 
 });

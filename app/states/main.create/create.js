@@ -11,26 +11,24 @@ angular.module('carnival')
     }
   };
 
-  var init = function () {
-    entity.model = Configuration.getEntity($stateParams.entity);
-    entity.name = entity.model.name;
-    entity.label = entity.model.label;
-    entity.fields = [];
-    entity.data = {};
-
-    buildFields();
-  };
-
   var onSave = function () {
-    entity.model.create(entity.data)
-    .success(function () {
+    entity.model.create(entity.data).success(function () {
       $state.go('main.list', { entity: entity.name });
     });
   };
 
-  entity.action = {
-    label: 'Create',
-    click: onSave
+  var init = function () {
+    entity.model = Configuration.getEntity($stateParams.entity);
+    entity.label = entity.model.label;
+    entity.fields = [];
+    entity.datas = {};
+
+    buildFields();
+
+    entity.action = {
+      label: 'Create',
+      click: onSave
+    };
   };
 
   init();

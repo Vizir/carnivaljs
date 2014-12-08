@@ -11,27 +11,30 @@ angular.module('carnival')
     }
   };
 
-  var init = function () {
-    entity.model = Configuration.getEntity($stateParams.entity);
-    entity.label = entity.model.label;
-    entity.fields = [];
-    buildFields();
-  };
-
-  init();
-
   var onEdit = function () {
     $state.go('main.edit', { entity: entity.model.name, id: $stateParams.id });
   };
 
-  entity.action = {
-    label: 'Edit',
-    click: onEdit
+  var init = function () {
+    entity.model = Configuration.getEntity($stateParams.entity);
+    entity.label = entity.model.label;
+    entity.fields = [];
+    entity.datas = {};
+
+    buildFields();
+
+    entity.action = {
+      label: 'Edit',
+      click: onEdit
+    };
+
+    entity.model.getOne($stateParams.id)
+    .success(function (data) {
+      entity.datas = data;
+    });
+
   };
 
-  entity.model.getOne($stateParams.id)
-  .success(function (data) {
-    entity.datas = data;
-  });
+  init();
 
 });
