@@ -8,6 +8,6 @@ angular.module('carnival.components.form', [])
       action: '=',
       datas: '='
     },
-    templateUrl: 'components/form/carnival-form.html'
+    templateUrl: 'components/form/form.html'
   };
 });

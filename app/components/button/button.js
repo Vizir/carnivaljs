@@ -8,6 +8,6 @@ angular.module('carnival.components.button', [])
       style: '@',
       size: '@'
     },
-    templateUrl: 'components/button/carnival-button.html'
+    templateUrl: 'components/button/button.html'
   };
 });
