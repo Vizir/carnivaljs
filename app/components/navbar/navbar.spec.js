@@ -3,19 +3,19 @@ describe('On carnival-navbar component', function () {
   var compile, element, scope;
 
   var setScopeData = function (scope) {
-    scope.app_name = 'Fox';
+    scope.app_name = 'What does the Fox say?';
     scope.menu_items = [
       {
-        name: 'Item1',
-        label: 'Item1'
+        name: 'ringring',
+        label: 'Ring-ding-ding-ding-dingeringeding'
       },
       {
-        name: 'Item2',
-        label: 'Item2'
+        name: 'wapapow',
+        label: 'Wa-pa-pa-pa-pa-pa-pow'
       },
       {
-        name: 'Item3',
-        label: 'Item3'
+        name: 'hateeho',
+        label: 'Hatee-hatee-hatee-ho'
       }
     ];
   };
@@ -36,12 +36,23 @@ describe('On carnival-navbar component', function () {
 
   });
 
-  it('should have the app name', function () {
-    expect(element.isolateScope().appName).to.be.equal('Fox');
+  it('should render the application name', function () {
+    expect(element.html())
+    .to.contain('What does the Fox say?');
   });
 
-  it('should have the menu items', function () {
-    expect(element.isolateScope().menuItems.length).to.be.equal(3);
+  it('should render the menu items', function () {
+    expect(element.html())
+    .to.contain('Ring-ding-ding-ding-dingeringeding')
+    .to.contain('Wa-pa-pa-pa-pa-pa-pow')
+    .to.contain('Hatee-hatee-hatee-ho');
+  });
+
+  it('should render links to lists on menu', function () {
+    expect(element.html())
+    .to.contain('href="#/list/ringring"')
+    .to.contain('href="#/list/wapapow"')
+    .to.contain('href="#/list/hateeho"');
   });
 
 });
