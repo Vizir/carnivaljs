@@ -4,18 +4,17 @@ module.exports = function(config) {
     frameworks: ['chai', 'mocha'],
     files: [
       // Carnival
-      'bower_components/angular/angular.min.js',
-      'bower_components/angular-ui-router/release/angular-ui-router.min.js',
-      'bower_components/angular-mocks/angular-mocks.js',
-      'app/carnival.js',
+      'bower_components/angular/angular.js',
+      'bower_components/angular-ui-router/release/angular-ui-router.js',
+      'dist/carnival.js',
       // Tests
+      'bower_components/angular-mocks/angular-mocks.js',
+      // Specs
       'app/**/*.spec.js',
       'app/*.spec.js'
     ],
     exclude: [],
-    preprocessors: {
-      '**/*.html': 'ng-html2js'
-    },
+    preprocessors: {},
     reporters: ['progress'],
     port: 9876,
     colors: true,

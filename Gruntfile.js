@@ -126,8 +126,8 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-angular-gettext');
 
   grunt.registerTask('dev', ['connect', 'watch:dev']);
-  grunt.registerTask('test', ['jshint', 'karma:unit']);
-  grunt.registerTask('test:watch', ['jshint', 'karma:continuous']);
+  grunt.registerTask('test', ['jshint', 'nggettext_extract', 'nggettext_compile', 'html2js:dist', 'concat:dist', 'clean:tmp', 'karma:unit']);
+  grunt.registerTask('test:watch', ['jshint', 'nggettext_extract', 'nggettext_compile', 'html2js:dist', 'concat:dist', 'clean:tmp', 'karma:continuous']);
   grunt.registerTask('build', ['jshint', 'karma:unit', 'nggettext_extract', 'nggettext_compile', 'html2js:dist', 'concat:dist', 'ngAnnotate:dist', 'uglify:dist', 'clean:tmp']);
 
 };
