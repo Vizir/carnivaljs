@@ -1,5 +1,5 @@
 angular.module('carnival')
-.controller('ListController', function ($scope, $stateParams, $state, Configuration, EntityModel) {
+.controller('ListController', function ($scope, $stateParams, $state, Configuration) {
 
   var entity = $scope.entity = {};
 
@@ -37,7 +37,7 @@ angular.module('carnival')
     entity.label = entity.model.label;
     entity.identifier = entity.model.identifier;
     entity.fields = [];
-    entity.datas = {};
+    entity.datas = [];
 
     buildFields();
 

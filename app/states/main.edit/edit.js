@@ -1,5 +1,5 @@
 angular.module('carnival')
-.controller('EditController', function ($scope, $stateParams, $state, Configuration, EntityModel) {
+.controller('EditController', function ($scope, $stateParams, $state, Configuration) {
 
   var entity = $scope.entity = {};
 
@@ -29,7 +29,7 @@ angular.module('carnival')
       label: 'Save',
       click: onSave
     };
-
+    
     entity.model.getOne($stateParams.id)
     .success(function (data) {
       entity.datas = data;

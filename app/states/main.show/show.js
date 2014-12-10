@@ -1,5 +1,5 @@
 angular.module('carnival')
-.controller('ShowController', function ($scope, $stateParams, $state, Configuration, EntityModel) {
+.controller('ShowController', function ($scope, $stateParams, $state, Configuration) {
 
   var entity = $scope.entity = {};
 
