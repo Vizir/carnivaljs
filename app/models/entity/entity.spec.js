@@ -60,7 +60,6 @@ describe('On Entities Model', function () {
   });
 
   it('should define the name properly', function () {
-    console.log(entity);
     expect(entity.name).to.be.equal('flowers');
   });
 
