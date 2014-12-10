@@ -25,9 +25,8 @@ angular.module('carnival')
     this.name = name;
     this.label = options.label || name;
     this.identifier = options.identifier;
-    this.actions = options.actions || ['edit', 'create', 'show', 'delete'];
+    this.filters = options.filters;
     this.fields = [];
-    this.relations = [];
     buildFields(options.fields, this);
 
   }
@@ -35,16 +34,10 @@ angular.module('carnival')
   Entity.prototype.checkFieldView = function (name, view) {
     for (var i = 0, x = this.fields.length; i < x; i += 1) {
       if (this.fields[i].name === name) {
-        if (this.fields[i].views[view].enable) {
-          return true;
-        }
+        return this.fields[i].views[view].enable;
       }
     }
     return false;
-  };
-
-  Entity.prototype.checkAction = function (action) {
-    return this.actions.indexOf(action) >= 0 ? true : false;
   };
 
   // http

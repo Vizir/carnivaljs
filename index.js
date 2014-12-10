@@ -10,19 +10,6 @@ app.config(function (ConfigurationProvider, HttpAdapterProvider) {
 
   ConfigurationProvider.addEntity('posts', {
 
-    // defaultField:{
-    //   views: {
-    //     index: {
-    //         sort: false,
-    //         search: {operator: "equal"}
-    //     },
-    //     edit: {
-
-
-    //     }
-    //   }
-    // },
-
     label: 'Posts',
     identifier: 'id',
     filters: ['published', 'draft', 'archived'],
@@ -230,55 +217,55 @@ app.config(function (ConfigurationProvider, HttpAdapterProvider) {
         }
       },
 
-      'posts': {
-        endpoint: 'post',
-        label: 'Post',
-        type: 'belongsTo',
-        foreignKey: 'postId',
-        views: {
-          index: {
-            enable: false
-          },
-          create: {
-            enable: false
-          },
-          show: {
-            enable: true,
-            nested: {
-              mode:['new', 'associate', 'deassociate', 'edit']
-            }
-          },
-          edit: {
-            enable: true,
-            nested: {
-              mode:['new', 'associate', 'deassociate', 'edit']
-            }
-          }
-        }
-      },
-
-      'status': {
-        type: 'enum',
-        enumValues: {
-          'draft': 0,
-          'published': 1,
-          'archived': 2
-        },
-        views: {
-          index: {
-            enable: true
-          },
-          create: {
-            enable: true
-          },
-          show: {
-            enable: true
-          },
-          edit: {
-            enable: true
-          }
-        }
-      }
+      // 'posts': {
+      //   endpoint: 'post',
+      //   label: 'Post',
+      //   type: 'belongsTo',
+      //   foreignKey: 'postId',
+      //   views: {
+      //     index: {
+      //       enable: false
+      //     },
+      //     create: {
+      //       enable: false
+      //     },
+      //     show: {
+      //       enable: true,
+      //       nested: {
+      //         mode:['new', 'associate', 'deassociate', 'edit']
+      //       }
+      //     },
+      //     edit: {
+      //       enable: true,
+      //       nested: {
+      //         mode:['new', 'associate', 'deassociate', 'edit']
+      //       }
+      //     }
+      //   }
+      // },
+      //
+      // 'status': {
+      //   type: 'enum',
+      //   enumValues: {
+      //     'draft': 0,
+      //     'published': 1,
+      //     'archived': 2
+      //   },
+      //   views: {
+      //     index: {
+      //       enable: true
+      //     },
+      //     create: {
+      //       enable: true
+      //     },
+      //     show: {
+      //       enable: true
+      //     },
+      //     edit: {
+      //       enable: true
+      //     }
+      //   }
+      // }
     }
   });
 
@@ -329,54 +316,54 @@ app.config(function (ConfigurationProvider, HttpAdapterProvider) {
         }
       },
 
-      'posts': {
-        endpoint: 'posts',
-        label: 'Post',
-        type: 'hasMany',
-        views: {
-          index: {
-            enable: false
-          },
-          create: {
-            enable: false
-          },
-          show: {
-            enable: true,
-            nested: {
-              mode:['new', 'associate', 'deassociate', 'edit']
-            }
-          },
-          edit: {
-            enable: true,
-            nested: {
-              mode:['new', 'associate', 'deassociate', 'edit']
-            }
-          }
-        }
-      },
-
-      'status': {
-        type: 'enum',
-        enumValues: {
-          'draft': 0,
-          'published': 1,
-          'archived': 2
-        },
-        views: {
-          index: {
-            enable: true
-          },
-          create: {
-            enable: true
-          },
-          show: {
-            enable: true
-          },
-          edit: {
-            enable: true
-          }
-        }
-      }
+      // 'posts': {
+      //   endpoint: 'posts',
+      //   label: 'Post',
+      //   type: 'hasMany',
+      //   views: {
+      //     index: {
+      //       enable: false
+      //     },
+      //     create: {
+      //       enable: false
+      //     },
+      //     show: {
+      //       enable: true,
+      //       nested: {
+      //         mode:['new', 'associate', 'deassociate', 'edit']
+      //       }
+      //     },
+      //     edit: {
+      //       enable: true,
+      //       nested: {
+      //         mode:['new', 'associate', 'deassociate', 'edit']
+      //       }
+      //     }
+      //   }
+      // },
+      //
+      // 'status': {
+      //   type: 'enum',
+      //   enumValues: {
+      //     'draft': 0,
+      //     'published': 1,
+      //     'archived': 2
+      //   },
+      //   views: {
+      //     index: {
+      //       enable: true
+      //     },
+      //     create: {
+      //       enable: true
+      //     },
+      //     show: {
+      //       enable: true
+      //     },
+      //     edit: {
+      //       enable: true
+      //     }
+      //   }
+      // }
     }
 
   });
