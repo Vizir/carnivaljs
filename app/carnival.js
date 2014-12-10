@@ -3,8 +3,7 @@ angular.module('carnival', [
   'ui.router',
   'carnival.components',
   'gettext',
-  'angular-loading-bar',
-  'ngAnimate'
+  'angular-loading-bar'
 ])
 .config(function ($stateProvider, $urlRouterProvider) {
 
