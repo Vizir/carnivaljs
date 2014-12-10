@@ -27,8 +27,9 @@ angular.module('carnival')
   };
 
   var onDelete = function (id) {
-    entity.model.delete(id);
-    $state.reload();
+    entity.model.delete(id).success(function () {
+      $state.reload();
+    });
   };
 
   var init = function () {
