@@ -1,7 +1,12 @@
 angular.module('carnival')
 .controller('ListController', function ($scope, $stateParams, $state, Configuration) {
 
-  var entity = $scope.entity = {};
+  // TODO: Change this...
+  var perPage = 10;
+
+  var entity = $scope.entity = {},
+      pages = $scope.pages = { current: 1 },
+      order = $scope.order = {};
 
   var buildFields = function () {
     for (var i = entity.model.fields.length - 1; i >= 0; i -= 1) {
@@ -32,6 +37,16 @@ angular.module('carnival')
     });
   };
 
+  entity.loadData = function () {
+    var offset = perPage * (pages.current - 1); /* 10: perPage */
+    var limit  = perPage; /* 5: perPage */
+    entity.model.getList(offset, limit)
+    .success(function (data, status, headers, config) {
+      pages.total = 30 / perPage; /* headers('X-Total-Count') / perPage */
+      entity.datas = data;
+    });
+  };
+
   var init = function () {
     entity.model = Configuration.getEntity($stateParams.entity);
     entity.name = entity.model.name;
@@ -39,7 +54,6 @@ angular.module('carnival')
     entity.identifier = entity.model.identifier;
     entity.fields = [];
     entity.datas = [];
-
     buildFields();
 
     entity.actions = {
@@ -60,10 +74,7 @@ angular.module('carnival')
       }
     };
 
-    entity.model.getList()
-    .success(function (data, status, headers, config) {
-      entity.datas = data;
-    });
+    entity.loadData();
 
   };
 

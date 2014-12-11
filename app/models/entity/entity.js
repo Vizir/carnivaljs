@@ -42,7 +42,9 @@ angular.module('carnival')
 
   // http
 
-  Entity.prototype.getList = function () {
+  Entity.prototype.getList = function (offset, limit) {
+    offset = offset || 1;
+    limit  = limit  || 100;
     var request = {};
     if (typeof HttpAdapter.getList === 'function') {
       request = HttpAdapter.getList(Configuration.getBaseApiUrl(), this.name);

@@ -367,12 +367,5 @@ app.config(function (ConfigurationProvider, HttpAdapterProvider) {
     }
 
   });
-
-  HttpAdapterProvider.getList(function (apiUrl, entity) {
-    return {
-      query: apiUrl + '/' + entity,
-      options: {}
-    };
-  });
-
+  
 });
