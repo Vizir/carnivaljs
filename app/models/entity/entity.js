@@ -1,6 +1,6 @@
 angular.module('carnival')
 
-.factory('EntityModel', function ($http, Configuration, HttpAdapter) {
+.factory('Entity', function ($http, Configuration, HttpAdapter) {
 
   var buildFields = function (fields, that) {
     var _fields = [],
@@ -42,13 +42,15 @@ angular.module('carnival')
 
   // $http services
 
-  Entity.prototype.getList = function (offset, limit) {
+  Entity.prototype.getList = function (offset, limit, order, orderDir) {
     var request    = { params: {} };
     request.method = 'GET';
     request.url    = Configuration.getBaseApiUrl() + '/' + this.name;
-    if (offset && limit) {
-      request.params.offset = offset;
-      request.params.limit  = limit;
+    request.params.offset = offset;
+    request.params.limit  = limit;
+    if (order && orderDir) {
+      request.params.order    = order;
+      request.params.orderDir = orderDir;
     }
     return $http(request);
   };

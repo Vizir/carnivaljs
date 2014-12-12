@@ -5,7 +5,7 @@ angular.module('carnival', [
   'gettext',
   'angular-loading-bar'
 ])
-.config(function ($stateProvider, $urlRouterProvider) {
+.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
 
   $urlRouterProvider.otherwise('/');
   $stateProvider
@@ -15,7 +15,7 @@ angular.module('carnival', [
       controller: 'MainController'
     })
     .state('main.list', {
-      url: 'list/:entity?page',
+      url: 'list/:entity?page&order&orderDir',
       templateUrl: 'states/main.list/list.html',
       controller: 'ListController'
     })
@@ -35,14 +35,16 @@ angular.module('carnival', [
       controller: 'EditController'
     });
 
+    $httpProvider.useApplyAsync(true);
+
 })
-.run(function (gettextCatalog, Configuration, EntityModel){
+.run(function (gettextCatalog, Configuration, Entity){
   // Set language Options
   gettextCatalog.currentLanguage = Configuration.getLanguage();
   gettextCatalog.debug = true;
   // Model entities
   for (var i = 0, entities = Configuration.entities, x = entities.length; i < x; i++) {
-    entities[i] = new EntityModel(entities[i].name, entities[i].options);
+    entities[i] = new Entity(entities[i].name, entities[i].options);
   }
 });
 
