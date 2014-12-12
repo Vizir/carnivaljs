@@ -7,6 +7,12 @@ angular.module('carnival.components.navbar', [])
       appName: '=',
       menuItems: '='
     },
-    templateUrl: 'components/navbar/navbar.html'
+    templateUrl: 'components/navbar/navbar.html',
+    controller: function ($scope, $stateParams) {
+      $scope.checkSelEntity = function (index) {
+        if ($scope.menuItems[index].name === $stateParams.entity) return true;
+        return false;
+      };
+    }
   };
 });
