@@ -5,11 +5,11 @@
       <a ng-click="prevPage()">&laquo;</a>
     </li>
 
-    <li ng-if="currentPage > 2">
+    <li ng-show="currentPage > 2">
       <a ng-click="jumpTo(currentPage - 2)">{{ currentPage - 2 }}</a>
     </li>
 
-    <li ng-if="currentPage > 1">
+    <li ng-show="currentPage > 1">
       <a ng-click="jumpTo(currentPage - 1)">{{ currentPage - 1 }}</a>
     </li>
 
@@ -17,11 +17,11 @@
       <a>{{ currentPage }}</a>
     </li>
 
-    <li ng-if="currentPage < totalPages">
+    <li ng-show="currentPage < totalPages">
       <a ng-click="jumpTo(currentPage + 1)">{{ currentPage + 1}}</a>
     </li>
 
-    <li ng-if="currentPage < totalPages - 1">
+    <li ng-show="currentPage < totalPages - 1">
       <a ng-click="jumpTo(currentPage + 2)">{{ currentPage + 2}}</a>
     </li>
 

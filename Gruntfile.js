@@ -66,7 +66,7 @@ module.exports = function (grunt) {
     watch: {
       dev: {
         files: ['Gruntfile.js', '!app/**/*.spec.js', 'app/**/*.js', 'app/**/*.html'],
-        tasks: ['jshint', 'nggettext_extract', 'nggettext_compile', 'html2js:dist', 'concat:dist', 'clean:tmp']
+        tasks: ['nggettext_extract', 'nggettext_compile', 'html2js:dist', 'concat:dist', 'clean:tmp']
       },
       options: {
         atBegin: true

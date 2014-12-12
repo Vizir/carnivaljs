@@ -46,10 +46,8 @@ angular.module('carnival')
     var request    = { params: {} };
     request.method = 'GET';
     request.url    = Configuration.getBaseApiUrl() + '/' + this.name;
-    if (offset && limit) {
-      request.params.offset = offset;
-      request.params.limit  = limit;
-    }
+    request.params.offset = offset;
+    request.params.limit  = limit;
     return $http(request);
   };
 
