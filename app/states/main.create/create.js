@@ -12,7 +12,7 @@ angular.module('carnival')
   };
 
   var onSave = function () {
-    entity.model.create(entity.data).success(function () {
+    entity.model.create(entity.datas).success(function () {
       $state.go('main.list', { entity: entity.model.name });
     });
   };
