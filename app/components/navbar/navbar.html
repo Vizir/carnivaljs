@@ -3,7 +3,7 @@
   <a class="navbar-brand">{{ appName }}</a>
   <ul class="nav navbar-nav">
     <li ui-sref-active="active" ng-repeat="item in menuItems">
-      <a ui-sref="main.list({ entity: item.name })">{{ item.label }}</a>
+      <a ui-sref="main.list({ entity: item.name, page: 1 })">{{ item.label }}</a>
     </li>
   </ul>
   </div>
