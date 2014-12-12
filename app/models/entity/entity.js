@@ -40,75 +40,47 @@ angular.module('carnival')
     return false;
   };
 
-  // http
+  // $http services
 
   Entity.prototype.getList = function (offset, limit) {
-    offset = offset || 1;
-    limit  = limit  || 100;
-    var request = {};
-    if (typeof HttpAdapter.getList === 'function') {
-      request = HttpAdapter.getList(Configuration.getBaseApiUrl(), this.name);
-    } else {
-      request.query = Configuration.getBaseApiUrl() + '/' + this.name;
-      request.options = {};
+    var request    = { params: {} };
+    request.method = 'GET';
+    request.url    = Configuration.getBaseApiUrl() + '/' + this.name;
+    if (offset && limit) {
+      request.params.offset = offset;
+      request.params.limit  = limit;
     }
-    return $http.get(request.query, request.options);
+    return $http(request);
   };
 
   Entity.prototype.getOne = function (id) {
     var request = {};
-    if (typeof HttpAdapter.getOne === 'function') {
-      request = HttpAdapter.getOne(Configuration.getBaseApiUrl(), this.name, id);
-    } else {
-      request.query = Configuration.getBaseApiUrl() + '/' + this.name + '/' + id;
-      request.options = {};
-    }
-    return $http.get(request.query, request.options);
+    request.method = 'GET';
+    request.url = Configuration.getBaseApiUrl() + '/' + this.name + '/' + id;
+    return $http(request);
   };
 
   Entity.prototype.delete = function (id) {
     var request = {};
-    if (typeof HttpAdapter.delete === 'function') {
-      request = HttpAdapter.delete(Configuration.getBaseApiUrl(), this.name, id);
-    } else {
-      request.query = Configuration.getBaseApiUrl() + '/' + this.name + '/' + id;
-      request.options = {};
-    }
-    return $http.delete(request.query, request.options);
+    request.method = 'DELETE';
+    request.url = Configuration.getBaseApiUrl() + '/' + this.name + '/' + id;
+    return $http(request);
   };
 
   Entity.prototype.create = function (data) {
     var request = {};
-    if (typeof HttpAdapter.create === 'function') {
-      request = HttpAdapter.create(Configuration.getBaseApiUrl(), this.name, data);
-    } else {
-      request.query = Configuration.getBaseApiUrl() + '/' + this.name;
-      request.data = data;
-      request.options = {};
-    }
-    return $http.post(request.query, request.data, request.options);
+    request.method = 'POST';
+    request.url = Configuration.getBaseApiUrl() + '/' + this.name;
+    request.data = data;
+    return $http(request);
   };
 
   Entity.prototype.update = function (id, data) {
     var request = {};
-    if (typeof HttpAdapter.update === 'function') {
-      request = HttpAdapter.update(Configuration.getBaseApiUrl(), this.name, id, data);
-    } else {
-      request.query = Configuration.getBaseApiUrl() + '/' + this.name + '/' + id;
-      request.data = data;
-      request.options = {};
-    }
-    return $http.put(request.query, request.data = data, request.options);
-  };
-
-  Entity.prototype.getRelList = function (id, rel) {
-    var request = {};
-    if (typeof HttpAdapter.getRelList === 'function') {
-      request = HttpAdapter.getRelList(Configuration.getBaseApiUrl(), this.name, id, rel);
-    } else {
-      request.query = Configuration.getBaseApiUrl() + '/' + this.name + '/' + id + '/' + rel;
-    }
-    return $http.get(request.query);
+    request.method = 'PUT';
+    request.url = Configuration.getBaseApiUrl() + '/' + this.name + '/' + id;
+    request.data = data;
+    return $http(request);
   };
 
   return Entity;

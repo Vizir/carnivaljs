@@ -1,11 +1,8 @@
 angular.module('carnival')
 .controller('ListController', function ($scope, $stateParams, $state, Configuration) {
 
-  // TODO: Change this...
-  var perPage = 10;
-
   var entity = $scope.entity = {},
-      pages = $scope.pages = { current: 1 },
+      pages = $scope.pages = {},
       order = $scope.order = {};
 
   var buildFields = function () {
@@ -38,11 +35,8 @@ angular.module('carnival')
   };
 
   entity.loadData = function () {
-    var offset = perPage * (pages.current - 1); /* 10: perPage */
-    var limit  = perPage; /* 5: perPage */
-    entity.model.getList(offset, limit)
+    entity.model.getList()
     .success(function (data, status, headers, config) {
-      pages.total = 30 / perPage; /* headers('X-Total-Count') / perPage */
       entity.datas = data;
     });
   };

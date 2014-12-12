@@ -15,7 +15,7 @@ angular.module('carnival', [
       controller: 'MainController'
     })
     .state('main.list', {
-      url: 'list/:entity?offset&limit',
+      url: 'list/:entity?page',
       templateUrl: 'states/main.list/list.html',
       controller: 'ListController'
     })
