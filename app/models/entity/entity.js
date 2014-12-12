@@ -42,12 +42,16 @@ angular.module('carnival')
 
   // $http services
 
-  Entity.prototype.getList = function (offset, limit) {
+  Entity.prototype.getList = function (offset, limit, order, orderDir) {
     var request    = { params: {} };
     request.method = 'GET';
     request.url    = Configuration.getBaseApiUrl() + '/' + this.name;
     request.params.offset = offset;
     request.params.limit  = limit;
+    if (order && orderDir) {
+      request.params.order    = order;
+      request.params.orderDir = orderDir;
+    }
     return $http(request);
   };
 

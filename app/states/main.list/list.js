@@ -11,7 +11,10 @@ angular.module('carnival')
         current: parseInt($stateParams.page, 10),
         perPage: 10 /* TODO: Change this */
       },
-      order = $scope.order = {};
+      order = $scope.order = {
+        field: $stateParams.order,
+        dir: $stateParams.orderDir
+      };
 
   var buildFields = function () {
     for (var i = entity.model.fields.length - 1; i >= 0; i -= 1) {
@@ -43,9 +46,9 @@ angular.module('carnival')
   };
 
   entity.loadData = function () {
-    var offset = pages.perPage * ($stateParams.page - 1);
-    var limit  = pages.perPage;
-    entity.model.getList(offset, limit)
+    var offset   = pages.perPage * ($stateParams.page - 1);
+    var limit    = pages.perPage;
+    entity.model.getList(offset, limit, order.field, order.dir)
     .success(function (data, status, headers, config) {
       pages.total = 30 / pages.perPage; /* TODO: headers('X-Total-Count') */
       entity.datas = data;

@@ -3,6 +3,7 @@
     <tr>
       <th ng-repeat="field in fields">
         {{ field.label }}
+        <carnival-order-ctrl field="field.name"></carnival-order-ctrl>
       </th>
       <th ng-if="actions" style="width: 30%">
         Actions

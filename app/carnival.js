@@ -15,7 +15,7 @@ angular.module('carnival', [
       controller: 'MainController'
     })
     .state('main.list', {
-      url: 'list/:entity?page',
+      url: 'list/:entity?page&order&orderDir',
       templateUrl: 'states/main.list/list.html',
       controller: 'ListController'
     })
