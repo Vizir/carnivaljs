@@ -2,7 +2,8 @@ angular.module('carnival', [
   'carnival.templates',
   'ui.router',
   'carnival.components',
-  'gettext'
+  'gettext',
+  'angular-loading-bar'
 ])
 .config(function ($stateProvider, $urlRouterProvider) {
 
@@ -14,7 +15,7 @@ angular.module('carnival', [
       controller: 'MainController'
     })
     .state('main.list', {
-      url: 'list/:entity',
+      url: 'list/:entity?page',
       templateUrl: 'states/main.list/list.html',
       controller: 'ListController'
     })
@@ -49,4 +50,3 @@ angular.module('carnival', [
 // http://[base_api_url]/:entity?sortField=title&sortDir=desc
 // http://[base_api_url]/:entity?filter[status]=2&filter[title]=example
 // http://[base_api_url]/:entity?offset=1&limit=2
-// http://[base_api_url]/:entity?sortField=title&sortDir=desc

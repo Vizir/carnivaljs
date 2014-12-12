@@ -1,0 +1,33 @@
+<nav>
+  <ul class="pagination pagination-sm" style="cursor: pointer;">
+
+    <li ng-class="{ disabled: currentPage === 1 }">
+      <a ng-click="prevPage()">&laquo;</a>
+    </li>
+
+    <li ng-if="currentPage > 2">
+      <a ng-click="jumpTo(currentPage - 2)">{{ currentPage - 2 }}</a>
+    </li>
+
+    <li ng-if="currentPage > 1">
+      <a ng-click="jumpTo(currentPage - 1)">{{ currentPage - 1 }}</a>
+    </li>
+
+    <li class="active">
+      <a>{{ currentPage }}</a>
+    </li>
+
+    <li ng-if="currentPage < totalPages">
+      <a ng-click="jumpTo(currentPage + 1)">{{ currentPage + 1}}</a>
+    </li>
+
+    <li ng-if="currentPage < totalPages - 1">
+      <a ng-click="jumpTo(currentPage + 2)">{{ currentPage + 2}}</a>
+    </li>
+
+    <li ng-class="{ disabled: currentPage === totalPages }">
+      <a ng-click="nextPage()">&raquo;</a>
+    </li>
+
+  </ul>
+</nav>

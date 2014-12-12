@@ -1,7 +1,9 @@
 angular.module('carnival')
-.controller('ListController', function ($scope, $stateParams, $state, Configuration, EntityModel) {
+.controller('ListController', function ($scope, $stateParams, $state, Configuration) {
 
-  var entity = $scope.entity = {};
+  var entity = $scope.entity = {},
+      pages = $scope.pages = {},
+      order = $scope.order = {};
 
   var buildFields = function () {
     for (var i = entity.model.fields.length - 1; i >= 0; i -= 1) {
@@ -27,8 +29,16 @@ angular.module('carnival')
   };
 
   var onDelete = function (id) {
-    entity.model.delete(id);
-    $state.reload();
+    entity.model.delete(id).success(function () {
+      $state.reload();
+    });
+  };
+
+  entity.loadData = function () {
+    entity.model.getList()
+    .success(function (data, status, headers, config) {
+      entity.datas = data;
+    });
   };
 
   var init = function () {
@@ -37,8 +47,7 @@ angular.module('carnival')
     entity.label = entity.model.label;
     entity.identifier = entity.model.identifier;
     entity.fields = [];
-    entity.datas = {};
-
+    entity.datas = [];
     buildFields();
 
     entity.actions = {
@@ -59,10 +68,7 @@ angular.module('carnival')
       }
     };
 
-    entity.model.getList()
-    .success(function (data, status, headers, config) {
-      entity.datas = data;
-    });
+    entity.loadData();
 
   };
 

@@ -1,8 +1,13 @@
 <form class="simple-form form-horizontal" novalidate>
   <div class="form-group" ng-repeat="field in fields">
     <label class="col-sm-2 control-label">{{ field.label }}</label>
-    <div class="col-sm-10">
-      <input type="{{ field.type }}" ng-model="datas[field.name]" placeholder="{{ field.label }}"></input>
+    <div class="col-sm-10" ng-switch on="field.type">
+
+      <!-- Fields -->
+      <carnival-text-field ng-switch-when="text" data="datas[field.name]" label="field.label" editable="editable"></input>
+      <carnival-number-field ng-switch-when="number" data="datas[field.name]" label="field.label" editable="editable"></input>
+      <carnival-text-field ng-switch-default data="datas[field.name]" label="field.label" editable="editable"></carnival-text-field>
+
     </div>
   </div>
   <label class="col-sm-2 control-label">
