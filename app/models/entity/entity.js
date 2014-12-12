@@ -1,6 +1,6 @@
 angular.module('carnival')
 
-.factory('EntityModel', function ($http, Configuration, HttpAdapter) {
+.factory('Entity', function ($http, Configuration, HttpAdapter) {
 
   var buildFields = function (fields, that) {
     var _fields = [],

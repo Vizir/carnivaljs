@@ -8,7 +8,7 @@ angular.module('carnival.components.delete-button', [])
       itemId: '='
     },
     templateUrl: 'components/delete-button/delete-button.html',
-    controller: function ($scope, Configuration, EntityModel, $state) {
+    controller: function ($scope) {
 
       $scope.isDeleting = false;
 

@@ -50,8 +50,8 @@ describe('On Entities Model', function () {
   beforeEach(function () {
     module('carnival');
 
-    inject(function(EntityModel, $httpBackend) {
-      entityModel = EntityModel;
+    inject(function(Entity, $httpBackend) {
+      entityModel = Entity;
       httpBackend = $httpBackend;
     });
 
