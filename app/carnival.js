@@ -5,7 +5,7 @@ angular.module('carnival', [
   'gettext',
   'angular-loading-bar'
 ])
-.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
+.config(function ($stateProvider, $urlRouterProvider) {
 
   $urlRouterProvider.otherwise('/');
   $stateProvider
@@ -34,8 +34,6 @@ angular.module('carnival', [
       templateUrl: 'states/main.edit/edit.html',
       controller: 'EditController'
     });
-
-    $httpProvider.useApplyAsync(true);
 
 })
 .run(function (gettextCatalog, Configuration, Entity){
