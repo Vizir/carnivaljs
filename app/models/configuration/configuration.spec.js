@@ -25,11 +25,6 @@ describe("On Configuration Models", function() {
     expect(configuration.getAppName()).to.be.equal('Dogs Store');
   });
 
-  it('should get/set the language', function () {
-    configurationProvider.setLanguage('woofs');
-    expect(configuration.getLanguage()).to.be.equal('woofs');
-  });
-
   it('should add/get a entity', function () {
     configurationProvider.addEntity('cat', { saySomething: 'Enemy!' });
     expect(configuration.getEntity('cat').options.saySomething).to.be.equals('Enemy!');

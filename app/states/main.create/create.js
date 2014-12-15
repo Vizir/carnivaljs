@@ -26,9 +26,10 @@ angular.module('carnival')
     buildFields();
 
     entity.action = {
-      label: 'Create',
+      label: 'Save',
       click: onSave
     };
+
   };
 
   init();

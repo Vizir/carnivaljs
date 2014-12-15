@@ -101,11 +101,11 @@ describe('On ListController', function() {
     expect($scope.entity.action).to.not.be.null();
   });
 
-  it('should have a function called on each action click', function () {
-    expect(typeof $scope.entity.actions.create.click).to.be.equal('function');
-    expect(typeof $scope.entity.actions.edit.click).to.be.equal('function');
-    expect(typeof $scope.entity.actions.show.click).to.be.equal('function');
-    expect(typeof $scope.entity.actions.delete.click).to.be.equal('function');
+  it('should have a function on each action', function () {
+    expect(typeof $scope.entity.actions.create).to.be.equal('function');
+    expect(typeof $scope.entity.actions.edit).to.be.equal('function');
+    expect(typeof $scope.entity.actions.show).to.be.equal('function');
+    expect(typeof $scope.entity.actions.delete).to.be.equal('function');
   });
 
   it('should fill the scope with the datas', function () {

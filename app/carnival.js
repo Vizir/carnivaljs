@@ -2,10 +2,10 @@ angular.module('carnival', [
   'carnival.templates',
   'ui.router',
   'carnival.components',
-  'gettext',
-  'angular-loading-bar'
+  'angular-loading-bar',
+  'pascalprecht.translate'
 ])
-.config(function ($stateProvider, $urlRouterProvider) {
+.config(function ($stateProvider, $urlRouterProvider, $translateProvider) {
 
   $urlRouterProvider.otherwise('/');
   $stateProvider
@@ -36,10 +36,7 @@ angular.module('carnival', [
     });
 
 })
-.run(function (gettextCatalog, Configuration, Entity){
-  // Set language Options
-  gettextCatalog.currentLanguage = Configuration.getLanguage();
-  gettextCatalog.debug = true;
+.run(function (Configuration, Entity){
   // Model entities
   for (var i = 0, entities = Configuration.entities, x = entities.length; i < x; i++) {
     entities[i] = new Entity(entities[i].name, entities[i].options);

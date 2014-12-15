@@ -11,9 +11,9 @@ describe('On carnival-listing component', function () {
       { food: 'Lettuce', taste: 'Not Good' }
     ];
     scope.actions = {
-      edit: { label: 'Edit me Yarrr', click: function () {} },
-      show: { label: 'Me likes Shows', click: function () {} },
-      delete: { click: function () {} }
+      edit: function () {},
+      show: function () {},
+      delete: function () {}
     };
     scope.identifier = 'food';
     scope.entityName = 'Restaurant';
@@ -49,8 +49,8 @@ describe('On carnival-listing component', function () {
 
   it('should create the action buttons', function () {
     expect(element.html())
-    .to.contain('Edit me Yarrr')
-    .to.contain('Me likes Shows')
+    .to.contain('Edit')
+    .to.contain('Show')
     .to.contain('Delete');
   });
 
