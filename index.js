@@ -6,8 +6,6 @@ app.config(function (ConfigurationProvider, HttpAdapterProvider) {
 
   ConfigurationProvider.setBaseApiUrl('http://private-614d1-carnivaljs.apiary-mock.com');
 
-  ConfigurationProvider.setLanguage('en');
-
   ConfigurationProvider.addEntity('posts', {
 
     label: 'Posts',
@@ -367,5 +365,5 @@ app.config(function (ConfigurationProvider, HttpAdapterProvider) {
     }
 
   });
-  
+
 });
