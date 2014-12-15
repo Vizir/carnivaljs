@@ -5,5 +5,3 @@ tmp
 npm-debug.log
 .DS_Store
 .env
-locales/*.mo
-locales/*.pot

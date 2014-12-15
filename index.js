@@ -1,12 +1,10 @@
 var app = angular.module('exampleApp', ['carnival']);
 
-app.config(function (ConfigurationProvider, HttpAdapterProvider) {
+app.config(function (ConfigurationProvider) {
 
   ConfigurationProvider.setAppName('Carnival Example');
 
   ConfigurationProvider.setBaseApiUrl('http://private-614d1-carnivaljs.apiary-mock.com');
-
-  ConfigurationProvider.setLanguage('en');
 
   ConfigurationProvider.addEntity('posts', {
 
@@ -378,5 +376,5 @@ app.config(function (ConfigurationProvider, HttpAdapterProvider) {
     }
 
   });
-  
+
 });

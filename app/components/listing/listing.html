@@ -6,7 +6,7 @@
         <carnival-order-ctrl field="field.name"></carnival-order-ctrl>
       </th>
       <th ng-if="actions" style="width: 30%">
-        Actions
+        {{ 'Actions' | translate }}
       </th>
     </tr>
   </thead>
@@ -16,9 +16,9 @@
         <carnival-listing-field item="data" field="field"></carnival-listing-field>
       </td>
       <td>
-        <carnival-button label="actions.show.label" style="primary" size="xs" ng-click="actions.show.click(data[identifier])"></carnival-button>
-        <carnival-button label="actions.edit.label" style="warning" size="xs" ng-click="actions.edit.click(data[identifier])"></carnival-button>
-        <carnival-delete-button item-id="data[identifier]" action="actions.delete.click"></carnival-button>
+        <carnival-button label="{{ 'Show' | translate }}" style="primary" size="xs" ng-click="actions.show(data[identifier])"></carnival-button>
+        <carnival-button label="{{ 'Edit' | translate }}" style="warning" size="xs" ng-click="actions.edit(data[identifier])"></carnival-button>
+        <carnival-delete-button item-id="data[identifier]" action="actions.delete"></carnival-button>
       </td>
     </tr>
   </tbody>

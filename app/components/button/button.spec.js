@@ -2,7 +2,6 @@ describe('On carnival-button component', function () {
   var compile, element, scope;
 
   var setScopeData = function (scope) {
-    scope.label = '42';
     scope.style = 'primary';
     scope.size = 'xs';
   };
@@ -17,7 +16,7 @@ describe('On carnival-button component', function () {
 
     setScopeData(scope);
 
-    element = angular.element('<carnival-button label="label" style=" '+ scope.style +' " size="'+ scope.size +'"></carnival-button>');
+    element = angular.element('<carnival-button label="42" style=" '+ scope.style +' " size="'+ scope.size +'"></carnival-button>');
     compile(element)(scope);
     scope.$digest();
 

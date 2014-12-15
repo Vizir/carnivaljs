@@ -64,21 +64,10 @@ angular.module('carnival')
     buildFields();
 
     entity.actions = {
-      create: {
-        label: 'Create',
-        click: onCreate
-      },
-      edit: {
-        label: 'Edit',
-        click: onEdit
-      },
-      show: {
-        label: 'Show',
-        click: onShow
-      },
-      delete: {
-        click: onDelete
-      }
+      create: onCreate,
+      edit: onEdit,
+      show: onShow,
+      delete: onDelete
     };
 
     entity.loadData();

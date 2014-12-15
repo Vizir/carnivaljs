@@ -42,8 +42,8 @@ module.exports = function (grunt) {
               '!app/karma.conf.js',
               'dist/tmp/*.js',
               'bower_components/angular-ui-router/release/angular-ui-router.js',
-              'bower_components/angular-gettext/dist/angular-gettext.js',
-              'bower_components/angular-loading-bar/build/loading-bar.js'
+              'bower_components/angular-loading-bar/build/loading-bar.js',
+              'bower_components/angular-translate/angular-translate.js'
         ],
         dest: 'dist/carnival.js'
       }
@@ -66,7 +66,7 @@ module.exports = function (grunt) {
     watch: {
       dev: {
         files: ['Gruntfile.js', '!app/**/*.spec.js', 'app/**/*.js', 'app/**/*.html'],
-        tasks: ['nggettext_extract', 'nggettext_compile', 'html2js:dist', 'concat:dist', 'clean:tmp']
+        tasks: ['html2js:dist', 'concat:dist', 'clean:tmp']
       },
       options: {
         atBegin: true
@@ -93,25 +93,6 @@ module.exports = function (grunt) {
       },
     },
 
-    nggettext_extract: {
-      pot: {
-        files: {
-          'locales/template.pot': ['app/**/*.html']
-        }
-      },
-    },
-
-    nggettext_compile: {
-      all: {
-        options: {
-          module: 'carnival'
-        },
-        files: {
-          'dist/tmp/translations.js': ['locales/*.po']
-        }
-      },
-    },
-
   });
 
   grunt.loadNpmTasks('grunt-contrib-watch');
@@ -124,11 +105,10 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-html2js');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-ng-annotate');
-  grunt.loadNpmTasks('grunt-angular-gettext');
 
   grunt.registerTask('dev', ['connect', 'watch:dev']);
-  grunt.registerTask('test', ['jshint', 'nggettext_extract', 'nggettext_compile', 'html2js:dist', 'concat:dist', 'clean:tmp', 'karma:unit']);
-  grunt.registerTask('test:watch', ['jshint', 'nggettext_extract', 'nggettext_compile', 'html2js:dist', 'concat:dist', 'clean:tmp', 'karma:continuous']);
-  grunt.registerTask('build', ['jshint', 'nggettext_extract', 'nggettext_compile', 'html2js:dist', 'concat:dist', 'ngAnnotate:dist', 'clean:tmp', 'karma:unit', 'uglify:dist']);
+  grunt.registerTask('test', ['jshint', 'html2js:dist', 'concat:dist', 'clean:tmp', 'karma:unit']);
+  grunt.registerTask('test:watch', ['jshint', 'html2js:dist', 'concat:dist', 'clean:tmp', 'karma:continuous']);
+  grunt.registerTask('build', ['jshint', 'html2js:dist', 'concat:dist', 'ngAnnotate:dist', 'clean:tmp', 'karma:unit', 'uglify:dist']);
 
 };
