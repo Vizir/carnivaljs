@@ -155,7 +155,6 @@ app.config(function (ConfigurationProvider, HttpAdapterProvider) {
 
     label: 'Comments',
     identifier: 'id',
-    filters: ['published', 'draft', 'archived'],
 
     fields: {
 
@@ -197,6 +196,18 @@ app.config(function (ConfigurationProvider, HttpAdapterProvider) {
           }
         }
       },
+      'post': {
+        label: 'Post',
+        resourceName: 'posts',
+        type: 'belongsTo',
+        views: {
+          index: {
+            label: 'title',
+            enable: true
+          }
+        }
+      }
+      ,
 
       'content': {
         label: 'Content',
