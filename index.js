@@ -1,6 +1,6 @@
 var app = angular.module('exampleApp', ['carnival']);
 
-app.config(function (ConfigurationProvider, HttpAdapterProvider) {
+app.config(function (ConfigurationProvider) {
 
   ConfigurationProvider.setAppName('Carnival Example');
 

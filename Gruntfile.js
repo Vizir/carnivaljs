@@ -42,7 +42,8 @@ module.exports = function (grunt) {
               '!app/karma.conf.js',
               'dist/tmp/*.js',
               'bower_components/angular-ui-router/release/angular-ui-router.js',
-              'bower_components/angular-loading-bar/build/loading-bar.js'
+              'bower_components/angular-loading-bar/build/loading-bar.js',
+              'bower_components/angular-translate/angular-translate.js'
         ],
         dest: 'dist/carnival.js'
       }

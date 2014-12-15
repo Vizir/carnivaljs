@@ -2,7 +2,8 @@ angular.module('carnival', [
   'carnival.templates',
   'ui.router',
   'carnival.components',
-  'angular-loading-bar'
+  'angular-loading-bar',
+  'pascalprecht.translate'
 ])
 .config(function ($stateProvider, $urlRouterProvider) {
 
