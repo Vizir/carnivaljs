@@ -13,7 +13,7 @@
   <tbody>
     <tr ng-repeat="data in datas">
       <td ng-repeat="field in fields">
-        {{ data[field.name] }}
+        <carnival-listing-field item="data" field="field"></carnival-listing-field>
       </td>
       <td>
         <carnival-button label="{{ 'Show' | translate }}" style="primary" size="xs" ng-click="actions.show(data[identifier])"></carnival-button>

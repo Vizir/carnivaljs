@@ -9,10 +9,11 @@ angular.module('carnival')
     Object.keys(fields).forEach(function (field_name) {
 
       _fields.push({
-        name:  field_name,
-        label: fields[field_name].label,
-        type:  fields[field_name].type,
-        views: fields[field_name].views
+        name:         field_name,
+        label:        fields[field_name].label,
+        resourceName: fields[field_name].resourceName,
+        type:         fields[field_name].type,
+        views:        fields[field_name].views
       });
 
     });
