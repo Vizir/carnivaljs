@@ -14,13 +14,16 @@ module.exports = function(config) {
       'app/*.spec.js'
     ],
     exclude: [],
-    preprocessors: {},
-    reporters: ['progress'],
+    preprocessors: {'dist/carnival.js': ['coverage']},
+    reporters: ['progress', 'coverage'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: false,
     browsers: ['PhantomJS'],
-    singleRun: false
+    singleRun: false,
+    coverageReporter: {
+      type : 'text'
+    }
   });
 };
