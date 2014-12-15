@@ -29,7 +29,7 @@ angular.module('carnival')
       label: 'Save',
       click: onSave
     };
-    
+
     entity.model.getOne($stateParams.id)
     .success(function (data) {
       entity.datas = data;

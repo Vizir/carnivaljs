@@ -5,7 +5,7 @@ angular.module('carnival', [
   'angular-loading-bar',
   'pascalprecht.translate'
 ])
-.config(function ($stateProvider, $urlRouterProvider) {
+.config(function ($stateProvider, $urlRouterProvider, $translateProvider) {
 
   $urlRouterProvider.otherwise('/');
   $stateProvider
