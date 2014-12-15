@@ -1,19 +1,16 @@
 angular.module('carnival')
-.controller('ListController', function ($scope, $stateParams, $state, Configuration) {
-
-  // var turnOffReload = $scope.$on('$stateChangeStart', function (event) {
-  //   event.preventDefault();
-  //   turnOffReload();
-  // });
+.controller('ListController', function ($scope, $stateParams, $state, Configuration, urlParams) {
 
   var entity = $scope.entity = {},
+
       pages = $scope.pages = {
-        current: parseInt($stateParams.page, 10),
+        current: parseInt(urlParams.getFilter('page'), 10),
         perPage: 10 /* TODO: Change this */
       },
+
       order = $scope.order = {
-        field: $stateParams.order,
-        dir: $stateParams.orderDir
+        field: urlParams.getFilter('order'),
+        dir: urlParams.getFilter('orderDir')
       };
 
   var buildFields = function () {
@@ -46,7 +43,7 @@ angular.module('carnival')
   };
 
   entity.loadData = function () {
-    var offset   = pages.perPage * ($stateParams.page - 1);
+    var offset   = pages.perPage * (urlParams.getFilter('page') - 1);
     var limit    = pages.perPage;
     entity.model.getList(offset, limit, order.field, order.dir)
     .success(function (data, status, headers, config) {
