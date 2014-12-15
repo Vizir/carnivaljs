@@ -4,8 +4,8 @@
     <div class="col-sm-10" ng-switch on="field.type">
 
       <!-- Fields -->
-      <carnival-text-field ng-switch-when="text" data="datas[field.name]" label="field.label" editable="editable"></input>
-      <carnival-number-field ng-switch-when="number" data="datas[field.name]" label="field.label" editable="editable"></input>
+      <carnival-text-field ng-switch-when="text" data="datas[field.name]" label="field.label" editable="editable"></carnival-text-field>
+      <carnival-number-field ng-switch-when="number" data="datas[field.name]" label="field.label" editable="editable"></carnival-number-field>
       <carnival-text-field ng-switch-default data="datas[field.name]" label="field.label" editable="editable"></carnival-text-field>
 
     </div>
