@@ -8,20 +8,17 @@ angular.module('carnival.components.pagination-controller', [])
       totalPages: '='
     },
     templateUrl: 'components/pagination-controller/pagination-controller.html',
-    controller: function ($scope, $state, $stateParams) {
+    controller: function ($scope, urlParams) {
       $scope.jumpTo = function (page) {
-        $stateParams.page = page;
-        $state.go($state.current.name, $stateParams, { reload: true });
+        urlParams.setFilter('page', page, true);
       };
       $scope.nextPage = function () {
         if ($scope.currentPage === $scope.totalPages) return;
-        $stateParams.page++;
-        $state.go($state.current.name, $stateParams, { reload: true });
+        urlParams.setFilter('page', $scope.currentPage++, true);
       };
       $scope.prevPage = function () {
         if ($scope.currentPage === 1) return;
-        $stateParams.page--;
-        $state.go($state.current.name, $stateParams, { reload: true });
+        urlParams.setFilter('page', $scope.currentPage--, true);
       };
     }
   };
