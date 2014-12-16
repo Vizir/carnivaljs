@@ -52,6 +52,22 @@ app.config(function (ConfigurationProvider) {
         }
       },
 
+      'category':{
+        label: 'Category',
+        type: 'belongsTo',
+        resourceName: 'categories',
+        resourceLabel: 'name',
+        resourceIdentifier: 'id',
+        views: {
+          index: {
+            enable: true,
+          },
+          create: {
+            enable: true
+          }
+        }
+      },
+
       'content': {
         label: 'Content',
         type: 'text',
@@ -278,6 +294,53 @@ app.config(function (ConfigurationProvider) {
     }
   });
 
+  ConfigurationProvider.addEntity('categories', {
+
+    label: 'Categories',
+    identifier: 'id',
+
+    fields: {
+
+      'id': {
+        identifier: true,
+        label: 'Id',
+        type: 'text',
+        views: {
+          index: {
+            enable: false
+          },
+          create: {
+            enable: false
+          },
+          show: {
+            enable: false
+          },
+          edit: {
+            enable: false
+          }
+        }
+      },
+
+      'name': {
+        label: 'Name',
+        type: 'text',
+        views: {
+          index: {
+            enable: true
+          },
+          create: {
+            enable: true
+          },
+          show: {
+            enable: true
+          },
+          edit: {
+            enable: true
+          }
+        }
+      }
+    }
+  });    
   ConfigurationProvider.addEntity('tags', {
 
     label: 'Tags',

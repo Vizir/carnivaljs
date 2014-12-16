@@ -35,10 +35,10 @@ describe('On carnival-listing-field component', function () {
         name: 'post', 
         type: 'belongsTo', 
         resourceName: 'posts',
+        resourceLabel: 'title',
         views: {
           index: {
-            enable: true,
-            label: 'title'
+            enable: true
           }
         }
       };

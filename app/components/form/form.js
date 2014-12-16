@@ -7,6 +7,7 @@ angular.module('carnival.components.form', [])
       fields: '=',
       action: '=',
       datas: '=',
+      relatedResources: '=',
       editable: '='
     },
     templateUrl: 'components/form/form.html'

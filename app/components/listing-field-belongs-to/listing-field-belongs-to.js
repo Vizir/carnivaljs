@@ -19,8 +19,7 @@ angular.module('carnival.components.listingfieldbelongsto', [])
       };
 
       $scope.getLabel = function(){
-        var indexProperties = $scope.field.views.index;
-        return $scope.item[$scope.field.name][indexProperties.label];
+        return $scope.item[$scope.field.name][$scope.field.resourceLabel];
       };
     }
   };

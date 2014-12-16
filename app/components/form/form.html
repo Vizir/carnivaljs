@@ -2,10 +2,10 @@
   <div class="form-group" ng-repeat="field in fields">
     <label class="col-sm-2 control-label">{{ field.label }}</label>
     <div class="col-sm-10" ng-switch on="field.type">
-
       <!-- Fields -->
       <carnival-text-field ng-switch-when="text" data="datas[field.name]" label="field.label" editable="editable"></carnival-text-field>
       <carnival-number-field ng-switch-when="number" data="datas[field.name]" label="field.label" editable="editable"></carnival-number-field>
+      <carnival-select-field ng-switch-when="belongsTo" data="datas[field.name]" related-resources="relatedResources[field.resourceName]" editable="editable"></carnival-select-field>
       <carnival-text-field ng-switch-default data="datas[field.name]" label="field.label" editable="editable"></carnival-text-field>
 
     </div>
