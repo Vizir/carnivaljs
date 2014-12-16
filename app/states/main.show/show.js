@@ -1,7 +1,9 @@
 angular.module('carnival')
-.controller('ShowController', function ($scope, $stateParams, $state, Configuration) {
+.controller('ShowController', function ($scope, $stateParams, $state, Configuration, Notification) {
 
   var entity = $scope.entity = {};
+
+  new Notification('Release the Kraken!', 'warning');
 
   var buildFields = function () {
     for (var i = entity.model.fields.length - 1; i >= 0; i -= 1) {
