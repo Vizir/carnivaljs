@@ -13,6 +13,10 @@ angular.module('carnival').provider('Configuration', function() {
     setAppName: function (name) {
       appName = name;
     },
+    
+    setEntities: function(entities) {
+      entities = entities;
+    },
 
     addEntity: function (entityName, entityOptions) {
       entities.push({ name: entityName, options: entityOptions });

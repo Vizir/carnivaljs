@@ -3,14 +3,6 @@ angular.module('carnival')
 
   var entity = $scope.entity = {};
 
-  var buildFields = function () {
-    for (var i = entity.model.fields.length - 1; i >= 0; i -= 1) {
-      if (entity.model.checkFieldView(entity.model.fields[i].name, 'show')) {
-        entity.fields.unshift(entity.model.fields[i]);
-      }
-    }
-  };
-
   var onEdit = function () {
     $state.go('main.edit', { entity: entity.model.name, id: $stateParams.id });
   };
@@ -21,7 +13,7 @@ angular.module('carnival')
     entity.fields = [];
     entity.datas = {};
 
-    buildFields();
+    $scope.buildFieldsForState({state: 'show', entity: entity});
 
     entity.action = {
       label: 'Edit',

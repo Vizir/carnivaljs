@@ -64,6 +64,9 @@ app.config(function (ConfigurationProvider) {
           },
           create: {
             enable: true
+          },
+          edit: {
+            enable: true
           }
         }
       },
@@ -214,9 +217,9 @@ app.config(function (ConfigurationProvider) {
         label: 'Post',
         resourceName: 'posts',
         type: 'belongsTo',
+        resourceLabel: 'title',
         views: {
           index: {
-            label: 'title',
             enable: true
           }
         }
