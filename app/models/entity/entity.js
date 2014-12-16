@@ -53,7 +53,7 @@ angular.module('carnival')
       request.params.order    = order;
       request.params.orderDir = orderDir;
     }
-    if (search) request.params.search = search;
+    if (search) request.params.search = encodeURIComponent(JSON.stringify(search));
     return $http(request);
   };
 
