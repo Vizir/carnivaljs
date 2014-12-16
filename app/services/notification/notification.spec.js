@@ -20,7 +20,7 @@ describe('On notification service', function () {
     expect(notificationFactory.length).to.be.equal(2);
   });
 
-  it('should remove notifications after its timeout', function () {
+  it('should remove notifications after timeout', function () {
     new Notification('Mario', 'error');
     $timeout.flush();
     expect(notificationFactory.length).to.be.equal(0);

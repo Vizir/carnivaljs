@@ -26,7 +26,7 @@ angular.module('carnival')
   var onSave = function () {
     entity.model.create(entity.datas)
     .success(function () {
-      new Notification(entity.label + ' create with success!', 'success');
+      new Notification('Item created with success!', 'success');
       $state.go('main.list', { entity: entity.model.name });
     })
     .error(function (data) {

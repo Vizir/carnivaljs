@@ -14,7 +14,7 @@ angular.module('carnival')
   var onSave = function () {
     entity.model.update($stateParams.id, entity.datas)
     .success(function () {
-      new Notification(entity.label  + ' edited with success!', 'success');
+      new Notification('Modifications saved with success!', 'success');
       $state.go('main.show', { entity: entity.model.name, id: $stateParams.id });
     })
     .error(function (data) {
