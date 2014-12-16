@@ -1,5 +1,5 @@
 angular.module('carnival')
-.controller('CreateController', function ($scope, $stateParams, $state, Configuration) {
+.controller('CreateController', function ($scope, $stateParams, $state, Configuration, Notification) {
 
   var entity = $scope.entity = {};
   $scope.relatedResources = {};
@@ -24,8 +24,13 @@ angular.module('carnival')
   };
 
   var onSave = function () {
-    entity.model.create(entity.datas).success(function () {
+    entity.model.create(entity.datas)
+    .success(function () {
+      new Notification(entity.label + ' create with success!', 'success');
       $state.go('main.list', { entity: entity.model.name });
+    })
+    .error(function (data) {
+      new Notification(data, 'danger');
     });
   };
 

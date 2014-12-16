@@ -1,5 +1,5 @@
 angular.module('carnival')
-.controller('EditController', function ($scope, $stateParams, $state, Configuration) {
+.controller('EditController', function ($scope, $stateParams, $state, Configuration, Notification) {
 
   var entity = $scope.entity = {};
 
@@ -12,8 +12,13 @@ angular.module('carnival')
   };
 
   var onSave = function () {
-    entity.model.update($stateParams.id, entity.datas).success(function () {
+    entity.model.update($stateParams.id, entity.datas)
+    .success(function () {
+      new Notification(entity.label  + ' edited with success!', 'success');
       $state.go('main.show', { entity: entity.model.name, id: $stateParams.id });
+    })
+    .error(function (data) {
+      new Notification(data, 'danger');
     });
   };
 

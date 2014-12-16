@@ -2,14 +2,13 @@ angular.module('carnival')
 .service('Notification', function ($timeout, notificationFactory) {
 
   var notificationKiller = function () {
-    notificationFactory.splice(0, 1);
-    console.log(notificationFactory);
+    notificationFactory.splice(notificationFactory.length - 1, 1);
   };
 
   function Notification (message, type) {
     this.message = message;
     this.type = type;
-    notificationFactory.push(this);
+    notificationFactory.unshift(this);
     $timeout(notificationKiller, 3000);
   }
 
