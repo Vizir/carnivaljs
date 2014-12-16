@@ -4,9 +4,8 @@ angular.module('carnival.components.fields')
     restrict: 'E',
     replace: true,
     scope: {
-      label: '=',
       data: '=',
-      relatedResources: '=',
+      items: '=',
       editable: '='
     },
     templateUrl: 'components/fields/select/select.html',
