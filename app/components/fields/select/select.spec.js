@@ -2,8 +2,8 @@ describe('On carnival-select component', function () {
   var compile, element, scope;
 
   var setScopeData = function (scope) {
-    scope.relatedResources = { 
-        categories: [{id: 1, name: 'one'}, {id: 2, name: 'two'}]
+    scope.relatedResources = {
+        categories: [{ id: 1, name: 'one' }, { id: 2, name: 'two' }]
       };
     scope.datas = {
       category: null
@@ -20,7 +20,7 @@ describe('On carnival-select component', function () {
 
     setScopeData(scope);
 
-    element = angular.element('<carnival-select-field data="datas[\'category\']" related-resources="relatedResources[\'categories\']" editable="editable"></carnival-select-field>');
+    element = angular.element('<carnival-select-field data="datas.category" items="relatedResources.categories" editable="editable"></carnival-select-field>');
     compile(element)(scope);
     scope.$digest();
 
