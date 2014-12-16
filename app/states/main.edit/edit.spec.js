@@ -1,14 +1,29 @@
 describe('On EditController', function() {
 
-  var controller, EditController, $scope = {};
+  var controller, EditController, rootScope = {};
 
   var Configuration = {
+    getAppName: function() {
+      return "Test";
+    },
+    getEntities: function () {
+      return []; 
+    },
     getEntity: function () {
       return {
         name: 'cats',
         label: 'Cats',
         identifier: 'whiskers',
         actions: ['edit', 'create', 'show', 'delete'],
+        getOne: function(){
+          return {
+            success: function(func){
+              func({
+              
+              });
+            }
+          }; 
+        },
         fields: [
         {
           name:  'whiskers',
@@ -25,6 +40,21 @@ describe('On EditController', function() {
               enable: true
             },
             edit: {
+              enable: true
+            }
+          }
+        },
+        {
+          name: 'owners',
+          label: 'Owner',
+          type: 'belongsTo',
+          resourceLabel: 'name',
+          resourceName: 'owners',
+          views: {
+            edit: {
+              enable: true
+            },
+            create: {
               enable: true
             }
           }
@@ -52,7 +82,7 @@ describe('On EditController', function() {
         checkFieldView: function () {
           return true;
         },
-        getOne: function () {
+        getList: function () {
           return {
             success: function () {
               return true;
@@ -69,9 +99,17 @@ describe('On EditController', function() {
 
   beforeEach(function () {
     module('carnival');
-    inject(function($controller){
+
+    inject(function($controller, $rootScope){
       controller = $controller;
+      rootScope = $rootScope;
     });
+
+    controller('MainController', {
+      $scope: rootScope,
+      Configuration: Configuration
+    });
+    $scope = rootScope.$new();
     EditController = controller('EditController', {
       $scope: $scope,
       Configuration: Configuration
@@ -84,14 +122,21 @@ describe('On EditController', function() {
   });
 
   it('should fill the scope with the entity\'s fields', function () {
-    expect($scope.entity.fields.length).to.be.equal(2);
+    expect($scope.entity.fields.length).to.be.equal(3);
   });
 
   it('should fill the scope with the fields information properly', function () {
-    expect($scope.entity.fields[1].name).to.be.equal('fur');
-    expect($scope.entity.fields[1].label).to.be.equal('Fur');
-    expect($scope.entity.fields[1].type).to.be.equal('text');
+    expect($scope.entity.fields[1].name).to.be.equal('owners');
+    expect($scope.entity.fields[1].label).to.be.equal('Owner');
+    expect($scope.entity.fields[1].type).to.be.equal('belongsTo');
     expect($scope.entity.fields[1].views.edit.enable).to.be.equal(true);
+  });
+
+  it('should fill the scope with the fields information properly', function () {
+    expect($scope.entity.fields[2].name).to.be.equal('fur');
+    expect($scope.entity.fields[2].label).to.be.equal('Fur');
+    expect($scope.entity.fields[2].type).to.be.equal('text');
+    expect($scope.entity.fields[2].views.edit.enable).to.be.equal(true);
   });
 
   it('should fill the scope with the action', function () {

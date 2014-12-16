@@ -1,8 +1,14 @@
 describe('On CreateController', function() {
 
-  var controller, CreateController, $scope = {};
+  var controller, CreateController, rootScope = {};
 
   var Configuration = {
+    getAppName: function() {
+      return "Test";
+    },
+    getEntities: function () {
+      return []; 
+    },
     getEntity: function () {
       return {
         name: 'cats',
@@ -19,12 +25,26 @@ describe('On CreateController', function() {
                 enable: true
               },
               create: {
-                enable: true
               },
               show: {
                 enable: true
               },
               edit: {
+                enable: true
+              }
+            }
+          },
+          {
+            name: 'owners',
+            label: 'Owner',
+            type: 'belongsTo',
+            resourceLabel: 'name',
+            resourceName: 'owners',
+            views: {
+              edit: {
+                enable: true
+              },
+              create: {
                 enable: true
               }
             }
@@ -51,6 +71,13 @@ describe('On CreateController', function() {
         ],
         checkFieldView: function () {
           return true;
+        },
+        getList: function () {
+          return {
+            success: function () {
+              return true;
+            }
+          };
         }
       };
     }
@@ -62,9 +89,16 @@ describe('On CreateController', function() {
 
   beforeEach(function () {
     module('carnival');
-    inject(function($controller){
+    inject(function($controller, $rootScope){
       controller = $controller;
+      rootScope = $rootScope;
     });
+
+    controller('MainController', {
+      $scope: rootScope,
+      Configuration: Configuration
+    });
+    $scope = rootScope.$new();
     CreateController = controller('CreateController', {
       $scope: $scope,
       Configuration: Configuration
@@ -76,14 +110,21 @@ describe('On CreateController', function() {
   });
 
   it('should fill the scope with the entity\'s fields', function () {
-    expect($scope.entity.fields.length).to.be.equal(2);
+    expect($scope.entity.fields.length).to.be.equal(3);
   });
 
   it('should fill the scope with the fields information properly', function () {
-    expect($scope.entity.fields[1].name).to.be.equal('fur');
-    expect($scope.entity.fields[1].label).to.be.equal('Fur');
-    expect($scope.entity.fields[1].type).to.be.equal('text');
-    expect($scope.entity.fields[1].views.create.enable).to.be.equal(true);
+    expect($scope.entity.fields[1].name).to.be.equal('owners');
+    expect($scope.entity.fields[1].label).to.be.equal('Owner');
+    expect($scope.entity.fields[1].type).to.be.equal('belongsTo');
+    expect($scope.entity.fields[1].views.edit.enable).to.be.equal(true);
+  });
+
+  it('should fill the scope with the fields information properly', function () {
+    expect($scope.entity.fields[2].name).to.be.equal('fur');
+    expect($scope.entity.fields[2].label).to.be.equal('Fur');
+    expect($scope.entity.fields[2].type).to.be.equal('text');
+    expect($scope.entity.fields[2].views.edit.enable).to.be.equal(true);
   });
 
   it('should fill the scope with the action', function () {

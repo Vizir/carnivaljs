@@ -15,16 +15,6 @@ angular.module('carnival')
 
       search = $scope.search = urlParams.getFilter('search');
 
-  var buildFields = function () {
-    for (var i = entity.model.fields.length - 1; i >= 0; i -= 1) {
-      if (entity.model.fields[i].type != 'hasMany') {
-        if (entity.model.checkFieldView(entity.model.fields[i].name, 'index')) {
-          entity.fields.unshift(entity.model.fields[i]);
-        }
-      }
-    }
-  };
-
   var onCreate = function () {
     $state.go('main.create', { entity: entity.name });
   };
@@ -65,7 +55,7 @@ angular.module('carnival')
     entity.identifier = entity.model.identifier;
     entity.fields = [];
     entity.datas = [];
-    buildFields();
+    $scope.buildFieldsForState({state: 'index', entity: entity});
 
     entity.actions = {
       create: onCreate,

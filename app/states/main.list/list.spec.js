@@ -1,8 +1,14 @@
 describe('On ListController', function() {
 
-  var controller, ShowController, $scope = {};
+  var controller, ShowController, rootScope = {};
 
   var Configuration = {
+    getAppName: function() {
+      return "Test";
+    },
+    getEntities: function () {
+      return []; 
+    },
     getEntity: function () {
       return {
         name: 'cats',
@@ -69,9 +75,15 @@ describe('On ListController', function() {
 
   beforeEach(function () {
     module('carnival');
-    inject(function($controller){
+    inject(function($controller, $rootScope){
       controller = $controller;
+      rootScope = $rootScope;
     });
+    controller('MainController', {
+      $scope: rootScope,
+      Configuration: Configuration
+    });
+    $scope = rootScope.$new();
     ListController = controller('ListController', {
       $scope: $scope,
       Configuration: Configuration
