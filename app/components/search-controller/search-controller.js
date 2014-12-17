@@ -4,14 +4,18 @@ angular.module('carnival.components.search-controller', [])
     restrict: 'E',
     replace: true,
     scope: {
-      fields: '='
+      fields: '=',
+      relatedResources: '='
     },
     templateUrl: 'components/search-controller/search-controller.html',
-    controller: function ($scope, urlParams) {
+    controller: function ($scope, $stateParams, Configuration, urlParams) {
+
       $scope.searchParams = urlParams.getFilter('search') || {};
+
       $scope.submit = function () {
         urlParams.setFilter('search', $scope.searchParams, true);
       };
+
     }
   };
 });

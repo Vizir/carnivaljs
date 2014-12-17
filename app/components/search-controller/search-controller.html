@@ -1,10 +1,12 @@
 <div>
   <h4>{{ 'Search' | translate }}</h4>
-  <hr>
-  <div ng-repeat="field in fields" class="input-group input-group-sm">
-    <span class="input-group-addon">{{ field.label }}</span>
-    <input type="text" class="form-control" placeholder="{{ field.label }}" ng-model="searchParams[field.name]">
-  </div>
-  <hr>
-  <carnival-button size="sm" style="default" label="{{ 'Search' | translate }}" ng-click="submit()"></carnival-button>
+  <hr/>
+    <p ng-repeat="field in fields" ng-switch="field.type">
+      <label>{{ field.label }}</label>
+      <carnival-text-field ng-switch-when="text" label="field.label" data="searchParams[field.name]" editable="true"></carnival-text-field>
+      <carnival-select-field ng-switch-when="belongsTo" editable="true" items="relatedResources[field.resourceName]" data="searchParams[field.name]"></carnival-select-field>
+      <carnival-number-field ng-switch-when="number" data="searchParams[field.name]" label="field.label" editable="true"></carnival-number-field>
+    </p>
+  <hr/>
+  <carnival-button label="Submit" size="sm" style="default" ng-click="submit()"></carnival-button>
 </div>
