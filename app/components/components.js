@@ -12,5 +12,6 @@ angular.module('carnival.components', [
   'carnival.components.order-controller',
   'carnival.components.pagination-controller',
   'carnival.components.search-controller',
-  'carnival.components.notification'
+  'carnival.components.notification',
+  'carnival.components.quickfilter-controller'
 ]);
