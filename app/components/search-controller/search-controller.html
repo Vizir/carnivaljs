@@ -1,10 +1,4 @@
 <div>
   <h4>{{ 'Search' | translate }}</h4>
-  <hr>
-  <div ng-repeat="field in fields" class="input-group input-group-sm">
-    <span class="input-group-addon">{{ field.label }}</span>
-    <input type="text" class="form-control" placeholder="{{ field.label }}" ng-model="searchParams[field.name]">
-  </div>
-  <hr>
-  <carnival-button size="sm" style="default" label="{{ 'Search' | translate }}" ng-click="submit()"></carnival-button>
+  <carnival-form fields="entity.fields" editable="true" action="action" datas="searchParams" related-resources="relatedResources"></carnival-form>
 </div>
