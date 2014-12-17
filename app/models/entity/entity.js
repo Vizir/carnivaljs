@@ -11,6 +11,7 @@ angular.module('carnival')
       _fields.push({
         name:               field_name,
         label:              fields[field_name].label,
+        searchable:         fields[field_name].searchable,
         resourceName:       fields[field_name].resourceName,
         resourceLabel:      fields[field_name].resourceLabel,
         resourceIdentifier: fields[field_name].resourceIdentifier,

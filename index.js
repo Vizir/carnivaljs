@@ -17,6 +17,7 @@ app.config(function (ConfigurationProvider) {
       'id': {
         label: 'Id',
         type: 'text',
+        searchable: false,
         views: {
           index: {
             enable: false
@@ -36,6 +37,7 @@ app.config(function (ConfigurationProvider) {
       'title': {
         label: 'Title',
         type: 'text',
+        searchable: true,
         views: {
           index: {
             enable: true
@@ -55,6 +57,7 @@ app.config(function (ConfigurationProvider) {
       'category':{
         label: 'Category',
         type: 'belongsTo',
+        searchable: true,
         resourceName: 'categories',
         resourceLabel: 'name',
         resourceIdentifier: 'id',
@@ -74,6 +77,7 @@ app.config(function (ConfigurationProvider) {
       'content': {
         label: 'Content',
         type: 'text',
+        searchable: false,
         views: {
           index: {
             enable: true
@@ -156,6 +160,7 @@ app.config(function (ConfigurationProvider) {
         identifier: true,
         label: 'Id',
         type: 'text',
+        searchable: false,
         views: {
           index: {
             enable: false
@@ -175,6 +180,7 @@ app.config(function (ConfigurationProvider) {
       'email': {
         label: 'Email',
         type: 'text',
+        searchable: true,
         views: {
           index: {
             enable: true
@@ -194,6 +200,7 @@ app.config(function (ConfigurationProvider) {
       'post': {
         label: 'Post',
         type: 'belongsTo',
+        searchable: true,
         resourceName: 'posts',
         resourceIdentifier: 'id',
         resourceLabel: 'title',
@@ -213,6 +220,7 @@ app.config(function (ConfigurationProvider) {
       'content': {
         label: 'Content',
         type: 'text',
+        searchable: false,
         views: {
           index: {
             enable: true
@@ -268,6 +276,7 @@ app.config(function (ConfigurationProvider) {
       'id': {
         identifier: true,
         label: 'Id',
+        searchable: false,
         type: 'text',
         views: {
           index: {
@@ -288,6 +297,7 @@ app.config(function (ConfigurationProvider) {
       'name': {
         label: 'Name',
         type: 'text',
+        searchable: true,
         views: {
           index: {
             enable: true
@@ -317,6 +327,7 @@ app.config(function (ConfigurationProvider) {
         identifier: true,
         label: 'Id',
         type: 'text',
+        searchable: false,
         views: {
           index: {
             enable: false
@@ -336,6 +347,7 @@ app.config(function (ConfigurationProvider) {
       'name': {
         label: 'Name',
         type: 'text',
+        searchable: true,
         views: {
           index: {
             enable: true
