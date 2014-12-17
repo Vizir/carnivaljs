@@ -66,7 +66,7 @@ module.exports = function (grunt) {
     watch: {
       dev: {
         files: ['Gruntfile.js', '!app/**/*.spec.js', 'app/**/*.js', 'app/**/*.html'],
-        tasks: ['html2js:dist', 'concat:dist', 'clean:tmp']
+        tasks: ['html2js:dist', 'concat:dist']
       },
       options: {
         atBegin: true
@@ -108,7 +108,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('dev', ['connect', 'watch:dev']);
   grunt.registerTask('test', ['jshint', 'html2js:dist', 'karma:unit', 'clean:tmp']);
-  grunt.registerTask('test:watch', ['jshint', 'html2js:dist', 'concat:dist', 'clean:tmp', 'karma:continuous']);
+  grunt.registerTask('test:watch', ['jshint', 'html2js:dist', 'karma:continuous', 'clean:tmp']);
   grunt.registerTask('build', ['jshint', 'html2js:dist', 'concat:dist', 'ngAnnotate:dist', 'clean:tmp', 'karma:unit', 'uglify:dist']);
 
 };
