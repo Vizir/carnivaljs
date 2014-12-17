@@ -15,6 +15,9 @@ angular.module('carnival.components.fields.select', [])
       if (!scope.editable) {
         element.attr('disabled', 'true');
       }
+    },
+    controller: function ($scope, utils) {
+      $scope.utils = utils;
     }
   };
 });
