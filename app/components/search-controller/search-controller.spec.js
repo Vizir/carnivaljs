@@ -4,9 +4,15 @@ describe('On carnival-search-controller component', function () {
 
   var setScopeData = function (scope) {
     scope.fields = [
-      {name: 'llama', label: 'Llama'},
-      {name: 'alpaca', label: 'Alpaca'}
+      {name: 'llama', label: 'Llama', type: 'text'},
+      {name: 'alpaca', label: 'Alpaca', resourceName: 'alpacas', type: 'belongsTo'}
     ];
+    scope.relatedResources = {
+      alpacas: [
+        {id: 1, name: 'Brown'},
+        {id: 2, name: 'White'}
+      ]
+    };
   };
 
   beforeEach(function () {
@@ -19,7 +25,7 @@ describe('On carnival-search-controller component', function () {
 
     setScopeData(scope);
 
-    element = angular.element('<carnival-search-ctrl fields="fields"></carnival-search-ctrl>');
+    element = angular.element('<carnival-search-ctrl fields="fields" related-resources="relatedResources"></carnival-search-ctrl>');
     compile(element)(scope);
     scope.$digest();
 

@@ -1,4 +1,12 @@
 <div>
   <h4>{{ 'Search' | translate }}</h4>
-  <carnival-form fields="entity.fields" editable="true" action="action" datas="searchParams" related-resources="relatedResources"></carnival-form>
+  <hr/>
+    <p ng-repeat="field in fields" ng-switch="field.type">
+      <label>{{ field.label }}</label>
+      <carnival-text-field ng-switch-when="text" label="field.label" data="searchParams[field.name]" editable="true"></carnival-text-field>
+      <carnival-select-field ng-switch-when="belongsTo" editable="true" items="relatedResources[field.resourceName]" data="searchParams[field.name]"></carnival-select-field>
+      <carnival-number-field ng-switch-when="number" data="searchParams[field.name]" label="field.label" editable="true"></carnival-number-field>
+    </p>
+  <hr/>
+  <carnival-button label="Submit" size="sm" style="default" ng-click="submit()"></carnival-button>
 </div>
