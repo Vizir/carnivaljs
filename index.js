@@ -141,29 +141,6 @@ app.config(function (ConfigurationProvider) {
       //       }
       //     }
       //   }
-      // },
-
-      // 'status': {
-      //   type: 'enum',
-      //   enumValues: {
-      //     'draft': 0,
-      //     'published': 1,
-      //     'archived': 2
-      //   },
-      //   views: {
-      //     index: {
-      //       enable: true
-      //     },
-      //     create: {
-      //       enable: true
-      //     },
-      //     show: {
-      //       enable: true
-      //     },
-      //     edit: {
-      //       enable: true
-      //     }
-      //   }
       // }
     }
   });
@@ -223,8 +200,7 @@ app.config(function (ConfigurationProvider) {
             enable: true
           }
         }
-      }
-      ,
+      },
 
       'content': {
         label: 'Content',
@@ -268,29 +244,6 @@ app.config(function (ConfigurationProvider) {
       //       nested: {
       //         mode:['new', 'associate', 'deassociate', 'edit']
       //       }
-      //     }
-      //   }
-      // },
-      //
-      // 'status': {
-      //   type: 'enum',
-      //   enumValues: {
-      //     'draft': 0,
-      //     'published': 1,
-      //     'archived': 2
-      //   },
-      //   views: {
-      //     index: {
-      //       enable: true
-      //     },
-      //     create: {
-      //       enable: true
-      //     },
-      //     show: {
-      //       enable: true
-      //     },
-      //     edit: {
-      //       enable: true
       //     }
       //   }
       // }
@@ -343,7 +296,7 @@ app.config(function (ConfigurationProvider) {
         }
       }
     }
-  });    
+  });
   ConfigurationProvider.addEntity('tags', {
 
     label: 'Tags',
@@ -413,29 +366,6 @@ app.config(function (ConfigurationProvider) {
       //       nested: {
       //         mode:['new', 'associate', 'deassociate', 'edit']
       //       }
-      //     }
-      //   }
-      // },
-      //
-      // 'status': {
-      //   type: 'enum',
-      //   enumValues: {
-      //     'draft': 0,
-      //     'published': 1,
-      //     'archived': 2
-      //   },
-      //   views: {
-      //     index: {
-      //       enable: true
-      //     },
-      //     create: {
-      //       enable: true
-      //     },
-      //     show: {
-      //       enable: true
-      //     },
-      //     edit: {
-      //       enable: true
       //     }
       //   }
       // }
