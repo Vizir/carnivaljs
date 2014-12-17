@@ -6,6 +6,8 @@ angular.module('carnival.components.fields.select', [])
     scope: {
       data: '=',
       items: '=',
+      resourceLabel: '=',
+      resourceIdentifier: '=',
       editable: '='
     },
     templateUrl: 'components/fields/select/select.html',
