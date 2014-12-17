@@ -10,7 +10,11 @@ app.config(function (ConfigurationProvider) {
 
     label: 'Posts',
     identifier: 'id',
-    filters: ['published', 'draft', 'archived'],
+
+    quickFilters: [
+      { label: 'Food', field: 'category', value: '1' },
+      { label: 'Sport', field: 'category', value: '2' }
+    ],
 
     fields: {
 
@@ -319,7 +323,6 @@ app.config(function (ConfigurationProvider) {
 
     label: 'Tags',
     identifier: 'id',
-    filters: ['published', 'draft', 'archived'],
 
     fields: {
 

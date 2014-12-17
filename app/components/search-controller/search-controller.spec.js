@@ -31,9 +31,8 @@ describe('On carnival-search-controller component', function () {
 
   });
 
-  it('should render a form with fields', function () {
-    expect(element.html()).to.contain('Llama');
-    expect(element.html()).to.contain('Alpaca');
+  it('should render a submit button', function () {
+    expect(element.html()).to.contain('Submit');
   });
 
 });
