@@ -1,4 +1,4 @@
-angular.module('carnival.components.fields')
+angular.module('carnival.components.fields.select', [])
 .directive('carnivalSelectField', function () {
   return {
     restrict: 'E',
