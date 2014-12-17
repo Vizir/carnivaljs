@@ -10,7 +10,6 @@ angular.module('carnival.components.quickfilter-controller', [])
     link: function (scope) {
 
       var searchs = urlParams.getFilter('search') || {};
-      console.log(searchs);
 
       scope.setFilter = function (field, value) {
         searchs[field] = value;
