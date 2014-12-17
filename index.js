@@ -190,13 +190,21 @@ app.config(function (ConfigurationProvider) {
           }
         }
       },
+
       'post': {
         label: 'Post',
-        resourceName: 'posts',
         type: 'belongsTo',
+        resourceName: 'posts',
+        resourceIdentifier: 'id',
         resourceLabel: 'title',
         views: {
           index: {
+            enable: true,
+          },
+          create: {
+            enable: true
+          },
+          edit: {
             enable: true
           }
         }
