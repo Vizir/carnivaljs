@@ -74,6 +74,9 @@ app.config(function (ConfigurationProvider) {
           },
           edit: {
             enable: true
+          },
+          show: {
+            enable: true
           }
         }
       },

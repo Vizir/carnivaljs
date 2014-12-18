@@ -1,5 +1,5 @@
 angular.module('carnival')
-.controller('EditController', function ($scope, $stateParams, $state, Configuration, Notification) {
+.controller('EditController', function ($rootScope, $scope, $stateParams, $state, Configuration, Notification) {
 
   var entity = $scope.entity = {};
 
@@ -19,7 +19,7 @@ angular.module('carnival')
     entity.label = entity.model.label;
     entity.fields = [];
     entity.datas = {};
-  
+
     $scope.buildFieldsForState({state: 'edit', entity: entity});
 
     entity.action = {
