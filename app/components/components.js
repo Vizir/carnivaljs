@@ -4,6 +4,7 @@ angular.module('carnival.components', [
   'carnival.components.delete-button',
   'carnival.components.listing',
   'carnival.components.listingfieldbelongsto',
+  'carnival.components.listingfieldhasmany',
   'carnival.components.listingfield',
   'carnival.components.navbar',
   'carnival.components.fields',

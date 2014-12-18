@@ -10,15 +10,13 @@ angular.module('carnival')
   };
 
   var hasRelatedResources = function(state, type){
-    return (state === 'edit' || state === 'create' || state === 'index') && type === 'belongsTo';
+    return (state === 'edit' || state === 'create' || state === 'index') && (type === 'belongsTo' || type === 'hasMany');
   };
 
   var prepareFields = function(entityWrapper, stateName){
     entityWrapper.relatedResources = {};
     for (var i = entityWrapper.model.fields.length - 1; i >= 0; i -= 1) {
       var field = entityWrapper.model.fields[i];
-      if (field.type === 'hasMany')
-        continue;
       if (entityWrapper.model.checkFieldView(field.name, stateName)) {
         entityWrapper.fields.unshift(field);
         if(hasRelatedResources(stateName, field.type)){
@@ -39,18 +37,18 @@ angular.module('carnival')
   };
 
   this.prepareForCreateState = function(resource, entityName){
-    this.prepareForState(resource, entityName, 'create'); 
+    this.prepareForState(resource, entityName, 'create');
   };
 
   this.prepareForEditState = function(resource, entityName){
-    this.prepareForState(resource, entityName, 'edit'); 
+    this.prepareForState(resource, entityName, 'edit');
   };
 
   this.prepareForShowState = function(resource, entityName){
-    this.prepareForState(resource, entityName, 'show'); 
+    this.prepareForState(resource, entityName, 'show');
   };
 
   this.prepareForListState = function(resource, entityName){
-    this.prepareForState(resource, entityName, 'index'); 
+    this.prepareForState(resource, entityName, 'index');
   };
 });

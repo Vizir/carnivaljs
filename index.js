@@ -100,34 +100,37 @@ app.config(function (ConfigurationProvider) {
             enable: true
           }
         }
+      },
+
+      'comments': {
+        label: 'Comments',
+        type: 'hasMany',
+        searchable: true,
+        resourceName: 'comments',
+        resourceLabel: 'name',
+        identifier: 'id',
+        views: {
+          index: {
+            enable: true
+          },
+          create: {
+            enable: true
+          },
+          show: {
+            enable: true,
+            nested: {
+              mode:['new', 'associate', 'deassociate', 'edit']
+            }
+          },
+          edit: {
+            enable: true,
+            nested: {
+              mode:['new', 'associate', 'deassociate', 'edit']
+            }
+          }
+        }
+
       }
-
-      // 'comments': {
-      //   endpoint: 'comments',
-      //   label: 'Comments',
-      //   type: 'hasMany',
-      //   views: {
-      //     index: {
-      //       enable: false
-      //     },
-      //     create: {
-      //       enable: false
-      //     },
-      //     show: {
-      //       enable: true,
-      //       nested: {
-      //         mode:['new', 'associate', 'deassociate', 'edit']
-      //       }
-      //     },
-      //     edit: {
-      //       enable: true,
-      //       nested: {
-      //         mode:['new', 'associate', 'deassociate', 'edit']
-      //       }
-      //     }
-      //   }
-
-      // },
 
       // 'tags': {
       //   endpoint: 'tags',
