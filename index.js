@@ -67,7 +67,7 @@ app.config(function (ConfigurationProvider) {
         resourceIdentifier: 'id',
         views: {
           index: {
-            enable: true,
+            enable: true
           },
           create: {
             enable: true

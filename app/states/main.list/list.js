@@ -1,5 +1,5 @@
 angular.module('carnival')
-.controller('ListController', function ($scope, $stateParams, $state, Configuration, Notification, urlParams) {
+.controller('ListController', function ($scope, $stateParams, $state, Configuration, Notification, urlParams, EntityResources) {
 
   var entity = $scope.entity = {},
 
@@ -49,13 +49,8 @@ angular.module('carnival')
   };
 
   var init = function () {
-    entity.model = Configuration.getEntity($stateParams.entity);
-    entity.name = entity.model.name;
-    entity.label = entity.model.label;
-    entity.identifier = entity.model.identifier;
-    entity.fields = [];
-    entity.datas = [];
-    $scope.buildFieldsForState({state: 'index', entity: entity});
+
+    EntityResources.prepareForListState(entity, $stateParams.entity);
 
     entity.actions = {
       create: onCreate,
