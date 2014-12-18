@@ -1,10 +1,10 @@
 angular.module('carnival')
-.controller('ListController', function ($scope, $stateParams, $state, Configuration, Notification, urlParams, EntityResources) {
+.controller('ListController', function ($rootScope, $scope, $stateParams, $state, Configuration, Notification, urlParams, EntityResources) {
 
   var entity = $scope.entity = {},
 
       pages = $scope.pages = {
-        current: parseInt(urlParams.getFilter('page'), 10),
+        current: parseInt(urlParams.getFilter('page'), 10)
       },
 
       order = $scope.order = {
@@ -52,7 +52,6 @@ angular.module('carnival')
     EntityResources.prepareForListState(entity, $stateParams.entity);
 
     pages.perPage = entity.model.pagination;
-    console.log(pages.perPage);
 
     entity.actions = {
       create: onCreate,
@@ -64,6 +63,11 @@ angular.module('carnival')
     entity.loadData();
 
   };
+
+  $rootScope.$on('filterParamsChange', function () {
+    console.log('STATE CHANGED!');
+    entity.loadData();
+  });
 
   init();
 
