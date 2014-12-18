@@ -2,86 +2,7 @@ describe('On CreateController', function() {
 
   var controller, CreateController, rootScope = {};
 
-  var Configuration = {
-    getAppName: function() {
-      return "Test";
-    },
-    getEntities: function () {
-      return []; 
-    },
-    getEntity: function () {
-      return {
-        name: 'cats',
-        label: 'Cats',
-        identifier: 'whiskers',
-        actions: ['edit', 'create', 'show', 'delete'],
-        fields: [
-          {
-            name:  'whiskers',
-            label: 'Whiskers',
-            type:  'text',
-            views: {
-              index: {
-                enable: true
-              },
-              create: {
-              },
-              show: {
-                enable: true
-              },
-              edit: {
-                enable: true
-              }
-            }
-          },
-          {
-            name: 'owners',
-            label: 'Owner',
-            type: 'belongsTo',
-            resourceLabel: 'name',
-            resourceName: 'owners',
-            views: {
-              edit: {
-                enable: true
-              },
-              create: {
-                enable: true
-              }
-            }
-          },
-          {
-            name:  'fur',
-            label: 'Fur',
-            type:  'text',
-            views: {
-              index: {
-                enable: true
-              },
-              create: {
-                enable: true
-              },
-              show: {
-                enable: true
-              },
-              edit: {
-                enable: true
-              }
-            }
-          }
-        ],
-        checkFieldView: function () {
-          return true;
-        },
-        getList: function () {
-          return {
-            success: function () {
-              return true;
-            }
-          };
-        }
-      };
-    }
-  };
+  var Configuration = SpecHelper.Configuration;
 
   var $stateParams = {
     entity: 'cats'
@@ -89,9 +10,11 @@ describe('On CreateController', function() {
 
   beforeEach(function () {
     module('carnival');
-    inject(function($controller, $rootScope){
+    inject(function($controller, $rootScope, $injector){
       controller = $controller;
       rootScope = $rootScope;
+      configurationService = $injector.get('Configuration');
+      configurationService.getEntity = Configuration.getEntity;
     });
 
     controller('MainController', {
@@ -101,7 +24,8 @@ describe('On CreateController', function() {
     $scope = rootScope.$new();
     CreateController = controller('CreateController', {
       $scope: $scope,
-      Configuration: Configuration
+      Configuration: Configuration,
+      $stateParams: $stateParams
     });
   });
 
