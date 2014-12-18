@@ -9,7 +9,7 @@ describe('On carnival-select component', function () {
       category: null
     };
     scope.resourceLabel = 'name';
-    scope.resourceIdentifier = 'id';
+    scope.identifier = 'id';
   };
 
   beforeEach(function () {
@@ -22,7 +22,7 @@ describe('On carnival-select component', function () {
 
     setScopeData(scope);
 
-    element = angular.element('<carnival-select-field data="datas.category" resource-label="resourceLabel" resource-identifier="resourceIdentifier" items="relatedResources.categories" editable="editable"></carnival-select-field>');
+    element = angular.element('<carnival-select-field data="datas.category" resource-label="resourceLabel" identifier="identifier" items="relatedResources.categories" editable="editable"></carnival-select-field>');
     compile(element)(scope);
     scope.$digest();
 
