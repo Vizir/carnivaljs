@@ -14,7 +14,7 @@ angular.module('carnival')
         searchable:         fields[field_name].searchable,
         resourceName:       fields[field_name].resourceName,
         resourceLabel:      fields[field_name].resourceLabel,
-        resourceIdentifier: fields[field_name].resourceIdentifier,
+        identifier: fields[field_name].identifier,
         type:               fields[field_name].type,
         views:              fields[field_name].views
       });

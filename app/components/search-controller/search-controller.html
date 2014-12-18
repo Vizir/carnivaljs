@@ -4,7 +4,7 @@
     <p ng-repeat="field in fields" ng-if="field.searchable" ng-switch="field.type">
       <label>{{ field.label }}</label>
       <carnival-text-field ng-switch-when="text" label="field.label" data="searchParams[field.name]" editable="true"></carnival-text-field>
-      <carnival-select-field ng-switch-when="belongsTo" editable="true" resource-label="field.resourceLabel" resource-identifier="field.resourceIdentifier" items="relatedResources[field.resourceName]" data="searchParams[field.name]"></carnival-select-field>
+      <carnival-select-field ng-switch-when="belongsTo" editable="true" resource-label="field.resourceLabel" identifier="field.identifier" items="relatedResources[field.resourceName]" data="searchParams[field.name]"></carnival-select-field>
       <carnival-number-field ng-switch-when="number" data="searchParams[field.name]" label="field.label" editable="true"></carnival-number-field>
     </p>
   <hr/>

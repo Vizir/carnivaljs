@@ -65,7 +65,7 @@ app.config(function (ConfigurationProvider) {
         searchable: true,
         resourceName: 'categories',
         resourceLabel: 'name',
-        resourceIdentifier: 'id',
+        identifier: 'id',
         views: {
           index: {
             enable: true
@@ -210,7 +210,7 @@ app.config(function (ConfigurationProvider) {
         type: 'belongsTo',
         searchable: true,
         resourceName: 'posts',
-        resourceIdentifier: 'id',
+        identifier: 'id',
         resourceLabel: 'title',
         views: {
           index: {
