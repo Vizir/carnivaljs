@@ -8,7 +8,6 @@ angular.module('carnival.components.quickfilter-controller', [])
     },
     templateUrl: 'components/quickfilter-controller/quickfilter-controller.html',
     link: function (scope) {
-
       var searchs = urlParams.getFilter('search') || {};
 
       scope.isSelected = function (field, value) {
@@ -20,6 +19,7 @@ angular.module('carnival.components.quickfilter-controller', [])
         searchs[field] = value;
         urlParams.setFilter('search', searchs, true);
       };
+
     }
   };
 });
