@@ -1,3 +1,2 @@
-<select ng-model="data">
-  <option ng-repeat="item in items" value="{{ item[resourceIdentifier] }}">{{ utils.cutString(item[resourceLabel], 20, true) }}</option>
+<select ng-model="data[resourceIdentifier]" ng-options="item[resourceIdentifier] as utils.cutString(item[resourceLabel], 30) for item in items">
 </select>

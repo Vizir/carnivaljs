@@ -16,7 +16,7 @@ angular.module('carnival.components.fields.select', [])
         element.attr('disabled', 'true');
       }
     },
-    controller: function ($scope, utils) {
+    controller: function ($rootScope, $scope, utils) {
       $scope.utils = utils;
     }
   };

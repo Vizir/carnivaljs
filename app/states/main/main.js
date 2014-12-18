@@ -15,7 +15,7 @@ angular.module('carnival')
   };
 
   var hasRelatedResources = function(state, type){
-    return (state === 'edit' || state === 'create' || state === 'index') && type === 'belongsTo';
+    return (state === 'edit' || state === 'create' || state === 'index' || state === 'show') && type === 'belongsTo';
   };
 
   $scope.buildFieldsForState = function(args){
