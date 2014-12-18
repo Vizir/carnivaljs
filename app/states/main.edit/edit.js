@@ -1,10 +1,6 @@
 angular.module('carnival')
-<<<<<<< Updated upstream
 .controller('EditController', function ($rootScope, $scope, $stateParams, $state, Configuration, Notification, EntityResources) {
-=======
-.controller('EditController', function ($scope, $stateParams, $state, Configuration, Notification, EntityResources) {
 
->>>>>>> Stashed changes
   var entity = $scope.entity = {};
 
   var onSave = function () {
