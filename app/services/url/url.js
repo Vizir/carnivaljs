@@ -1,5 +1,5 @@
 angular.module('carnival')
-.service('urlParams', function ($state, $stateParams) {
+.service('urlParams', function ($rootScope, $location, $state, $stateParams) {
 
   var defaultValues = {
     page: 1
@@ -36,7 +36,8 @@ angular.module('carnival')
   };
 
   this.reload = function () {
-    $state.go($state.current.name, $stateParams);
+    $location.search('filters', $stateParams.filters);
+    $rootScope.$broadcast('filterParamsChange');
   };
 
 });

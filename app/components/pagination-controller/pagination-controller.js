@@ -1,5 +1,5 @@
 angular.module('carnival.components.pagination-controller', [])
-.directive('carnivalPaginationCtrl', function (urlParams) {
+.directive('carnivalPaginationCtrl', function ($rootScope, urlParams) {
   return {
     restrict: 'E',
     replace: true,
@@ -14,12 +14,15 @@ angular.module('carnival.components.pagination-controller', [])
       };
       scope.nextPage = function () {
         if (scope.currentPage === scope.totalPages) return;
-        urlParams.setFilter('page', scope.currentPage++, true);
+        urlParams.setFilter('page', scope.currentPage + 1, true);
       };
       scope.prevPage = function () {
         if (scope.currentPage === 1) return;
-        urlParams.setFilter('page', scope.currentPage--, true);
+        urlParams.setFilter('page', scope.currentPage - 1, true);
       };
+      $rootScope.$on('filterParamsChange', function () {
+        scope.currentPage = urlParams.getFilter('page');
+      });
     }
   };
 });
