@@ -1,6 +1,5 @@
 angular.module('carnival')
 .controller('EditController', function ($rootScope, $scope, $stateParams, $state, Configuration, Notification, EntityResources) {
-
   var entity = $scope.entity = {};
 
   var onSave = function () {
