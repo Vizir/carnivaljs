@@ -5,7 +5,6 @@ angular.module('carnival')
 
       pages = $scope.pages = {
         current: parseInt(urlParams.getFilter('page'), 10),
-        perPage: 10 /* TODO: Change this */
       },
 
       order = $scope.order = {
@@ -56,6 +55,9 @@ angular.module('carnival')
     entity.fields = [];
     entity.datas = [];
     $scope.buildFieldsForState({state: 'index', entity: entity});
+
+    pages.perPage = entity.model.pagination;
+    console.log(pages.perPage);
 
     entity.actions = {
       create: onCreate,

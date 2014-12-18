@@ -30,6 +30,7 @@ angular.module('carnival')
     this.label = options.label || name;
     this.identifier = options.identifier;
     this.quickFilters = options.quickFilters;
+    this.pagination = options.pagination || 10;
     this.filters = options.filters;
     this.fields = [];
     buildFields(options.fields, this);

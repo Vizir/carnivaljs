@@ -10,6 +10,7 @@ app.config(function (ConfigurationProvider) {
 
     label: 'Posts',
     identifier: 'id',
+    pagination: 10,
 
     quickFilters: [
       { label: 'Food', field: 'category', value: '1' },
