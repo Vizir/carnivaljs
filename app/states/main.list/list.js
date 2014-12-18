@@ -5,14 +5,7 @@ angular.module('carnival')
 
       pages = $scope.pages = {
         current: parseInt(urlParams.getFilter('page'), 10)
-      },
-
-      order = $scope.order = {
-        field: urlParams.getFilter('order'),
-        dir: urlParams.getFilter('orderDir')
-      },
-
-      search = $scope.search = urlParams.getFilter('search');
+      };
 
   var onCreate = function () {
     $state.go('main.create', { entity: entity.name });
@@ -40,7 +33,7 @@ angular.module('carnival')
   entity.loadData = function () {
     var offset   = pages.perPage * (urlParams.getFilter('page') - 1);
     var limit    = pages.perPage;
-    entity.model.getList(offset, limit, order.field, order.dir, search)
+    entity.model.getList(offset, limit, urlParams.getFilter('order'), urlParams.getFilter('orderDir'), urlParams.getFilter('search'))
     .success(function (data, status, headers, config) {
       pages.total = 30 / pages.perPage; /* TODO: headers('X-Total-Count') */
       entity.datas = data;
