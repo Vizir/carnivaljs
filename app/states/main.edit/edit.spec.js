@@ -100,9 +100,11 @@ describe('On EditController', function() {
   beforeEach(function () {
     module('carnival');
 
-    inject(function($controller, $rootScope){
+    inject(function($controller, $rootScope, $injector){
       controller = $controller;
       rootScope = $rootScope;
+      configurationService = $injector.get('Configuration');
+      configurationService.getEntity = Configuration.getEntity;
     });
 
     controller('MainController', {

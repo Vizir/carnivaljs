@@ -89,9 +89,11 @@ describe('On CreateController', function() {
 
   beforeEach(function () {
     module('carnival');
-    inject(function($controller, $rootScope){
+    inject(function($controller, $rootScope, $injector){
       controller = $controller;
       rootScope = $rootScope;
+      configurationService = $injector.get('Configuration');
+      configurationService.getEntity = Configuration.getEntity;
     });
 
     controller('MainController', {
@@ -101,7 +103,8 @@ describe('On CreateController', function() {
     $scope = rootScope.$new();
     CreateController = controller('CreateController', {
       $scope: $scope,
-      Configuration: Configuration
+      Configuration: Configuration,
+      $stateParams: $stateParams
     });
   });
 

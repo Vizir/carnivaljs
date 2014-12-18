@@ -1,5 +1,5 @@
 angular.module('carnival')
-.controller('ShowController', function ($scope, $stateParams, $state, Configuration) {
+.controller('ShowController', function ($scope, $stateParams, $state, Configuration, EntityResources) {
 
   var entity = $scope.entity = {};
 
@@ -8,12 +8,7 @@ angular.module('carnival')
   };
 
   var init = function () {
-    entity.model = Configuration.getEntity($stateParams.entity);
-    entity.label = entity.model.label;
-    entity.fields = [];
-    entity.datas = {};
-
-    $scope.buildFieldsForState({state: 'show', entity: entity});
+    EntityResources.prepareForListState(entity, $stateParams.entity);
 
     entity.action = {
       label: 'Edit',
