@@ -11,7 +11,7 @@ angular.module('carnival.components.listingfieldhasmany', [])
     controller: function ($scope, $stateParams, Configuration, urlParams) {
       var entity = Configuration.getEntity($stateParams.entity);
       $scope.getUrl = function () {
-        return '#/list/' + $scope.field.resourceName + '?filters={"page": 1, "search": { "post": ' + $scope.item[entity.identifier] + ' }}';
+        return '#/list/' + $scope.field.resourceName + '?filters=' + encodeURIComponent('{"page": 1, "search": { "' + $scope.field.from + '": ' + $scope.item[entity.identifier] + ' }}');
       };
     }
   };

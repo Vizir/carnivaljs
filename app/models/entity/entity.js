@@ -12,6 +12,7 @@ angular.module('carnival')
         name:               field_name,
         label:              fields[field_name].label,
         searchable:         fields[field_name].searchable,
+        from:               fields[field_name].from,
         resourceName:       fields[field_name].resourceName,
         resourceLabel:      fields[field_name].resourceLabel,
         identifier:         fields[field_name].identifier,

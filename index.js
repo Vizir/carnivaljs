@@ -105,6 +105,7 @@ app.config(function (ConfigurationProvider) {
       'comments': {
         label: 'Comments',
         type: 'hasMany',
+        from: 'post',
         searchable: true,
         resourceName: 'comments',
         resourceLabel: 'name',
