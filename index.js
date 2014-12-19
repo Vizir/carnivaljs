@@ -13,8 +13,12 @@ app.config(function (ConfigurationProvider) {
     pagination: 10,
 
     quickFilters: [
-      { label: 'Food', field: 'category', value: '1' },
-      { label: 'Sport', field: 'category', value: '2' }
+      { label: 'Food', field: 'category', value: function () {
+        return '1';
+      }},
+      { label: 'Sport', field: 'category', value: function () {
+        return '2';
+      }}
     ],
 
     fields: {
@@ -100,34 +104,38 @@ app.config(function (ConfigurationProvider) {
             enable: true
           }
         }
+      },
+
+      'comments': {
+        label: 'Comments',
+        type: 'hasMany',
+        from: 'post',
+        searchable: true,
+        resourceName: 'comments',
+        resourceLabel: 'name',
+        identifier: 'id',
+        views: {
+          index: {
+            enable: true
+          },
+          create: {
+            enable: true
+          },
+          show: {
+            enable: true,
+            nested: {
+              mode:['new', 'associate', 'deassociate', 'edit']
+            }
+          },
+          edit: {
+            enable: true,
+            nested: {
+              mode:['new', 'associate', 'deassociate', 'edit']
+            }
+          }
+        }
+
       }
-
-      // 'comments': {
-      //   endpoint: 'comments',
-      //   label: 'Comments',
-      //   type: 'hasMany',
-      //   views: {
-      //     index: {
-      //       enable: false
-      //     },
-      //     create: {
-      //       enable: false
-      //     },
-      //     show: {
-      //       enable: true,
-      //       nested: {
-      //         mode:['new', 'associate', 'deassociate', 'edit']
-      //       }
-      //     },
-      //     edit: {
-      //       enable: true,
-      //       nested: {
-      //         mode:['new', 'associate', 'deassociate', 'edit']
-      //       }
-      //     }
-      //   }
-
-      // },
 
       // 'tags': {
       //   endpoint: 'tags',

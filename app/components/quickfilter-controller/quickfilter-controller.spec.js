@@ -1,12 +1,18 @@
-describe('On carnival-quick-field component', function () {
+describe('On carnival-quickfilter component', function () {
 
   var compile, element, scope;
 
   var setScopeData = function (scope) {
     scope.filters = [
-      { label: 'Huey', field: 'nephews', value: 'huey' },
-      { label: 'Dewey', field: 'nephews', value: 'dewey' },
-      { label: 'Louie', field: 'nephews', value: 'louie' }
+      { label: 'Huey', field: 'nephews', value: function () {
+        return 'huey';
+      }},
+      { label: 'Dewey', field: 'nephews', value: function () {
+        return 'dewey';
+      }},
+      { label: 'Louie', field: 'nephews', value: function(){
+        return 'louie';
+      }}
     ];
   };
 

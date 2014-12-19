@@ -9,8 +9,12 @@ app.config(function (ConfigurationProvider) {
     pagination: 10, // optional: if not set all items will show on the page
 
     quickFilters: [
-      { label: 'Food', field: 'category', value: '1' },
-      { label: 'Sport', field: 'category', value: '2' }
+      { label: 'Food', field: 'category', value: function () {
+        return '1';
+      }},
+      { label: 'Sport', field: 'category', value: function () {
+        return '2';
+      }}
     ],
 
     fields: {
@@ -100,6 +104,7 @@ app.config(function (ConfigurationProvider) {
       // ---- Comments (Relation) Field ----
       'comments': {
         type: 'hasMany',
+        from: 'post',
         label: 'Comments',
         endpoint: 'comments',
         identifier: 'id',
@@ -122,6 +127,7 @@ app.config(function (ConfigurationProvider) {
       // ---- Tags (Relation) Field ----
       'tags': {
         type: 'hasMany',
+        from: 'post',
         label: 'Tags',
         endpoint: 'tags',
         identifier: 'id',

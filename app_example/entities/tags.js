@@ -50,6 +50,7 @@ app.config(function (ConfigurationProvider) {
         label: 'Posts',
         endpoint: 'posts',
         identifier: 'id',
+        from: 'tag',
         field: 'title',
         views: {
           index: {

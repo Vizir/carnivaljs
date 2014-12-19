@@ -58,7 +58,6 @@ angular.module('carnival')
   };
 
   $rootScope.$on('filterParamsChange', function () {
-    console.log('STATE CHANGED!');
     entity.loadData();
   });
 

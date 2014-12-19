@@ -24,6 +24,7 @@ angular.module('carnival')
         endpoint:   fields[field_name].endpoint,
         field:      fields[field_name].field,
         identifier: fields[field_name].identifier,
+        from:       fields[field_name].from,
         type:       fields[field_name].type,
         views:      buildViews(fields[field_name].views)
       });
