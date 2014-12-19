@@ -1,4 +1,4 @@
 <div>
-  <select ng-model="data" ng-options="item[identifier] as utils.cutString(item[resourceLabel], 25) for item in items">
+  <select ng-model="data" ng-options="item[identifier] as utils.cutString(item[field], 25) for item in items">
   </select>
 </div>

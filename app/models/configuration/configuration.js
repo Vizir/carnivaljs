@@ -2,6 +2,7 @@ angular.module('carnival').provider('Configuration', function() {
 
   var appName = null;
   var baseApiUrl = null;
+  var validateEntities = false;
   var entities = [];
 
   return {
@@ -13,7 +14,11 @@ angular.module('carnival').provider('Configuration', function() {
     setAppName: function (name) {
       appName = name;
     },
-    
+
+    validateEntities: function (validate) {
+      if (validate) validateEntities = true;
+    },
+
     setEntities: function(entities) {
       entities = entities;
     },
@@ -26,6 +31,8 @@ angular.module('carnival').provider('Configuration', function() {
       return {
 
         entities: entities,
+
+        validateEntities: validateEntities,
 
         getBaseApiUrl: function () {
           return baseApiUrl;

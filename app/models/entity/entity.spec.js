@@ -71,11 +71,6 @@ describe('On Entities Model', function () {
     expect(entity.identifier).to.be.equal('name');
   });
 
-  it('should define the filters properly', function () {
-    expect(entity.filters.length).to.be.equal(3);
-    expect(entity.filters[1]).to.be.equal('draft');
-  });
-
   it('should define the fields properly', function () {
     expect(entity.fields.length).to.be.equal(2);
     expect(entity.fields[0].name).to.be.equal('name');

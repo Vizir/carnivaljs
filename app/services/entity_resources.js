@@ -1,11 +1,11 @@
 angular.module('carnival')
 .service('EntityResources', function (Configuration) {
 
-  var getRelatedResources = function(entity, resourceName){
-    var belongsToField = Configuration.getEntity(resourceName);
+  var getRelatedResources = function(entity, endpoint){
+    var belongsToField = Configuration.getEntity(endpoint);
     belongsToField.getList().success(
       function (data, status, headers, config) {
-        entity.relatedResources[resourceName] = data;
+        entity.relatedResources[endpoint] = data;
       });
   };
 
@@ -22,7 +22,7 @@ angular.module('carnival')
       if (entityWrapper.model.checkFieldView(field.name, stateName)) {
         entityWrapper.fields.unshift(field);
         if(hasRelatedResources(stateName, field.type)){
-          getRelatedResources(entityWrapper, field.resourceName);
+          getRelatedResources(entityWrapper, field.endpoint);
         }
       }
     }
@@ -39,18 +39,18 @@ angular.module('carnival')
   };
 
   this.prepareForCreateState = function(resource, entityName){
-    this.prepareForState(resource, entityName, 'create'); 
+    this.prepareForState(resource, entityName, 'create');
   };
 
   this.prepareForEditState = function(resource, entityName){
-    this.prepareForState(resource, entityName, 'edit'); 
+    this.prepareForState(resource, entityName, 'edit');
   };
 
   this.prepareForShowState = function(resource, entityName){
-    this.prepareForState(resource, entityName, 'show'); 
+    this.prepareForState(resource, entityName, 'show');
   };
 
   this.prepareForListState = function(resource, entityName){
-    this.prepareForState(resource, entityName, 'index'); 
+    this.prepareForState(resource, entityName, 'index');
   };
 });

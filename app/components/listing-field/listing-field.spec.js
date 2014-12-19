@@ -1,5 +1,5 @@
 describe('On carnival-listing-field component', function () {
-  var element, scope, compile; 
+  var element, scope, compile;
 
   beforeEach(function () {
     module('carnival');
@@ -14,7 +14,7 @@ describe('On carnival-listing-field component', function () {
       scope.field = { name: 'title'};
       scope.item = { title: 'Title' };
     };
-    
+
     beforeEach(function(){
       setScopeData(scope);
       element = angular.element('<carnival-listing-field item="item" field="field"></carnival-listing-field>');
@@ -31,25 +31,25 @@ describe('On carnival-listing-field component', function () {
 
   describe("when is a belongsTo field", function(){
     var setScopeData = function(scope){
-      scope.field = { 
-        name: 'post', 
-        type: 'belongsTo', 
-        resourceName: 'posts',
-        resourceLabel: 'title',
+      scope.field = {
+        name: 'post',
+        type: 'belongsTo',
+        endpoint: 'posts',
+        field: 'title',
         views: {
           index: {
             enable: true
           }
         }
       };
-      scope.item = { 
+      scope.item = {
         comment: 'The book is on the table',
         post: {
-          title: 'Book' 
+          title: 'Book'
         }
       };
     };
-    
+
     beforeEach(function(){
       setScopeData(scope);
       element = angular.element('<carnival-listing-field item="item" field="field"></carnival-listing-field>');

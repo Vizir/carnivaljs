@@ -1,5 +1,5 @@
 describe('On carnival-listing-field-belongs-to component', function () {
-  var element, scope, compile; 
+  var element, scope, compile;
 
   beforeEach(function () {
     module('carnival');
@@ -11,10 +11,10 @@ describe('On carnival-listing-field-belongs-to component', function () {
 
   describe("when has a url", function(){
     var setScopeData = function(scope){
-      scope.field = { 
-        name: 'post', 
-        type: 'belongsTo', 
-        resourceName: 'posts',
+      scope.field = {
+        name: 'post',
+        type: 'belongsTo',
+        endpoint: 'posts',
         views: {
           index: {
             enable: true,
@@ -22,15 +22,15 @@ describe('On carnival-listing-field-belongs-to component', function () {
           }
         }
       };
-      scope.item = { 
+      scope.item = {
         comment: 'The book is on the table',
         postUrl: 'http://has.a.url',
         post: {
-          title: 'Book' 
+          title: 'Book'
         }
       };
     };
-    
+
     beforeEach(function(){
       setScopeData(scope);
       element = angular.element('<carnival-listing-field-belongs-to item="item" field="field"></carnival-listing-field>');
@@ -46,10 +46,10 @@ describe('On carnival-listing-field-belongs-to component', function () {
 
   describe("when not has a url", function(){
     var setScopeData = function(scope){
-      scope.field = { 
-        name: 'post', 
-        type: 'belongsTo', 
-        resourceName: 'posts',
+      scope.field = {
+        name: 'post',
+        type: 'belongsTo',
+        endpoint: 'posts',
         views: {
           index: {
             enable: true,
@@ -57,7 +57,7 @@ describe('On carnival-listing-field-belongs-to component', function () {
           }
         }
       };
-      scope.item = { 
+      scope.item = {
         comment: 'The book is on the table',
         post: {
           title: 'Book',
@@ -65,7 +65,7 @@ describe('On carnival-listing-field-belongs-to component', function () {
         }
       };
     };
-    
+
     beforeEach(function(){
       setScopeData(scope);
       element = angular.element('<carnival-listing-field-belongs-to item="item" field="field"></carnival-listing-field>');
