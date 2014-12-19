@@ -13,8 +13,12 @@ app.config(function (ConfigurationProvider) {
     pagination: 10,
 
     quickFilters: [
-      { label: 'Food', field: 'category', value: '1' },
-      { label: 'Sport', field: 'category', value: '2' }
+      { label: 'Food', field: 'category', value: function () {
+        return '1';
+      }},
+      { label: 'Sport', field: 'category', value: function () {
+        return '2';
+      }}
     ],
 
     fields: {
