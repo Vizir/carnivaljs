@@ -10,7 +10,6 @@ angular.module('carnival')
         sortable:   views[view_name].sortable   || true
       };
     });
-    console.log(_views);
     return _views;
   };
 
