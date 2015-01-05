@@ -1,8 +1,6 @@
 describe('On ListController', function() {
 
-  var controller, ShowController, rootScope = {};
-
-  var Configuration = SpecHelper.Configuration;
+  var controller, Configuration, ShowController, rootScope = {};
 
   var $stateParams = {
     entity: 'cats'
@@ -10,21 +8,26 @@ describe('On ListController', function() {
 
   beforeEach(function () {
     module('carnival');
-    inject(function($controller, $rootScope, $injector){
+
+    inject(function($controller, $rootScope, _Configuration_){
       controller = $controller;
       rootScope = $rootScope;
-      configurationService = $injector.get('Configuration');
-      configurationService.getEntity = Configuration.getEntity;
+      Configuration = _Configuration_;
     });
+
+    sinon.stub(Configuration, 'getEntity', function(name){
+      return SpecHelper.catConfiguration;
+    });
+
     controller('MainController', {
-      $scope: rootScope,
-      Configuration: Configuration
+      $scope: rootScope
     });
+
     $scope = rootScope.$new();
     ListController = controller('ListController', {
-      $scope: $scope,
-      Configuration: Configuration
+      $scope: $scope
     });
+
     $scope.entity.datas = [
       { whiskers: 'Mr Wiggle TypeX Alpha-Badass', fur: 'Pure Evil\'s Color' },
       { whiskers: 'Sr Whiskers TypeO Dragon Killer', fur: 'Soft like silk' }

@@ -40,4 +40,8 @@ angular.module('carnival')
     $rootScope.$broadcast('filterParamsChange');
   };
 
+  this.heavyReload = function () {
+    $state.go($state.current, $stateParams, { reload: true });
+  };
+
 });

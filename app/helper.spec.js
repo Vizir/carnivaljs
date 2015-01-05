@@ -63,6 +63,9 @@ SpecHelper.catConfiguration = {
           }
         }
       ],
+      getAppName: function() {
+        return "Test";
+      },
       checkFieldView: function () {
         return true;
       },

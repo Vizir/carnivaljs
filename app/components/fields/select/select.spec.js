@@ -8,7 +8,7 @@ describe('On carnival-select component', function () {
     scope.datas = {
       category: null
     };
-    scope.resourceLabel = 'name';
+    scope.field = 'name';
     scope.identifier = 'id';
   };
 
@@ -22,7 +22,7 @@ describe('On carnival-select component', function () {
 
     setScopeData(scope);
 
-    element = angular.element('<carnival-select-field data="datas.category" resource-label="resourceLabel" identifier="identifier" items="relatedResources.categories" editable="editable"></carnival-select-field>');
+    element = angular.element('<carnival-select-field data="datas.category" field="field" identifier="identifier" items="relatedResources.categories" editable="editable"></carnival-select-field>');
     compile(element)(scope);
     scope.$digest();
 
