@@ -3,7 +3,7 @@
   <a class="navbar-brand">{{ appName }}</a>
   <ul class="nav navbar-nav">
     <li ng-class="{ active: checkSelEntity($index) }" ng-repeat="item in menuItems">
-      <a ui-sref="main.list({ entity: item.name })" ng-click="resetPage()">{{ item.label }}</a>
+    <a href="{{ buildUrl(item.link) }}" ng-click="resetPage()">{{ item.label }}</a>
     </li>
   </ul>
   </div>
