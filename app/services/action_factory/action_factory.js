@@ -1,8 +1,9 @@
 angular.module('carnival')
-.service('ActionFactory', function () {
-  
-  this.buildCreateFunction = function(hasNestedForm){
+.service('ActionFactory', function (Notification, $state) {
+
+  this.buildCreateFunction = function(entity, hasNestedForm){
     return function () {
+      console.log(entity.datas);
       entity.model.create(entity.datas)
       .success(function (data, status, headers, config) {
         new Notification('Item created with success!', 'success');
@@ -27,7 +28,7 @@ angular.module('carnival')
       .error(function (data) {
         new Notification(data, 'danger');
       });
-    }; 
+    };
   };
 
   this.buildShowFunction = function(entity){
@@ -36,7 +37,7 @@ angular.module('carnival')
     };
   };
 
-  
+
   this.buildListFunction = function(entity){
     var onCreate = function () {
       $state.go('main.create', { entity: entity.name });
@@ -76,10 +77,10 @@ angular.module('carnival')
           name: 'action',
           value: {
             label: "Save",
-            click: this.buildCreateFunction(Object.keys(entity.nestedForms).length > 0)
+            click: this.buildCreateFunction(entity, Object.keys(entity.nestedForms).length > 0)
           }
         };
-      
+
       case 'edit':
         return {
           name: 'action',
@@ -105,6 +106,6 @@ angular.module('carnival')
         };
       default:
         return {};
-    }  
+    }
   };
 });
