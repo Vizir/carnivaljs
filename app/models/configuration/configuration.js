@@ -4,6 +4,7 @@ angular.module('carnival').provider('Configuration', function() {
   var baseApiUrl = null;
   var validateEntities = false;
   var entities = [];
+  var navbar = [];
 
   return {
     setBaseApiUrl: function (url) {
@@ -25,6 +26,10 @@ angular.module('carnival').provider('Configuration', function() {
 
     addEntity: function (entityName, entityOptions) {
       entities.push({ name: entityName, options: entityOptions });
+    },
+
+    addNavbarItem: function (options) {
+      navbar.push(options);
     },
 
     $get: function () {
@@ -53,6 +58,10 @@ angular.module('carnival').provider('Configuration', function() {
 
         getEntities: function () {
           return entities;
+        },
+
+        getNavbarItems: function () {
+          return navbar;
         }
 
       };

@@ -6,12 +6,12 @@ describe('On MainController', function() {
     getAppName: function () {
       return 'Fruit Salad';
     },
-    getEntities: function () {
+    getNavbarItems: function () {
       return [
-        { name: 'banana', label: 'Banana' },
-        { name: 'apple', label: 'Apple'  },
-        { name: 'orange', label: 'Orange' },
-        { name: 'bacon', label: 'Bacon' }
+        { label: 'Banana', link: { type: 'entity', url: 'banana' } },
+        { label: 'Apple',  link: { type: 'entity', url: 'apple' } },
+        { label: 'Orange', link: { type: 'entity', url: 'orange' } },
+        { label: 'Bacon',  link: { type: 'url',    url: 'http://bacon.com' } }
       ];
     }
   };

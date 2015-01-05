@@ -1,5 +1,5 @@
 SpecHelper = {
-  
+
 };
 
 SpecHelper.Configuration = {
@@ -7,7 +7,15 @@ SpecHelper.Configuration = {
       return "Test";
     },
     getEntities: function () {
-      return []; 
+      return [];
+    },
+    getNavbarItems: function () {
+      return [
+        { label: 'Banana', link: { type: 'entity', url: 'banana' } },
+        { label: 'Apple',  link: { type: 'entity', url: 'apple' } },
+        { label: 'Orange', link: { type: 'entity', url: 'orange' } },
+        { label: 'Bacon',  link: { type: 'url',    url: 'http://bacon.com' } }
+      ];
     },
     getEntity: function () {
       return {
@@ -76,10 +84,10 @@ SpecHelper.Configuration = {
           return {
             success: function(func){
               func({
-              
+
               });
             }
-          }; 
+          };
         },
         getList: function () {
           return {
