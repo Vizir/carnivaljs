@@ -5,7 +5,7 @@ describe('On carnival-search-controller component', function () {
   var setScopeData = function (scope) {
     scope.fields = [
       {name: 'llama', label: 'Llama', type: 'text'},
-      {name: 'alpaca', label: 'Alpaca', resourceName: 'alpacas', type: 'belongsTo'}
+      {name: 'alpaca', label: 'Alpaca', endpoint: 'alpacas', type: 'belongsTo'}
     ];
     scope.relatedResources = {
       alpacas: [

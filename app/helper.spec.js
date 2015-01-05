@@ -31,7 +31,7 @@ SpecHelper.catConfiguration = {
           label: 'Owner',
           type: 'belongsTo',
           resourceLabel: 'name',
-          resourceName: 'owners',
+          endpoint: 'owners',
           views: {
             edit: {
               enable: true,

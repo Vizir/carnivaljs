@@ -5,14 +5,14 @@ angular.module('carnival')
     if(!field.views[stateName].nested)
        return;
     
-    entity.nestedForms[field.resourceName] = prepareEntityForState(field.resourceName, stateName, field);
+    entity.nestedForms[field.endpoint] = prepareEntityForState(field.endpoint, stateName, field);
   };
 
-  var getRelatedResources = function(entity, resourceName){
-    var belongsToField = Configuration.getEntity(resourceName);
+  var getRelatedResources = function(entity, endpoint){
+    var belongsToField = Configuration.getEntity(endpoint);
     belongsToField.getList().success(
       function (data, status, headers, config) {
-        entity.relatedResources[resourceName] = data;
+        entity.relatedResources[endpoint] = data;
       });
   };
 
@@ -21,14 +21,16 @@ angular.module('carnival')
   };
 
   var prepareField = function(entityWrapper, stateName, field, isField){
-    if (entityWrapper.model.checkFieldView(field.name, stateName)) {
-      entityWrapper.fields.unshift(field);
-      if(hasRelatedResources(stateName, field.type)){
-        getRelatedResources(entityWrapper, field.resourceName);
-        if(!isField && stateName === 'edit' )
-          getNestedForm(entityWrapper, stateName, field);
-      }
-    }
+    if (!entityWrapper.model.checkFieldView(field.name, stateName))
+      return;
+
+    entityWrapper.fields.unshift(field);
+    if(!hasRelatedResources(stateName, field.type))
+      return;
+
+    getRelatedResources(entityWrapper, field.endpoint);
+    if(!isField && stateName === 'edit' )
+      getNestedForm(entityWrapper, stateName, field);
   };
 
   var prepareFields = function(entityWrapper, stateName, isField){

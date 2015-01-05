@@ -4,7 +4,7 @@ angular.module('carnival')
   var entity = $scope.entity = {};
 
   var init = function () {
-    entity = $scope.entity = EntityResources.prepareForShowState(entity, $stateParams.entity);
+    entity = $scope.entity = EntityResources.prepareForShowState($stateParams.entity);
 
     entity.model.getOne($stateParams.id)
     .success(function (data) {

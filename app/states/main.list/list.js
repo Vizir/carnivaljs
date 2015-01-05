@@ -3,9 +3,9 @@ angular.module('carnival')
 
   var entity = $scope.entity = {},
 
-      pages = $scope.pages = {
-        current: parseInt(urlParams.getFilter('page'), 10)
-      };
+  pages = $scope.pages = {
+    current: parseInt(urlParams.getFilter('page'), 10)
+  };
 
   var onCreate = function () {
     $state.go('main.create', { entity: entity.name });
