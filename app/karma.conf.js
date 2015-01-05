@@ -1,7 +1,7 @@
 module.exports = function(config) {
   config.set({
     basePath: '../',
-    frameworks: ['chai', 'mocha'],
+    frameworks: ['chai', 'mocha', 'sinon'],
     files: [
       // Carnival
       'bower_components/angular/angular.js',

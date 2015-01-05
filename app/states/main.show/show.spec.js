@@ -37,7 +37,7 @@ describe('On ShowController', function() {
   });
 
   it('should fill the scope with the fields information properly', function () {
-    expect($scope.entity.fields[1].name).to.be.equal('owners');
+    expect($scope.entity.fields[1].name).to.be.equal('owner');
     expect($scope.entity.fields[1].label).to.be.equal('Owner');
     expect($scope.entity.fields[1].type).to.be.equal('belongsTo');
     expect($scope.entity.fields[1].views.edit.enable).to.be.equal(true);

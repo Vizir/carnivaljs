@@ -38,6 +38,8 @@
     "karma-ng-html2js-preprocessor": "^0.1.2",
     "karma-phantomjs-launcher": "^0.1.4",
     "mocha": "^2.0.1",
-    "karma-coverage": "~0.2.7"
+    "karma-coverage": "~0.2.7",
+    "sinon": "~1.12.2",
+    "karma-sinon": "~1.0.4"
   }
 }

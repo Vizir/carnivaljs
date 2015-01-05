@@ -14,51 +14,24 @@ angular.module('carnival')
 
       search = $scope.search = urlParams.getFilter('search');
 
-  var onCreate = function () {
-    $state.go('main.create', { entity: entity.name });
-  };
 
-  var onEdit = function (id) {
-    $state.go('main.edit', { entity: entity.name, id: id });
-  };
-
-  var onShow = function (id) {
-    $state.go('main.show', { entity: entity.name, id: id });
-  };
-
-  var onDelete = function (id) {
-    entity.model.delete(id)
-    .success(function () {
-      new Notification('Item deleted with success!', 'warning');
-      $state.reload();
-    })
-    .error(function (data) {
-      new Notification(data, 'danger');
-    });
-  };
-
-  entity.loadData = function () {
-    var offset   = pages.perPage * (urlParams.getFilter('page') - 1);
-    var limit    = pages.perPage;
-    entity.model.getList(offset, limit, order.field, order.dir, search)
-    .success(function (data, status, headers, config) {
-      pages.total = 30 / pages.perPage; /* TODO: headers('X-Total-Count') */
-      entity.datas = data;
-    });
-  };
 
   var init = function () {
 
-    EntityResources.prepareForListState(entity, $stateParams.entity);
+    $scope.entity = entity = EntityResources.prepareForListState($stateParams.entity);
 
     pages.perPage = entity.model.pagination;
 
-    entity.actions = {
-      create: onCreate,
-      edit: onEdit,
-      show: onShow,
-      delete: onDelete
+    entity.loadData = function () {
+      var offset   = pages.perPage * (urlParams.getFilter('page') - 1);
+      var limit    = pages.perPage;
+      entity.model.getList(offset, limit, order.field, order.dir, search)
+      .success(function (data, status, headers, config) {
+        pages.total = 30 / pages.perPage; /* TODO: headers('X-Total-Count') */
+        entity.datas = data;
+      });
     };
+
 
     entity.loadData();
 
