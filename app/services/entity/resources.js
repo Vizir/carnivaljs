@@ -4,7 +4,7 @@ angular.module('carnival')
   var getNestedForm = function(entity, stateName, field){
     if(!field.views[stateName].nested)
        return;
-    
+
     entity.nestedForms[field.endpoint] = prepareEntityForState(field.endpoint, stateName, field);
   };
 
@@ -54,7 +54,7 @@ angular.module('carnival')
     entityWrapper.label = entityWrapper.model.label;
     entityWrapper.identifier = entityWrapper.model.identifier;
     entityWrapper.fields = [];
-    entityWrapper.datas = [];
+    entityWrapper.datas = {};
     prepareFields(entityWrapper, stateName, isField);
     prepareActions(entityWrapper, stateName);
     return entityWrapper;
@@ -65,18 +65,18 @@ angular.module('carnival')
   };
 
   this.prepareForCreateState = function(entityName){
-    return this.prepareForState(entityName, 'create'); 
+    return this.prepareForState(entityName, 'create');
   };
 
   this.prepareForEditState = function(entityName){
-    return this.prepareForState(entityName, 'edit'); 
+    return this.prepareForState(entityName, 'edit');
   };
 
   this.prepareForShowState = function(entityName){
-    return this.prepareForState(entityName, 'show'); 
+    return this.prepareForState(entityName, 'show');
   };
 
   this.prepareForListState = function(entityName){
-    return this.prepareForState(entityName, 'index'); 
+    return this.prepareForState(entityName, 'index');
   };
 });

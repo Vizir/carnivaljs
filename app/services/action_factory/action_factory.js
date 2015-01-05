@@ -3,7 +3,6 @@ angular.module('carnival')
 
   this.buildCreateFunction = function(entity, hasNestedForm){
     return function () {
-      console.log(entity.datas);
       entity.model.create(entity.datas)
       .success(function (data, status, headers, config) {
         new Notification('Item created with success!', 'success');
