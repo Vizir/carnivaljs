@@ -4,6 +4,7 @@ angular.module('carnival')
   var getNestedForm = function(entity, stateName, field){
     if(!field.views[stateName].nested)
        return;
+
     
     entity.nestedForms[field.endpoint] = prepareEntityForState(field.endpoint, stateName, field);
   };

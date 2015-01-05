@@ -2,6 +2,9 @@
 
   <h3>{{ 'Edit' | translate }} {{ entity.label }}</h3>
 
-  <carnival-form fields="entity.fields" datas="entity.datas" action="entity.action" state="edit" related-resources="entity.relatedResources" editable="true"></carnival-form>
-
+  <carnival-form entity="entity" fields="entity.fields" datas="entity.datas" action="entity.action" state="edit" related-resources="entity.relatedResources" editable="true"></carnival-form>
+  
+  <div ng-repeat="nestedFormEntity in entity.nestedForms">
+    <carnival-form entity="nestedFormEntity" fields="nestedFormEntity.fields" datas="nestedFormEntity.datas" action="nestedFormEntity.action" state="create" related-resources="nestedFormEntity.relatedResources" editable="true"></carnival-form>
+  </div>
 </div>

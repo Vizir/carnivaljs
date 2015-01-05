@@ -7,6 +7,7 @@ angular.module('carnival')
       _views[view_name] = {
         enable:    views[view_name].enable,
         searchable: views[view_name].searchable || true,
+        nested: views[view_name].nested || false,
         sortable:   views[view_name].sortable   || true
       };
     });

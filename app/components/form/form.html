@@ -5,7 +5,7 @@
       <!-- Fields -->
       <carnival-text-field ng-switch-when="text" data="datas[field.name]" label="field.label" editable="editable"></carnival-text-field>
       <carnival-number-field ng-switch-when="number" data="datas[field.name]" label="field.label" editable="editable"></carnival-number-field>
-      <carnival-belongs-to-field ng-switch-when="belongsTo" datas="datas" field="field" related-resources="relatedResources" editable="editable"></carnival-belongs-to-field>
+      <carnival-belongs-to-field ng-switch-when="belongsTo" entity="entity" field="field" datas="entity.datas" action="entity.action" state="edit" related-resources="entity.relatedResources" editable="true"></carnival-belongs-to-field>
       <carnival-text-field ng-switch-default data="datas[field.name]" label="field.label" editable="editable"></carnival-text-field>
     </div>
   </div>

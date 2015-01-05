@@ -4,6 +4,7 @@ angular.module('carnival.components.form', [])
     restrict: 'E',
     replace: true,
     scope: {
+      entity: '=',
       fields: '=',
       action: '=',
       state: '@state',
