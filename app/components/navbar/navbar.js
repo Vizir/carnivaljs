@@ -13,6 +13,7 @@ angular.module('carnival.components.navbar', [])
       $scope.buildUrl = function (link) {
         if (link.type === 'entity') return '#/list/' + link.url;
         if (link.type === 'url')    return link.url;
+        return '#';
       };
 
       $scope.checkSelEntity = function (index) {
