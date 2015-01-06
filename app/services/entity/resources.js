@@ -9,15 +9,19 @@ angular.module('carnival')
   };
 
   var getRelatedResources = function(entity, endpoint){
-    var belongsToField = Configuration.getEntity(endpoint);
-    belongsToField.getList().success(
+    var relatedField = Configuration.getEntity(endpoint);
+    relatedField.getList().success(
       function (data, status, headers, config) {
         entity.relatedResources[endpoint] = data;
       });
   };
 
   var hasRelatedResources = function(state, type){
-    return (state === 'edit' || state === 'create' || state === 'index') && type === 'belongsTo';
+    return (state === 'edit' || state === 'create' || state === 'index') && isARelation(type);
+  };
+
+  var isARelation = function(type){
+    return (type === 'belongsTo' || type === 'hasMany');
   };
 
   var prepareField = function(entityWrapper, stateName, field, isField){

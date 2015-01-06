@@ -118,7 +118,8 @@ app.config(function (ConfigurationProvider) {
             enable: true
           },
           edit: {
-            enable: true
+            enable: true,
+            nested: true
           },
           show: {
             enable: true
@@ -141,7 +142,8 @@ app.config(function (ConfigurationProvider) {
             enable: true
           },
           edit: {
-            enable: true
+            enable: true,
+            nested: true
           },
           show: {
             enable: true

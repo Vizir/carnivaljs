@@ -7,6 +7,7 @@ angular.module('carnival.components.fields.belongsTo', [])
       datas: '=',
       field: '=',
       entity: '=',
+      nestedFormIndex: '=',
       relatedResources: '=',
       editable: '='
     },
@@ -17,7 +18,6 @@ angular.module('carnival.components.fields.belongsTo', [])
       }
     },
     controller: function ($rootScope, $scope, utils) {
-      $rootScope.nestedFormIndex = 0;
       $scope.utils = utils;
 
       $scope.open = function(index){
