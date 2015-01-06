@@ -12,6 +12,9 @@ angular.module('carnival.components.form', [])
       relatedResources: '=',
       editable: '='
     },
-    templateUrl: 'components/form/form.html'
+    templateUrl: 'components/form/form.html',
+    controller: function ($rootScope, $scope, utils) {
+      $scope.utils = utils;
+    }
   };
 });

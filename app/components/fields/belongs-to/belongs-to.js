@@ -17,7 +17,13 @@ angular.module('carnival.components.fields.belongsTo', [])
       }
     },
     controller: function ($rootScope, $scope, utils) {
+      $rootScope.nestedFormIndex = 0;
       $scope.utils = utils;
+
+      $scope.open = function(index){
+        $rootScope["nested_form_"+ $scope.entity.model.name + "_" + index + "_opened"] = true;
+      }
+
     }
   };
 });

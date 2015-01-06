@@ -1,6 +1,4 @@
 <div>
   <carnival-select-field data="datas[field.name]" field="field.field" identifier="field.identifier" items="relatedResources[field.endpoint]" editable="editable"></carnival-select-field>
-  <div ng-if='entity.nestedForms[field.endpoint]'>
-    Add New
-  </div>
+  <span ng-if='entity.nestedForms[field.endpoint]' ng-init='nestedFormIndex = nestedFormIndex + 1' class="btn btn-default" ng-click="open(nestedFormIndex)">Add</span>
 </div>

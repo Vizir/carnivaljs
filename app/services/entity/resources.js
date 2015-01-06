@@ -5,7 +5,7 @@ angular.module('carnival')
     if(!field.views[stateName].nested)
        return;
 
-    entity.nestedForms[field.endpoint] = prepareEntityForState(field.endpoint, stateName, field);
+    entity.nestedForms[field.endpoint] = prepareEntityForState(field.endpoint, 'create', field);
   };
 
   var getRelatedResources = function(entity, endpoint){
@@ -41,8 +41,8 @@ angular.module('carnival')
     }
   };
 
-  var prepareActions = function(entityWrapper, stateName){
-    var actionObj =  ActionFactory.buildAction(entityWrapper, stateName);
+  var prepareActions = function(entityWrapper, stateName, isField){
+    var actionObj =  ActionFactory.buildAction(entityWrapper, stateName, isField);
     entityWrapper[actionObj.name] = actionObj.value;
   };
 
@@ -56,7 +56,7 @@ angular.module('carnival')
     entityWrapper.fields = [];
     entityWrapper.datas = {};
     prepareFields(entityWrapper, stateName, isField);
-    prepareActions(entityWrapper, stateName);
+    prepareActions(entityWrapper, stateName, isField);
     return entityWrapper;
   };
 

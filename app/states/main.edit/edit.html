@@ -4,7 +4,8 @@
 
   <carnival-form entity="entity" fields="entity.fields" datas="entity.datas" action="entity.action" state="edit" related-resources="entity.relatedResources" editable="true"></carnival-form>
   
-  <div ng-repeat="nestedFormEntity in entity.nestedForms">
+  <div ng-show="nested_form_{{entity.model.name}}_{{$index + 1}}_opened" class='nested-form-modal' id="carnival_{{nestedFormEntity.model.name}}_modal.html "ng-repeat="nestedFormEntity in entity.nestedForms">
+    <h3>{{ 'Create' | translate }} {{ nestedFormEntity.label }}</h3>
     <carnival-form entity="nestedFormEntity" fields="nestedFormEntity.fields" datas="nestedFormEntity.datas" action="nestedFormEntity.action" state="create" related-resources="nestedFormEntity.relatedResources" editable="true"></carnival-form>
   </div>
 </div>

@@ -1,15 +1,20 @@
 angular.module('carnival')
 .service('ActionFactory', function (Notification, $state) {
 
-  this.buildCreateFunction = function(entity, hasNestedForm){
+  this.buildCreateFunction = function(entity, hasNestedForm, isToNestedForm){
     return function () {
       entity.model.create(entity.datas)
       .success(function (data, status, headers, config) {
-        new Notification('Item created with success!', 'success');
-        if(hasNestedForm)
-          $state.go('main.edit', { entity: entity.model.name, id: data.id });
-        else
-          $state.go('main.list', { entity: entity.model.name });
+        if(isToNestedForm){
+          window.location.reload();
+        }
+        else{
+          new Notification('Item created with success!', 'success');
+          if(hasNestedForm)
+            $state.go('main.edit', { entity: entity.model.name, id: data.id });
+          else
+            $state.go('main.list', { entity: entity.model.name });
+        }
       })
       .error(function (data) {
         new Notification(data, 'danger');
@@ -22,7 +27,7 @@ angular.module('carnival')
       entity.model.update(entity.id, entity.datas)
       .success(function () {
         new Notification('Modifications saved with success!', 'success');
-        $state.go('main.show', { entity: entity.model.name, id: $stateParams.id });
+        $state.go('main.show', { entity: entity.model.name, id: entity.id });
       })
       .error(function (data) {
         new Notification(data, 'danger');
@@ -69,14 +74,14 @@ angular.module('carnival')
     };
   };
 
-  this.buildAction = function(entity, stateName){
+  this.buildAction = function(entity, stateName, isToNestedForm){
     switch (stateName) {
       case 'create':
         return {
           name: 'action',
           value: {
             label: "Save",
-            click: this.buildCreateFunction(entity, Object.keys(entity.nestedForms).length > 0)
+            click: this.buildCreateFunction(entity, Object.keys(entity.nestedForms).length > 0, isToNestedForm)
           }
         };
 
