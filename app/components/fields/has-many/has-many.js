@@ -42,8 +42,11 @@ angular.module('carnival.components.fields.hasMany', [])
 
       $scope.addHasManyOption = function(){
         var selectedItem = getSelectedItem();
-        if(selectedItem)
+        if(!$scope.datas[$scope.field.name])
+          $scope.datas[$scope.field.name] = [];
+        if(selectedItem){
           $scope.datas[$scope.field.name].push(selectedItem);
+        }
       };
 
       $scope.remove = function(id){

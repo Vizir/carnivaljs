@@ -16,6 +16,12 @@ angular.module('carnival.components.form', [])
     templateUrl: 'components/form/form.html',
     controller: function ($rootScope, $scope, utils) {
       $scope.utils = utils;
+
+      $scope.buttonAction = function(){
+        $scope.action.click();
+        if($scope.action.type === 'nested'){
+        }
+      }
     }
   };
 });

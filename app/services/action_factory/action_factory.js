@@ -6,7 +6,8 @@ angular.module('carnival')
       entity.model.create(entity.datas)
       .success(function (data, status, headers, config) {
         if(isToNestedForm){
-          window.location.reload();
+          var parentEntity = isToNestedForm.parentEntity;
+          parentEntity.relatedResources[isToNestedForm.field.endpoint].push(data);
         }
         else{
           new Notification('Item created with success!', 'success');

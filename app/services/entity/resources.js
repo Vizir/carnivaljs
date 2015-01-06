@@ -5,7 +5,7 @@ angular.module('carnival')
     if(!field.views[stateName].nested)
        return;
 
-    entity.nestedForms[field.endpoint] = prepareEntityForState(field.endpoint, 'create', field);
+    entity.nestedForms[field.endpoint] = prepareEntityForState(field.endpoint, 'create', {field:field, parentEntity: entity});
   };
 
   var getRelatedResources = function(entity, endpoint){
@@ -33,7 +33,7 @@ angular.module('carnival')
       return;
 
     getRelatedResources(entityWrapper, field.endpoint);
-    if(!isField && stateName === 'edit' )
+    if(!isField)
       getNestedForm(entityWrapper, stateName, field);
   };
 
