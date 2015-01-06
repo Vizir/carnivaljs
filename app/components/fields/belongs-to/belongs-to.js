@@ -22,7 +22,7 @@ angular.module('carnival.components.fields.belongsTo', [])
 
       $scope.open = function(index){
         $rootScope["nested_form_"+ $scope.entity.model.name + "_" + index + "_opened"] = true;
-      }
+      };
 
     }
   };
