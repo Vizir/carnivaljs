@@ -8,6 +8,7 @@ angular.module('carnival.components.form', [])
       fields: '=',
       action: '=',
       state: '@state',
+      type: '@',
       datas: '=',
       relatedResources: '=',
       editable: '='

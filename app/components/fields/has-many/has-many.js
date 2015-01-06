@@ -7,6 +7,7 @@ angular.module('carnival.components.fields.hasMany', [])
       datas: '=',
       field: '=',
       entity: '=',
+      nestedFormType: '=',
       nestedFormIndex: '=',
       relatedResources: '=',
       editable: '='
