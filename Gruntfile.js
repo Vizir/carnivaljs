@@ -45,14 +45,14 @@ module.exports = function (grunt) {
               'bower_components/angular-loading-bar/build/loading-bar.js',
               'bower_components/angular-translate/angular-translate.js'
         ],
-        dest: 'dist/carnival.js'
+        dest: 'build/carnival.js'
       }
     },
 
     uglify: {
       dist: {
         files: {
-          'dist/carnival.min.js': ['dist/carnival.js']
+          'build/carnival.min.js': ['build/carnival.js']
         }
       }
     },
@@ -88,7 +88,7 @@ module.exports = function (grunt) {
       },
       dist: {
         files: {
-          'dist/carnival.js': ['dist/carnival.js']
+          'build/carnival.js': ['build/carnival.js']
         }
       },
     },
@@ -109,6 +109,6 @@ module.exports = function (grunt) {
   grunt.registerTask('dev', ['connect', 'watch:dev']);
   grunt.registerTask('test', ['jshint', 'html2js:dist', 'karma:unit', 'clean:tmp']);
   grunt.registerTask('test:watch', ['jshint', 'html2js:dist', 'karma:continuous', 'clean:tmp']);
-  grunt.registerTask('build', ['jshint', 'html2js:dist', 'concat:dist', 'ngAnnotate:dist', 'clean:tmp', 'karma:unit', 'uglify:dist']);
+  grunt.registerTask('build', ['jshint', 'html2js:dist', 'concat:dist', 'ngAnnotate:dist', 'karma:unit', 'uglify:dist', 'clean:tmp']);
 
 };
