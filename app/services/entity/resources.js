@@ -2,10 +2,12 @@ angular.module('carnival')
 .service('EntityResources', function (Configuration, ActionFactory) {
 
   var getNestedForm = function(entity, stateName, field){
-    if(!field.views[stateName].nested)
+    if(!field.views[stateName] || !field.views[stateName].nested)
        return;
 
     entity.nestedForms[field.endpoint] = prepareEntityForState(field.endpoint, 'create', {field:field, parentEntity: entity});
+    entity.nestedForms[field.endpoint].parentEntity = entity;
+
   };
 
   var getRelatedResources = function(entity, endpoint){

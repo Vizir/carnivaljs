@@ -3,10 +3,10 @@
   <h3>{{ 'Create' | translate }} {{ entity.label }}</h3>
   <carnival-form entity='entity' fields="entity.fields" action="entity.action" datas="entity.datas" state="create" related-resources="entity.relatedResources" editable="true"></carnival-form>
   
-  <div ng-show="nested_form_{{entity.model.name}}_{{$index + 1}}_opened" class='nested-form-modal' id="carnival_{{nestedFormEntity.model.name}}_modal.html "ng-repeat="nestedFormEntity in entity.nestedForms">
+  <div ng-if="entity.nestedForms[field.endpoint]" ng-show="entity.nestedForms[field.endpoint].opened" class='nested-form-modal' ng-repeat="field in entity.fields">
     <div class="nested-form-modal-content">
-      <h3>{{ 'Create' | translate }} {{ nestedFormEntity.label }}</h3>
-      <carnival-form type='nested' entity="nestedFormEntity" fields="nestedFormEntity.fields" datas="nestedFormEntity.datas" action="nestedFormEntity.action" state="create" related-resources="nestedFormEntity.relatedResources" editable="true"></carnival-form>
+      <h3>{{ 'Create' | translate }} {{ entity.nestedForms[field.endpoint].label }}</h3>
+      <carnival-form type='nested' entity="entity.nestedForms[field.endpoint]" fields="entity.nestedForms[field.endpoint].fields" datas="entity.nestedForms[field.endpoint].datas" action="entity.nestedForms[field.endpoint].action" state="create" related-resources="entity.nestedForms[field.endpoint].relatedResources" editable="true"></carnival-form>
     </div>
   </div>
 </div>

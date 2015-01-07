@@ -33,7 +33,7 @@ describe('EntityResources', function(){
       expect(resource.label).to.be.equal('Cats'); 
       expect(resource.identifier).to.be.equal('id'); 
       expect(resource.fields.length).to.be.equal(3); 
-      expect(Object.keys(resource.nestedForms).length).to.be.equal(0); 
+      expect(Object.keys(resource.nestedForms).length).to.be.equal(1); 
     });
   });
 

@@ -19,9 +19,12 @@ angular.module('carnival.components.form', [])
 
       $scope.buttonAction = function(){
         $scope.action.click();
-        if($scope.action.type === 'nested'){
+        if($scope.type === 'nested'){
+          for(var form in $scope.entity.parentEntity.nestedForms){
+            $scope.entity.parentEntity.nestedForms[form].opened = false;
+          }
         }
-      }
+      };
     }
   };
 });

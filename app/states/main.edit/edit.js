@@ -12,7 +12,7 @@ angular.module('carnival')
       entity.id = $stateParams.id;
       entity.datas = data;
       for(var formName in entity.nestedForms){
-        entity.nestedForms[formName].datas[entity.name] = data
+        entity.nestedForms[formName].datas[entity.name] = data;
       }
     });
   };

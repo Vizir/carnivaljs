@@ -22,7 +22,7 @@ angular.module('carnival.components.fields.hasMany', [])
       $scope.utils = utils;
 
       $scope.open = function(index){
-        $rootScope["nested_form_"+ $scope.entity.model.name + "_" + index + "_opened"] = true;
+        $scope.entity.nestedForms[$scope.field.endpoint].opened = true;
       };
 
       var getItemIndex = function(id, items){
@@ -52,7 +52,7 @@ angular.module('carnival.components.fields.hasMany', [])
       $scope.remove = function(id){
         var items = $scope.datas[$scope.field.name];
         var index = getItemIndex(id, items);
-        if(!index)
+        if(index < 0)
           return;
         items.splice(index, 1);
 
