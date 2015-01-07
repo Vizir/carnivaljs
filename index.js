@@ -1,24 +1,32 @@
 var app = angular.module('exampleApp', ['carnival']);
 
-app.config(function (ConfigurationProvider, HttpAdapterProvider) {
+app.config(function (ConfigurationProvider) {
 
   ConfigurationProvider.setAppName('Carnival Example');
 
   ConfigurationProvider.setBaseApiUrl('http://private-614d1-carnivaljs.apiary-mock.com');
 
-  ConfigurationProvider.setLanguage('en');
-
   ConfigurationProvider.addEntity('posts', {
 
     label: 'Posts',
     identifier: 'id',
-    filters: ['published', 'draft', 'archived'],
+    pagination: 10,
+
+    quickFilters: [
+      { label: 'Food', field: 'category', value: function () {
+        return '1';
+      }},
+      { label: 'Sport', field: 'category', value: function () {
+        return '2';
+      }}
+    ],
 
     fields: {
 
       'id': {
         label: 'Id',
         type: 'text',
+        searchable: false,
         views: {
           index: {
             enable: false
@@ -38,6 +46,7 @@ app.config(function (ConfigurationProvider, HttpAdapterProvider) {
       'title': {
         label: 'Title',
         type: 'text',
+        searchable: true,
         views: {
           index: {
             enable: true
@@ -54,9 +63,34 @@ app.config(function (ConfigurationProvider, HttpAdapterProvider) {
         }
       },
 
+      'category':{
+        label: 'Category',
+        type: 'belongsTo',
+        searchable: true,
+        resourceName: 'categories',
+        resourceLabel: 'name',
+        identifier: 'id',
+        views: {
+          index: {
+            enable: true
+          },
+          create: {
+            enable: true,
+            nested: true
+          },
+          edit: {
+            enable: true
+          },
+          show: {
+            enable: true
+          }
+        }
+      },
+
       'content': {
         label: 'Content',
         type: 'text',
+        searchable: false,
         views: {
           index: {
             enable: true
@@ -71,34 +105,38 @@ app.config(function (ConfigurationProvider, HttpAdapterProvider) {
             enable: true
           }
         }
+      },
+
+      'comments': {
+        label: 'Comments',
+        type: 'hasMany',
+        from: 'post',
+        searchable: true,
+        resourceName: 'comments',
+        resourceLabel: 'name',
+        identifier: 'id',
+        views: {
+          index: {
+            enable: true
+          },
+          create: {
+            enable: true
+          },
+          show: {
+            enable: true,
+            nested: {
+              mode:['new', 'associate', 'deassociate', 'edit']
+            }
+          },
+          edit: {
+            enable: true,
+            nested: {
+              mode:['new', 'associate', 'deassociate', 'edit']
+            }
+          }
+        }
+
       }
-
-      // 'comments': {
-      //   endpoint: 'comments',
-      //   label: 'Comments',
-      //   type: 'hasMany',
-      //   views: {
-      //     index: {
-      //       enable: false
-      //     },
-      //     create: {
-      //       enable: false
-      //     },
-      //     show: {
-      //       enable: true,
-      //       nested: {
-      //         mode:['new', 'associate', 'deassociate', 'edit']
-      //       }
-      //     },
-      //     edit: {
-      //       enable: true,
-      //       nested: {
-      //         mode:['new', 'associate', 'deassociate', 'edit']
-      //       }
-      //     }
-      //   }
-
-      // },
 
       // 'tags': {
       //   endpoint: 'tags',
@@ -124,29 +162,6 @@ app.config(function (ConfigurationProvider, HttpAdapterProvider) {
       //       }
       //     }
       //   }
-      // },
-
-      // 'status': {
-      //   type: 'enum',
-      //   enumValues: {
-      //     'draft': 0,
-      //     'published': 1,
-      //     'archived': 2
-      //   },
-      //   views: {
-      //     index: {
-      //       enable: true
-      //     },
-      //     create: {
-      //       enable: true
-      //     },
-      //     show: {
-      //       enable: true
-      //     },
-      //     edit: {
-      //       enable: true
-      //     }
-      //   }
       // }
     }
   });
@@ -155,7 +170,6 @@ app.config(function (ConfigurationProvider, HttpAdapterProvider) {
 
     label: 'Comments',
     identifier: 'id',
-    filters: ['published', 'draft', 'archived'],
 
     fields: {
 
@@ -163,6 +177,7 @@ app.config(function (ConfigurationProvider, HttpAdapterProvider) {
         identifier: true,
         label: 'Id',
         type: 'text',
+        searchable: false,
         views: {
           index: {
             enable: false
@@ -182,6 +197,7 @@ app.config(function (ConfigurationProvider, HttpAdapterProvider) {
       'email': {
         label: 'Email',
         type: 'text',
+        searchable: true,
         views: {
           index: {
             enable: true
@@ -198,9 +214,30 @@ app.config(function (ConfigurationProvider, HttpAdapterProvider) {
         }
       },
 
+      'post': {
+        label: 'Post',
+        type: 'belongsTo',
+        searchable: true,
+        resourceName: 'posts',
+        identifier: 'id',
+        resourceLabel: 'title',
+        views: {
+          index: {
+            enable: true,
+          },
+          create: {
+            enable: true
+          },
+          edit: {
+            enable: true
+          }
+        }
+      },
+
       'content': {
         label: 'Content',
         type: 'text',
+        searchable: false,
         views: {
           index: {
             enable: true
@@ -242,44 +279,21 @@ app.config(function (ConfigurationProvider, HttpAdapterProvider) {
       //       }
       //     }
       //   }
-      // },
-      //
-      // 'status': {
-      //   type: 'enum',
-      //   enumValues: {
-      //     'draft': 0,
-      //     'published': 1,
-      //     'archived': 2
-      //   },
-      //   views: {
-      //     index: {
-      //       enable: true
-      //     },
-      //     create: {
-      //       enable: true
-      //     },
-      //     show: {
-      //       enable: true
-      //     },
-      //     edit: {
-      //       enable: true
-      //     }
-      //   }
       // }
     }
   });
 
-  ConfigurationProvider.addEntity('tags', {
+  ConfigurationProvider.addEntity('categories', {
 
-    label: 'Tags',
+    label: 'Categories',
     identifier: 'id',
-    filters: ['published', 'draft', 'archived'],
 
     fields: {
 
       'id': {
         identifier: true,
         label: 'Id',
+        searchable: false,
         type: 'text',
         views: {
           index: {
@@ -300,6 +314,56 @@ app.config(function (ConfigurationProvider, HttpAdapterProvider) {
       'name': {
         label: 'Name',
         type: 'text',
+        searchable: true,
+        views: {
+          index: {
+            enable: true
+          },
+          create: {
+            enable: true
+          },
+          show: {
+            enable: true
+          },
+          edit: {
+            enable: true
+          }
+        }
+      }
+    }
+  });
+  ConfigurationProvider.addEntity('tags', {
+
+    label: 'Tags',
+    identifier: 'id',
+
+    fields: {
+
+      'id': {
+        identifier: true,
+        label: 'Id',
+        type: 'text',
+        searchable: false,
+        views: {
+          index: {
+            enable: false
+          },
+          create: {
+            enable: false
+          },
+          show: {
+            enable: false
+          },
+          edit: {
+            enable: false
+          }
+        }
+      },
+
+      'name': {
+        label: 'Name',
+        type: 'text',
+        searchable: true,
         views: {
           index: {
             enable: true
@@ -340,32 +404,9 @@ app.config(function (ConfigurationProvider, HttpAdapterProvider) {
       //       }
       //     }
       //   }
-      // },
-      //
-      // 'status': {
-      //   type: 'enum',
-      //   enumValues: {
-      //     'draft': 0,
-      //     'published': 1,
-      //     'archived': 2
-      //   },
-      //   views: {
-      //     index: {
-      //       enable: true
-      //     },
-      //     create: {
-      //       enable: true
-      //     },
-      //     show: {
-      //       enable: true
-      //     },
-      //     edit: {
-      //       enable: true
-      //     }
-      //   }
       // }
     }
 
   });
-  
+
 });

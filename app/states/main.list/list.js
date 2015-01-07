@@ -1,30 +1,10 @@
 angular.module('carnival')
-.controller('ListController', function ($scope, $stateParams, $state, Configuration) {
-
-  // var turnOffReload = $scope.$on('$stateChangeStart', function (event) {
-  //   event.preventDefault();
-  //   turnOffReload();
-  // });
+.controller('ListController', function ($rootScope, $scope, $stateParams, $state, Configuration, Notification, urlParams, EntityResources) {
 
   var entity = $scope.entity = {},
-      pages = $scope.pages = {
-        current: parseInt($stateParams.page, 10),
-        perPage: 10 /* TODO: Change this */
-      },
-      order = $scope.order = {
-        field: $stateParams.order,
-        dir: $stateParams.orderDir
-      };
 
-  var buildFields = function () {
-    for (var i = entity.model.fields.length - 1; i >= 0; i -= 1) {
-      if (!(entity.model.fields[i].type === 'hasMany' ||
-            entity.model.fields[i].type === 'belongsTo')) {
-        if (entity.model.checkFieldView(entity.model.fields[i].name, 'index')) {
-          entity.fields.unshift(entity.model.fields[i]);
-        }
-      }
-    }
+  pages = $scope.pages = {
+    current: parseInt(urlParams.getFilter('page'), 10)
   };
 
   var onCreate = function () {
@@ -40,51 +20,47 @@ angular.module('carnival')
   };
 
   var onDelete = function (id) {
-    entity.model.delete(id).success(function () {
+    entity.model.delete(id)
+    .success(function () {
+      new Notification('Item deleted with success!', 'warning');
       $state.reload();
+    })
+    .error(function (data) {
+      new Notification(data, 'danger');
     });
   };
 
-  entity.loadData = function () {
-    var offset   = pages.perPage * ($stateParams.page - 1);
-    var limit    = pages.perPage;
-    entity.model.getList(offset, limit, order.field, order.dir)
-    .success(function (data, status, headers, config) {
-      pages.total = 30 / pages.perPage; /* TODO: headers('X-Total-Count') */
-      entity.datas = data;
-    });
-  };
+
 
   var init = function () {
-    entity.model = Configuration.getEntity($stateParams.entity);
-    entity.name = entity.model.name;
-    entity.label = entity.model.label;
-    entity.identifier = entity.model.identifier;
-    entity.fields = [];
-    entity.datas = [];
-    buildFields();
+
+    entity = EntityResources.prepareForListState($stateParams.entity);
+    entity.loadData = function () {
+      var offset   = pages.perPage * (urlParams.getFilter('page') - 1);
+      var limit    = pages.perPage;
+      entity.model.getList(offset, limit, urlParams.getFilter('order'), urlParams.getFilter('orderDir'), urlParams.getFilter('search'))
+      .success(function (data, status, headers, config) {
+        pages.total = 30 / pages.perPage; /* TODO: headers('X-Total-Count') */
+        entity.datas = data;
+      });
+    };
+    $scope.entity = entity;
+    pages.perPage = entity.model.pagination;
 
     entity.actions = {
-      create: {
-        label: 'Create',
-        click: onCreate
-      },
-      edit: {
-        label: 'Edit',
-        click: onEdit
-      },
-      show: {
-        label: 'Show',
-        click: onShow
-      },
-      delete: {
-        click: onDelete
-      }
+      create: onCreate,
+      edit: onEdit,
+      show: onShow,
+      delete: onDelete
     };
 
     entity.loadData();
 
   };
+
+  $rootScope.$on('filterParamsChange', function () {
+    entity.loadData();
+  });
 
   init();
 

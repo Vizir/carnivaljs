@@ -1,12 +1,16 @@
 module.exports = function(config) {
   config.set({
     basePath: '../',
-    frameworks: ['chai', 'mocha'],
+    frameworks: ['chai', 'mocha', 'sinon'],
     files: [
       // Carnival
       'bower_components/angular/angular.js',
       'bower_components/angular-ui-router/release/angular-ui-router.js',
-      'dist/carnival.js',
+      'bower_components/angular-loading-bar/build/*.js',
+      'bower_components/angular-translate/*.js',
+      'dist/tmp/*.js',
+      'app/carnival.js',
+      'app/**/!(*spec).js',
       // Tests
       'bower_components/angular-mocks/angular-mocks.js',
       // Specs
@@ -14,13 +18,16 @@ module.exports = function(config) {
       'app/*.spec.js'
     ],
     exclude: [],
-    preprocessors: {},
-    reporters: ['progress'],
+    preprocessors: {'app/**/!(*spec).js': ['coverage']},
+    reporters: ['progress', 'coverage'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: false,
     browsers: ['PhantomJS'],
-    singleRun: false
+    singleRun: false,
+    coverageReporter: {
+      type : 'text'
+    }
   });
 };

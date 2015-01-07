@@ -4,7 +4,7 @@ angular.module('carnival.components.button', [])
     restrict: 'E',
     replace: true,
     scope: {
-      label: '=',
+      label: '@',
       style: '@',
       size: '@'
     },

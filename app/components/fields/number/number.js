@@ -1,4 +1,4 @@
-angular.module('carnival.components.fields')
+angular.module('carnival.components.fields.number', [])
 .directive('carnivalNumberField', function () {
   return {
     restrict: 'E',

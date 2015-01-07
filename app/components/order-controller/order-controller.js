@@ -1,5 +1,5 @@
 angular.module('carnival.components.order-controller', [])
-.directive('carnivalOrderCtrl', function () {
+.directive('carnivalOrderCtrl', function (urlParams) {
   return {
     restrict: 'E',
     replate: true,
@@ -7,15 +7,16 @@ angular.module('carnival.components.order-controller', [])
       field: '='
     },
     templateUrl: 'components/order-controller/order-controller.html',
-    controller: function ($scope, $state, $stateParams) {
-      $scope.toggleOrder = function () {
-        $stateParams.orderDir = ($stateParams.order !== $scope.field) ? 'asc' :
-                                ($stateParams.orderDir === 'asc' && $stateParams.order === $scope.field) ? 'desc' : 'asc';
-        $stateParams.order = $scope.field;
-        $state.go($state.current.name, $stateParams, { reload: true });
+    link: function (scope) {
+      scope.toggleOrder = function () {
+        var orderDirValue = (urlParams.getFilter('order') !== scope.field) ? 'asc' :
+                            (urlParams.getFilter('orderDir') === 'asc' && urlParams.getFilter('order') === scope.field) ? 'desc' : 'asc';
+        urlParams.setFilter('order', scope.field);
+        urlParams.setFilter('orderDir', orderDirValue);
+        urlParams.reload();
       };
-      $scope.checkDirAsc = function () {
-        if ($stateParams.order === $scope.field && $stateParams.orderDir === 'asc') return true;
+      scope.checkDirAsc = function () {
+        if (urlParams.getFilter('order') === scope.field && urlParams.getFilter('orderDir') === 'asc') return true;
         return false;
       };
     }

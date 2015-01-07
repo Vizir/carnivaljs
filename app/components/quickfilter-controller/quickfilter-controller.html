@@ -1,0 +1,3 @@
+<span>
+  <carnival-button ng-class="{ disabled: isSelected(filter.field, filter.value()) }" ng-repeat="filter in filters" label="{{ filter.label }}" style="info" size="sm" ng-click="setFilter(filter.field, filter.value())"></carnival-button>
+</span>

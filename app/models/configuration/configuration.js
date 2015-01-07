@@ -2,8 +2,9 @@ angular.module('carnival').provider('Configuration', function() {
 
   var appName = null;
   var baseApiUrl = null;
-  var appLanguage = 'en';
+  var validateEntities = false;
   var entities = [];
+  var navbar = [];
 
   return {
     setBaseApiUrl: function (url) {
@@ -15,12 +16,20 @@ angular.module('carnival').provider('Configuration', function() {
       appName = name;
     },
 
-    setLanguage: function (lang) {
-      appLanguage = lang;
+    validateEntities: function (validate) {
+      if (validate) validateEntities = true;
+    },
+
+    setEntities: function(entities) {
+      entities = entities;
     },
 
     addEntity: function (entityName, entityOptions) {
       entities.push({ name: entityName, options: entityOptions });
+    },
+
+    addNavbarItem: function (options) {
+      navbar.push(options);
     },
 
     $get: function () {
@@ -28,16 +37,14 @@ angular.module('carnival').provider('Configuration', function() {
 
         entities: entities,
 
+        validateEntities: validateEntities,
+
         getBaseApiUrl: function () {
           return baseApiUrl;
         },
 
         getAppName: function () {
           return appName;
-        },
-
-        getLanguage: function () {
-          return appLanguage;
         },
 
         getEntity: function (entityName) {
@@ -51,6 +58,10 @@ angular.module('carnival').provider('Configuration', function() {
 
         getEntities: function () {
           return entities;
+        },
+
+        getNavbarItems: function () {
+          return navbar;
         }
 
       };

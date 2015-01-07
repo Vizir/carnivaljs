@@ -6,16 +6,25 @@ describe('On carnival-navbar component', function () {
     scope.app_name = 'What does the Fox say?';
     scope.menu_items = [
       {
-        name: 'ringring',
-        label: 'Ring-ding-ding-ding-dingeringeding'
+        label: 'Ring-ding-ding-ding-dingeringeding',
+        link: {
+          type: 'entity',
+          url: 'ringring'
+        }
       },
       {
-        name: 'wapapow',
-        label: 'Wa-pa-pa-pa-pa-pa-pow'
+        label: 'Wa-pa-pa-pa-pa-pa-pow',
+        link: {
+          type: 'entity',
+          url: 'wapapow'
+        }
       },
       {
-        name: 'hateeho',
-        label: 'Hatee-hatee-hatee-ho'
+        label: 'Hatee-hatee-hatee-ho',
+        link: {
+          type: 'url',
+          url: 'http://hateeho.com'
+        }
       }
     ];
   };
@@ -50,9 +59,9 @@ describe('On carnival-navbar component', function () {
 
   it('should render links to lists on menu', function () {
     expect(element.html())
-    .to.contain('href="#/list/ringring?page=1"')
-    .to.contain('href="#/list/wapapow?page=1"')
-    .to.contain('href="#/list/hateeho?page=1"');
+    .to.contain('href="#/list/ringring"')
+    .to.contain('href="#/list/wapapow"')
+    .to.contain('href="http://hateeho.com"');
   });
 
 });

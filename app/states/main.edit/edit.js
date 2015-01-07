@@ -1,38 +1,19 @@
 angular.module('carnival')
-.controller('EditController', function ($scope, $stateParams, $state, Configuration) {
+.controller('EditController', function ($rootScope, $scope, $stateParams, $state, Configuration, Notification, EntityResources) {
 
   var entity = $scope.entity = {};
-
-  var buildFields = function () {
-    for (var i = entity.model.fields.length - 1; i >= 0; i -= 1) {
-      if (entity.model.checkFieldView(entity.model.fields[i].name, 'edit')) {
-        entity.fields.unshift(entity.model.fields[i]);
-      }
-    }
-  };
-
-  var onSave = function () {
-    entity.model.update($stateParams.id, entity.datas).success(function () {
-      $state.go('main.show', { entity: entity.model.name, id: $stateParams.id });
-    });
-  };
+  
 
   var init = function () {
-    entity.model = Configuration.getEntity($stateParams.entity);
-    entity.label = entity.model.label;
-    entity.fields = [];
-    entity.datas = {};
+    $scope.entity = entity = EntityResources.prepareForEditState($stateParams.entity);
 
-    buildFields();
-
-    entity.action = {
-      label: 'Save',
-      click: onSave
-    };
-    
     entity.model.getOne($stateParams.id)
     .success(function (data) {
+      entity.id = $stateParams.id;
       entity.datas = data;
+      for(var formName in entity.nestedForms){
+        //entity.nestedForms[formName].datas[entity.name] = data;
+      }
     });
   };
 

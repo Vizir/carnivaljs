@@ -1,9 +1,8 @@
 node_modules
+.swp
 bower_components
 dist
 tmp
 npm-debug.log
 .DS_Store
 .env
-locales/*.mo
-locales/*.pot

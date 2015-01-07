@@ -28,7 +28,4 @@ describe('On carnival-order-ctrl component', function () {
     expect(element[0].getElementsByClassName('glyphicon-chevron-up')[0].classList.contains('ng-hide')).to.be.equal(true);
   });
 
-  it('should render the field with the arrow down', function () {
-  });
-
 });

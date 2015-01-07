@@ -1,0 +1,7 @@
+<span ng-switch="field.type">
+  <carnival-listing-field-belongs-to ng-switch-when="belongsTo" item="item" field="field"></carnival-listing-field-belongs-to>
+  <carnival-listing-field-has-many ng-switch-when="hasMany" item="item" field="field"></carnival-listing-field-has-many>
+  <span ng-switch-default>
+    {{item[field.name]}}
+  </span>
+</span>
