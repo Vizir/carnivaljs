@@ -666,6 +666,7 @@ angular.module('carnival')
     this.name = name;
     this.label = options.label || this.name;
     this.identifier = options.identifier;
+    this.extraListParams = options.extraListParams;
     this.quickFilters = options.quickFilters || null;
     this.pagination = options.pagination || null;
 
