@@ -718,7 +718,7 @@ angular.module('carnival')
   };
 
   Entity.prototype.delete = function (id) {
-    var request = RequestBuilder.buildForGetOne({
+    var request = RequestBuilder.buildForDelete({
       baseUrl: Configuration.getBaseApiUrl(),
       id: id,
       endpoint: this.name
