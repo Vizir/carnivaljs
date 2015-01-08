@@ -60,8 +60,10 @@ angular.module('carnival')
   // $http services
 
   Entity.prototype.getList = function (offset, limit, order, orderDir, search) {
+    var extraParams = this.extraListParams || {};
     var request = RequestBuilder.buildForGetList({
       baseUrl: Configuration.getBaseApiUrl(),
+      extraParams: extraParams,
       offset: offset,
       limit: limit,
       order: order,

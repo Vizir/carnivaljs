@@ -1,13 +1,12 @@
 var app = angular.module('exampleApp');
 
 app.config(function (ConfigurationProvider) {
+  
 
   ConfigurationProvider.addEntity('categories', {
-
     identifier: 'id',
     label: 'Categories',
     pagination: 10,
-
     fields: {
       'id': {
         type: 'string',

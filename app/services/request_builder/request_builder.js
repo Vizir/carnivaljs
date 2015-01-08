@@ -7,6 +7,14 @@ angular.module('carnival')
     return request;
   };
 
+  var addExtraParams = function(request, extraParams){
+    if(!extraParams)
+      return;
+    for(var key in extraParams){
+      request.params[key] = extraParams[key];
+    }
+  };
+
   this.buildForGetList = function(params){
     var request = prebuildRequest('GET');
     request.params = {};
@@ -17,6 +25,9 @@ angular.module('carnival')
       request.params.order    = params.order;
       request.params.orderDir = params.orderDir;
     }
+    
+    addExtraParams(request, params.extraParams);
+
     if (params.search) request.params.search = encodeURIComponent(JSON.stringify(params.search));
     return request;
   };

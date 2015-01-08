@@ -22,9 +22,9 @@ describe('On Request Builder Service', function () {
   });
 
   describe('build for getList', function(){
-
-    it('should return correct request', function(){
-      var requestParams = {
+    var requestParams = {};
+    beforeEach(function(){
+      requestParams = {
         baseUrl: Configuration.getBaseApiUrl(),
         offset: 'offset',
         limit: 'limit',
@@ -33,6 +33,9 @@ describe('On Request Builder Service', function () {
         search: 'search',
         endpoint: 'endpoint'
       };
+    
+    });
+    it('should return correct request', function(){
       var request = RequestBuilder.buildForGetList(requestParams);
       expect(request.method).to.be.equal('GET');
       expect(request.url).to.be.equal(Configuration.getBaseApiUrl() + "/" + requestParams.endpoint );
@@ -43,6 +46,26 @@ describe('On Request Builder Service', function () {
       var searchParam = encodeURIComponent(JSON.stringify('search'));
       expect(request.params.search).to.be.equal(searchParam);
     }); 
+
+    describe('extraParams', function(){
+      it('should return correct request', function(){
+        requestParams.extraParams = {
+          extra1: 1,
+          extra2: 2
+        };
+        var request = RequestBuilder.buildForGetList(requestParams);
+        expect(request.method).to.be.equal('GET');
+        expect(request.url).to.be.equal(Configuration.getBaseApiUrl() + "/" + requestParams.endpoint );
+        expect(request.params.offset).to.be.equal('offset');
+        expect(request.params.limit).to.be.equal('limit');
+        expect(request.params.order).to.be.equal('order');
+        expect(request.params.orderDir).to.be.equal('orderDir');
+        expect(request.params.extra1).to.be.equal(1);
+        expect(request.params.extra2).to.be.equal(2);
+        var searchParam = encodeURIComponent(JSON.stringify('search'));
+        expect(request.params.search).to.be.equal(searchParam);
+      }); 
+    });
   });
 
 
