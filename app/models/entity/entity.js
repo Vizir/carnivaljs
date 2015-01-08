@@ -1,5 +1,5 @@
 angular.module('carnival')
-.factory('Entity', function (EntityValidation, $http, Configuration, HttpAdapter, ParametersParser) {
+.factory('Entity', function (EntityValidation, $http, Configuration, RequestBuilder) {
 
   var buildViews = function (views) {
     var _views = {};
@@ -60,48 +60,50 @@ angular.module('carnival')
   // $http services
 
   Entity.prototype.getList = function (offset, limit, order, orderDir, search) {
-    var request    = { params: {} };
-    request.method = 'GET';
-    request.url    = Configuration.getBaseApiUrl() + '/' + this.name;
-    request.params.offset = offset;
-    request.params.limit  = limit;
-    if (order && orderDir) {
-      request.params.order    = order;
-      request.params.orderDir = orderDir;
-    }
-    if (search) request.params.search = encodeURIComponent(JSON.stringify(search));
+    var request = RequestBuilder.buildForGetList({
+      offset: offset,
+      limit: limit,
+      order: order,
+      orderDir: orderDir,
+      search: search,
+      endpoint: this.name
+    });
+
     return $http(request);
   };
 
   Entity.prototype.getOne = function (id) {
-    var request = {};
-    request.method = 'GET';
-    request.url = Configuration.getBaseApiUrl() + '/' + this.name + '/' + id;
+    var request = RequestBuilder.buildForGetOne({
+      id: id,
+      endpoint: this.name
+    });
     return $http(request);
   };
 
   Entity.prototype.delete = function (id) {
-    var request = {};
-    request.method = 'DELETE';
-    request.url = Configuration.getBaseApiUrl() + '/' + this.name + '/' + id;
+    var request = RequestBuilder.buildForGetOne({
+      id: id,
+      endpoint: this.name
+    });
     return $http(request);
   };
 
   Entity.prototype.create = function (data) {
-    var request = {};
-    request.method = 'POST';
-    request.url = Configuration.getBaseApiUrl() + '/' + this.name;
-    var parameters = ParametersParser.prepareForRequest(this, data);
-    request.data = parameters;
+    var request = RequestBuilder.buildForCreate({
+      entity: this,
+      entityData: data,
+      endpoint: this.name
+    });
     return $http(request);
   };
 
   Entity.prototype.update = function (id, data) {
-    var request = {};
-    request.method = 'PUT';
-    request.url = Configuration.getBaseApiUrl() + '/' + this.name + '/' + id;
-    var parameters = ParametersParser.prepareForRequest(this, data);
-    request.data = parameters;
+    var request = RequestBuilder.buildForUpdate({
+      id: id,
+      entity: this,
+      entityData: data,
+      endpoint: this.name
+    });
     return $http(request);
   };
 

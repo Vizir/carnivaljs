@@ -625,7 +625,7 @@ angular.module('carnival').provider('Configuration', function() {
 });
 
 angular.module('carnival')
-.factory('Entity', ["EntityValidation", "$http", "Configuration", "HttpAdapter", "ParametersParser", function (EntityValidation, $http, Configuration, HttpAdapter, ParametersParser) {
+.factory('Entity', ["EntityValidation", "$http", "Configuration", "RequestBuilder", function (EntityValidation, $http, Configuration, RequestBuilder) {
 
   var buildViews = function (views) {
     var _views = {};
@@ -686,48 +686,50 @@ angular.module('carnival')
   // $http services
 
   Entity.prototype.getList = function (offset, limit, order, orderDir, search) {
-    var request    = { params: {} };
-    request.method = 'GET';
-    request.url    = Configuration.getBaseApiUrl() + '/' + this.name;
-    request.params.offset = offset;
-    request.params.limit  = limit;
-    if (order && orderDir) {
-      request.params.order    = order;
-      request.params.orderDir = orderDir;
-    }
-    if (search) request.params.search = encodeURIComponent(JSON.stringify(search));
+    var request = RequestBuilder.buildForGetList({
+      offset: offset,
+      limit: limit,
+      order: order,
+      orderDir: orderDir,
+      search: search,
+      endpoint: this.name
+    });
+
     return $http(request);
   };
 
   Entity.prototype.getOne = function (id) {
-    var request = {};
-    request.method = 'GET';
-    request.url = Configuration.getBaseApiUrl() + '/' + this.name + '/' + id;
+    var request = RequestBuilder.buildForGetOne({
+      id: id,
+      endpoint: this.name
+    });
     return $http(request);
   };
 
   Entity.prototype.delete = function (id) {
-    var request = {};
-    request.method = 'DELETE';
-    request.url = Configuration.getBaseApiUrl() + '/' + this.name + '/' + id;
+    var request = RequestBuilder.buildForGetOne({
+      id: id,
+      endpoint: this.name
+    });
     return $http(request);
   };
 
   Entity.prototype.create = function (data) {
-    var request = {};
-    request.method = 'POST';
-    request.url = Configuration.getBaseApiUrl() + '/' + this.name;
-    var parameters = ParametersParser.prepareForRequest(this, data);
-    request.data = parameters;
+    var request = RequestBuilder.buildForCreate({
+      entity: this,
+      entityData: data,
+      endpoint: this.name
+    });
     return $http(request);
   };
 
   Entity.prototype.update = function (id, data) {
-    var request = {};
-    request.method = 'PUT';
-    request.url = Configuration.getBaseApiUrl() + '/' + this.name + '/' + id;
-    var parameters = ParametersParser.prepareForRequest(this, data);
-    request.data = parameters;
+    var request = RequestBuilder.buildForUpdate({
+      id: id,
+      entity: this,
+      entityData: data,
+      endpoint: this.name
+    });
     return $http(request);
   };
 
@@ -1055,6 +1057,59 @@ angular.module('carnival')
     return params;
   };
 });
+
+
+angular.module('carnival')
+.service('RequestBuilder', ["Configuration", "HttpAdapter", "ParametersParser", function (Configuration, HttpAdapter, ParametersParser) {
+  
+  var prebuildRequest = function(method){
+    var request = {};
+    request.method = method;
+    return request;
+  };
+
+  this.buildForGetList = function(params){
+    var request = prebuildRequest('GET');
+    request.params = {};
+    request.url    = Configuration.getBaseApiUrl() + '/' + params.endpoint;
+    request.params.offset = params.offset;
+    request.params.limit  = params.limit;
+    if (params.order && params.orderDir) {
+      request.params.order    = params.order;
+      request.params.orderDir = params.orderDir;
+    }
+    if (params.search) request.params.search = encodeURIComponent(JSON.stringify(params.search));
+    return request;
+  };
+
+  this.buildForGetOne = function(params){
+    var request = prebuildRequest('GET');
+    request.url    = Configuration.getBaseApiUrl() + '/' + params.endpoint + '/' + params.id;
+    return request;
+  };
+
+  this.buildForDelete = function(params){
+    var request = prebuildRequest('DELETE');
+    request.url    = Configuration.getBaseApiUrl() + '/' + params.endpoint + '/' + params.id;
+    return request;
+  };
+
+  this.buildForCreate = function(params){
+    var request = prebuildRequest('POST');
+    request.url    = Configuration.getBaseApiUrl() + '/' + params.endpoint;
+    var parameters = ParametersParser.prepareForRequest(params.entity, params.entityData);
+    request.data = parameters;
+    return request;
+  };
+
+  this.buildForUpdate = function(params){
+    var request = prebuildRequest('PUT');
+    request.url    = Configuration.getBaseApiUrl() + '/' + params.endpoint + '/' + params.id;
+    var parameters = ParametersParser.prepareForRequest(params.entity, params.entityData);
+    request.data = parameters;
+    return request;
+  };
+}]);
 
 
 angular.module('carnival')
