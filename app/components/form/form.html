@@ -4,6 +4,7 @@
     <div class="col-sm-10" ng-switch="field.type">
       <!-- Fields -->
       <carnival-text-field ng-switch-when="text" data="datas[field.name]" label="field.label" editable="editable"></carnival-text-field>
+      <carnival-string-field ng-switch-when="string" data="datas[field.name]" label="field.label" editable="editable"></carnival-string-field>
       <carnival-number-field ng-switch-when="number" data="datas[field.name]" label="field.label" editable="editable"></carnival-number-field>
       <carnival-belongs-to-field ng-switch-when="belongsTo" nested-form-index="nestedFormIndex" nested-form-type="type"  entity="entity" field="field" datas="entity.datas" action="entity.action" state="edit" related-resources="entity.relatedResources" editable="true"></carnival-belongs-to-field>
       <carnival-has-many-field ng-switch-when="hasMany" entity="entity" nested-form-index="nestedFormIndex" nested-form-type="type" field="field" datas="entity.datas" action="entity.action" state="edit" related-resources="entity.relatedResources" editable="true"></carnival-has-many-field>

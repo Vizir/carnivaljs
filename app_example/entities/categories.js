@@ -10,7 +10,7 @@ app.config(function (ConfigurationProvider) {
 
     fields: {
       'id': {
-        type: 'text',
+        type: 'string',
         label: 'Id',
         views: {
           index: {
@@ -28,7 +28,7 @@ app.config(function (ConfigurationProvider) {
         }
       },
       'name': {
-        type: 'text',
+        type: 'string',
         label: 'Name',
         views: {
           index: {

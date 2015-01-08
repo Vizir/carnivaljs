@@ -20,7 +20,7 @@ app.config(function (ConfigurationProvider) {
     fields: {
       // ---- ID Field ----
       'id' /* required: field name */: {
-        type: 'text', // required
+        type: 'string', // required
         label: 'Id', // optional
         views: { // required: set options on each view
           index: {
@@ -41,7 +41,7 @@ app.config(function (ConfigurationProvider) {
       },
       // ---- Title Field ----
       'title': {
-        type: 'text',
+        type: 'string',
         label: 'Title',
         views: {
           index: {
