@@ -1,5 +1,5 @@
 angular.module('carnival')
-.factory('Entity', function (EntityValidation, $http, Configuration, HttpAdapter) {
+.factory('Entity', function (EntityValidation, $http, Configuration, HttpAdapter, ParametersParser) {
 
   var buildViews = function (views) {
     var _views = {};
@@ -91,7 +91,8 @@ angular.module('carnival')
     var request = {};
     request.method = 'POST';
     request.url = Configuration.getBaseApiUrl() + '/' + this.name;
-    request.data = data;
+    var parameters = ParametersParser.prepareForRequest(this, data);
+    request.data = parameters;
     return $http(request);
   };
 
@@ -99,7 +100,8 @@ angular.module('carnival')
     var request = {};
     request.method = 'PUT';
     request.url = Configuration.getBaseApiUrl() + '/' + this.name + '/' + id;
-    request.data = data;
+    var parameters = ParametersParser.prepareForRequest(this, data);
+    request.data = parameters;
     return $http(request);
   };
 
