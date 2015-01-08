@@ -59,9 +59,9 @@ describe('On carnival-navbar component', function () {
 
   it('should render links to lists on menu', function () {
     expect(element.html())
-    .to.contain('href="#/list/ringring"')
-    .to.contain('href="#/list/wapapow"')
-    .to.contain('href="http://hateeho.com"');
+    .to.contain('href="#/list/ringring')
+    .to.contain('href="#/list/wapapow')
+    .to.contain('href="http://hateeho.com');
   });
 
 });

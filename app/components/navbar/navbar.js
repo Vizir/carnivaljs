@@ -11,7 +11,7 @@ angular.module('carnival.components.navbar', [])
     controller: function ($scope, $stateParams, urlParams) {
 
       $scope.buildUrl = function (link) {
-        if (link.type === 'entity') return '#/list/' + link.url;
+        if (link.type === 'entity') return '#/list/' + link.url + '?page=1';
         if (link.type === 'url')    return link.url;
         return '#';
       };
@@ -23,11 +23,6 @@ angular.module('carnival.components.navbar', [])
         } else {
           return false;
         }
-      };
-
-      $scope.resetPage = function () {
-        urlParams.clearFilters();
-        urlParams.setFilter('page', 1);
       };
     }
   };
