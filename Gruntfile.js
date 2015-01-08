@@ -45,14 +45,14 @@ module.exports = function (grunt) {
               'bower_components/angular-loading-bar/build/loading-bar.js',
               'bower_components/angular-translate/angular-translate.js'
         ],
-        dest: 'dist/carnival.js'
+        dest: 'build/carnival.js'
       }
     },
 
     uglify: {
       dist: {
         files: {
-          'dist/carnival.min.js': ['dist/carnival.js']
+          'build/carnival.min.js': ['build/carnival.js']
         }
       }
     },
@@ -83,15 +83,27 @@ module.exports = function (grunt) {
     },
 
     ngAnnotate: {
-      options: {
-        // Task-specific options go here.
-      },
       dist: {
         files: {
-          'dist/carnival.js': ['dist/carnival.js']
+          'build/carnival.js': ['build/carnival.js']
         }
       },
     },
+
+    copy: {
+      css: {
+        src: 'styles/carnival.css',
+        dest: 'build/carnival.css'
+      }
+    },
+
+    cssmin: {
+      target: {
+        files: [{
+          'build/carnival.min.css': ['build/carnival.css']
+        }]
+      }
+    }
 
   });
 
@@ -105,10 +117,12 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-html2js');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-ng-annotate');
+  grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
 
   grunt.registerTask('dev', ['connect', 'watch:dev']);
   grunt.registerTask('test', ['jshint', 'html2js:dist', 'karma:unit', 'clean:tmp']);
   grunt.registerTask('test:watch', ['jshint', 'html2js:dist', 'karma:continuous', 'clean:tmp']);
-  grunt.registerTask('build', ['jshint', 'html2js:dist', 'concat:dist', 'ngAnnotate:dist', 'clean:tmp', 'karma:unit', 'uglify:dist']);
+  grunt.registerTask('build', ['jshint', 'html2js:dist', 'concat:dist', 'ngAnnotate:dist', 'karma:unit', 'uglify:dist', 'copy:css', 'cssmin', 'clean:tmp']);
 
 };

@@ -40,7 +40,7 @@ angular.module('carnival')
       var limit    = pages.perPage;
       entity.model.getList(offset, limit, urlParams.getFilter('order'), urlParams.getFilter('orderDir'), urlParams.getFilter('search'))
       .success(function (data, status, headers, config) {
-        pages.total = 30 / pages.perPage; /* TODO: headers('X-Total-Count') */
+        pages.total = headers('X-Total-Count') / pages.perPage;
         entity.datas = data;
       });
     };

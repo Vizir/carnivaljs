@@ -50,7 +50,7 @@ run tests and file watcher
     $ npm test:watch
 
 
-create carnival.js and carnival.min.js on 'dist' folder
+create carnival.js, carnival.min.js, carnival.css and carnival.min.css on 'build' folder
 
 
     $ npm run build
