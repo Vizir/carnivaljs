@@ -1,5 +1,5 @@
 angular.module('carnival.components.search-controller', [])
-.directive('carnivalSearchCtrl', function (urlParams) {
+.directive('carnivalSearchCtrl', function () {
   return {
     restrict: 'E',
     replace: true,
@@ -8,10 +8,14 @@ angular.module('carnival.components.search-controller', [])
       relatedResources: '='
     },
     templateUrl: 'components/search-controller/search-controller.html',
-    link: function (scope) {
-      scope.searchParams = urlParams.getFilter('search') || {};
-      scope.submit = function () {
-          urlParams.setFilter('search', scope.searchParams, true);
+    controller: function ($scope, urlParams) {
+      $scope.searchParams = urlParams.getParam('search') || {};
+      $scope.submit = function () {
+        var searchParamsKeys = Object.keys($scope.searchParams);
+        for (var i = 0, x = searchParamsKeys.length; i < x; i += 1) {
+          urlParams.setParam('search.' + searchParamsKeys[i], $scope.searchParams[searchParamsKeys[i]]);
+        }
+        urlParams.emitLoadEvent();
       };
     }
   };
