@@ -687,6 +687,7 @@ angular.module('carnival')
 
   Entity.prototype.getList = function (offset, limit, order, orderDir, search) {
     var request = RequestBuilder.buildForGetList({
+      baseUrl: Configuration.getBaseApiUrl(),
       offset: offset,
       limit: limit,
       order: order,
@@ -700,6 +701,7 @@ angular.module('carnival')
 
   Entity.prototype.getOne = function (id) {
     var request = RequestBuilder.buildForGetOne({
+      baseUrl: Configuration.getBaseApiUrl(),
       id: id,
       endpoint: this.name
     });
@@ -708,6 +710,7 @@ angular.module('carnival')
 
   Entity.prototype.delete = function (id) {
     var request = RequestBuilder.buildForGetOne({
+      baseUrl: Configuration.getBaseApiUrl(),
       id: id,
       endpoint: this.name
     });
@@ -716,6 +719,7 @@ angular.module('carnival')
 
   Entity.prototype.create = function (data) {
     var request = RequestBuilder.buildForCreate({
+      baseUrl: Configuration.getBaseApiUrl(),
       entity: this,
       entityData: data,
       endpoint: this.name
@@ -725,6 +729,7 @@ angular.module('carnival')
 
   Entity.prototype.update = function (id, data) {
     var request = RequestBuilder.buildForUpdate({
+      baseUrl: Configuration.getBaseApiUrl(),
       id: id,
       entity: this,
       entityData: data,
@@ -1060,7 +1065,7 @@ angular.module('carnival')
 
 
 angular.module('carnival')
-.service('RequestBuilder', ["Configuration", "HttpAdapter", "ParametersParser", function (Configuration, HttpAdapter, ParametersParser) {
+.service('RequestBuilder', ["HttpAdapter", "ParametersParser", function (HttpAdapter, ParametersParser) {
   
   var prebuildRequest = function(method){
     var request = {};
@@ -1071,7 +1076,7 @@ angular.module('carnival')
   this.buildForGetList = function(params){
     var request = prebuildRequest('GET');
     request.params = {};
-    request.url    = Configuration.getBaseApiUrl() + '/' + params.endpoint;
+    request.url    = params.baseUrl + '/' + params.endpoint;
     request.params.offset = params.offset;
     request.params.limit  = params.limit;
     if (params.order && params.orderDir) {
@@ -1084,19 +1089,19 @@ angular.module('carnival')
 
   this.buildForGetOne = function(params){
     var request = prebuildRequest('GET');
-    request.url    = Configuration.getBaseApiUrl() + '/' + params.endpoint + '/' + params.id;
+    request.url    = params.baseUrl + '/' + params.endpoint + '/' + params.id;
     return request;
   };
 
   this.buildForDelete = function(params){
     var request = prebuildRequest('DELETE');
-    request.url    = Configuration.getBaseApiUrl() + '/' + params.endpoint + '/' + params.id;
+    request.url    = params.baseUrl + '/' + params.endpoint + '/' + params.id;
     return request;
   };
 
   this.buildForCreate = function(params){
     var request = prebuildRequest('POST');
-    request.url    = Configuration.getBaseApiUrl() + '/' + params.endpoint;
+    request.url    = params.baseUrl + '/' + params.endpoint;
     var parameters = ParametersParser.prepareForRequest(params.entity, params.entityData);
     request.data = parameters;
     return request;
@@ -1104,7 +1109,7 @@ angular.module('carnival')
 
   this.buildForUpdate = function(params){
     var request = prebuildRequest('PUT');
-    request.url    = Configuration.getBaseApiUrl() + '/' + params.endpoint + '/' + params.id;
+    request.url    = params.baseUrl + '/' + params.endpoint + '/' + params.id;
     var parameters = ParametersParser.prepareForRequest(params.entity, params.entityData);
     request.data = parameters;
     return request;
@@ -1544,6 +1549,7 @@ angular.module("components/search-controller/search-controller.html", []).run(["
     "    <p ng-repeat=\"field in fields\" ng-if=\"field.views.index.searchable\" ng-switch=\"field.type\">\n" +
     "      <label ng-if=\"field.type !== 'hasMany'\">{{ field.label }}</label>\n" +
     "      <carnival-text-field ng-switch-when=\"text\" label=\"field.label\" data=\"searchParams[field.name]\" editable=\"true\"></carnival-text-field>\n" +
+    "      <carnival-string-field ng-switch-when=\"string\" label=\"field.label\" data=\"searchParams[field.name]\" editable=\"true\"></carnival-string-field>\n" +
     "      <carnival-select-field ng-switch-when=\"belongsTo\" editable=\"true\" field=\"field.field\" identifier=\"field.identifier\" items=\"relatedResources[field.endpoint]\" data=\"searchParams[field.name]\"></carnival-select-field>\n" +
     "      <carnival-number-field ng-switch-when=\"number\" data=\"searchParams[field.name]\" label=\"field.label\" editable=\"true\"></carnival-number-field>\n" +
     "    </p>\n" +

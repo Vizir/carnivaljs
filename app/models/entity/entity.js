@@ -61,6 +61,7 @@ angular.module('carnival')
 
   Entity.prototype.getList = function (offset, limit, order, orderDir, search) {
     var request = RequestBuilder.buildForGetList({
+      baseUrl: Configuration.getBaseApiUrl(),
       offset: offset,
       limit: limit,
       order: order,
@@ -74,6 +75,7 @@ angular.module('carnival')
 
   Entity.prototype.getOne = function (id) {
     var request = RequestBuilder.buildForGetOne({
+      baseUrl: Configuration.getBaseApiUrl(),
       id: id,
       endpoint: this.name
     });
@@ -82,6 +84,7 @@ angular.module('carnival')
 
   Entity.prototype.delete = function (id) {
     var request = RequestBuilder.buildForGetOne({
+      baseUrl: Configuration.getBaseApiUrl(),
       id: id,
       endpoint: this.name
     });
@@ -90,6 +93,7 @@ angular.module('carnival')
 
   Entity.prototype.create = function (data) {
     var request = RequestBuilder.buildForCreate({
+      baseUrl: Configuration.getBaseApiUrl(),
       entity: this,
       entityData: data,
       endpoint: this.name
@@ -99,6 +103,7 @@ angular.module('carnival')
 
   Entity.prototype.update = function (id, data) {
     var request = RequestBuilder.buildForUpdate({
+      baseUrl: Configuration.getBaseApiUrl(),
       id: id,
       entity: this,
       entityData: data,

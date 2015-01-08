@@ -1,5 +1,5 @@
 angular.module('carnival')
-.service('RequestBuilder', function (Configuration, HttpAdapter, ParametersParser) {
+.service('RequestBuilder', function (HttpAdapter, ParametersParser) {
   
   var prebuildRequest = function(method){
     var request = {};
@@ -10,7 +10,7 @@ angular.module('carnival')
   this.buildForGetList = function(params){
     var request = prebuildRequest('GET');
     request.params = {};
-    request.url    = Configuration.getBaseApiUrl() + '/' + params.endpoint;
+    request.url    = params.baseUrl + '/' + params.endpoint;
     request.params.offset = params.offset;
     request.params.limit  = params.limit;
     if (params.order && params.orderDir) {
@@ -23,19 +23,19 @@ angular.module('carnival')
 
   this.buildForGetOne = function(params){
     var request = prebuildRequest('GET');
-    request.url    = Configuration.getBaseApiUrl() + '/' + params.endpoint + '/' + params.id;
+    request.url    = params.baseUrl + '/' + params.endpoint + '/' + params.id;
     return request;
   };
 
   this.buildForDelete = function(params){
     var request = prebuildRequest('DELETE');
-    request.url    = Configuration.getBaseApiUrl() + '/' + params.endpoint + '/' + params.id;
+    request.url    = params.baseUrl + '/' + params.endpoint + '/' + params.id;
     return request;
   };
 
   this.buildForCreate = function(params){
     var request = prebuildRequest('POST');
-    request.url    = Configuration.getBaseApiUrl() + '/' + params.endpoint;
+    request.url    = params.baseUrl + '/' + params.endpoint;
     var parameters = ParametersParser.prepareForRequest(params.entity, params.entityData);
     request.data = parameters;
     return request;
@@ -43,7 +43,7 @@ angular.module('carnival')
 
   this.buildForUpdate = function(params){
     var request = prebuildRequest('PUT');
-    request.url    = Configuration.getBaseApiUrl() + '/' + params.endpoint + '/' + params.id;
+    request.url    = params.baseUrl + '/' + params.endpoint + '/' + params.id;
     var parameters = ParametersParser.prepareForRequest(params.entity, params.entityData);
     request.data = parameters;
     return request;

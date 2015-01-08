@@ -25,6 +25,7 @@ describe('On Request Builder Service', function () {
 
     it('should return correct request', function(){
       var requestParams = {
+        baseUrl: Configuration.getBaseApiUrl(),
         offset: 'offset',
         limit: 'limit',
         order: 'order',
@@ -48,6 +49,7 @@ describe('On Request Builder Service', function () {
   describe('build for getOne', function(){
     it('should return correct request', function(){
       var requestParams = {
+        baseUrl: Configuration.getBaseApiUrl(),
         id: 'id',
         endpoint: 'endpoint'
       };
@@ -60,6 +62,7 @@ describe('On Request Builder Service', function () {
   describe('build for delete', function(){
     it('should return correct request', function(){
       var requestParams = {
+        baseUrl: Configuration.getBaseApiUrl(),
         id: 'id',
         endpoint: 'endpoint'
       };
@@ -72,6 +75,7 @@ describe('On Request Builder Service', function () {
   describe('build for create', function(){
     it('should return correct request', function(){
       var requestParams = {
+        baseUrl: Configuration.getBaseApiUrl(),
         entityData: {key: 'value'},
         entity: {},
         endpoint: 'endpoint'
@@ -86,6 +90,7 @@ describe('On Request Builder Service', function () {
   describe('build for update', function(){
     it('should return correct request', function(){
       var requestParams = {
+        baseUrl: Configuration.getBaseApiUrl(),
         id: 'id',
         entityData: {key: 'value'},
         entity: {},
