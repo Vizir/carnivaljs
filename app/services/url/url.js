@@ -1,47 +1,33 @@
 angular.module('carnival')
-.service('urlParams', function ($rootScope, $location, $state, $stateParams) {
+.service('urlParams', function ($rootScope, $location, $state) {
 
-  var defaultValues = {
-    page: 1
+  this.setParam = function (name, value, reload) {
+    if (value === '') value = null;
+    $location.search(name, value);
+    if (reload) this.emitLoadEvent();
   };
 
-  var decodeUrl = function () {
-    if (!$stateParams.filters) return defaultValues;
-    return JSON.parse(decodeURIComponent($stateParams.filters));
+  this.getParam = function (name) {
+    if (name === 'search') {
+      
+    }
+    return $location.search()[name];
   };
 
-  var encodeUrl = function (obj) {
-    obj = (typeof obj === 'string') ? obj : JSON.stringify(obj);
-    $stateParams.filters = encodeURIComponent(obj);
+  this.getAllParams = function () {
+    return $location.search();
   };
 
-  this.setFilter = function (name, value, reload) {
-    var filters = decodeUrl();
-    filters[name] = value;
-    encodeUrl(filters);
-    if (reload) this.reload();
+  this.clearParams = function () {
+    Object.keys($location.search()).forEach(function (param) {
+      $location.search(param, null);
+    });
   };
 
-  this.getFilter = function (name) {
-    var filters = decodeUrl();
-    return filters[name];
+  this.emitLoadEvent = function () {
+    $rootScope.$broadcast('paramsChange');
   };
 
-  this.getAllFilters = function () {
-    return decodeUrl();
-  };
-
-  this.clearFilters = function () {
-    $stateParams.filters = null;
-  };
-
-  this.reload = function () {
-    $location.search('filters', $stateParams.filters);
-    $rootScope.$broadcast('filterParamsChange');
-  };
-
-  this.heavyReload = function () {
-    $state.go($state.current, $stateParams, { reload: true });
-  };
+  this.reload = this.emitLoadEvent;
 
 });

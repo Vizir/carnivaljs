@@ -15,7 +15,7 @@ angular.module('carnival', [
       controller: 'MainController'
     })
     .state('main.list', {
-      url: 'list/:entity?filters',
+      url: 'list/:entity',
       templateUrl: 'states/main.list/list.html',
       controller: 'ListController'
     })

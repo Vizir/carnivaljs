@@ -18,7 +18,7 @@ angular.module('carnival', [
       controller: 'MainController'
     })
     .state('main.list', {
-      url: 'list/:entity?filters',
+      url: 'list/:entity',
       templateUrl: 'states/main.list/list.html',
       controller: 'ListController'
     })
@@ -369,7 +369,7 @@ angular.module('carnival.components.listingfieldhasmany', [])
         return 'View ' + $scope.field.label;
       };
       $scope.getUrl = function () {
-        return '#/list/' + $scope.field.endpoint + '?filters=' + encodeURIComponent('{"page": 1, "search": { "' + $scope.field.from + '": ' + $scope.item[entity.identifier] + ' }}');
+        return '#/list/' + $scope.field.endpoint + '?page=1&search.' + $scope.field.from + '=' + $scope.item[entity.identifier];
       };
     }]
   };
@@ -417,7 +417,7 @@ angular.module('carnival.components.navbar', [])
     controller: ["$scope", "$stateParams", "urlParams", function ($scope, $stateParams, urlParams) {
 
       $scope.buildUrl = function (link) {
-        if (link.type === 'entity') return '#/list/' + link.url;
+        if (link.type === 'entity') return '#/list/' + link.url + '?page=1';
         if (link.type === 'url')    return link.url;
         return '#';
       };
@@ -429,11 +429,6 @@ angular.module('carnival.components.navbar', [])
         } else {
           return false;
         }
-      };
-
-      $scope.resetPage = function () {
-        urlParams.clearFilters();
-        urlParams.setFilter('page', 1);
       };
     }]
   };
@@ -453,7 +448,7 @@ angular.module('carnival.components.notification', [])
 });
 
 angular.module('carnival.components.order-controller', [])
-.directive('carnivalOrderCtrl', ["urlParams", function (urlParams) {
+.directive('carnivalOrderCtrl', function () {
   return {
     restrict: 'E',
     replate: true,
@@ -461,24 +456,24 @@ angular.module('carnival.components.order-controller', [])
       field: '='
     },
     templateUrl: 'components/order-controller/order-controller.html',
-    link: function (scope) {
-      scope.toggleOrder = function () {
-        var orderDirValue = (urlParams.getFilter('order') !== scope.field) ? 'asc' :
-                            (urlParams.getFilter('orderDir') === 'asc' && urlParams.getFilter('order') === scope.field) ? 'desc' : 'asc';
-        urlParams.setFilter('order', scope.field);
-        urlParams.setFilter('orderDir', orderDirValue);
+    controller: ["$scope", "urlParams", function ($scope, urlParams) {
+      $scope.toggleOrder = function () {
+        var orderDirValue = (urlParams.getParam('order') !== $scope.field) ? 'asc' :
+                            (urlParams.getParam('orderDir') === 'asc' && urlParams.getParam('order') === $scope.field) ? 'desc' : 'asc';
+        urlParams.setParam('order', $scope.field);
+        urlParams.setParam('orderDir', orderDirValue);
         urlParams.reload();
       };
-      scope.checkDirAsc = function () {
-        if (urlParams.getFilter('order') === scope.field && urlParams.getFilter('orderDir') === 'asc') return true;
+      $scope.checkDirAsc = function () {
+        if (urlParams.getParam('order') === $scope.field && urlParams.getParam('orderDir') === 'asc') return true;
         return false;
       };
-    }
+    }]
   };
-}]);
+});
 
 angular.module('carnival.components.pagination-controller', [])
-.directive('carnivalPaginationCtrl', ["$rootScope", "urlParams", function ($rootScope, urlParams) {
+.directive('carnivalPaginationCtrl', function () {
   return {
     restrict: 'E',
     replace: true,
@@ -487,27 +482,27 @@ angular.module('carnival.components.pagination-controller', [])
       totalPages: '='
     },
     templateUrl: 'components/pagination-controller/pagination-controller.html',
-    link: function (scope) {
-      scope.jumpTo = function (page) {
-        urlParams.setFilter('page', page, true);
+    controller: ["$scope", "$rootScope", "urlParams", function ($scope, $rootScope, urlParams) {
+      $scope.jumpTo = function (page) {
+        urlParams.setParam('page', page, true);
       };
-      scope.nextPage = function () {
-        if (scope.currentPage === scope.totalPages) return;
-        urlParams.setFilter('page', scope.currentPage + 1, true);
+      $scope.nextPage = function () {
+        if ($scope.currentPage === $scope.totalPages) return;
+        urlParams.setParam('page', $scope.currentPage + 1, true);
       };
-      scope.prevPage = function () {
-        if (scope.currentPage === 1) return;
-        urlParams.setFilter('page', scope.currentPage - 1, true);
+      $scope.prevPage = function () {
+        if ($scope.currentPage === 1) return;
+        urlParams.setParam('page', $scope.currentPage - 1, true);
       };
-      $rootScope.$on('filterParamsChange', function () {
-        scope.currentPage = urlParams.getFilter('page');
+      $rootScope.$on('paramsChange', function () {
+        $scope.currentPage = parseInt(urlParams.getParam('page'), 10);
       });
-    }
+    }]
   };
-}]);
+});
 
 angular.module('carnival.components.quickfilter-controller', [])
-.directive('carnivalQuickFilter', ["urlParams", function (urlParams) {
+.directive('carnivalQuickFilter', function () {
   return {
     restrict: 'E',
     replace: true,
@@ -515,25 +510,22 @@ angular.module('carnival.components.quickfilter-controller', [])
       filters: '='
     },
     templateUrl: 'components/quickfilter-controller/quickfilter-controller.html',
-    link: function (scope) {
-      var searchs = urlParams.getFilter('search') || {};
+    controller: ["$scope", "urlParams", function ($scope, urlParams) {
 
-      scope.isSelected = function (field, value) {
-        if (!searchs[field]) return false;
-        return value === searchs[field];
+      $scope.isSelected = function (field, value) {
+        return value === urlParams.getParam('search.' + field);
       };
 
-      scope.setFilter = function (field, value) {
-        searchs[field] = value;
-        urlParams.setFilter('search', searchs, true);
+      $scope.setFilter = function (field, value) {
+        urlParams.setParam('search.' + field, value, true);
       };
 
-    }
+    }]
   };
-}]);
+});
 
 angular.module('carnival.components.search-controller', [])
-.directive('carnivalSearchCtrl', ["urlParams", function (urlParams) {
+.directive('carnivalSearchCtrl', function () {
   return {
     restrict: 'E',
     replace: true,
@@ -542,14 +534,28 @@ angular.module('carnival.components.search-controller', [])
       relatedResources: '='
     },
     templateUrl: 'components/search-controller/search-controller.html',
-    link: function (scope) {
-      scope.searchParams = urlParams.getFilter('search') || {};
-      scope.submit = function () {
-          urlParams.setFilter('search', scope.searchParams, true);
+    controller: ["$scope", "urlParams", function ($scope, urlParams) {
+
+      var getSearchParams = function () {
+        $scope.searchParams = {};
+        for (var i = 0, x = $scope.fields.length; i < x; i += 1) {
+          $scope.searchParams[$scope.fields[i].name] = urlParams.getParam('search.' + $scope.fields[i].name);
+        }
       };
-    }
+
+      $scope.submit = function () {
+        var searchParamsKeys = Object.keys($scope.searchParams);
+        for (var i = 0, x = searchParamsKeys.length; i < x; i += 1) {
+          urlParams.setParam('search.' + searchParamsKeys[i], $scope.searchParams[searchParamsKeys[i]]);
+        }
+        urlParams.emitLoadEvent();
+      };
+
+      getSearchParams();
+
+    }]
   };
-}]);
+});
 
 angular.module('carnival').provider('Configuration', function() {
 
@@ -687,6 +693,7 @@ angular.module('carnival')
   // $http services
 
   Entity.prototype.getList = function (offset, limit, order, orderDir, search) {
+<<<<<<< HEAD
     var extraParams = this.extraListParams || {};
     var request = RequestBuilder.buildForGetList({
       baseUrl: Configuration.getBaseApiUrl(),
@@ -699,6 +706,18 @@ angular.module('carnival')
       endpoint: this.name
     });
 
+=======
+    var request    = { params: {} };
+    request.method = 'GET';
+    request.url    = Configuration.getBaseApiUrl() + '/' + this.name;
+    request.params.offset = offset;
+    request.params.limit  = limit;
+    if (order && orderDir) {
+      request.params.order    = order;
+      request.params.orderDir = orderDir;
+    }
+    if (search) request.params.search = search;
+>>>>>>> 69d5fa681f35e1e859df865b0f38faac1bb98228
     return $http(request);
   };
 
@@ -1024,6 +1043,7 @@ angular.module('carnival')
 }]);
 
 angular.module('carnival')
+<<<<<<< HEAD
 .service('ParametersParser', function () {
 
   var capitalizeFirstLetter = function(word){
@@ -1133,49 +1153,38 @@ angular.module('carnival')
 
 angular.module('carnival')
 .service('urlParams', ["$rootScope", "$location", "$state", "$stateParams", function ($rootScope, $location, $state, $stateParams) {
+=======
+.service('urlParams', ["$rootScope", "$location", "$state", function ($rootScope, $location, $state) {
+>>>>>>> 69d5fa681f35e1e859df865b0f38faac1bb98228
 
-  var defaultValues = {
-    page: 1
+  this.setParam = function (name, value, reload) {
+    if (value === '') value = null;
+    $location.search(name, value);
+    if (reload) this.emitLoadEvent();
   };
 
-  var decodeUrl = function () {
-    if (!$stateParams.filters) return defaultValues;
-    return JSON.parse(decodeURIComponent($stateParams.filters));
+  this.getParam = function (name) {
+    if (name === 'search') {
+      
+    }
+    return $location.search()[name];
   };
 
-  var encodeUrl = function (obj) {
-    obj = (typeof obj === 'string') ? obj : JSON.stringify(obj);
-    $stateParams.filters = encodeURIComponent(obj);
+  this.getAllParams = function () {
+    return $location.search();
   };
 
-  this.setFilter = function (name, value, reload) {
-    var filters = decodeUrl();
-    filters[name] = value;
-    encodeUrl(filters);
-    if (reload) this.reload();
+  this.clearParams = function () {
+    Object.keys($location.search()).forEach(function (param) {
+      $location.search(param, null);
+    });
   };
 
-  this.getFilter = function (name) {
-    var filters = decodeUrl();
-    return filters[name];
+  this.emitLoadEvent = function () {
+    $rootScope.$broadcast('paramsChange');
   };
 
-  this.getAllFilters = function () {
-    return decodeUrl();
-  };
-
-  this.clearFilters = function () {
-    $stateParams.filters = null;
-  };
-
-  this.reload = function () {
-    $location.search('filters', $stateParams.filters);
-    $rootScope.$broadcast('filterParamsChange');
-  };
-
-  this.heavyReload = function () {
-    $state.go($state.current, $stateParams, { reload: true });
-  };
+  this.reload = this.emitLoadEvent;
 
 }]);
 
@@ -1240,7 +1249,7 @@ angular.module('carnival')
   var entity = $scope.entity = {},
 
   pages = $scope.pages = {
-    current: parseInt(urlParams.getFilter('page'), 10)
+    current: parseInt(urlParams.getParam('page'), 10)
   };
 
   var onCreate = function () {
@@ -1266,15 +1275,23 @@ angular.module('carnival')
     });
   };
 
-
+  var getSearchParams = function () {
+    var searchParams = {};
+    for (var i = 0, x = entity.fields.length; i < x; i += 1) {
+      if (urlParams.getParam('search.' + entity.fields[i].name)) {
+        searchParams[entity.fields[i].name] = urlParams.getParam('search.' + entity.fields[i].name);
+      }
+    }
+    return (Object.keys(searchParams).length === 0) ? false : searchParams;
+  };
 
   var init = function () {
 
     entity = EntityResources.prepareForListState($stateParams.entity);
     entity.loadData = function () {
-      var offset   = pages.perPage * (urlParams.getFilter('page') - 1);
+      var offset   = pages.perPage * (urlParams.getParam('page') - 1);
       var limit    = pages.perPage;
-      entity.model.getList(offset, limit, urlParams.getFilter('order'), urlParams.getFilter('orderDir'), urlParams.getFilter('search'))
+      entity.model.getList(offset, limit, urlParams.getParam('order'), urlParams.getParam('orderDir'), getSearchParams())
       .success(function (data, status, headers, config) {
         pages.total = headers('X-Total-Count') / pages.perPage;
         entity.datas = data;
@@ -1294,7 +1311,7 @@ angular.module('carnival')
 
   };
 
-  $rootScope.$on('filterParamsChange', function () {
+  $rootScope.$on('paramsChange', function () {
     entity.loadData();
   });
 

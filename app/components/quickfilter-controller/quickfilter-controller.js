@@ -1,5 +1,5 @@
 angular.module('carnival.components.quickfilter-controller', [])
-.directive('carnivalQuickFilter', function (urlParams) {
+.directive('carnivalQuickFilter', function () {
   return {
     restrict: 'E',
     replace: true,
@@ -7,17 +7,14 @@ angular.module('carnival.components.quickfilter-controller', [])
       filters: '='
     },
     templateUrl: 'components/quickfilter-controller/quickfilter-controller.html',
-    link: function (scope) {
-      var searchs = urlParams.getFilter('search') || {};
+    controller: function ($scope, urlParams) {
 
-      scope.isSelected = function (field, value) {
-        if (!searchs[field]) return false;
-        return value === searchs[field];
+      $scope.isSelected = function (field, value) {
+        return value === urlParams.getParam('search.' + field);
       };
 
-      scope.setFilter = function (field, value) {
-        searchs[field] = value;
-        urlParams.setFilter('search', searchs, true);
+      $scope.setFilter = function (field, value) {
+        urlParams.setParam('search.' + field, value, true);
       };
 
     }

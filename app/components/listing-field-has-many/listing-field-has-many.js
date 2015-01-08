@@ -14,7 +14,7 @@ angular.module('carnival.components.listingfieldhasmany', [])
         return 'View ' + $scope.field.label;
       };
       $scope.getUrl = function () {
-        return '#/list/' + $scope.field.endpoint + '?filters=' + encodeURIComponent('{"page": 1, "search": { "' + $scope.field.from + '": ' + $scope.item[entity.identifier] + ' }}');
+        return '#/list/' + $scope.field.endpoint + '?page=1&search.' + $scope.field.from + '=' + $scope.item[entity.identifier];
       };
     }
   };
