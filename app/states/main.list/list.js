@@ -30,7 +30,15 @@ angular.module('carnival')
     });
   };
 
-
+  var getSearchParams = function () {
+    var searchParams = {};
+    for (var i = 0, x = entity.fields.length; i < x; i += 1) {
+      if (urlParams.getParam('search.' + entity.fields[i].name)) {
+        searchParams[entity.fields[i].name] = urlParams.getParam('search.' + entity.fields[i].name);
+      }
+    }
+    return (Object.keys(searchParams).length === 0) ? false : searchParams;
+  };
 
   var init = function () {
 
@@ -38,7 +46,7 @@ angular.module('carnival')
     entity.loadData = function () {
       var offset   = pages.perPage * (urlParams.getParam('page') - 1);
       var limit    = pages.perPage;
-      entity.model.getList(offset, limit, urlParams.getParam('order'), urlParams.getParam('orderDir'), urlParams.getParam('search'))
+      entity.model.getList(offset, limit, urlParams.getParam('order'), urlParams.getParam('orderDir'), getSearchParams())
       .success(function (data, status, headers, config) {
         pages.total = headers('X-Total-Count') / pages.perPage;
         entity.datas = data;

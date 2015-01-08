@@ -515,7 +515,14 @@ angular.module('carnival.components.search-controller', [])
     },
     templateUrl: 'components/search-controller/search-controller.html',
     controller: function ($scope, urlParams) {
-      $scope.searchParams = urlParams.getParam('search') || {};
+
+      var getSearchParams = function () {
+        $scope.searchParams = {};
+        for (var i = 0, x = $scope.fields.length; i < x; i += 1) {
+          $scope.searchParams[$scope.fields[i].name] = urlParams.getParam('search.' + $scope.fields[i].name);
+        }
+      };
+
       $scope.submit = function () {
         var searchParamsKeys = Object.keys($scope.searchParams);
         for (var i = 0, x = searchParamsKeys.length; i < x; i += 1) {
@@ -523,6 +530,9 @@ angular.module('carnival.components.search-controller', [])
         }
         urlParams.emitLoadEvent();
       };
+
+      getSearchParams();
+
     }
   };
 });
@@ -671,7 +681,7 @@ angular.module('carnival')
       request.params.order    = order;
       request.params.orderDir = orderDir;
     }
-    if (search) request.params.search = encodeURIComponent(JSON.stringify(search));
+    if (search) request.params.search = search;
     return $http(request);
   };
 
@@ -997,6 +1007,9 @@ angular.module('carnival')
   };
 
   this.getParam = function (name) {
+    if (name === 'search') {
+      
+    }
     return $location.search()[name];
   };
 
@@ -1105,7 +1118,15 @@ angular.module('carnival')
     });
   };
 
-
+  var getSearchParams = function () {
+    var searchParams = {};
+    for (var i = 0, x = entity.fields.length; i < x; i += 1) {
+      if (urlParams.getParam('search.' + entity.fields[i].name)) {
+        searchParams[entity.fields[i].name] = urlParams.getParam('search.' + entity.fields[i].name);
+      }
+    }
+    return (Object.keys(searchParams).length === 0) ? false : searchParams;
+  };
 
   var init = function () {
 
@@ -1113,7 +1134,7 @@ angular.module('carnival')
     entity.loadData = function () {
       var offset   = pages.perPage * (urlParams.getParam('page') - 1);
       var limit    = pages.perPage;
-      entity.model.getList(offset, limit, urlParams.getParam('order'), urlParams.getParam('orderDir'), urlParams.getParam('search'))
+      entity.model.getList(offset, limit, urlParams.getParam('order'), urlParams.getParam('orderDir'), getSearchParams())
       .success(function (data, status, headers, config) {
         pages.total = headers('X-Total-Count') / pages.perPage;
         entity.datas = data;

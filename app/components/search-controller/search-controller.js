@@ -9,7 +9,14 @@ angular.module('carnival.components.search-controller', [])
     },
     templateUrl: 'components/search-controller/search-controller.html',
     controller: function ($scope, urlParams) {
-      $scope.searchParams = urlParams.getParam('search') || {};
+
+      var getSearchParams = function () {
+        $scope.searchParams = {};
+        for (var i = 0, x = $scope.fields.length; i < x; i += 1) {
+          $scope.searchParams[$scope.fields[i].name] = urlParams.getParam('search.' + $scope.fields[i].name);
+        }
+      };
+
       $scope.submit = function () {
         var searchParamsKeys = Object.keys($scope.searchParams);
         for (var i = 0, x = searchParamsKeys.length; i < x; i += 1) {
@@ -17,6 +24,9 @@ angular.module('carnival.components.search-controller', [])
         }
         urlParams.emitLoadEvent();
       };
+
+      getSearchParams();
+
     }
   };
 });
