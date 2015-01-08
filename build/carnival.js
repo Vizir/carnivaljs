@@ -693,7 +693,6 @@ angular.module('carnival')
   // $http services
 
   Entity.prototype.getList = function (offset, limit, order, orderDir, search) {
-<<<<<<< HEAD
     var extraParams = this.extraListParams || {};
     var request = RequestBuilder.buildForGetList({
       baseUrl: Configuration.getBaseApiUrl(),
@@ -706,18 +705,6 @@ angular.module('carnival')
       endpoint: this.name
     });
 
-=======
-    var request    = { params: {} };
-    request.method = 'GET';
-    request.url    = Configuration.getBaseApiUrl() + '/' + this.name;
-    request.params.offset = offset;
-    request.params.limit  = limit;
-    if (order && orderDir) {
-      request.params.order    = order;
-      request.params.orderDir = orderDir;
-    }
-    if (search) request.params.search = search;
->>>>>>> 69d5fa681f35e1e859df865b0f38faac1bb98228
     return $http(request);
   };
 
@@ -1043,7 +1030,6 @@ angular.module('carnival')
 }]);
 
 angular.module('carnival')
-<<<<<<< HEAD
 .service('ParametersParser', function () {
 
   var capitalizeFirstLetter = function(word){
@@ -1152,10 +1138,7 @@ angular.module('carnival')
 
 
 angular.module('carnival')
-.service('urlParams', ["$rootScope", "$location", "$state", "$stateParams", function ($rootScope, $location, $state, $stateParams) {
-=======
 .service('urlParams', ["$rootScope", "$location", "$state", function ($rootScope, $location, $state) {
->>>>>>> 69d5fa681f35e1e859df865b0f38faac1bb98228
 
   this.setParam = function (name, value, reload) {
     if (value === '') value = null;
