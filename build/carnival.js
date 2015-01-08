@@ -605,11 +605,7 @@ angular.module('carnival').provider('Configuration', function() {
 });
 
 angular.module('carnival')
-<<<<<<< HEAD
-.factory('Entity', function (EntityValidation, $http, Configuration, HttpAdapter, ParametersParser) {
-=======
-.factory('Entity', ["EntityValidation", "$http", "Configuration", "HttpAdapter", function (EntityValidation, $http, Configuration, HttpAdapter) {
->>>>>>> 30f1f38c7938de507688fcb2d613d071fcce2485
+.factory('Entity', ["EntityValidation", "$http", "Configuration", "HttpAdapter", "ParametersParser", function (EntityValidation, $http, Configuration, HttpAdapter, ParametersParser) {
 
   var buildViews = function (views) {
     var _views = {};
@@ -998,7 +994,6 @@ angular.module('carnival')
 }]);
 
 angular.module('carnival')
-<<<<<<< HEAD
 .service('ParametersParser', function () {
 
   var capitalizeFirstLetter = function(word){
@@ -1043,10 +1038,7 @@ angular.module('carnival')
 
 
 angular.module('carnival')
-.service('urlParams', function ($rootScope, $location, $state, $stateParams) {
-=======
 .service('urlParams', ["$rootScope", "$location", "$state", "$stateParams", function ($rootScope, $location, $state, $stateParams) {
->>>>>>> 30f1f38c7938de507688fcb2d613d071fcce2485
 
   var defaultValues = {
     page: 1
