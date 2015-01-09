@@ -48,7 +48,7 @@ angular.module('carnival')
       var limit    = pages.perPage;
       entity.model.getList(offset, limit, urlParams.getParam('order'), urlParams.getParam('orderDir'), getSearchParams())
       .success(function (data, status, headers, config) {
-        pages.total = headers('X-Total-Count') / pages.perPage;
+        pages.total = (headers('X-Total-Count') / pages.perPage).toFixed();
         entity.datas = data;
       });
     };
