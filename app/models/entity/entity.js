@@ -40,13 +40,12 @@ angular.module('carnival')
     this.name = name;
     this.label = options.label || this.name;
     this.identifier = options.identifier;
-    this.extraListParams = options.extraListParams;
+    this.extraReqParams = options.extraReqParams || {};
     this.quickFilters = options.quickFilters || null;
     this.pagination = options.pagination || null;
 
     this.fields = [];
     buildFields(options.fields, this);
-
   }
 
   Entity.prototype.checkFieldView = function (name, view) {
@@ -61,8 +60,8 @@ angular.module('carnival')
   // $http services
 
   Entity.prototype.getList = function (offset, limit, order, orderDir, search) {
-    var extraParams = this.extraListParams || {};
-    var request = RequestBuilder.buildForGetList({
+    var extraParams = this.extraReqParams.list || {};
+    var requestParams = RequestBuilder.buildForGetList({
       baseUrl: Configuration.getBaseApiUrl(),
       extraParams: extraParams,
       offset: offset,
@@ -73,46 +72,58 @@ angular.module('carnival')
       endpoint: this.name
     });
 
-    return $http(request);
+    return this.request(requestParams);
   };
 
   Entity.prototype.getOne = function (id) {
-    var request = RequestBuilder.buildForGetOne({
+    var extraParams = this.extraReqParams.show || {};
+    var requestParams = RequestBuilder.buildForGetOne({
       baseUrl: Configuration.getBaseApiUrl(),
+      extraParams: extraParams,
       id: id,
       endpoint: this.name
     });
-    return $http(request);
+    return this.request(requestParams);
   };
 
   Entity.prototype.delete = function (id) {
-    var request = RequestBuilder.buildForDelete({
+    var extraParams = this.extraReqParams.delete || {};
+    var requestParams = RequestBuilder.buildForDelete({
       baseUrl: Configuration.getBaseApiUrl(),
+      extraParams: extraParams,
       id: id,
       endpoint: this.name
     });
-    return $http(request);
+    return this.request(requestParams);
   };
 
   Entity.prototype.create = function (data) {
-    var request = RequestBuilder.buildForCreate({
+    var extraParams = this.extraReqParams.create || {};
+    var requestParams = RequestBuilder.buildForCreate({
       baseUrl: Configuration.getBaseApiUrl(),
+      extraParams: extraParams,
       entity: this,
       entityData: data,
       endpoint: this.name
     });
-    return $http(request);
+    return this.request(requestParams);
   };
 
   Entity.prototype.update = function (id, data) {
-    var request = RequestBuilder.buildForUpdate({
+    var extraParams = this.extraReqParams.update || {};
+    var requestParams = RequestBuilder.buildForUpdate({
       baseUrl: Configuration.getBaseApiUrl(),
+      extraParams: extraParams,
       id: id,
       entity: this,
       entityData: data,
       endpoint: this.name
     });
-    return $http(request);
+    return this.request(requestParams);
+  };
+
+  Entity.prototype.request = function(requestParams){
+    return $http(request); 
   };
 
   return Entity;
