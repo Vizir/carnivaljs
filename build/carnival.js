@@ -755,7 +755,7 @@ angular.module('carnival')
   };
 
   Entity.prototype.request = function(requestParams){
-    return $http(request); 
+    return $http(requestParams); 
   };
 
   return Entity;
