@@ -42,8 +42,3 @@ angular.module('carnival', [
     entities[i] = new Entity(entities[i].name, entities[i].options);
   }
 });
-
-// Sample
-// http://[base_api_url]/:entity?sortField=title&sortDir=desc
-// http://[base_api_url]/:entity?filter[status]=2&filter[title]=example
-// http://[base_api_url]/:entity?offset=1&limit=2

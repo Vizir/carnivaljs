@@ -46,11 +46,6 @@ angular.module('carnival', [
   }
 }]);
 
-// Sample
-// http://[base_api_url]/:entity?sortField=title&sortDir=desc
-// http://[base_api_url]/:entity?filter[status]=2&filter[title]=example
-// http://[base_api_url]/:entity?offset=1&limit=2
-
 angular.module('carnival.components.button', [])
 .directive('carnivalButton', function () {
   return {
@@ -1147,9 +1142,6 @@ angular.module('carnival')
   };
 
   this.getParam = function (name) {
-    if (name === 'search') {
-      
-    }
     return $location.search()[name];
   };
 

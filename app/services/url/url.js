@@ -8,9 +8,6 @@ angular.module('carnival')
   };
 
   this.getParam = function (name) {
-    if (name === 'search') {
-      
-    }
     return $location.search()[name];
   };
 
