@@ -534,7 +534,10 @@ angular.module('carnival.components.search-controller', [])
       var getSearchParams = function () {
         $scope.searchParams = {};
         for (var i = 0, x = $scope.fields.length; i < x; i += 1) {
-          $scope.searchParams[$scope.fields[i].name] = urlParams.getParam('search.' + $scope.fields[i].name);
+          var fieldName = $scope.fields[i].name;
+          if($scope.fields[i].type === 'belongsTo')
+            fieldName = $scope.fields[i].foreignKey;
+          $scope.searchParams[fieldName] = urlParams.getParam('search.' + fieldName);
         }
       };
 
@@ -895,7 +898,32 @@ angular.module('carnival')
 }]);
 
 angular.module('carnival')
-.service('EntityResources', ["Configuration", "ActionFactory", function (Configuration, ActionFactory) {
+.service('FieldParser', function () {
+
+  var capitalizeFirstLetter = function(word){
+    return word.charAt(0).toUpperCase() +
+      word.substring(1);
+  };
+
+  var resolveForeignKey = function(field){
+    if(field.foreignKey) 
+      return field.foreignKey;
+    if(!field.identifier)//TODO Is impossible to discover tthe foreignKey name without identifier
+      return field.name;
+    return  field.name + capitalizeFirstLetter(field.identifier);
+  };
+
+  this.prepare = function(field){
+    if(field.type != 'belongsTo')
+      return field;
+
+    field.foreignKey = resolveForeignKey(field);  
+  };
+});
+
+
+angular.module('carnival')
+.service('EntityResources', ["Configuration", "ActionFactory", "FieldParser", function (Configuration, ActionFactory, FieldParser) {
 
   var getNestedForm = function(entity, stateName, field){
     if(!field.views[stateName] || !field.views[stateName].nested)
@@ -903,7 +931,6 @@ angular.module('carnival')
 
     entity.nestedForms[field.endpoint] = prepareEntityForState(field.endpoint, 'create', {field:field, parentEntity: entity});
     entity.nestedForms[field.endpoint].parentEntity = entity;
-
   };
 
   var getRelatedResources = function(entity, endpoint){
@@ -925,6 +952,8 @@ angular.module('carnival')
   var prepareField = function(entityWrapper, stateName, field, isField){
     if (!entityWrapper.model.checkFieldView(field.name, stateName))
       return;
+   
+    FieldParser.prepare(field);
 
     entityWrapper.fields.unshift(field);
     if(!hasRelatedResources(stateName, field.type))
@@ -1037,54 +1066,7 @@ angular.module('carnival')
 }]);
 
 angular.module('carnival')
-.service('ParametersParser', function () {
-
-  var capitalizeFirstLetter = function(word){
-    return word.charAt(0).toUpperCase() +
-      word.substring(1);
-  };
-
-  var resolveParameterName = function(field){
-    if(field.type != 'belongsTo')
-      return field.name;
-
-    if(field.foreignKey) 
-      return field.foreignKey;
-
-    return  field.name + capitalizeFirstLetter(field.identifier);
-  };
-
-  var getParameterValue = function(field, paramValue){
-    if(field.type != 'hasMany')
-      return paramValue;
-    
-    if(!paramValue)
-      return null;
-    
-    var values = [];
-    for(var i = 0; i < paramValue.length; i++){
-      var val = paramValue[i];
-      values.push(val[field.identifier]);
-    }
-    return values;
-  };
-
-  this.prepareForRequest = function(entity, data){
-    var fields = entity.fields;
-    var params = {};
-    for(var i = 0; i < fields.length; i++){
-      var field = fields[i];
-      var paramValue = getParameterValue(field, data[field.name]);
-      var paramName = resolveParameterName(field);
-      params[paramName] = paramValue;
-    }
-    return params;
-  };
-});
-
-
-angular.module('carnival')
-.service('RequestBuilder', ["HttpAdapter", "ParametersParser", function (HttpAdapter, ParametersParser) {
+.service('RequestBuilder', ["HttpAdapter", function (HttpAdapter) {
   
   var prebuildRequest = function(method, params){
     var request = {};
@@ -1111,10 +1093,8 @@ angular.module('carnival')
       request.params.order    = params.order;
       request.params.orderDir = params.orderDir;
     }
-    if (params.search) {
-      var searchParams = ParametersParser.prepareForRequest(params.entity, params.search);
-      request.params.search = encodeURIComponent(JSON.stringify(searchParams));
-    }
+    if (params.search)
+      request.params.search = encodeURIComponent(JSON.stringify(params.search));
     return request;
   };
 
@@ -1133,15 +1113,14 @@ angular.module('carnival')
   this.buildForCreate = function(params){
     var request = prebuildRequest('POST', params);
     request.url    = params.baseUrl + '/' + params.endpoint;
-    var parameters = ParametersParser.prepareForRequest(params.entity, params.entityData);
-    request.data = parameters;
+    request.data = params.entityData;
     return request;
   };
 
   this.buildForUpdate = function(params){
     var request = prebuildRequest('PUT', params);
     request.url    = params.baseUrl + '/' + params.endpoint + '/' + params.id;
-    var parameters = ParametersParser.prepareForRequest(params.entity, params.entityData);
+    var parameters = params.entityData;
     request.data = parameters;
     return request;
   };
@@ -1212,7 +1191,7 @@ angular.module('carnival')
 }]);
 
 angular.module('carnival')
-.controller('EditController', ["$rootScope", "$scope", "$stateParams", "$state", "Configuration", "Notification", "EntityResources", function ($rootScope, $scope, $stateParams, $state, Configuration, Notification, EntityResources) {
+.controller('EditController', ["$rootScope", "$scope", "$stateParams", "$state", "Configuration", "EntityResources", function ($rootScope, $scope, $stateParams, $state, Configuration, EntityResources) {
 
   var entity = $scope.entity = {};
   
@@ -1269,9 +1248,11 @@ angular.module('carnival')
   var getSearchParams = function () {
     var searchParams = {};
     for (var i = 0, x = entity.fields.length; i < x; i += 1) {
-      if (urlParams.getParam('search.' + entity.fields[i].name)) {
-        searchParams[entity.fields[i].name] = urlParams.getParam('search.' + entity.fields[i].name);
-      }
+      var fieldName = entity.fields[i].name;
+      if(entity.fields[i].type === 'belongsTo')
+        fieldName = entity.fields[i].foreignKey;
+      searchParams[fieldName] = urlParams.getParam('search.' + fieldName);
+
     }
     return (Object.keys(searchParams).length === 0) ? false : searchParams;
   };
@@ -1357,7 +1338,7 @@ angular.module("components/delete-button/delete-button.html", []).run(["$templat
 angular.module("components/fields/belongs-to/belongs-to.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/fields/belongs-to/belongs-to.html",
     "<div>\n" +
-    "  <carnival-select-field data=\"datas[field.name]\" field=\"field.field\" identifier=\"field.identifier\" items=\"relatedResources[field.endpoint]\" editable=\"editable\"></carnival-select-field>\n" +
+    "  <carnival-select-field data=\"datas[field.foreignKey]\" field=\"field.field\" identifier=\"field.identifier\" items=\"relatedResources[field.endpoint]\" editable=\"editable\"></carnival-select-field>\n" +
     "  <a ng-if='entity.nestedForms[field.endpoint]' ng-init='nestedFormIndex.value = nestedFormIndex.value + 1; formIndex = nestedFormIndex.value' class=\"btn btn-success btn-xs\"  ng-click=\"open(formIndex)\">Create</a>\n" +
     "</div>\n" +
     "");
@@ -1572,7 +1553,7 @@ angular.module("components/search-controller/search-controller.html", []).run(["
     "      <label ng-if=\"field.type !== 'hasMany'\">{{ field.label }}</label>\n" +
     "      <carnival-text-field ng-switch-when=\"text\" label=\"field.label\" data=\"searchParams[field.name]\" editable=\"true\"></carnival-text-field>\n" +
     "      <carnival-string-field ng-switch-when=\"string\" label=\"field.label\" data=\"searchParams[field.name]\" editable=\"true\"></carnival-string-field>\n" +
-    "      <carnival-select-field ng-switch-when=\"belongsTo\" editable=\"true\" field=\"field.field\" identifier=\"field.identifier\" items=\"relatedResources[field.endpoint]\" data=\"searchParams[field.name]\"></carnival-select-field>\n" +
+    "      <carnival-select-field ng-switch-when=\"belongsTo\" editable=\"true\" field=\"field.field\" identifier=\"field.identifier\" items=\"relatedResources[field.endpoint]\" data=\"searchParams[field.foreignKey]\"></carnival-select-field>\n" +
     "      <carnival-number-field ng-switch-when=\"number\" data=\"searchParams[field.name]\" label=\"field.label\" editable=\"true\"></carnival-number-field>\n" +
     "    </p>\n" +
     "  <hr/>\n" +

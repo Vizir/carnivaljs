@@ -13,7 +13,10 @@ angular.module('carnival.components.search-controller', [])
       var getSearchParams = function () {
         $scope.searchParams = {};
         for (var i = 0, x = $scope.fields.length; i < x; i += 1) {
-          $scope.searchParams[$scope.fields[i].name] = urlParams.getParam('search.' + $scope.fields[i].name);
+          var fieldName = $scope.fields[i].name;
+          if($scope.fields[i].type === 'belongsTo')
+            fieldName = $scope.fields[i].foreignKey;
+          $scope.searchParams[fieldName] = urlParams.getParam('search.' + fieldName);
         }
       };
 

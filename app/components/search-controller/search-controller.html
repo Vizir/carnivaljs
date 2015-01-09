@@ -5,7 +5,7 @@
       <label ng-if="field.type !== 'hasMany'">{{ field.label }}</label>
       <carnival-text-field ng-switch-when="text" label="field.label" data="searchParams[field.name]" editable="true"></carnival-text-field>
       <carnival-string-field ng-switch-when="string" label="field.label" data="searchParams[field.name]" editable="true"></carnival-string-field>
-      <carnival-select-field ng-switch-when="belongsTo" editable="true" field="field.field" identifier="field.identifier" items="relatedResources[field.endpoint]" data="searchParams[field.name]"></carnival-select-field>
+      <carnival-select-field ng-switch-when="belongsTo" editable="true" field="field.field" identifier="field.identifier" items="relatedResources[field.endpoint]" data="searchParams[field.foreignKey]"></carnival-select-field>
       <carnival-number-field ng-switch-when="number" data="searchParams[field.name]" label="field.label" editable="true"></carnival-number-field>
     </p>
   <hr/>

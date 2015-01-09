@@ -1,5 +1,5 @@
 angular.module('carnival')
-.service('EntityResources', function (Configuration, ActionFactory) {
+.service('EntityResources', function (Configuration, ActionFactory, FieldParser) {
 
   var getNestedForm = function(entity, stateName, field){
     if(!field.views[stateName] || !field.views[stateName].nested)
@@ -7,7 +7,6 @@ angular.module('carnival')
 
     entity.nestedForms[field.endpoint] = prepareEntityForState(field.endpoint, 'create', {field:field, parentEntity: entity});
     entity.nestedForms[field.endpoint].parentEntity = entity;
-
   };
 
   var getRelatedResources = function(entity, endpoint){
@@ -29,6 +28,8 @@ angular.module('carnival')
   var prepareField = function(entityWrapper, stateName, field, isField){
     if (!entityWrapper.model.checkFieldView(field.name, stateName))
       return;
+   
+    FieldParser.prepare(field);
 
     entityWrapper.fields.unshift(field);
     if(!hasRelatedResources(stateName, field.type))

@@ -9,10 +9,10 @@ app.config(function (ConfigurationProvider) {
     pagination: 10, // optional: if not set all items will show on the page
 
     quickFilters: [
-      { label: 'Food', field: 'category', value: function () {
+      { label: 'Food', field: 'categoryId', value: function () {
         return '1';
       }},
-      { label: 'Sport', field: 'category', value: function () {
+      { label: 'Sport', field: 'categoryId', value: function () {
         return '2';
       }}
     ],
