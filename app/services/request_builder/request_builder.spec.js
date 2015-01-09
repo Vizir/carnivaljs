@@ -30,7 +30,7 @@ describe('On Request Builder Service', function () {
         limit: 'limit',
         order: 'order',
         orderDir: 'orderDir',
-        search: {search: null},
+        search: {search: 2},
         endpoint: 'endpoint'
       };
     
@@ -43,8 +43,7 @@ describe('On Request Builder Service', function () {
       expect(request.params.limit).to.be.equal('limit');
       expect(request.params.order).to.be.equal('order');
       expect(request.params.orderDir).to.be.equal('orderDir');
-      var searchParam = encodeURIComponent(JSON.stringify({ search: null}));
-      //expect(request.params.search).to.be.equal(searchParam);
+      expect(request.params.search !== null).to.be.equal(true);
     }); 
 
     describe('extraParams', function(){
@@ -62,8 +61,7 @@ describe('On Request Builder Service', function () {
         expect(request.params.orderDir).to.be.equal('orderDir');
         expect(request.params.extra1).to.be.equal(1);
         expect(request.params.extra2).to.be.equal(2);
-        var searchParam = encodeURIComponent(JSON.stringify('search'));
-        //expect(request.params.search).to.be.equal(searchParam);
+        expect(request.params.search !== null).to.be.equal(true);
       }); 
     });
   });
