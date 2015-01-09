@@ -26,7 +26,10 @@ angular.module('carnival')
       request.params.order    = params.order;
       request.params.orderDir = params.orderDir;
     }
-    if (params.search) request.params.search = encodeURIComponent(JSON.stringify(params.search));
+    if (params.search) {
+      var searchParams = ParametersParser.prepareForRequest(params.entity, params.search);
+      request.params.search = encodeURIComponent(JSON.stringify(searchParams));
+    }
     return request;
   };
 

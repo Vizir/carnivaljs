@@ -65,6 +65,7 @@ angular.module('carnival')
       baseUrl: Configuration.getBaseApiUrl(),
       extraParams: extraParams,
       offset: offset,
+      entity: this,
       limit: limit,
       order: order,
       orderDir: orderDir,
@@ -123,7 +124,7 @@ angular.module('carnival')
   };
 
   Entity.prototype.request = function(requestParams){
-    return $http(request); 
+    return $http(requestParams); 
   };
 
   return Entity;

@@ -19,7 +19,10 @@ angular.module('carnival')
   var getParameterValue = function(field, paramValue){
     if(field.type != 'hasMany')
       return paramValue;
-
+    
+    if(!paramValue)
+      return null;
+    
     var values = [];
     for(var i = 0; i < paramValue.length; i++){
       var val = paramValue[i];
