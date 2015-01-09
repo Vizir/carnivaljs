@@ -1,5 +1,5 @@
 describe('On Entities Model', function () {
-  var entity, entityModel, httpBackend;
+  var entity, Entity, httpBackend;
 
   var datas = {name: 'flowers', options: {
     label: 'Flowers',
@@ -50,12 +50,12 @@ describe('On Entities Model', function () {
   beforeEach(function () {
     module('carnival');
 
-    inject(function(Entity, $httpBackend) {
-      entityModel = Entity;
+    inject(function(_Entity_, $httpBackend) {
+      Entity = _Entity_;
       httpBackend = $httpBackend;
     });
 
-    entity = new entityModel(datas.name, datas.options);
+    entity = new Entity(datas.name, datas.options);
 
   });
 
@@ -85,5 +85,133 @@ describe('On Entities Model', function () {
       expect(entity.checkFieldView('color', 'index')).to.be.equal(true);
     });
   });
+  
+  describe('actions', function(){
+
+    describe('list', function(){
+      it('should make the correct request', function(){
+        sinon.stub(entity, 'request', function(params){
+          expect(params !== null).to.be.equal(true);
+        });
+
+        entity.getList('offset', 'limit', 'order', 'orderDir', 'search');  
+      }); 
+    }); 
+
+    describe('getOne', function(){
+      it('should make the correct request', function(){
+        sinon.stub(entity, 'request', function(params){
+          expect(params !== null).to.be.equal(true);
+        });
+
+        entity.getOne(10);  
+      }); 
+    }); 
+
+    describe('delete', function(){
+      it('should make the correct request', function(){
+        sinon.stub(entity, 'request', function(params){
+          expect(params !== null).to.be.equal(true);
+        });
+
+        entity.delete(10);  
+      }); 
+    }); 
+
+    describe('create', function(){
+      it('should make the correct request', function(){
+        sinon.stub(entity, 'request', function(params){
+          expect(params !== null).to.be.equal(true);
+        });
+
+        entity.create({name: 'Vizir'});  
+      }); 
+    }); 
+
+    describe('update', function(){
+      it('should make the correct request', function(){
+        sinon.stub(entity, 'request', function(params){
+          expect(params !== null).to.be.equal(true);
+        });
+
+        entity.update(100, {name: 'Vizir'});  
+      }); 
+    }); 
+  });
+
+  describe('actions with extraParams', function(){
+    beforeEach(function(){
+      datas.options.extraReqParams = {
+        list: {
+          extra: 'extra'
+        },
+        edit: {
+          extra: 'extra'
+        },
+        show: {
+          extra: 'extra'
+        },
+        delete: {
+          extra: 'extra'
+        }
+      };
+    
+    }); 
+    describe('list', function(){
+      it('should make the correct request', function(){
+        sinon.stub(entity, 'request', function(params){
+          expect(params !== null).to.be.equal(true);
+          expect(params.extraParams !== null).to.be.equal(true);
+        });
+
+        entity.getList('offset', 'limit', 'order', 'orderDir', 'search');  
+      }); 
+    }); 
+
+    describe('getOne', function(){
+      it('should make the correct request', function(){
+        sinon.stub(entity, 'request', function(params){
+          expect(params !== null).to.be.equal(true);
+          expect(params.extraParams !== null).to.be.equal(true);
+        });
+
+        entity.getOne(10);  
+      }); 
+    }); 
+
+    describe('delete', function(){
+      it('should make the correct request', function(){
+        sinon.stub(entity, 'request', function(params){
+          expect(params !== null).to.be.equal(true);
+          expect(params.extraParams !== null).to.be.equal(true);
+        });
+
+        entity.delete(10);  
+      }); 
+    }); 
+
+    describe('create', function(){
+      it('should make the correct request', function(){
+        sinon.stub(entity, 'request', function(params){
+          expect(params !== null).to.be.equal(true);
+          expect(params.extraParams !== null).to.be.equal(true);
+        });
+
+        entity.create({name: 'Vizir'});  
+      }); 
+    }); 
+
+    describe('update', function(){
+      it('should make the correct request', function(){
+        sinon.stub(entity, 'request', function(params){
+          expect(params !== null).to.be.equal(true);
+          expect(params.extraParams !== null).to.be.equal(true);
+        });
+
+        entity.update(100, {name: 'Vizir'});  
+      }); 
+    }); 
+  });
+
 
 });

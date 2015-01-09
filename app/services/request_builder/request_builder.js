@@ -1,9 +1,11 @@
 angular.module('carnival')
 .service('RequestBuilder', function (HttpAdapter, ParametersParser) {
   
-  var prebuildRequest = function(method){
+  var prebuildRequest = function(method, params){
     var request = {};
+    request.params = {};
     request.method = method;
+    addExtraParams(request, params.extraParams);
     return request;
   };
 
@@ -16,8 +18,7 @@ angular.module('carnival')
   };
 
   this.buildForGetList = function(params){
-    var request = prebuildRequest('GET');
-    request.params = {};
+    var request = prebuildRequest('GET', params);
     request.url    = params.baseUrl + '/' + params.endpoint;
     request.params.offset = params.offset;
     request.params.limit  = params.limit;
@@ -25,27 +26,24 @@ angular.module('carnival')
       request.params.order    = params.order;
       request.params.orderDir = params.orderDir;
     }
-    
-    addExtraParams(request, params.extraParams);
-
     if (params.search) request.params.search = encodeURIComponent(JSON.stringify(params.search));
     return request;
   };
 
   this.buildForGetOne = function(params){
-    var request = prebuildRequest('GET');
+    var request = prebuildRequest('GET', params);
     request.url    = params.baseUrl + '/' + params.endpoint + '/' + params.id;
     return request;
   };
 
   this.buildForDelete = function(params){
-    var request = prebuildRequest('DELETE');
+    var request = prebuildRequest('DELETE', params);
     request.url    = params.baseUrl + '/' + params.endpoint + '/' + params.id;
     return request;
   };
 
   this.buildForCreate = function(params){
-    var request = prebuildRequest('POST');
+    var request = prebuildRequest('POST', params);
     request.url    = params.baseUrl + '/' + params.endpoint;
     var parameters = ParametersParser.prepareForRequest(params.entity, params.entityData);
     request.data = parameters;
@@ -53,7 +51,7 @@ angular.module('carnival')
   };
 
   this.buildForUpdate = function(params){
-    var request = prebuildRequest('PUT');
+    var request = prebuildRequest('PUT', params);
     request.url    = params.baseUrl + '/' + params.endpoint + '/' + params.id;
     var parameters = ParametersParser.prepareForRequest(params.entity, params.entityData);
     request.data = parameters;
