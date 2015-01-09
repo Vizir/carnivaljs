@@ -697,6 +697,7 @@ angular.module('carnival')
       baseUrl: Configuration.getBaseApiUrl(),
       extraParams: extraParams,
       offset: offset,
+      entity: this,
       limit: limit,
       order: order,
       orderDir: orderDir,
@@ -1061,7 +1062,10 @@ angular.module('carnival')
   var getParameterValue = function(field, paramValue){
     if(field.type != 'hasMany')
       return paramValue;
-
+    
+    if(!paramValue)
+      return null;
+    
     var values = [];
     for(var i = 0; i < paramValue.length; i++){
       var val = paramValue[i];
@@ -1112,7 +1116,10 @@ angular.module('carnival')
       request.params.order    = params.order;
       request.params.orderDir = params.orderDir;
     }
-    if (params.search) request.params.search = encodeURIComponent(JSON.stringify(params.search));
+    if (params.search) {
+      var searchParams = ParametersParser.prepareForRequest(params.entity, params.search);
+      request.params.search = encodeURIComponent(JSON.stringify(searchParams));
+    }
     return request;
   };
 

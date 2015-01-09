@@ -65,6 +65,7 @@ angular.module('carnival')
       baseUrl: Configuration.getBaseApiUrl(),
       extraParams: extraParams,
       offset: offset,
+      entity: this,
       limit: limit,
       order: order,
       orderDir: orderDir,
