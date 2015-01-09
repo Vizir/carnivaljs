@@ -33,8 +33,11 @@ angular.module('carnival', [
       url: 'edit/:entity/:id',
       templateUrl: 'states/main.edit/edit.html',
       controller: 'EditController'
+    })
+    .state('gallery', {
+      url: '/gallery',
+      template: '<h1>Gallery</h1>'
     });
-
 })
 .run(function (Configuration, Entity){
   // Model entities

@@ -36,8 +36,11 @@ angular.module('carnival', [
       url: 'edit/:entity/:id',
       templateUrl: 'states/main.edit/edit.html',
       controller: 'EditController'
+    })
+    .state('gallery', {
+      url: '/gallery',
+      template: '<h1>Gallery</h1>'
     });
-
 }])
 .run(["Configuration", "Entity", function (Configuration, Entity){
   // Model entities
@@ -74,7 +77,8 @@ angular.module('carnival.components', [
   'carnival.components.pagination-controller',
   'carnival.components.search-controller',
   'carnival.components.notification',
-  'carnival.components.quickfilter-controller'
+  'carnival.components.quickfilter-controller',
+  'carnival.components.listingFieldFile'
 ]);
 
 angular.module('carnival.components.delete-button', [])
@@ -143,8 +147,39 @@ angular.module('carnival.components.fields', [
   'carnival.components.fields.belongsTo',
   'carnival.components.fields.hasMany',
   'carnival.components.fields.string',
-  'carnival.components.fields.text'
+  'carnival.components.fields.text',
+  'carnival.components.fields.file'
 ]);
+
+angular.module('carnival.components.fields.file', [])
+.directive('carnivalFileField', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      data: '=',
+      label: '=',
+      editable: '='
+    },
+    templateUrl: 'components/fields/file/file.html',
+    controller: ["$scope", function ($scope) {
+      $scope.checkIfIsImage = function (file) {
+        return (/\.(gif|jpg|jpeg|tiff|png)$/i).test(file);
+      };
+      $scope.openGallery = function () {
+
+        window.CARNIVAL = {
+          setFile: function (value) {
+            $scope.data = value;
+          }
+        };
+
+        var carnivalGalleryInstance = window.open('#/gallery', '', 'location=0, menubar=0, status=0, toolbar=0');
+
+      };
+    }]
+  };
+});
 
 angular.module('carnival.components.fields.hasMany', [])
 .directive('carnivalHasManyField', function () {
@@ -343,6 +378,24 @@ angular.module('carnival.components.listingfieldbelongsto', [])
 
       $scope.getLabel = function(){
         return $scope.item[$scope.field.name][$scope.field.field];
+      };
+    }]
+  };
+});
+
+angular.module('carnival.components.listingFieldFile', [])
+.directive('carnivalListingFieldFile', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      item: '=',
+      field: '='
+    },
+    templateUrl: 'components/listing-field-file/listing-field-file.html',
+    controller: ["$scope", function ($scope) {
+      $scope.checkIfIsImage = function (file) {
+        return (/\.(gif|jpg|jpeg|tiff|png)$/i).test(file);
       };
     }]
   };
@@ -632,9 +685,9 @@ angular.module('carnival')
     var _views = {};
     Object.keys(views).forEach(function (view_name) {
       _views[view_name] = {
-        enable:    views[view_name].enable,
+        enable:     views[view_name].enable,
         searchable: views[view_name].searchable || true,
-        nested: views[view_name].nested || false,
+        nested:     views[view_name].nested || false,
         sortable:   views[view_name].sortable   || true
       };
     });
@@ -654,7 +707,8 @@ angular.module('carnival')
         identifier: fields[field_name].identifier,
         from:       fields[field_name].from,
         type:       fields[field_name].type,
-        views:      buildViews(fields[field_name].views)
+        views:      buildViews(fields[field_name].views),
+        uploader:   fields[field_name].uploader
       });
 
     });
@@ -665,12 +719,11 @@ angular.module('carnival')
   function Entity (name, options) {
     if (Configuration.validateEntities) EntityValidation(name, options);
     this.name = name;
-    this.label = options.label || this.name;
-    this.identifier = options.identifier;
+    this.label          = options.label || this.name;
+    this.identifier     = options.identifier;
     this.extraReqParams = options.extraReqParams || {};
-    this.quickFilters = options.quickFilters || null;
-    this.pagination = options.pagination || null;
-
+    this.quickFilters   = options.quickFilters   || null;
+    this.pagination     = options.pagination     || null;
     this.fields = [];
     buildFields(options.fields, this);
   }
@@ -751,7 +804,7 @@ angular.module('carnival')
   };
 
   Entity.prototype.request = function(requestParams){
-    return $http(requestParams); 
+    return $http(requestParams);
   };
 
   return Entity;
@@ -1148,6 +1201,7 @@ angular.module('carnival')
 }]);
 
 
+
 angular.module('carnival')
 .service('urlParams', ["$rootScope", "$location", "$state", function ($rootScope, $location, $state) {
 
@@ -1337,7 +1391,7 @@ angular.module('carnival')
 
 }]);
 
-angular.module('carnival.templates', ['components/button/button.html', 'components/delete-button/delete-button.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/form/form.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
+angular.module('carnival.templates', ['components/button/button.html', 'components/delete-button/delete-button.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/form/form.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
 
 angular.module("components/button/button.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/button/button.html",
@@ -1359,6 +1413,21 @@ angular.module("components/fields/belongs-to/belongs-to.html", []).run(["$templa
     "<div>\n" +
     "  <carnival-select-field data=\"datas[field.name]\" field=\"field.field\" identifier=\"field.identifier\" items=\"relatedResources[field.endpoint]\" editable=\"editable\"></carnival-select-field>\n" +
     "  <a ng-if='entity.nestedForms[field.endpoint]' ng-init='nestedFormIndex.value = nestedFormIndex.value + 1; formIndex = nestedFormIndex.value' class=\"btn btn-success btn-xs\"  ng-click=\"open(formIndex)\">Create</a>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("components/fields/file/file.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/fields/file/file.html",
+    "<div>\n" +
+    "  <div ng-if=\"!editable\">\n" +
+    "    <img ng-if=\"checkIfIsImage(data)\" ng-src=\"{{ data }}\" width=\"200\" height=\"120\"/>\n" +
+    "    <a ng-if=\"!checkIfIsImage(data)\" href=\"{{ data }}\">{{ data }}</a>\n" +
+    "  </div>\n" +
+    "  <div ng-if=\"editable\">\n" +
+    "    <carnival-string-field label=\"label\" data=\"data\" editable=\"editable\"></carnival-string-field>\n" +
+    "    <carnival-button label=\"Open gallery\" style=\"default\" size=\"sm\" ng-click=\"openGallery()\"></carnival-button>\n" +
+    "  </div>\n" +
     "</div>\n" +
     "");
 }]);
@@ -1417,6 +1486,7 @@ angular.module("components/form/form.html", []).run(["$templateCache", function(
     "      <carnival-text-field ng-switch-when=\"text\" data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-text-field>\n" +
     "      <carnival-string-field ng-switch-when=\"string\" data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-string-field>\n" +
     "      <carnival-number-field ng-switch-when=\"number\" data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-number-field>\n" +
+    "      <carnival-file-field ng-switch-when=\"file\" data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-file-field>\n" +
     "      <carnival-belongs-to-field ng-switch-when=\"belongsTo\" nested-form-index=\"nestedFormIndex\" nested-form-type=\"type\"  entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" state=\"edit\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-belongs-to-field>\n" +
     "      <carnival-has-many-field ng-switch-when=\"hasMany\" entity=\"entity\" nested-form-index=\"nestedFormIndex\" nested-form-type=\"type\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" state=\"edit\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-has-many-field>\n" +
     "      <carnival-text-field ng-switch-default data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-text-field>\n" +
@@ -1437,6 +1507,15 @@ angular.module("components/listing-field-belongs-to/listing-field-belongs-to.htm
     "");
 }]);
 
+angular.module("components/listing-field-file/listing-field-file.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/listing-field-file/listing-field-file.html",
+    "<div>\n" +
+    "  <img ng-if=\"checkIfIsImage(item[field.name])\" ng-src=\"{{ item[field.name] }}\" width=\"200\" height=\"120\"/>\n" +
+    "  <a ng-if=\"!checkIfIsImage(item[field.name])\" href=\"{{ item[field.name] }}\">{{ item[field.name] }}</a>\n" +
+    "</div>\n" +
+    "");
+}]);
+
 angular.module("components/listing-field-has-many/listing-field-has-many.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/listing-field-has-many/listing-field-has-many.html",
     "<span>\n" +
@@ -1450,6 +1529,7 @@ angular.module("components/listing-field/listing-field.html", []).run(["$templat
     "<span ng-switch=\"field.type\">\n" +
     "  <carnival-listing-field-belongs-to ng-switch-when=\"belongsTo\" item=\"item\" field=\"field\"></carnival-listing-field-belongs-to>\n" +
     "  <carnival-listing-field-has-many ng-switch-when=\"hasMany\" item=\"item\" field=\"field\"></carnival-listing-field-has-many>\n" +
+    "  <carnival-listing-field-file ng-switch-when=\"file\" item=\"item\" field=\"field\"></carnival-listing-field-file>\n" +
     "  <span ng-switch-default>\n" +
     "    {{item[field.name]}}\n" +
     "  </span>\n" +

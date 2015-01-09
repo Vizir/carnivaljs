@@ -12,5 +12,6 @@ angular.module('carnival.components', [
   'carnival.components.pagination-controller',
   'carnival.components.search-controller',
   'carnival.components.notification',
-  'carnival.components.quickfilter-controller'
+  'carnival.components.quickfilter-controller',
+  'carnival.components.listingFieldFile'
 ]);

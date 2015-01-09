@@ -150,6 +150,31 @@ app.config(function (ConfigurationProvider) {
             enable: true
           }
         }
+      },
+      'thumbnail': {
+        type: 'file',
+        label: 'Thumbnail',
+        uploader: {
+          endpoint: 'file',
+          identifier: 'id',
+          urlField: 'original'
+        },
+        views: {
+          index: {
+            enable: true,
+            sortable: false,
+            searchable: false
+          },
+          create: {
+            enable: true
+          },
+          edit: {
+            enable: true
+          },
+          show: {
+            enable: true
+          }
+        }
       }
     }
   });
