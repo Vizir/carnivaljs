@@ -1,5 +1,5 @@
 angular.module('carnival')
-.controller('EditController', function ($rootScope, $scope, $stateParams, $state, Configuration, Notification, EntityResources) {
+.controller('EditController', function ($rootScope, $scope, $stateParams, $state, Configuration, EntityResources) {
 
   var entity = $scope.entity = {};
   

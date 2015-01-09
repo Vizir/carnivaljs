@@ -1,24 +1,20 @@
 describe('On Request Builder Service', function () {
   var RequestBuilder, Configuration, 
-      HttpAdapter, ParametersParser;
+      HttpAdapter;
   
   beforeEach(function () {
 
     module('carnival');
-    inject(function (_Configuration_, _RequestBuilder_, _HttpAdapter_, _ParametersParser_) {
+    inject(function (_Configuration_, _RequestBuilder_, _HttpAdapter_) {
       RequestBuilder = _RequestBuilder_;
       Configuration = _Configuration_;
       HttpAdapter = _HttpAdapter_;
-      ParametersParser = _ParametersParser_;
     });
 
     sinon.stub(Configuration, 'getBaseApiUrl', function(){
       return "http://api.url/";
     });
 
-    sinon.stub(ParametersParser, 'prepareForRequest', function(){
-      return {key: 'value'};
-    });
   });
 
   describe('build for getList', function(){
