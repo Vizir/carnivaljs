@@ -5,25 +5,20 @@ angular.module('carnival.components.fields.file', [])
     replace: true,
     scope: {
       data: '=',
-      label: '=',
+      field: '=',
       editable: '='
     },
     templateUrl: 'components/fields/file/file.html',
-    controller: function ($scope) {
+    controller: function ($scope, $http, Configuration) {
+
       $scope.checkIfIsImage = function (file) {
         return (/\.(gif|jpg|jpeg|tiff|png)$/i).test(file);
       };
-      $scope.openGallery = function () {
 
-        window.CARNIVAL = {
-          setFile: function (value) {
-            $scope.data = value;
-          }
-        };
-
-        var carnivalGalleryInstance = window.open('#/gallery', '', 'location=0, menubar=0, status=0, toolbar=0');
-
+      $scope.checkIfHasUploader = function () {
+        return typeof $scope.field.uploader !== 'undefined';
       };
+
     }
   };
 });

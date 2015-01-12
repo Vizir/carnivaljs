@@ -155,9 +155,11 @@ app.config(function (ConfigurationProvider) {
         type: 'file',
         label: 'Thumbnail',
         uploader: {
-          endpoint: 'file',
-          identifier: 'id',
-          urlField: 'original'
+          // endpoint: 'files' // The endpoint where the upload will be requested.
+          endpointUrl: 'http://localhost:3000/files', // If used the endpointUrl it will overwrite the base url setted for this application.
+          getUrl: function (data) { // This function will receive the response data, you will need to return a string with the uploaded Url.
+            return data[0].original;
+          }
         },
         views: {
           index: {

@@ -13,5 +13,6 @@ angular.module('carnival.components', [
   'carnival.components.search-controller',
   'carnival.components.notification',
   'carnival.components.quickfilter-controller',
-  'carnival.components.listingFieldFile'
+  'carnival.components.listingFieldFile',
+  'carnival.uploader'
 ]);

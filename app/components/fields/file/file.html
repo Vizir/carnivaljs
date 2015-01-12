@@ -4,7 +4,10 @@
     <a ng-if="!checkIfIsImage(data)" href="{{ data }}">{{ data }}</a>
   </div>
   <div ng-if="editable">
-    <carnival-string-field label="label" data="data" editable="editable"></carnival-string-field>
-    <carnival-button label="Open gallery" style="default" size="sm" ng-click="openGallery()"></carnival-button>
+    <img ng-if="checkIfIsImage(data)" ng-src="{{ data }}" width="200" height="120"/>
+    <carnival-string-field label="field.label" data="data" editable="editable"></carnival-string-field>
+    <div ng-if="checkIfHasUploader()">
+      <carnival-uploader uploader="field.uploader" file-url="$parent.data"></carnival-uploader>
+    </div>
   </div>
 </div>
