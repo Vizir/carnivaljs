@@ -1,26 +1,56 @@
 describe('On listing-field-has-many component', function () {
-  var compile, element, scope;
+  var compile, element, scope, Configuration;
 
   var setScopeData = function (scope) {
-    scope.item = {};
+    scope.item = {
+      id: '1'
+    };
     scope.field = {
       endpoint: 'comments',
+      name: 'comments',
       from: 'post'
     };
+  };
 
+  var commentEntity = {
+    fields: [
+      {
+        name: 'post',
+        type: 'belongsTo',
+        foreignKey: 'postId'
+      }
+    ]
+  };
+
+  var postEntity = {
+    identifier: 'id' 
+  };
+
+  var $stateParams = {
+    entity: 'cats'
   };
 
   beforeEach(function () {
 
     module('carnival');
-    inject(function ($rootScope, $compile) {
+    inject(function ($rootScope, $compile, _Configuration_) {
       scope = $rootScope.$new();
       compile = $compile;
+      Configuration = _Configuration_;
     });
 
     setScopeData(scope);
 
+    sinon.stub(Configuration, 'getEntity', function(entityName){
+      if(entityName === 'comments')
+        return commentEntity;
+      else
+        return postEntity;
+    });
+
     element = angular.element('<carnival-listing-field-has-many item="item" field="field"></carnival-listing-field-has-many');
+
+
     compile(element)(scope);
     scope.$digest();
 

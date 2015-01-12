@@ -49,6 +49,7 @@ app.config(function (ConfigurationProvider) {
         type: 'hasMany',
         label: 'Posts',
         endpoint: 'posts',
+        foreignKey: 'postId',
         identifier: 'id',
         from: 'tag',
         field: 'title',
