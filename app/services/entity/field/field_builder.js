@@ -22,8 +22,8 @@ angular.module('carnival')
   var resolveForeignKey = function(field){
     if(field.type !== 'belongsTo' && field.type !== 'hasMany')
       return;
-      
-    if(field.foreignKey) 
+
+    if(field.foreignKey)
       return field.foreignKey;
     if(!field.identifier)//TODO Is impossible to discover tthe foreignKey name without identifier
       return field.name;
@@ -40,12 +40,12 @@ angular.module('carnival')
       identifier: fieldParams.identifier,
       from:       fieldParams.from,
       type:       fieldParams.type,
-      views:      buildViews(fieldParams.views)
+      views:      buildViews(fieldParams.views),
+      uploader:   fieldParams.uploader 
     };
 
-     field.foreignKey = resolveForeignKey(field);  
+     field.foreignKey = resolveForeignKey(field);
 
     return field;
   };
 });
-
