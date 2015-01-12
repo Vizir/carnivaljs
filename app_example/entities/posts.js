@@ -130,7 +130,7 @@ app.config(function (ConfigurationProvider) {
       // ---- Tags (Relation) Field ----
       'tags': {
         type: 'hasMany',
-        from: 'post',
+        from: 'posts',//manytomany
         label: 'Tags',
         endpoint: 'tags',
         identifier: 'id',

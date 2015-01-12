@@ -360,11 +360,28 @@ angular.module('carnival.components.listingfieldhasmany', [])
     templateUrl: 'components/listing-field-has-many/listing-field-has-many.html',
     controller: ["$scope", "$stateParams", "Configuration", "urlParams", function ($scope, $stateParams, Configuration, urlParams) {
       var entity = Configuration.getEntity($stateParams.entity);
+      
+      var getRelationField = function(fields){
+        for(var i = 0; i < fields.length; i++){
+          var f = fields[i];
+          if(f.type !== 'belongsTo' && f.type !== 'hasMany')
+            continue;
+
+          if(f.name === $scope.field.from)
+            return f;
+        }
+        return null;
+      };
+
       $scope.getLabel = function () {
         return 'View ' + $scope.field.label;
       };
       $scope.getUrl = function () {
-        return '#/list/' + $scope.field.endpoint + '?page=1&search.' + $scope.field.from + '=' + $scope.item[entity.identifier];
+        var hasManyEntity = Configuration.getEntity($scope.field.name);
+        var hasManyEntityField = getRelationField(hasManyEntity.fields);
+
+
+        return '#/list/' + $scope.field.endpoint + '?page=1&search.' + hasManyEntityField.foreignKey + '=' + $scope.item[entity.identifier];
       };
     }]
   };
@@ -629,36 +646,18 @@ angular.module('carnival').provider('Configuration', function() {
 });
 
 angular.module('carnival')
-.factory('Entity', ["EntityValidation", "$http", "Configuration", "RequestBuilder", function (EntityValidation, $http, Configuration, RequestBuilder) {
+.factory('Entity', ["EntityValidation", "$http", "Configuration", "RequestBuilder", "FieldBuilder", function (EntityValidation, $http, Configuration, RequestBuilder, FieldBuilder) {
 
-  var buildViews = function (views) {
-    var _views = {};
-    Object.keys(views).forEach(function (view_name) {
-      _views[view_name] = {
-        enable:    views[view_name].enable,
-        searchable: views[view_name].searchable || true,
-        nested: views[view_name].nested || false,
-        sortable:   views[view_name].sortable   || true
-      };
-    });
-    return _views;
-  };
+
 
   var buildFields = function (fields, that) {
     var _fields = [];
 
     Object.keys(fields).forEach(function (field_name) {
 
-      _fields.push({
-        name:       field_name,
-        label:      fields[field_name].label,
-        endpoint:   fields[field_name].endpoint,
-        field:      fields[field_name].field,
-        identifier: fields[field_name].identifier,
-        from:       fields[field_name].from,
-        type:       fields[field_name].type,
-        views:      buildViews(fields[field_name].views)
-      });
+      var field = FieldBuilder.build(field_name, fields[field_name]);
+
+      _fields.push(field);
 
     });
 
@@ -898,7 +897,20 @@ angular.module('carnival')
 }]);
 
 angular.module('carnival')
-.service('FieldParser', function () {
+.service('FieldBuilder', function () {
+
+  var buildViews = function (views) {
+    var _views = {};
+    Object.keys(views).forEach(function (view_name) {
+      _views[view_name] = {
+        enable:    views[view_name].enable,
+        searchable: views[view_name].searchable || true,
+        nested: views[view_name].nested || false,
+        sortable:   views[view_name].sortable   || true
+      };
+    });
+    return _views;
+  };
 
   var capitalizeFirstLetter = function(word){
     return word.charAt(0).toUpperCase() +
@@ -906,24 +918,38 @@ angular.module('carnival')
   };
 
   var resolveForeignKey = function(field){
+    if(field.type !== 'belongsTo' || field.type !== 'hasMany')
+      return;
+
     if(field.foreignKey) 
-      return field.foreignKey;
+      field.foreignKey = field.foreignKey;
     if(!field.identifier)//TODO Is impossible to discover tthe foreignKey name without identifier
-      return field.name;
-    return  field.name + capitalizeFirstLetter(field.identifier);
+      field.foreignKey = field.name;
+    field.foreignKey = field.name + capitalizeFirstLetter(field.identifier);
   };
 
-  this.prepare = function(field){
-    if(field.type != 'belongsTo')
-      return field;
+  this.build = function(field_name, fieldParams){
+    var field = {
+      name:       field_name,
+      label:      fieldParams.label,
+      foreignKey: fieldParams.foreignKey,
+      endpoint:   fieldParams.endpoint,
+      field:      fieldParams.field,
+      identifier: fieldParams.identifier,
+      from:       fieldParams.from,
+      type:       fieldParams.type,
+      views:      buildViews(fieldParams.views)
+    };
 
-    field.foreignKey = resolveForeignKey(field);  
+     resolveForeignKey(field);  
+
+    return field;
   };
 });
 
 
 angular.module('carnival')
-.service('EntityResources', ["Configuration", "ActionFactory", "FieldParser", function (Configuration, ActionFactory, FieldParser) {
+.service('EntityResources', ["Configuration", "ActionFactory", function (Configuration, ActionFactory) {
 
   var getNestedForm = function(entity, stateName, field){
     if(!field.views[stateName] || !field.views[stateName].nested)
@@ -953,7 +979,6 @@ angular.module('carnival')
     if (!entityWrapper.model.checkFieldView(field.name, stateName))
       return;
    
-    FieldParser.prepare(field);
 
     entityWrapper.fields.unshift(field);
     if(!hasRelatedResources(stateName, field.type))
