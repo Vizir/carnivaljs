@@ -94,7 +94,9 @@ describe('On Request Builder Service', function () {
       var requestParams = {
         baseUrl: Configuration.getBaseApiUrl(),
         entityData: {key: 'value'},
-        entity: {},
+        entity: {fields:[
+          {name: 'key', type: 'string'}
+        ]},
         endpoint: 'endpoint'
       };
       var request = RequestBuilder.buildForCreate(requestParams);
@@ -110,7 +112,9 @@ describe('On Request Builder Service', function () {
         baseUrl: Configuration.getBaseApiUrl(),
         id: 'id',
         entityData: {key: 'value'},
-        entity: {},
+        entity: {fields:[
+          {name: 'key', type: 'string'}
+        ]},
         endpoint: 'endpoint'
       };
       var request = RequestBuilder.buildForUpdate(requestParams);
