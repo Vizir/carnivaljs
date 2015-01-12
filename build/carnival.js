@@ -380,7 +380,6 @@ angular.module('carnival.components.listingfieldhasmany', [])
         var hasManyEntity = Configuration.getEntity($scope.field.name);
         var hasManyEntityField = getRelationField(hasManyEntity.fields);
 
-
         return '#/list/' + $scope.field.endpoint + '?page=1&search.' + hasManyEntityField.foreignKey + '=' + $scope.item[entity.identifier];
       };
     }]
@@ -918,14 +917,14 @@ angular.module('carnival')
   };
 
   var resolveForeignKey = function(field){
-    if(field.type !== 'belongsTo' || field.type !== 'hasMany')
+    if(field.type !== 'belongsTo' && field.type !== 'hasMany')
       return;
-
+      
     if(field.foreignKey) 
-      field.foreignKey = field.foreignKey;
+      return field.foreignKey;
     if(!field.identifier)//TODO Is impossible to discover tthe foreignKey name without identifier
-      field.foreignKey = field.name;
-    field.foreignKey = field.name + capitalizeFirstLetter(field.identifier);
+      return field.name;
+    return field.name + capitalizeFirstLetter(field.identifier);
   };
 
   this.build = function(field_name, fieldParams){
@@ -941,7 +940,7 @@ angular.module('carnival')
       views:      buildViews(fieldParams.views)
     };
 
-     resolveForeignKey(field);  
+     field.foreignKey = resolveForeignKey(field);  
 
     return field;
   };
