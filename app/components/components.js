@@ -14,5 +14,5 @@ angular.module('carnival.components', [
   'carnival.components.notification',
   'carnival.components.quickfilter-controller',
   'carnival.components.listingFieldFile',
-  'carnival.uploader'
+  'carnival.components.uploader'
 ]);

@@ -1,4 +1,4 @@
-angular.module('carnival.uploader', [])
+angular.module('carnival.components.uploader', [])
 .directive('carnivalUploader', function () {
   return {
     restrict: 'E',

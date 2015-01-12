@@ -76,7 +76,7 @@ angular.module('carnival.components', [
   'carnival.components.notification',
   'carnival.components.quickfilter-controller',
   'carnival.components.listingFieldFile',
-  'carnival.uploader'
+  'carnival.components.uploader'
 ]);
 
 angular.module('carnival.components.delete-button', [])
@@ -617,7 +617,7 @@ angular.module('carnival.components.search-controller', [])
   };
 });
 
-angular.module('carnival.uploader', [])
+angular.module('carnival.components.uploader', [])
 .directive('carnivalUploader', function () {
   return {
     restrict: 'E',
