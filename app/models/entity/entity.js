@@ -1,17 +1,25 @@
 angular.module('carnival')
 .factory('Entity', function (EntityValidation, $http, Configuration, RequestBuilder, FieldBuilder) {
 
-
+  var buildViews = function (views) {
+    var _views = {};
+    Object.keys(views).forEach(function (view_name) {
+      _views[view_name] = {
+        enable:     views[view_name].enable,
+        searchable: views[view_name].searchable || true,
+        nested:     views[view_name].nested || false,
+        sortable:   views[view_name].sortable   || true
+      };
+    });
+    return _views;
+  };
 
   var buildFields = function (fields, that) {
     var _fields = [];
 
     Object.keys(fields).forEach(function (field_name) {
-
       var field = FieldBuilder.build(field_name, fields[field_name]);
-
       _fields.push(field);
-
     });
 
     that.fields = _fields;
@@ -20,12 +28,11 @@ angular.module('carnival')
   function Entity (name, options) {
     if (Configuration.validateEntities) EntityValidation(name, options);
     this.name = name;
-    this.label = options.label || this.name;
-    this.identifier = options.identifier;
+    this.label          = options.label || this.name;
+    this.identifier     = options.identifier;
     this.extraReqParams = options.extraReqParams || {};
-    this.quickFilters = options.quickFilters || null;
-    this.pagination = options.pagination || null;
-
+    this.quickFilters   = options.quickFilters   || null;
+    this.pagination     = options.pagination     || null;
     this.fields = [];
     buildFields(options.fields, this);
   }
@@ -106,7 +113,7 @@ angular.module('carnival')
   };
 
   Entity.prototype.request = function(requestParams){
-    return $http(requestParams); 
+    return $http(requestParams);
   };
 
   return Entity;

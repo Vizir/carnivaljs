@@ -1,0 +1,4 @@
+<div>
+  <img ng-if="checkIfIsImage(item[field.name])" ng-src="{{ item[field.name] }}" width="200" height="120"/>
+  <a ng-if="!checkIfIsImage(item[field.name])" href="{{ item[field.name] }}">{{ item[field.name] }}</a>
+</div>
