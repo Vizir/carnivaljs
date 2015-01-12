@@ -7,7 +7,7 @@ angular.module('carnival.uploader', [])
       fileUrl: '='
     },
     templateUrl: 'components/uploader/uploader.html',
-    controller: function ($scope, $http, Notification, Configuration) {
+    controller: function ($scope, $http, Uploader, Notification, Configuration) {
 
       var getRequestUrl = function () {
         if ($scope.uploader.endpoint && $scope.uploader.endpointUrl) {
@@ -19,14 +19,9 @@ angular.module('carnival.uploader', [])
         return $scope.uploader.endpointUrl;
       };
 
-      $scope.upload = function (file) {
-        var formData = new FormData();
-        formData.append('file', $scope.files[0]);
+      $scope.upload = function () {
 
-        $http.post(getRequestUrl(), formData, {
-          transformRequest: angular.identity,
-          headers: { 'Content-Type': undefined }
-        })
+        Uploader.upload(getRequestUrl(), $scope.files[0])
         .success(function (data) {
           new Notification('File uploaded with success', 'success');
           $scope.fileUrl = $scope.uploader.getUrl(data);

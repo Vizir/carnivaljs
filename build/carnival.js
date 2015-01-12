@@ -607,7 +607,7 @@ angular.module('carnival.uploader', [])
       fileUrl: '='
     },
     templateUrl: 'components/uploader/uploader.html',
-    controller: ["$scope", "$http", "Notification", "Configuration", function ($scope, $http, Notification, Configuration) {
+    controller: ["$scope", "$http", "Uploader", "Notification", "Configuration", function ($scope, $http, Uploader, Notification, Configuration) {
 
       var getRequestUrl = function () {
         if ($scope.uploader.endpoint && $scope.uploader.endpointUrl) {
@@ -619,14 +619,9 @@ angular.module('carnival.uploader', [])
         return $scope.uploader.endpointUrl;
       };
 
-      $scope.upload = function (file) {
-        var formData = new FormData();
-        formData.append('file', $scope.files[0]);
+      $scope.upload = function () {
 
-        $http.post(getRequestUrl(), formData, {
-          transformRequest: angular.identity,
-          headers: { 'Content-Type': undefined }
-        })
+        Uploader.upload(getRequestUrl(), $scope.files[0])
         .success(function (data) {
           new Notification('File uploaded with success', 'success');
           $scope.fileUrl = $scope.uploader.getUrl(data);
@@ -1249,6 +1244,23 @@ angular.module('carnival')
 }]);
 
 
+angular.module('carnival')
+.service('Uploader', ["$http", "Configuration", function ($http, Configuration) {
+
+  var upload = function (requestUrl, file) {
+    var formData = new FormData();
+    formData.append('file', file);
+    return $http.post(requestUrl, formData, {
+      transformRequest: angular.identity,
+      headers: { 'Content-Type': undefined }
+    });
+  };
+
+  return {
+    upload: upload
+  };
+
+}]);
 
 angular.module('carnival')
 .service('urlParams', ["$rootScope", "$location", "$state", function ($rootScope, $location, $state) {
