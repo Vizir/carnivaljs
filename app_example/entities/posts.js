@@ -150,6 +150,33 @@ app.config(function (ConfigurationProvider) {
             enable: true
           }
         }
+      },
+      'thumbnail': {
+        type: 'file',
+        label: 'Thumbnail',
+        uploader: {
+          endpoint: 'files', // The endpoint where the upload will be requested.
+          // endpointUrl: 'http://localhost:3000/files', // If use endpointUrl it will overwrite the base url setted for this application.
+          getUrl: function (data) { // This function will receive the response data, you will need to return the uploaded file's Url.
+            return data.fileUrl;
+          }
+        },
+        views: {
+          index: {
+            enable: true,
+            sortable: false,
+            searchable: false
+          },
+          create: {
+            enable: true
+          },
+          edit: {
+            enable: true
+          },
+          show: {
+            enable: true
+          }
+        }
       }
     }
   });
