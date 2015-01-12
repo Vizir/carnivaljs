@@ -1688,8 +1688,23 @@ angular.module("states/main.show/show.html", []).run(["$templateCache", function
     "\n" +
     "  <h3>{{ 'Show' | translate }} {{ entity.label }}</h3>\n" +
     "\n" +
-    "  <carnival-form fields=\"entity.fields\" datas=\"entity.datas\" action=\"entity.action\" state=\"show\" related-resources=\"entity.relatedResources\" editable=\"false\"></carnival-form>\n" +
+    "  <div class='row' ng-switch=\"field.type\" ng-repeat=\"field in entity.fields\">\n" +
+    "    <label class=\"col-sm-2 control-label\">{{ field.label }}</label>\n" +
+    "    <div class=\"col-sm-10\" ng-switch-when=\"belongsTo\">\n" +
+    "      {{entity.datas[field.name][field.field]}}\n" +
+    "    </div>\n" +
+    "    <div class=\"col-sm-10\" ng-switch-when=\"hasMany\">\n" +
+    "       <ul>\n" +
+    "          <li ng-repeat=\"data in entity.datas[field.name]\">\n" +
+    "            {{data[field.field]}}\n" +
+    "          </li>\n" +
+    "       </ul>\n" +
+    "    </div>\n" +
     "\n" +
+    "    <div class=\"col-sm-10\" ng-switch-default>\n" +
+    "      {{entity.datas[field.name]}}\n" +
+    "    </div>\n" +
+    "  </div>\n" +
     "</div>\n" +
     "");
 }]);

@@ -2,6 +2,21 @@
 
   <h3>{{ 'Show' | translate }} {{ entity.label }}</h3>
 
-  <carnival-form fields="entity.fields" datas="entity.datas" action="entity.action" state="show" related-resources="entity.relatedResources" editable="false"></carnival-form>
+  <div class='row' ng-switch="field.type" ng-repeat="field in entity.fields">
+    <label class="col-sm-2 control-label">{{ field.label }}</label>
+    <div class="col-sm-10" ng-switch-when="belongsTo">
+      {{entity.datas[field.name][field.field]}}
+    </div>
+    <div class="col-sm-10" ng-switch-when="hasMany">
+       <ul>
+          <li ng-repeat="data in entity.datas[field.name]">
+            {{data[field.field]}}
+          </li>
+       </ul>
+    </div>
 
+    <div class="col-sm-10" ng-switch-default>
+      {{entity.datas[field.name]}}
+    </div>
+  </div>
 </div>
