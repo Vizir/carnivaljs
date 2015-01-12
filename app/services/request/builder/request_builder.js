@@ -1,5 +1,5 @@
 angular.module('carnival')
-.service('RequestBuilder', function (HttpAdapter) {
+.service('RequestBuilder', function (HttpAdapter, ParametersParser) {
   
   var prebuildRequest = function(method, params){
     var request = {};
@@ -46,15 +46,14 @@ angular.module('carnival')
   this.buildForCreate = function(params){
     var request = prebuildRequest('POST', params);
     request.url    = params.baseUrl + '/' + params.endpoint;
-    request.data = params.entityData;
+    request.data = ParametersParser.parse(params.entityData, params.entity);
     return request;
   };
 
   this.buildForUpdate = function(params){
     var request = prebuildRequest('PUT', params);
     request.url    = params.baseUrl + '/' + params.endpoint + '/' + params.id;
-    var parameters = params.entityData;
-    request.data = parameters;
+    request.data = ParametersParser.parse(params.entityData, params.entity);
     return request;
   };
 });

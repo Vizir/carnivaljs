@@ -1090,7 +1090,7 @@ angular.module('carnival')
 }]);
 
 angular.module('carnival')
-.service('RequestBuilder', ["HttpAdapter", function (HttpAdapter) {
+.service('RequestBuilder', ["HttpAdapter", "ParametersParser", function (HttpAdapter, ParametersParser) {
   
   var prebuildRequest = function(method, params){
     var request = {};
@@ -1137,19 +1137,56 @@ angular.module('carnival')
   this.buildForCreate = function(params){
     var request = prebuildRequest('POST', params);
     request.url    = params.baseUrl + '/' + params.endpoint;
-    request.data = params.entityData;
+    request.data = ParametersParser.parse(params.entityData, params.entity);
     return request;
   };
 
   this.buildForUpdate = function(params){
     var request = prebuildRequest('PUT', params);
     request.url    = params.baseUrl + '/' + params.endpoint + '/' + params.id;
-    var parameters = params.entityData;
-    request.data = parameters;
+    request.data = ParametersParser.parse(params.entityData, params.entity);
     return request;
   };
 }]);
 
+
+angular.module('carnival')
+.service('ParametersParser', function () {
+
+  var getFieldByName = function(name, fields){
+    
+    for(var i = 0; i < fields.length; i++){
+      var field = fields[i];
+      if(field.name === name)
+        return field;
+    }
+
+    return null;
+  };
+
+  var buildHasManyParams = function(field, values){
+    var params = [];
+    for(var i = 0; i < values.length; i++){
+      var value = values[i];
+      params.push(value[field.identifier]);
+    }
+    return params;
+  };
+
+  this.parse = function(params, entity){
+    var parsedParams = {};
+    for(var paramName in params){
+      var field = getFieldByName(paramName, entity.fields);
+      if(!field || field.type != 'hasMany'){
+        parsedParams[paramName] = params[paramName]; 
+        continue;
+      }
+      
+      parsedParams[paramName] = buildHasManyParams(field, params[paramName]);
+    }
+    return parsedParams; 
+  };
+});
 
 angular.module('carnival')
 .service('urlParams', ["$rootScope", "$location", "$state", function ($rootScope, $location, $state) {
