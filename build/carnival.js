@@ -1533,15 +1533,14 @@ angular.module("components/fields/belongs-to/belongs-to.html", []).run(["$templa
 angular.module("components/fields/file/file.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/fields/file/file.html",
     "<div>\n" +
-    "  <div ng-if=\"!editable\">\n" +
+    "  <div>\n" +
     "    <img ng-if=\"checkIfIsImage(data)\" ng-src=\"{{ data }}\" width=\"200\" height=\"120\"/>\n" +
     "    <a ng-if=\"!checkIfIsImage(data)\" href=\"{{ data }}\">{{ data }}</a>\n" +
     "  </div>\n" +
     "  <div ng-if=\"editable\">\n" +
-    "    <img ng-if=\"checkIfIsImage(data)\" ng-src=\"{{ data }}\" width=\"200\" height=\"120\"/>\n" +
-    "    <carnival-string-field label=\"field.label\" data=\"data\" editable=\"editable\"></carnival-string-field>\n" +
+    "    <carnival-string-field label=\"field.label\" data=\"$parent.data\" editable=\"editable\"></carnival-string-field>\n" +
     "    <div ng-if=\"checkIfHasUploader()\">\n" +
-    "      <carnival-uploader uploader=\"field.uploader\" file-url=\"$parent.data\"></carnival-uploader>\n" +
+    "      <carnival-uploader uploader=\"field.uploader\" file-url=\"$parent.$parent.data\"></carnival-uploader>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "</div>\n" +
