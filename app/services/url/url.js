@@ -1,6 +1,10 @@
 angular.module('carnival')
 .service('urlParams', function ($rootScope, $location, $state) {
 
+  this.defaultParams = {
+    page: 1
+  };
+
   this.setParam = function (name, value, reload) {
     if (value === '') value = null;
     $location.search(name, value);
@@ -8,7 +12,7 @@ angular.module('carnival')
   };
 
   this.getParam = function (name) {
-    return $location.search()[name];
+    return $location.search()[name] || this.defaultParams[name];
   };
 
   this.getAllParams = function () {
