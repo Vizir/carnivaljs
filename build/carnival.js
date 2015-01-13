@@ -1366,7 +1366,8 @@ angular.module('carnival')
   };
 
   this.getParam = function (name) {
-    return $location.search()[name] || this.defaultParams[name];
+    var value = $location.search()[name];
+    return !isNaN(parseInt(value)) && isFinite(value) ? parseInt(value, 10) : value || this.defaultParams[name];
   };
 
   this.getAllParams = function () {
