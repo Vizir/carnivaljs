@@ -38,7 +38,7 @@ angular.module('carnival')
       endpoint:   fieldParams.endpoint,
       field:      fieldParams.field,
       identifier: fieldParams.identifier,
-      from:       fieldParams.from,
+      entityName: fieldParams.entityName,
       type:       fieldParams.type,
       views:      buildViews(fieldParams.views),
       uploader:   fieldParams.uploader 

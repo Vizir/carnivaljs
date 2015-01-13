@@ -117,7 +117,6 @@ angular.module('carnival.components.fields.belongsTo', [])
       datas: '=',
       field: '=',
       entity: '=',
-      nestedFormType: '=',
       nestedFormIndex: '=',
       relatedResources: '=',
       editable: '='
@@ -130,6 +129,15 @@ angular.module('carnival.components.fields.belongsTo', [])
     },
     controller: ["$rootScope", "$scope", "utils", function ($rootScope, $scope, utils) {
       $scope.utils = utils;
+
+      $scope.canShowNestedForm = function(field){
+        if(!$scope.entity.nestedForms[field.endpoint])
+          return false;
+        
+        if(!$scope.entity.datas[field.identifier])
+          return false;
+        return true;
+      };
 
       $scope.open = function(index){
         $scope.entity.nestedForms[$scope.field.endpoint].opened = true;
@@ -183,7 +191,6 @@ angular.module('carnival.components.fields.hasMany', [])
       datas: '=',
       field: '=',
       entity: '=',
-      nestedFormType: '=',
       nestedFormIndex: '=',
       relatedResources: '=',
       editable: '='
@@ -231,7 +238,6 @@ angular.module('carnival.components.fields.hasMany', [])
         if(index < 0)
           return;
         items.splice(index, 1);
-
       };
     }]
   };
@@ -336,7 +342,14 @@ angular.module('carnival.components.form', [])
     templateUrl: 'components/form/form.html',
     controller: ["$rootScope", "$scope", "utils", function ($rootScope, $scope, utils) {
       $scope.utils = utils;
+      $scope.canShow = function(field){
+        if(field.type != 'hasMany' && field.type != 'belongsTo')
+          return true;
 
+        if(!$scope.entity.parentEntity)
+          return true;
+        return false;
+      };
       $scope.buttonAction = function(){
         $scope.action.click();
         if($scope.type === 'nested'){
@@ -413,7 +426,7 @@ angular.module('carnival.components.listingfieldhasmany', [])
           if(f.type !== 'belongsTo' && f.type !== 'hasMany')
             continue;
 
-          if(f.name === $scope.field.from)
+          if(f.entityName === entity.name)
             return f;
         }
         return null;
@@ -423,7 +436,7 @@ angular.module('carnival.components.listingfieldhasmany', [])
         return 'View ' + $scope.field.label;
       };
       $scope.getUrl = function () {
-        var hasManyEntity = Configuration.getEntity($scope.field.name);
+        var hasManyEntity = Configuration.getEntity($scope.field.entityName);
         var hasManyEntityField = getRelationField(hasManyEntity.fields);
 
         return '#/list/' + $scope.field.endpoint + '?page=1&search.' + hasManyEntityField.foreignKey + '=' + $scope.item[entity.identifier];
@@ -882,15 +895,14 @@ angular.module('carnival')
 });
 
 angular.module('carnival')
-.service('ActionFactory', ["Notification", "$state", function (Notification, $state) {
+.service('ActionFactory', ["Notification", "$state", "ParametersParser", function (Notification, $state, ParametersParser) {
 
   this.buildCreateFunction = function(entity, hasNestedForm, isToNestedForm){
     return function () {
-      entity.model.create(entity.datas)
+      entity.model.create(ParametersParser.parse(entity.datas, entity))
       .success(function (data, status, headers, config) {
         if(isToNestedForm){
-          var parentEntity = isToNestedForm.parentEntity;
-          parentEntity.relatedResources[isToNestedForm.field.endpoint].push(data);
+          $state.reload();
         }
         else{
           new Notification('Item created with success!', 'success');
@@ -908,7 +920,7 @@ angular.module('carnival')
 
   this.buildEditFunction = function(entity){
     return function () {
-      entity.model.update(entity.id, entity.datas)
+      entity.model.update(entity.id, ParametersParser.parse(entity.datas, entity))
       .success(function () {
         new Notification('Modifications saved with success!', 'success');
         $state.go('main.show', { entity: entity.model.name, id: entity.id });
@@ -1038,7 +1050,7 @@ angular.module('carnival')
       endpoint:   fieldParams.endpoint,
       field:      fieldParams.field,
       identifier: fieldParams.identifier,
-      from:       fieldParams.from,
+      entityName: fieldParams.entityName,
       type:       fieldParams.type,
       views:      buildViews(fieldParams.views),
       uploader:   fieldParams.uploader 
@@ -1193,7 +1205,7 @@ angular.module('carnival')
 }]);
 
 angular.module('carnival')
-.service('RequestBuilder', ["HttpAdapter", "ParametersParser", function (HttpAdapter, ParametersParser) {
+.service('RequestBuilder', ["HttpAdapter", function (HttpAdapter) {
   
   var prebuildRequest = function(method, params){
     var request = {};
@@ -1240,14 +1252,14 @@ angular.module('carnival')
   this.buildForCreate = function(params){
     var request = prebuildRequest('POST', params);
     request.url    = params.baseUrl + '/' + params.endpoint;
-    request.data = ParametersParser.parse(params.entityData, params.entity);
+    request.data = params.entityData;
     return request;
   };
 
   this.buildForUpdate = function(params){
     var request = prebuildRequest('PUT', params);
     request.url    = params.baseUrl + '/' + params.endpoint + '/' + params.id;
-    request.data = ParametersParser.parse(params.entityData, params.entity);
+    request.data = params.entityData;
     return request;
   };
 }]);
@@ -1267,6 +1279,18 @@ angular.module('carnival')
     return null;
   };
 
+  var getFieldByEntityName = function(entityName, fields){
+    
+    for(var i = 0; i < fields.length; i++){
+      var field = fields[i];
+      if(field.entityName === entityName)
+        return field;
+    }
+
+    return null;
+  };
+
+
   var buildHasManyParams = function(field, values){
     var params = [];
     for(var i = 0; i < values.length; i++){
@@ -1274,6 +1298,23 @@ angular.module('carnival')
       params.push(value[field.identifier]);
     }
     return params;
+  };
+
+  var buildParentEntityParams = function(entity){
+    var parsedParams = {};
+    var parentEntity = entity.parentEntity;
+    if(!parentEntity) 
+      return parsedParams;
+    var field = getFieldByEntityName(parentEntity.name, entity.fields);
+    if(!field)
+      return {};
+    if(field.type === 'hasMany'){
+      parsedParams[field.name] = buildHasManyParams(field, [parentEntity.datas]);
+    }else if(field.type === 'belongsTo'){
+      parsedParams[field.foreignKey] = parentEntity.datas[field.identifier]; 
+    }
+    
+    return parsedParams;
   };
 
   this.parse = function(params, entity){
@@ -1287,7 +1328,9 @@ angular.module('carnival')
       
       parsedParams[paramName] = buildHasManyParams(field, params[paramName]);
     }
-    return parsedParams; 
+
+    var parentEntityParams = buildParentEntityParams(entity);
+    return angular.extend(parsedParams, parentEntityParams); 
   };
 });
 
@@ -1521,7 +1564,7 @@ angular.module("components/fields/belongs-to/belongs-to.html", []).run(["$templa
   $templateCache.put("components/fields/belongs-to/belongs-to.html",
     "<div>\n" +
     "  <carnival-select-field data=\"datas[field.foreignKey]\" field=\"field.field\" identifier=\"field.identifier\" items=\"relatedResources[field.endpoint]\" editable=\"editable\"></carnival-select-field>\n" +
-    "  <a ng-if='entity.nestedForms[field.endpoint]' ng-init='nestedFormIndex.value = nestedFormIndex.value + 1; formIndex = nestedFormIndex.value' class=\"btn btn-success btn-xs\"  ng-click=\"open(formIndex)\">Create</a>\n" +
+    "  <a ng-if='canShowNestedForm(field)' ng-init='nestedFormIndex.value = nestedFormIndex.value + 1; formIndex = nestedFormIndex.value' class=\"btn btn-success btn-xs\"  ng-click=\"open(formIndex)\">Create</a>\n" +
     "</div>\n" +
     "");
 }]);
@@ -1592,15 +1635,15 @@ angular.module("components/form/form.html", []).run(["$templateCache", function(
   $templateCache.put("components/form/form.html",
     "<form class=\"simple-form form-horizontal\" ng-init=\"nestedFormIndex = {value: 0}\" novalidate>\n" +
     "  <div class=\"form-group\" ng-repeat=\"field in fields\">\n" +
-    "    <label class=\"col-sm-2 control-label\">{{ field.label }}</label>\n" +
+    "    <label ng-if='canShow(field)' class=\"col-sm-2 control-label\">{{ field.label }}</label>\n" +
     "    <div class=\"col-sm-10\" ng-switch=\"field.type\">\n" +
     "      <!-- Fields -->\n" +
     "      <carnival-text-field ng-switch-when=\"text\" data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-text-field>\n" +
     "      <carnival-string-field ng-switch-when=\"string\" data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-string-field>\n" +
     "      <carnival-number-field ng-switch-when=\"number\" data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-number-field>\n" +
     "      <carnival-file-field ng-switch-when=\"file\" data=\"datas[field.name]\" field=\"field\" editable=\"editable\"></carnival-file-field>\n" +
-    "      <carnival-belongs-to-field ng-switch-when=\"belongsTo\" nested-form-index=\"nestedFormIndex\" nested-form-type=\"type\"  entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" state=\"edit\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-belongs-to-field>\n" +
-    "      <carnival-has-many-field ng-switch-when=\"hasMany\" entity=\"entity\" nested-form-index=\"nestedFormIndex\" nested-form-type=\"type\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" state=\"edit\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-has-many-field>\n" +
+    "      <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when=\"belongsTo\" nested-form-index=\"nestedFormIndex\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" state=\"edit\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-belongs-to-field>\n" +
+    "      <carnival-has-many-field ng-if='canShow(field)' ng-switch-when=\"hasMany\" entity=\"entity\" nested-form-index=\"nestedFormIndex\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" state=\"edit\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-has-many-field>\n" +
     "      <carnival-text-field ng-switch-default data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-text-field>\n" +
     "    </div>\n" +
     "  </div>\n" +

@@ -67,6 +67,7 @@ app.config(function (ConfigurationProvider) {
       },
       'post': {
         type: 'belongsTo',
+        entityName: 'posts',
         label: 'Post',
         endpoint: 'posts',
         identifier: 'id',

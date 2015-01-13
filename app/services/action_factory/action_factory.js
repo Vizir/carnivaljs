@@ -1,13 +1,12 @@
 angular.module('carnival')
-.service('ActionFactory', function (Notification, $state) {
+.service('ActionFactory', function (Notification, $state, ParametersParser) {
 
   this.buildCreateFunction = function(entity, hasNestedForm, isToNestedForm){
     return function () {
-      entity.model.create(entity.datas)
+      entity.model.create(ParametersParser.parse(entity.datas, entity))
       .success(function (data, status, headers, config) {
         if(isToNestedForm){
-          var parentEntity = isToNestedForm.parentEntity;
-          parentEntity.relatedResources[isToNestedForm.field.endpoint].push(data);
+          $state.reload();
         }
         else{
           new Notification('Item created with success!', 'success');
@@ -25,7 +24,7 @@ angular.module('carnival')
 
   this.buildEditFunction = function(entity){
     return function () {
-      entity.model.update(entity.id, entity.datas)
+      entity.model.update(entity.id, ParametersParser.parse(entity.datas, entity))
       .success(function () {
         new Notification('Modifications saved with success!', 'success');
         $state.go('main.show', { entity: entity.model.name, id: entity.id });
