@@ -1,5 +1,5 @@
 describe('On ParametersParse Service', function () {
-  var ParametersParser, params, entity; 
+  var ParametersParser, params, entity;
 
   beforeEach(function () {
     module('carnival');
@@ -16,6 +16,12 @@ describe('On ParametersParse Service', function () {
       ]
     };
     entity = {
+      name: 'posts',
+      identifier: 'id',
+
+      datas: {
+        id: 1
+      },
 
       fields: [
         {
@@ -36,12 +42,50 @@ describe('On ParametersParse Service', function () {
   });
 
   describe('parse has many parameters', function(){
-    
+
     it('should parse correctly', function(){
       var parsedParams = ParametersParser.parse(params, entity);
-      console.log("ParsedParams", parsedParams);
       expect(parsedParams.tags[0]).to.be.equal(1);
       expect(parsedParams.tags[1]).to.be.equal(2);
+    });
+
+  });
+
+  describe('parse parent Entity parameters', function(){
+
+    describe('hasMany relation', function(){
+      var childEntity;
+      beforeEach(function(){
+        childEntity = {
+          name: 'tags',
+          fields: [
+            {name: 'posts', entityName: 'posts' , type: 'hasMany', identifier: 'id' }
+          ],
+          parentEntity: entity
+        };
+      });
+
+      it('should parse correctly', function(){
+        var parsedParams = ParametersParser.parse({}, childEntity);
+        expect(parsedParams.posts[0]).to.be.equal(1);
+      });
+    });
+
+    describe('belongsTo relation', function(){
+      var childEntity;
+      beforeEach(function(){
+        childEntity = {
+          name: 'tags',
+          fields: [
+            {name: 'post', foreignKey: 'postId', entityName: 'posts', type: 'belongsTo', identifier: 'id' }
+          ],
+          parentEntity: entity
+        };
+      });
+      it('should parse correctly', function(){
+        var parsedParams = ParametersParser.parse({}, childEntity);
+        expect(parsedParams.postId).to.be.equal(1);
+      });
     });
 
   });
