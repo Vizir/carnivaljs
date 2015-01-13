@@ -17,7 +17,7 @@ angular.module('carnival.components.listingfieldhasmany', [])
           if(f.type !== 'belongsTo' && f.type !== 'hasMany')
             continue;
 
-          if(f.name === $scope.field.from)
+          if(f.entityName === entity.name)
             return f;
         }
         return null;
@@ -27,7 +27,7 @@ angular.module('carnival.components.listingfieldhasmany', [])
         return 'View ' + $scope.field.label;
       };
       $scope.getUrl = function () {
-        var hasManyEntity = Configuration.getEntity($scope.field.name);
+        var hasManyEntity = Configuration.getEntity($scope.field.entityName);
         var hasManyEntityField = getRelationField(hasManyEntity.fields);
 
         return '#/list/' + $scope.field.endpoint + '?page=1&search.' + hasManyEntityField.foreignKey + '=' + $scope.item[entity.identifier];

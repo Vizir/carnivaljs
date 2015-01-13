@@ -7,7 +7,6 @@ angular.module('carnival.components.fields.hasMany', [])
       datas: '=',
       field: '=',
       entity: '=',
-      nestedFormType: '=',
       nestedFormIndex: '=',
       relatedResources: '=',
       editable: '='
@@ -55,7 +54,6 @@ angular.module('carnival.components.fields.hasMany', [])
         if(index < 0)
           return;
         items.splice(index, 1);
-
       };
     }
   };

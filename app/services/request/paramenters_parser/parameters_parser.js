@@ -12,6 +12,18 @@ angular.module('carnival')
     return null;
   };
 
+  var getFieldByEntityName = function(entityName, fields){
+    
+    for(var i = 0; i < fields.length; i++){
+      var field = fields[i];
+      if(field.entityName === entityName)
+        return field;
+    }
+
+    return null;
+  };
+
+
   var buildHasManyParams = function(field, values){
     var params = [];
     for(var i = 0; i < values.length; i++){
@@ -19,6 +31,23 @@ angular.module('carnival')
       params.push(value[field.identifier]);
     }
     return params;
+  };
+
+  var buildParentEntityParams = function(entity){
+    var parsedParams = {};
+    var parentEntity = entity.parentEntity;
+    if(!parentEntity) 
+      return parsedParams;
+    var field = getFieldByEntityName(parentEntity.name, entity.fields);
+    if(!field)
+      return {};
+    if(field.type === 'hasMany'){
+      parsedParams[field.name] = buildHasManyParams(field, [parentEntity.datas]);
+    }else if(field.type === 'belongsTo'){
+      parsedParams[field.foreignKey] = parentEntity.datas[field.identifier]; 
+    }
+    
+    return parsedParams;
   };
 
   this.parse = function(params, entity){
@@ -32,6 +61,8 @@ angular.module('carnival')
       
       parsedParams[paramName] = buildHasManyParams(field, params[paramName]);
     }
-    return parsedParams; 
+
+    var parentEntityParams = buildParentEntityParams(entity);
+    return angular.extend(parsedParams, parentEntityParams); 
   };
 });

@@ -83,6 +83,7 @@ app.config(function (ConfigurationProvider) {
       'category': { // If this field will be a relation, this will turn into the endpoint
         type: 'belongsTo',
         label: 'Category',
+        entityName: 'categories',
         endpoint: 'categories',
         identifier: 'id',
         field: 'name',
@@ -106,7 +107,7 @@ app.config(function (ConfigurationProvider) {
       // ---- Comments (Relation) Field ----
       'comments': {
         type: 'hasMany',
-        from: 'post',
+        entityName: 'comments',
         label: 'Comments',
         endpoint: 'comments',
         identifier: 'id',
@@ -130,7 +131,7 @@ app.config(function (ConfigurationProvider) {
       // ---- Tags (Relation) Field ----
       'tags': {
         type: 'hasMany',
-        from: 'posts',//manytomany
+        entityName: 'tags',//manytomany
         label: 'Tags',
         endpoint: 'tags',
         identifier: 'id',

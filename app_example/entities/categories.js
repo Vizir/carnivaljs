@@ -49,7 +49,7 @@ app.config(function (ConfigurationProvider) {
         label: 'Posts',
         endpoint: 'posts',
         identifier: 'id',
-        from: 'category',
+        entityName: 'posts',
         field: 'title',
         views: {
           index: {

@@ -16,7 +16,14 @@ angular.module('carnival.components.form', [])
     templateUrl: 'components/form/form.html',
     controller: function ($rootScope, $scope, utils) {
       $scope.utils = utils;
+      $scope.canShow = function(field){
+        if(field.type != 'hasMany' && field.type != 'belongsTo')
+          return true;
 
+        if(!$scope.entity.parentEntity)
+          return true;
+        return false;
+      };
       $scope.buttonAction = function(){
         $scope.action.click();
         if($scope.type === 'nested'){

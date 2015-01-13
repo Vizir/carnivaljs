@@ -8,7 +8,7 @@ describe('On listing-field-has-many component', function () {
     scope.field = {
       endpoint: 'comments',
       name: 'comments',
-      from: 'post'
+      entityName: 'comments'
     };
   };
 
@@ -16,6 +16,7 @@ describe('On listing-field-has-many component', function () {
     fields: [
       {
         name: 'post',
+        entityName: 'posts',
         type: 'belongsTo',
         foreignKey: 'postId'
       }
@@ -23,7 +24,8 @@ describe('On listing-field-has-many component', function () {
   };
 
   var postEntity = {
-    identifier: 'id' 
+    identifier: 'id',
+    name: 'posts'
   };
 
   var $stateParams = {

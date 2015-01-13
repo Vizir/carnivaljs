@@ -51,7 +51,7 @@ app.config(function (ConfigurationProvider) {
         endpoint: 'posts',
         foreignKey: 'postId',
         identifier: 'id',
-        from: 'tag',
+        entityName: 'posts',
         field: 'title',
         views: {
           index: {
