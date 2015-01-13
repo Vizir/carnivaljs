@@ -1,13 +1,12 @@
 <div>
-  <div ng-if="!editable">
+  <div>
     <img ng-if="checkIfIsImage(data)" ng-src="{{ data }}" width="200" height="120"/>
     <a ng-if="!checkIfIsImage(data)" href="{{ data }}">{{ data }}</a>
   </div>
   <div ng-if="editable">
-    <img ng-if="checkIfIsImage(data)" ng-src="{{ data }}" width="200" height="120"/>
-    <carnival-string-field label="field.label" data="data" editable="editable"></carnival-string-field>
+    <carnival-string-field label="field.label" data="$parent.data" editable="editable"></carnival-string-field>
     <div ng-if="checkIfHasUploader()">
-      <carnival-uploader uploader="field.uploader" file-url="$parent.data"></carnival-uploader>
+      <carnival-uploader uploader="field.uploader" file-url="$parent.$parent.data"></carnival-uploader>
     </div>
   </div>
 </div>
