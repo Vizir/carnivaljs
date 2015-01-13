@@ -2,6 +2,7 @@
   "name": "carnivaljs",
   "version": "0.0.1",
   "authors": [],
+  "main": "app/carnival.js",
   "license": "MIT",
   "ignore": [
     "**/.*",
