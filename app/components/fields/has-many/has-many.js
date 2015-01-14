@@ -6,6 +6,7 @@ angular.module('carnival.components.fields.hasMany', [])
     scope: {
       datas: '=',
       field: '=',
+      state: '@state',
       entity: '=',
       nestedFormIndex: '=',
       relatedResources: '=',
@@ -24,6 +25,15 @@ angular.module('carnival.components.fields.hasMany', [])
         $scope.entity.nestedForms[$scope.field.endpoint].opened = true;
       };
 
+      $scope.canOpenNestedForm = function(){
+        if(!$scope.entity.nestedForms[$scope.field.name])
+          return false;
+
+        if($scope.state === 'create')
+          return false;
+
+        return true;
+      };
 
       $scope.canShow = function(){
         var fieldEntity = Configuration.getEntity($scope.field.entityName);
@@ -47,8 +57,8 @@ angular.module('carnival.components.fields.hasMany', [])
 
       var getSelectedItem = function(){
         var items = $scope.relatedResources[$scope.field.name];
-        var index = getItemIndex($scope.selectedHasMany, items); 
-        if(index >= 0) 
+        var index = getItemIndex($scope.selectedHasMany, items);
+        if(index >= 0)
           return items[index];
       };
 

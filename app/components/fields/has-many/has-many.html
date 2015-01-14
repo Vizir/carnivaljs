@@ -4,7 +4,7 @@
     </select>
     <a class="btn btn-info btn-xs" ng-click="addHasManyOption()">Add</a>
   </div>
-  <a ng-if='entity.nestedForms[field.endpoint]' ng-init='nestedFormIndex.value = nestedFormIndex.value + 1; formIndex = nestedFormIndex.value' class="btn btn-success btn-xs"  ng-click="open(formIndex)">Create</a>
+  <a ng-if='canOpenNestedForm()' ng-init='nestedFormIndex.value = nestedFormIndex.value + 1; formIndex = nestedFormIndex.value' class="btn btn-success btn-xs"  ng-click="open(formIndex)">Create</a>
   <ul>
     <li ng-repeat='data in datas[field.name]'>
       {{data[field.field]}}

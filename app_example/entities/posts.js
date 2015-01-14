@@ -117,7 +117,8 @@ app.config(function (ConfigurationProvider) {
             enable: true
           },
           create: {
-            enable: true
+            enable: true,
+            nested: true
           },
           edit: {
             enable: true,

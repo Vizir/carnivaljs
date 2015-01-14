@@ -189,6 +189,7 @@ angular.module('carnival.components.fields.hasMany', [])
     scope: {
       datas: '=',
       field: '=',
+      state: '@state',
       entity: '=',
       nestedFormIndex: '=',
       relatedResources: '=',
@@ -206,7 +207,16 @@ angular.module('carnival.components.fields.hasMany', [])
       $scope.open = function(index){
         $scope.entity.nestedForms[$scope.field.endpoint].opened = true;
       };
+      
+      $scope.canOpenNestedForm = function(){
+        if(!$scope.entity.nestedForms[$scope.field.name]) 
+          return false;
+        
+        if($scope.state === 'create')
+          return false;
 
+        return true;
+      }
 
       $scope.canShow = function(){
         var fieldEntity = Configuration.getEntity($scope.field.entityName);
@@ -1801,7 +1811,7 @@ angular.module("components/fields/has-many/has-many.html", []).run(["$templateCa
     "    </select>\n" +
     "    <a class=\"btn btn-info btn-xs\" ng-click=\"addHasManyOption()\">Add</a>\n" +
     "  </div>\n" +
-    "  <a ng-if='entity.nestedForms[field.endpoint]' ng-init='nestedFormIndex.value = nestedFormIndex.value + 1; formIndex = nestedFormIndex.value' class=\"btn btn-success btn-xs\"  ng-click=\"open(formIndex)\">Create</a>\n" +
+    "  <a ng-if='canOpenNestedForm()' ng-init='nestedFormIndex.value = nestedFormIndex.value + 1; formIndex = nestedFormIndex.value' class=\"btn btn-success btn-xs\"  ng-click=\"open(formIndex)\">Create</a>\n" +
     "  <ul>\n" +
     "    <li ng-repeat='data in datas[field.name]'>\n" +
     "      {{data[field.field]}}\n" +
@@ -1850,8 +1860,8 @@ angular.module("components/form/form.html", []).run(["$templateCache", function(
     "      <carnival-string-field ng-switch-when=\"string\" data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-string-field>\n" +
     "      <carnival-number-field ng-switch-when=\"number\" data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-number-field>\n" +
     "      <carnival-file-field ng-switch-when=\"file\" data=\"datas[field.name]\" field=\"field\" editable=\"editable\"></carnival-file-field>\n" +
-    "      <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when=\"belongsTo\" nested-form-index=\"nestedFormIndex\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" state=\"edit\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-belongs-to-field>\n" +
-    "      <carnival-has-many-field ng-if='canShow(field)' ng-switch-when=\"hasMany\" entity=\"entity\" nested-form-index=\"nestedFormIndex\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" state=\"edit\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-has-many-field>\n" +
+    "      <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when=\"belongsTo\" nested-form-index=\"nestedFormIndex\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-belongs-to-field>\n" +
+    "      <carnival-has-many-field ng-if='canShow(field)' ng-switch-when=\"hasMany\" entity=\"entity\" nested-form-index=\"nestedFormIndex\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\" editable=\"true\"></carnival-has-many-field>\n" +
     "      <carnival-text-field ng-switch-default data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-text-field>\n" +
     "    </div>\n" +
     "  </div>\n" +

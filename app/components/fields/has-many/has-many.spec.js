@@ -31,6 +31,7 @@ describe('On carnival-has-many component', function () {
 
     scope.entity = {
       name: 'posts',
+      nestedForms: [],
       fields: [
         {
           name: 'title', type: 'string'
