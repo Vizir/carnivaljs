@@ -86,7 +86,7 @@ describe('On carnival-has-many component', function () {
     it('should not render the selec', function(){
       tagEntity.fields[0].type = 'belongsTo';
       scope.$digest();
-      expect(element.html()).to.not.contain('<select');
+      expect(element.html()).to.contain('ng-hide');
     });
   });
 

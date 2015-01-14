@@ -1618,7 +1618,7 @@ angular.module("components/fields/file/file.html", []).run(["$templateCache", fu
 angular.module("components/fields/has-many/has-many.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/fields/has-many/has-many.html",
     "<div>\n" +
-    "  <div ng-if='canShow()' >\n" +
+    "  <div ng-show='canShow()' >\n" +
     "    <select ng-model=\"selectedHasMany\" ng-options=\"item[field.identifier] as utils.cutString(item[field.field], 25) for item in relatedResources[field.endpoint]\">\n" +
     "    </select>\n" +
     "    <a class=\"btn btn-info btn-xs\" ng-click=\"addHasManyOption()\">Add</a>\n" +
