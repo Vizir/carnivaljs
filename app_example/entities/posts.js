@@ -118,10 +118,12 @@ app.config(function (ConfigurationProvider) {
           },
           create: {
             enable: true,
+            enableDelete: true,
             nested: true
           },
           edit: {
             enable: true,
+            enableDelete: true,
             nested: true
           },
           show: {

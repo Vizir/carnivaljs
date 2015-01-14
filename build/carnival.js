@@ -207,16 +207,16 @@ angular.module('carnival.components.fields.hasMany', [])
       $scope.open = function(index){
         $scope.entity.nestedForms[$scope.field.endpoint].opened = true;
       };
-      
+
       $scope.canOpenNestedForm = function(){
-        if(!$scope.entity.nestedForms[$scope.field.name]) 
+        if(!$scope.entity.nestedForms[$scope.field.name])
           return false;
-        
+
         if($scope.state === 'create')
           return false;
 
         return true;
-      }
+      };
 
       $scope.canShow = function(){
         var fieldEntity = Configuration.getEntity($scope.field.entityName);
@@ -240,8 +240,8 @@ angular.module('carnival.components.fields.hasMany', [])
 
       var getSelectedItem = function(){
         var items = $scope.relatedResources[$scope.field.name];
-        var index = getItemIndex($scope.selectedHasMany, items); 
-        if(index >= 0) 
+        var index = getItemIndex($scope.selectedHasMany, items);
+        if(index >= 0)
           return items[index];
       };
 
@@ -260,6 +260,18 @@ angular.module('carnival.components.fields.hasMany', [])
         if(index < 0)
           return;
         items.splice(index, 1);
+        
+        if($scope.field.views[$scope.state].enableDelete){
+          var fieldEntity = Configuration.getEntity($scope.field.entityName);
+          fieldEntity.delete(id)
+          .success(function () {
+            new Notification('Item deleted with success!', 'warning');
+            $state.reload();
+          })
+          .error(function (data) {
+            new Notification(data, 'danger');
+          });
+        }
       };
     }]
   };
@@ -1052,6 +1064,7 @@ angular.module('carnival')
       _views[view_name] = {
         enable:    views[view_name].enable,
         searchable: views[view_name].searchable || true,
+        enableDelete: views[view_name].enableDelete || false,
         nested: views[view_name].nested || false,
         sortable:   views[view_name].sortable   || true
       };
@@ -1815,7 +1828,7 @@ angular.module("components/fields/has-many/has-many.html", []).run(["$templateCa
     "  <ul>\n" +
     "    <li ng-repeat='data in datas[field.name]'>\n" +
     "      {{data[field.field]}}\n" +
-    "      <a ng-click='remove(data.id);' class=\"btn btn-danger btn-xs\">Delete</a>\n" +
+    "      <a id='removeHasManyOption' ng-click='remove(data.id);' class=\"btn btn-danger btn-xs\">Delete</a>\n" +
     "    </li>\n" +
     "  </ul>\n" +
     "</div>\n" +

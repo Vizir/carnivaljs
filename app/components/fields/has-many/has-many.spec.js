@@ -1,6 +1,19 @@
 describe('On carnival-has-many component', function () {
-  var compile, element, scope, Configuration, tagEntity;
-  
+  var compile, element, scope, Configuration, tagEntity, compiledElement;
+
+  //Need to create a cross browser click() function no .click() in PhantomJS
+  function click(el){
+      var ev = document.createEvent('MouseEvent');
+      ev.initMouseEvent(
+          'click',
+          true /* bubble */, true /* cancelable */,
+          window, null,
+          0, 0, 0, 0, /* coordinates */
+          false, false, false, false, /* modifier keys */
+          0 /*left*/, null
+      );
+      el.dispatchEvent(ev);
+  }
 
   tagEntity = {
         name: 'tags',
@@ -26,7 +39,12 @@ describe('On carnival-has-many component', function () {
       field: 'name',
       endpoint: 'tags',
       type: 'hasMany',
-      entityName: 'tags'
+      entityName: 'tags',
+      views: {
+        edit: {
+          enableDelete: true
+        }
+      }
     };
 
     scope.entity = {
@@ -59,7 +77,7 @@ describe('On carnival-has-many component', function () {
     setScopeData(scope);
 
     element = angular.element('<carnival-has-many-field entity="entity" nested-form-index="nestedFormIndex" field="field" datas="datas" action="entity.action" state="edit" related-resources="relatedResources" editable="true"></carnival-has-many-field>');
-    compile(element)(scope);
+    compiledElement = compile(element)(scope);
     scope.$digest();
   });
 
@@ -88,6 +106,18 @@ describe('On carnival-has-many component', function () {
       tagEntity.fields[0].type = 'belongsTo';
       scope.$digest();
       expect(element.html()).to.contain('ng-hide');
+    });
+  });
+
+  describe('user click on remove and the field has a enableDelelte enable', function(){
+    it('should call the delete function on entity field', function(done){
+      scope.state = 'edit';
+      scope.datas.tags = [{id: 1, name: 'one'}];
+      tagEntity.delete = function(id){done();};
+
+      scope.$digest();
+      var removeButton = compiledElement.find('a')[1];
+      click(removeButton);
     });
   });
 
