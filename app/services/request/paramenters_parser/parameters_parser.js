@@ -2,7 +2,7 @@ angular.module('carnival')
 .service('ParametersParser', function () {
 
   var getFieldByName = function(name, fields){
-    
+
     for(var i = 0; i < fields.length; i++){
       var field = fields[i];
       if(field.name === name)
@@ -13,7 +13,7 @@ angular.module('carnival')
   };
 
   var getFieldByEntityName = function(entityName, fields){
-    
+
     for(var i = 0; i < fields.length; i++){
       var field = fields[i];
       if(field.entityName === entityName)
@@ -36,7 +36,7 @@ angular.module('carnival')
   var buildParentEntityParams = function(entity){
     var parsedParams = {};
     var parentEntity = entity.parentEntity;
-    if(!parentEntity) 
+    if(!parentEntity)
       return parsedParams;
     var field = getFieldByEntityName(parentEntity.name, entity.fields);
     if(!field)
@@ -44,9 +44,9 @@ angular.module('carnival')
     if(field.type === 'hasMany'){
       parsedParams[field.name] = buildHasManyParams(field, [parentEntity.datas]);
     }else if(field.type === 'belongsTo'){
-      parsedParams[field.foreignKey] = parentEntity.datas[field.identifier]; 
+      parsedParams[field.foreignKey] = parentEntity.datas[field.identifier];
     }
-    
+
     return parsedParams;
   };
 
@@ -55,14 +55,14 @@ angular.module('carnival')
     for(var paramName in params){
       var field = getFieldByName(paramName, entity.fields);
       if(!field || field.type != 'hasMany'){
-        parsedParams[paramName] = params[paramName]; 
+        parsedParams[paramName] = params[paramName];
         continue;
       }
-      
+
       parsedParams[paramName] = buildHasManyParams(field, params[paramName]);
     }
 
     var parentEntityParams = buildParentEntityParams(entity);
-    return angular.extend(parsedParams, parentEntityParams); 
+    return angular.extend(parsedParams, parentEntityParams);
   };
 });
