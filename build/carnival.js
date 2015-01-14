@@ -254,13 +254,7 @@ angular.module('carnival.components.fields.hasMany', [])
         }
       };
 
-      $scope.remove = function(id){
-        var items = $scope.datas[$scope.field.name];
-        var index = getItemIndex(id, items);
-        if(index < 0)
-          return;
-        items.splice(index, 1);
-        
+      var deleteIfNeeded = function(id){
         if($scope.field.views[$scope.state].enableDelete){
           var fieldEntity = Configuration.getEntity($scope.field.entityName);
           fieldEntity.delete(id)
@@ -272,6 +266,16 @@ angular.module('carnival.components.fields.hasMany', [])
             new Notification(data, 'danger');
           });
         }
+      };
+
+      $scope.remove = function(id){
+        var items = $scope.datas[$scope.field.name];
+        var index = getItemIndex(id, items);
+        if(index < 0)
+          return;
+        items.splice(index, 1);
+
+        deleteIfNeeded(id);
       };
     }]
   };
