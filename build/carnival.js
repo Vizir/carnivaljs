@@ -201,11 +201,24 @@ angular.module('carnival.components.fields.hasMany', [])
         element.attr('disabled', 'true');
       }
     },
-    controller: ["$rootScope", "$scope", "utils", function ($rootScope, $scope, utils) {
+    controller: ["$rootScope", "$scope", "utils", "Configuration", function ($rootScope, $scope, utils, Configuration) {
       $scope.utils = utils;
 
       $scope.open = function(index){
         $scope.entity.nestedForms[$scope.field.endpoint].opened = true;
+      };
+
+
+      $scope.canShow = function(){
+        var fieldEntity = Configuration.getEntity($scope.field.entityName);
+        var f = fieldEntity.getFieldByEntityName($scope.entity.name);
+        if(f === null)
+          return true;
+
+        if(f.type === 'belongsTo' && f.required)
+          return false;
+
+        return true;
       };
 
       var getItemIndex = function(id, items){
@@ -345,18 +358,22 @@ angular.module('carnival.components.form', [])
       $scope.canShow = function(field){
         if(field.type != 'hasMany' && field.type != 'belongsTo')
           return true;
-
+        
         if(!$scope.entity.parentEntity)
           return true;
         return false;
       };
+
+      var closeAllNestedForms = function(){
+        for(var form in $scope.entity.parentEntity.nestedForms){
+          $scope.entity.parentEntity.nestedForms[form].opened = false;
+        }
+      };
+
       $scope.buttonAction = function(){
         $scope.action.click();
-        if($scope.type === 'nested'){
-          for(var form in $scope.entity.parentEntity.nestedForms){
-            $scope.entity.parentEntity.nestedForms[form].opened = false;
-          }
-        }
+        if($scope.type === 'nested')
+          closeAllNestedForms();
       };
     }]
   };
@@ -801,6 +818,13 @@ angular.module('carnival')
     return false;
   };
 
+  Entity.prototype.getFieldByEntityName = function (entityName){
+    for(var i = 0; i < this.fields.length; i++){
+      if(this.fields[i].entityName === entityName)
+        return this.fields[i];
+    }
+  };
+
   // $http services
 
   Entity.prototype.getList = function (offset, limit, order, orderDir, search) {
@@ -1048,6 +1072,7 @@ angular.module('carnival')
       label:      fieldParams.label,
       foreignKey: fieldParams.foreignKey,
       endpoint:   fieldParams.endpoint,
+      required:   fieldParams.required,
       field:      fieldParams.field,
       identifier: fieldParams.identifier,
       entityName: fieldParams.entityName,
@@ -1269,7 +1294,7 @@ angular.module('carnival')
 .service('ParametersParser', function () {
 
   var getFieldByName = function(name, fields){
-    
+
     for(var i = 0; i < fields.length; i++){
       var field = fields[i];
       if(field.name === name)
@@ -1280,7 +1305,7 @@ angular.module('carnival')
   };
 
   var getFieldByEntityName = function(entityName, fields){
-    
+
     for(var i = 0; i < fields.length; i++){
       var field = fields[i];
       if(field.entityName === entityName)
@@ -1303,7 +1328,7 @@ angular.module('carnival')
   var buildParentEntityParams = function(entity){
     var parsedParams = {};
     var parentEntity = entity.parentEntity;
-    if(!parentEntity) 
+    if(!parentEntity)
       return parsedParams;
     var field = getFieldByEntityName(parentEntity.name, entity.fields);
     if(!field)
@@ -1311,9 +1336,9 @@ angular.module('carnival')
     if(field.type === 'hasMany'){
       parsedParams[field.name] = buildHasManyParams(field, [parentEntity.datas]);
     }else if(field.type === 'belongsTo'){
-      parsedParams[field.foreignKey] = parentEntity.datas[field.identifier]; 
+      parsedParams[field.foreignKey] = parentEntity.datas[field.identifier];
     }
-    
+
     return parsedParams;
   };
 
@@ -1322,15 +1347,15 @@ angular.module('carnival')
     for(var paramName in params){
       var field = getFieldByName(paramName, entity.fields);
       if(!field || field.type != 'hasMany'){
-        parsedParams[paramName] = params[paramName]; 
+        parsedParams[paramName] = params[paramName];
         continue;
       }
-      
+
       parsedParams[paramName] = buildHasManyParams(field, params[paramName]);
     }
 
     var parentEntityParams = buildParentEntityParams(entity);
-    return angular.extend(parsedParams, parentEntityParams); 
+    return angular.extend(parsedParams, parentEntityParams);
   };
 });
 
@@ -1593,9 +1618,11 @@ angular.module("components/fields/file/file.html", []).run(["$templateCache", fu
 angular.module("components/fields/has-many/has-many.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/fields/has-many/has-many.html",
     "<div>\n" +
-    "  <select ng-model=\"selectedHasMany\" ng-options=\"item[field.identifier] as utils.cutString(item[field.field], 25) for item in relatedResources[field.endpoint]\">\n" +
-    "  </select>\n" +
-    "  <a class=\"btn btn-info btn-xs\" ng-click=\"addHasManyOption()\">Add</a>\n" +
+    "  <div ng-if='canShow()' >\n" +
+    "    <select ng-model=\"selectedHasMany\" ng-options=\"item[field.identifier] as utils.cutString(item[field.field], 25) for item in relatedResources[field.endpoint]\">\n" +
+    "    </select>\n" +
+    "    <a class=\"btn btn-info btn-xs\" ng-click=\"addHasManyOption()\">Add</a>\n" +
+    "  </div>\n" +
     "  <a ng-if='entity.nestedForms[field.endpoint]' ng-init='nestedFormIndex.value = nestedFormIndex.value + 1; formIndex = nestedFormIndex.value' class=\"btn btn-success btn-xs\"  ng-click=\"open(formIndex)\">Create</a>\n" +
     "  <ul>\n" +
     "    <li ng-repeat='data in datas[field.name]'>\n" +

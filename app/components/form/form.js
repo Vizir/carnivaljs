@@ -19,18 +19,22 @@ angular.module('carnival.components.form', [])
       $scope.canShow = function(field){
         if(field.type != 'hasMany' && field.type != 'belongsTo')
           return true;
-
+        
         if(!$scope.entity.parentEntity)
           return true;
         return false;
       };
+
+      var closeAllNestedForms = function(){
+        for(var form in $scope.entity.parentEntity.nestedForms){
+          $scope.entity.parentEntity.nestedForms[form].opened = false;
+        }
+      };
+
       $scope.buttonAction = function(){
         $scope.action.click();
-        if($scope.type === 'nested'){
-          for(var form in $scope.entity.parentEntity.nestedForms){
-            $scope.entity.parentEntity.nestedForms[form].opened = false;
-          }
-        }
+        if($scope.type === 'nested')
+          closeAllNestedForms();
       };
     }
   };

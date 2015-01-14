@@ -46,6 +46,13 @@ angular.module('carnival')
     return false;
   };
 
+  Entity.prototype.getFieldByEntityName = function (entityName){
+    for(var i = 0; i < this.fields.length; i++){
+      if(this.fields[i].entityName === entityName)
+        return this.fields[i];
+    }
+  };
+
   // $http services
 
   Entity.prototype.getList = function (offset, limit, order, orderDir, search) {

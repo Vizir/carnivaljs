@@ -36,6 +36,7 @@ angular.module('carnival')
       label:      fieldParams.label,
       foreignKey: fieldParams.foreignKey,
       endpoint:   fieldParams.endpoint,
+      required:   fieldParams.required,
       field:      fieldParams.field,
       identifier: fieldParams.identifier,
       entityName: fieldParams.entityName,

@@ -17,11 +17,24 @@ angular.module('carnival.components.fields.hasMany', [])
         element.attr('disabled', 'true');
       }
     },
-    controller: function ($rootScope, $scope, utils) {
+    controller: function ($rootScope, $scope, utils, Configuration) {
       $scope.utils = utils;
 
       $scope.open = function(index){
         $scope.entity.nestedForms[$scope.field.endpoint].opened = true;
+      };
+
+
+      $scope.canShow = function(){
+        var fieldEntity = Configuration.getEntity($scope.field.entityName);
+        var f = fieldEntity.getFieldByEntityName($scope.entity.name);
+        if(f === null)
+          return true;
+
+        if(f.type === 'belongsTo' && f.required)
+          return false;
+
+        return true;
       };
 
       var getItemIndex = function(id, items){
