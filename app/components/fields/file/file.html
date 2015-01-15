@@ -8,5 +8,8 @@
     <div ng-if="checkIfHasUploader()">
       <carnival-uploader uploader="field.uploader" file-url="$parent.$parent.data"></carnival-uploader>
     </div>
+    <div ng-if="checkIfHasGallery()">
+      <carnival-gallery gallery="field.gallery" file-url="$parent.$parent.data"></carnival-gallery>
+    </div>
   </div>
 </div>
