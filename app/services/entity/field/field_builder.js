@@ -43,7 +43,8 @@ angular.module('carnival')
       entityName: fieldParams.entityName,
       type:       fieldParams.type,
       views:      buildViews(fieldParams.views),
-      uploader:   fieldParams.uploader 
+      uploader:   fieldParams.uploader,
+      gallery:    fieldParams.gallery
     };
 
      field.foreignKey = resolveForeignKey(field);

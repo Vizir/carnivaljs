@@ -165,6 +165,9 @@ app.config(function (ConfigurationProvider) {
             return data.fileUrl;
           }
         },
+        // gallery: {
+        //   url: 'http://localhost:3010' // You can use your own file manager as gallery to pick a file, you just need to access window.opener.CARNIVAL.gallery.sendUrl(<string: your_url>) to send the Url for the file.
+        // },
         views: {
           index: {
             enable: true,
