@@ -75,7 +75,8 @@ angular.module('carnival.components', [
   'carnival.components.notification',
   'carnival.components.quickfilter-controller',
   'carnival.components.listingFieldFile',
-  'carnival.components.uploader'
+  'carnival.components.uploader',
+  'carnival.components.gallery'
 ]);
 
 angular.module('carnival.components.delete-button', [])
@@ -177,6 +178,10 @@ angular.module('carnival.components.fields.file', [])
         return typeof $scope.field.uploader !== 'undefined';
       };
 
+      $scope.checkIfHasGallery = function () {
+        return typeof $scope.field.gallery !== 'undefined';
+      };
+
     }]
   };
 });
@@ -254,13 +259,7 @@ angular.module('carnival.components.fields.hasMany', [])
         }
       };
 
-      $scope.remove = function(id){
-        var items = $scope.datas[$scope.field.name];
-        var index = getItemIndex(id, items);
-        if(index < 0)
-          return;
-        items.splice(index, 1);
-        
+      var deleteIfNeeded = function(id){
         if($scope.field.views[$scope.state].enableDelete){
           var fieldEntity = Configuration.getEntity($scope.field.entityName);
           fieldEntity.delete(id)
@@ -272,6 +271,16 @@ angular.module('carnival.components.fields.hasMany', [])
             new Notification(data, 'danger');
           });
         }
+      };
+
+      $scope.remove = function(id){
+        var items = $scope.datas[$scope.field.name];
+        var index = getItemIndex(id, items);
+        if(index < 0)
+          return;
+        items.splice(index, 1);
+
+        deleteIfNeeded(id);
       };
     }]
   };
@@ -397,6 +406,29 @@ angular.module('carnival.components.form', [])
           closeAllNestedForms();
       };
     }]
+  };
+});
+
+angular.module('carnival.components.gallery', [])
+.directive('carnivalGallery', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      gallery: '=',
+      fileUrl: '='
+    },
+    controller: ["$scope", function ($scope) {
+      if (!window.CARNIVAL) window.CARNIVAL = {};
+      if (!window.CARNIVAL.gallery) window.CARNIVAL.gallery = {};
+      window.CARNIVAL.gallery.sendUrl = function (url) {
+        $scope.fileUrl = url;
+      };
+      $scope.open = function () {
+        window.open($scope.gallery.url, 'WINDOW_GALLERY', 'dialog');
+      };
+    }],
+    templateUrl: 'components/gallery/gallery.html'
   };
 });
 
@@ -672,6 +704,7 @@ angular.module('carnival.components.uploader', [])
 .directive('carnivalUploader', function () {
   return {
     restrict: 'E',
+    replace: true,
     scope: {
       uploader: '=',
       fileUrl: '='
@@ -1100,7 +1133,8 @@ angular.module('carnival')
       entityName: fieldParams.entityName,
       type:       fieldParams.type,
       views:      buildViews(fieldParams.views),
-      uploader:   fieldParams.uploader 
+      uploader:   fieldParams.uploader,
+      gallery:    fieldParams.gallery
     };
 
      field.foreignKey = resolveForeignKey(field);
@@ -1773,7 +1807,7 @@ angular.module('carnival')
 
 }]);
 
-angular.module('carnival.templates', ['components/button/button.html', 'components/delete-button/delete-button.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/form/form.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
+angular.module('carnival.templates', ['components/button/button.html', 'components/delete-button/delete-button.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
 
 angular.module("components/button/button.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/button/button.html",
@@ -1810,6 +1844,9 @@ angular.module("components/fields/file/file.html", []).run(["$templateCache", fu
     "    <carnival-string-field label=\"field.label\" data=\"$parent.data\" editable=\"editable\"></carnival-string-field>\n" +
     "    <div ng-if=\"checkIfHasUploader()\">\n" +
     "      <carnival-uploader uploader=\"field.uploader\" file-url=\"$parent.$parent.data\"></carnival-uploader>\n" +
+    "    </div>\n" +
+    "    <div ng-if=\"checkIfHasGallery()\">\n" +
+    "      <carnival-gallery gallery=\"field.gallery\" file-url=\"$parent.$parent.data\"></carnival-gallery>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "</div>\n" +
@@ -1882,6 +1919,14 @@ angular.module("components/form/form.html", []).run(["$templateCache", function(
     "    <carnival-button label=\"{{ action.label | translate }}\" style=\"success\" size=\"sm\" ng-click=\"buttonAction()\"></carnival-button>\n" +
     "  </label>\n" +
     "</form>\n" +
+    "");
+}]);
+
+angular.module("components/gallery/gallery.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/gallery/gallery.html",
+    "<div>\n" +
+    "  <carnival-button label=\"Open Gallery\" style=\"default\" size=\"sm\" ng-click=\"open()\"></carnival-button>\n" +
+    "</div>\n" +
     "");
 }]);
 

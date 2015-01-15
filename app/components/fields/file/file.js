@@ -19,6 +19,10 @@ angular.module('carnival.components.fields.file', [])
         return typeof $scope.field.uploader !== 'undefined';
       };
 
+      $scope.checkIfHasGallery = function () {
+        return typeof $scope.field.gallery !== 'undefined';
+      };
+
     }
   };
 });
