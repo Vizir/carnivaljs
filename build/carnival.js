@@ -1785,6 +1785,10 @@ angular.module('carnival')
 
   var entity = $scope.entity = {};
 
+  $scope.buttonAction = function(){
+    $state.go('main.edit', { entity: entity.name, id: entity.datas.id });
+  }
+
   var init = function () {
     entity = $scope.entity = EntityResources.prepareForShowState($stateParams.entity);
 
@@ -2184,6 +2188,9 @@ angular.module("states/main.show/show.html", []).run(["$templateCache", function
     "      {{entity.datas[field.name]}}\n" +
     "    </div>\n" +
     "  </div>\n" +
+    "  <label class=\"col-sm-2 control-label\">\n" +
+    "    <carnival-button label=\"Edit\" style=\"warning\" size=\"sm\" ng-click=\"buttonAction()\"></carnival-button>\n" +
+    "  </label>\n" +
     "</div>\n" +
     "");
 }]);
