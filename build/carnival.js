@@ -973,14 +973,16 @@ angular.module('carnival')
 });
 
 angular.module('carnival')
-.service('ActionFactory', ["Notification", "$state", "ParametersParser", function (Notification, $state, ParametersParser) {
+.service('ActionFactory', ["Notification", "$state", "ParametersParser", "EntityUpdater", function (Notification, $state, ParametersParser, EntityUpdater) {
 
   this.buildCreateFunction = function(entity, hasNestedForm, isToNestedForm){
     return function () {
       entity.model.create(ParametersParser.parse(entity.datas, entity))
       .success(function (data, status, headers, config) {
         if(isToNestedForm){
-          $state.reload();
+          var parentEntity = entity.parentEntity;
+          var fieldToUpdate = parentEntity.model.getFieldByEntityName(entity.name);
+          EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
         }
         else{
           new Notification('Item created with success!', 'success');
@@ -1231,6 +1233,19 @@ angular.module('carnival')
     return this.prepareForState(entityName, 'index');
   };
 }]);
+
+angular.module('carnival')
+.service('EntityUpdater', function () {
+  this.updateEntity = function(entity, fieldToUpdate, fieldData){
+    if(fieldToUpdate.type === 'belongsTo'){
+      entity.datas[fieldToUpdate.name] = fieldData;
+      entity.relatedResources[fieldToUpdate.endpoint].push(fieldData);
+    }else if(fieldToUpdate.type === 'hasMany'){
+      entity.datas[fieldToUpdate.name].push(fieldData);
+      entity.relatedResources[fieldToUpdate.endpoint].push(fieldData);
+    }
+  };
+});
 
 angular.module('carnival')
 
@@ -1785,6 +1800,10 @@ angular.module('carnival')
 
   var entity = $scope.entity = {};
 
+  $scope.buttonAction = function(){
+    $state.go('main.edit', { entity: entity.name, id: entity.datas.id });
+  };
+
   var init = function () {
     entity = $scope.entity = EntityResources.prepareForShowState($stateParams.entity);
 
@@ -2184,6 +2203,9 @@ angular.module("states/main.show/show.html", []).run(["$templateCache", function
     "      {{entity.datas[field.name]}}\n" +
     "    </div>\n" +
     "  </div>\n" +
+    "  <label class=\"col-sm-2 control-label\">\n" +
+    "    <carnival-button label=\"Edit\" style=\"warning\" size=\"sm\" ng-click=\"buttonAction()\"></carnival-button>\n" +
+    "  </label>\n" +
     "</div>\n" +
     "");
 }]);
