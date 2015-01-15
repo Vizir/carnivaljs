@@ -1,14 +1,14 @@
 <div>
-  <div ng-show='canShow()' >
+  <span ng-show='canShow()' >
     <select ng-model="selectedHasMany" ng-options="item[field.identifier] as utils.cutString(item[field.field], 25) for item in relatedResources[field.endpoint]">
     </select>
-    <a class="btn btn-info btn-xs" ng-click="addHasManyOption()">Add</a>
-  </div>
-  <a ng-if='canOpenNestedForm()' ng-init='nestedFormIndex.value = nestedFormIndex.value + 1; formIndex = nestedFormIndex.value' class="btn btn-success btn-xs"  ng-click="open(formIndex)">Create</a>
-  <ul>
+    <a class="btn btn-default btn-xs" ng-click="addHasManyOption()">Add</a>
+  </span>
+  <a ng-if='canOpenNestedForm()' ng-init='nestedFormIndex.value = nestedFormIndex.value + 1; formIndex = nestedFormIndex.value' class="btn btn-default btn-xs"  ng-click="open(formIndex)">Create</a>
+  <ul class='has-many-field-list'>
     <li ng-repeat='data in datas[field.name]'>
       {{data[field.field]}}
-      <a id='removeHasManyOption' ng-click='remove(data.id);' class="btn btn-danger btn-xs">Delete</a>
+      <a id='removeHasManyOption' ng-click='remove(data.id);' class="btn btn-default btn-xs">Delete</a>
     </li>
   </ul>
 </div>

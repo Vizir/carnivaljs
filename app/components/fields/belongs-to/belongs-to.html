@@ -1,4 +1,7 @@
 <div>
-  <carnival-select-field data="datas[field.foreignKey]" field="field.field" identifier="field.identifier" items="relatedResources[field.endpoint]" editable="editable"></carnival-select-field>
-  <a ng-if='canShowNestedForm(field)' ng-init='nestedFormIndex.value = nestedFormIndex.value + 1; formIndex = nestedFormIndex.value' class="btn btn-success btn-xs"  ng-click="open(formIndex)">Create</a>
+  <carnival-select-field data="datas[field.foreignKey]" field="field.field" identifier="field.identifier" items="relatedResources[field.endpoint]" editable="editable">
+
+  </carnival-select-field>
+  <a ng-if='canShowNestedForm(field)' ng-init='nestedFormIndex.value = nestedFormIndex.value + 1; formIndex = nestedFormIndex.value' class="btn btn-default btn-xs"  ng-click="open(formIndex)">Create</a>
+
 </div>

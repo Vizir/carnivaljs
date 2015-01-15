@@ -254,13 +254,7 @@ angular.module('carnival.components.fields.hasMany', [])
         }
       };
 
-      $scope.remove = function(id){
-        var items = $scope.datas[$scope.field.name];
-        var index = getItemIndex(id, items);
-        if(index < 0)
-          return;
-        items.splice(index, 1);
-        
+      var deleteIfNeeded = function(id){
         if($scope.field.views[$scope.state].enableDelete){
           var fieldEntity = Configuration.getEntity($scope.field.entityName);
           fieldEntity.delete(id)
@@ -272,6 +266,16 @@ angular.module('carnival.components.fields.hasMany', [])
             new Notification(data, 'danger');
           });
         }
+      };
+
+      $scope.remove = function(id){
+        var items = $scope.datas[$scope.field.name];
+        var index = getItemIndex(id, items);
+        if(index < 0)
+          return;
+        items.splice(index, 1);
+
+        deleteIfNeeded(id);
       };
     }]
   };
@@ -1793,8 +1797,11 @@ angular.module("components/delete-button/delete-button.html", []).run(["$templat
 angular.module("components/fields/belongs-to/belongs-to.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/fields/belongs-to/belongs-to.html",
     "<div>\n" +
-    "  <carnival-select-field data=\"datas[field.foreignKey]\" field=\"field.field\" identifier=\"field.identifier\" items=\"relatedResources[field.endpoint]\" editable=\"editable\"></carnival-select-field>\n" +
-    "  <a ng-if='canShowNestedForm(field)' ng-init='nestedFormIndex.value = nestedFormIndex.value + 1; formIndex = nestedFormIndex.value' class=\"btn btn-success btn-xs\"  ng-click=\"open(formIndex)\">Create</a>\n" +
+    "  <carnival-select-field data=\"datas[field.foreignKey]\" field=\"field.field\" identifier=\"field.identifier\" items=\"relatedResources[field.endpoint]\" editable=\"editable\">\n" +
+    "\n" +
+    "  </carnival-select-field>\n" +
+    "  <a ng-if='canShowNestedForm(field)' ng-init='nestedFormIndex.value = nestedFormIndex.value + 1; formIndex = nestedFormIndex.value' class=\"btn btn-default btn-xs\"  ng-click=\"open(formIndex)\">Create</a>\n" +
+    "\n" +
     "</div>\n" +
     "");
 }]);
@@ -1819,16 +1826,16 @@ angular.module("components/fields/file/file.html", []).run(["$templateCache", fu
 angular.module("components/fields/has-many/has-many.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/fields/has-many/has-many.html",
     "<div>\n" +
-    "  <div ng-show='canShow()' >\n" +
+    "  <span ng-show='canShow()' >\n" +
     "    <select ng-model=\"selectedHasMany\" ng-options=\"item[field.identifier] as utils.cutString(item[field.field], 25) for item in relatedResources[field.endpoint]\">\n" +
     "    </select>\n" +
-    "    <a class=\"btn btn-info btn-xs\" ng-click=\"addHasManyOption()\">Add</a>\n" +
-    "  </div>\n" +
-    "  <a ng-if='canOpenNestedForm()' ng-init='nestedFormIndex.value = nestedFormIndex.value + 1; formIndex = nestedFormIndex.value' class=\"btn btn-success btn-xs\"  ng-click=\"open(formIndex)\">Create</a>\n" +
-    "  <ul>\n" +
+    "    <a class=\"btn btn-default btn-xs\" ng-click=\"addHasManyOption()\">Add</a>\n" +
+    "  </span>\n" +
+    "  <a ng-if='canOpenNestedForm()' ng-init='nestedFormIndex.value = nestedFormIndex.value + 1; formIndex = nestedFormIndex.value' class=\"btn btn-default btn-xs\"  ng-click=\"open(formIndex)\">Create</a>\n" +
+    "  <ul class='has-many-field-list'>\n" +
     "    <li ng-repeat='data in datas[field.name]'>\n" +
     "      {{data[field.field]}}\n" +
-    "      <a id='removeHasManyOption' ng-click='remove(data.id);' class=\"btn btn-danger btn-xs\">Delete</a>\n" +
+    "      <a id='removeHasManyOption' ng-click='remove(data.id);' class=\"btn btn-default btn-xs\">Delete</a>\n" +
     "    </li>\n" +
     "  </ul>\n" +
     "</div>\n" +
@@ -1843,10 +1850,8 @@ angular.module("components/fields/number/number.html", []).run(["$templateCache"
 
 angular.module("components/fields/select/select.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/fields/select/select.html",
-    "<div>\n" +
-    "  <select ng-model=\"data\" ng-options=\"item[identifier] as utils.cutString(item[field], 25) for item in items\">\n" +
-    "  </select>\n" +
-    "</div>\n" +
+    "<select ng-model=\"data\" ng-options=\"item[identifier] as utils.cutString(item[field], 25) for item in items\">\n" +
+    "</select>\n" +
     "");
 }]);
 
