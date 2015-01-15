@@ -2,6 +2,7 @@ angular.module('carnival.components.uploader', [])
 .directive('carnivalUploader', function () {
   return {
     restrict: 'E',
+    replace: true,
     scope: {
       uploader: '=',
       fileUrl: '='

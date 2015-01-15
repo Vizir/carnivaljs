@@ -6,7 +6,8 @@ describe('On carnival-file-field component', function () {
     scope.data = 'http://anywhere/file.jpg';
     scope.field = {
       label: 'File',
-      uploader: { blabla: 'ba'}
+      uploader: { blabla: 'ba' },
+      gallery:  { bloblo: 'bo' }
     };
     scope.editable = false;
   };
@@ -44,10 +45,16 @@ describe('On carnival-file-field component', function () {
     expect(element.html()).to.contain('type="text"');
   });
 
-  it('should render the uploader if it has an uploader', function () {
+  it('should render the uploader if it have an uploader', function () {
     element.isolateScope().editable = true;
     scope.$digest();
-    expect(element.html()).to.contain('<carnival-uploader');
+    expect(element.html()).to.contain('Upload');
+  });
+
+  it('should render the uploader if it have a gallery', function () {
+    element.isolateScope().editable = true;
+    scope.$digest();
+    expect(element.html()).to.contain('Open Gallery');
   });
 
 });
