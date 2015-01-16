@@ -28,12 +28,12 @@ describe('EntityResources', function(){
   describe('#prepareForCreateState', function(){
     it('should prepare entity for create State', function(){
       var resource = EntityResources.prepareForCreateState(entityName);
-      expect(resource.model === null).to.be.equal(false); 
-      expect(resource.name).to.be.equal('cats'); 
-      expect(resource.label).to.be.equal('Cats'); 
-      expect(resource.identifier).to.be.equal('id'); 
-      expect(resource.fields.length).to.be.equal(3); 
-      expect(Object.keys(resource.nestedForms).length).to.be.equal(1); 
+      expect(resource.model === null).to.be.equal(false);
+      expect(resource.name).to.be.equal('cats');
+      expect(resource.label).to.be.equal('Cats');
+      expect(resource.identifier).to.be.equal('id');
+      expect(resource.fields.length).to.be.equal(3);
+      expect(Object.keys(resource.nestedForms).length).to.be.equal(1);
     });
   });
 
@@ -41,36 +41,36 @@ describe('EntityResources', function(){
   describe('#prepareForEditState', function(){
     it('should prepare entity for edit State', function(){
       var resource = EntityResources.prepareForEditState(entityName);
-      expect(resource.model === null).to.be.equal(false); 
-      expect(resource.name).to.be.equal('cats'); 
-      expect(resource.label).to.be.equal('Cats'); 
-      expect(resource.identifier).to.be.equal('id'); 
-      expect(resource.fields.length).to.be.equal(3); 
-      expect(Object.keys(resource.nestedForms).length).to.be.equal(1); 
+      expect(resource.model === null).to.be.equal(false);
+      expect(resource.name).to.be.equal('cats');
+      expect(resource.label).to.be.equal('Cats');
+      expect(resource.identifier).to.be.equal('id');
+      expect(resource.fields.length).to.be.equal(3);
+      expect(Object.keys(resource.nestedForms).length).to.be.equal(1);
     });
   });
 
   describe('#prepareForShowState', function(){
     it('should prepare entity for show State', function(){
       var resource = EntityResources.prepareForShowState(entityName);
-      expect(resource.model === null).to.be.equal(false); 
-      expect(resource.name).to.be.equal('cats'); 
-      expect(resource.label).to.be.equal('Cats'); 
-      expect(resource.identifier).to.be.equal('id'); 
-      expect(resource.fields.length).to.be.equal(3); 
-      expect(Object.keys(resource.nestedForms).length).to.be.equal(0); 
+      expect(resource.model === null).to.be.equal(false);
+      expect(resource.name).to.be.equal('cats');
+      expect(resource.label).to.be.equal('Cats');
+      expect(resource.identifier).to.be.equal('id');
+      expect(resource.fields.length).to.be.equal(3);
+      expect(Object.keys(resource.nestedForms).length).to.be.equal(0);
     });
   });
 
   describe('#prepareForListState', function(){
     it('should prepare entity for list State', function(){
       var resource = EntityResources.prepareForShowState(entityName);
-      expect(resource.model === null).to.be.equal(false); 
-      expect(resource.name).to.be.equal('cats'); 
-      expect(resource.label).to.be.equal('Cats'); 
-      expect(resource.identifier).to.be.equal('id'); 
-      expect(resource.fields.length).to.be.equal(3); 
-      expect(Object.keys(resource.nestedForms).length).to.be.equal(0); 
+      expect(resource.model === null).to.be.equal(false);
+      expect(resource.name).to.be.equal('cats');
+      expect(resource.label).to.be.equal('Cats');
+      expect(resource.identifier).to.be.equal('id');
+      expect(resource.fields.length).to.be.equal(3);
+      expect(Object.keys(resource.nestedForms).length).to.be.equal(0);
     });
   });
 });
