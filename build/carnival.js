@@ -854,6 +854,7 @@ angular.module('carnival')
   function Entity (name, options) {
     if (Configuration.validateEntities) EntityValidation(name, options);
     this.name = name;
+    this.endpoint       = options.endpoint || this.name;
     this.label          = options.label || this.name;
     this.identifier     = options.identifier;
     this.extraReqParams = options.extraReqParams || {};
@@ -892,7 +893,7 @@ angular.module('carnival')
       order: order,
       orderDir: orderDir,
       search: search,
-      endpoint: this.name
+      endpoint: this.endpoint
     });
 
     return this.request(requestParams);
@@ -904,7 +905,7 @@ angular.module('carnival')
       baseUrl: Configuration.getBaseApiUrl(),
       extraParams: extraParams,
       id: id,
-      endpoint: this.name
+      endpoint: this.endpoint
     });
     return this.request(requestParams);
   };
@@ -915,7 +916,7 @@ angular.module('carnival')
       baseUrl: Configuration.getBaseApiUrl(),
       extraParams: extraParams,
       id: id,
-      endpoint: this.name
+      endpoint: this.endpoint
     });
     return this.request(requestParams);
   };
@@ -927,7 +928,7 @@ angular.module('carnival')
       extraParams: extraParams,
       entity: this,
       entityData: data,
-      endpoint: this.name
+      endpoint: this.endpoint
     });
     return this.request(requestParams);
   };
@@ -940,7 +941,7 @@ angular.module('carnival')
       id: id,
       entity: this,
       entityData: data,
-      endpoint: this.name
+      endpoint: this.endpoint
     });
     return this.request(requestParams);
   };
