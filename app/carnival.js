@@ -2,7 +2,8 @@ angular.module('carnival', [
   'carnival.templates',
   'ui.router',
   'carnival.components',
-  'pascalprecht.translate'
+  'pascalprecht.translate',
+  'textAngular'
 ])
 .config(function ($stateProvider, $urlRouterProvider, $translateProvider) {
 

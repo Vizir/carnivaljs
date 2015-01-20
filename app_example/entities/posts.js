@@ -60,7 +60,7 @@ app.config(function (ConfigurationProvider) {
       },
       // ---- Content Field ----
       'content': {
-        type: 'text',
+        type: 'wysiwyg',
         label: 'Content',
         views: {
           index: {
