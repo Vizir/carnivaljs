@@ -577,9 +577,9 @@ angular.module('carnival.components.navbar', [])
     templateUrl: 'components/navbar/navbar.html',
     controller: ["$scope", "$stateParams", "urlParams", "$location", function ($scope, $stateParams, urlParams, $location) {
     
-      var urlPrefix = "";
-      if(!$location.$$html5){
-        urlPrefix = "#";
+      var urlPrefix = "#";
+      if($location.$$html5){
+        urlPrefix = "";
       }
 
       $scope.buildUrl = function (link) {
