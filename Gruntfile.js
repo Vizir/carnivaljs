@@ -42,6 +42,9 @@ module.exports = function (grunt) {
               '!app/karma.conf.js',
               'dist/tmp/*.js',
               'bower_components/angular-ui-router/release/angular-ui-router.js',
+              'bower_components/textAngular/src/textAngular.js',
+              'bower_components/textAngular/src/textAngular-sanitize.js',
+              'bower_components/textAngular/src/textAngularSetup.js',
               'bower_components/angular-translate/angular-translate.js'
         ],
         dest: 'build/carnival.js'

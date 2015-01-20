@@ -5,5 +5,6 @@ angular.module('carnival.components.fields', [
   'carnival.components.fields.hasMany',
   'carnival.components.fields.string',
   'carnival.components.fields.text',
+  'carnival.components.fields.wysiwyg',
   'carnival.components.fields.file'
 ]);
