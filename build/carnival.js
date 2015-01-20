@@ -8,7 +8,7 @@ angular.module('carnival', [
   'pascalprecht.translate',
   'textAngular'
 ])
-.config(["$stateProvider", "$urlRouterProvider", "$translateProvider", function ($stateProvider, $urlRouterProvider, $translateProvider) {
+.config(["$stateProvider", "$urlRouterProvider", "$translateProvider", "$locationProvider", function ($stateProvider, $urlRouterProvider, $translateProvider, $locationProvider) {
 
   $urlRouterProvider.otherwise('/');
   $stateProvider
@@ -575,10 +575,15 @@ angular.module('carnival.components.navbar', [])
       menuItems: '='
     },
     templateUrl: 'components/navbar/navbar.html',
-    controller: ["$scope", "$stateParams", "urlParams", function ($scope, $stateParams, urlParams) {
+    controller: ["$scope", "$stateParams", "urlParams", "$location", function ($scope, $stateParams, urlParams, $location) {
+    
+      var urlPrefix = "";
+      if(!$location.$$html5){
+        urlPrefix = "#";
+      }
 
       $scope.buildUrl = function (link) {
-        if (link.type === 'entity') return '#/list/' + link.url;
+        if (link.type === 'entity') return urlPrefix + '/list/' + link.url;
         if (link.type === 'url')    return link.url;
         return '#';
       };

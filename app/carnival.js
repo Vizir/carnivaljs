@@ -5,7 +5,7 @@ angular.module('carnival', [
   'pascalprecht.translate',
   'textAngular'
 ])
-.config(function ($stateProvider, $urlRouterProvider, $translateProvider) {
+.config(function ($stateProvider, $urlRouterProvider, $translateProvider, $locationProvider) {
 
   $urlRouterProvider.otherwise('/');
   $stateProvider
