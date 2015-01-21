@@ -32,11 +32,11 @@ module.exports = function (grunt) {
     },
 
     concat: {
-      options: {
-        banner: '/* CARNIVAL.JS */\n(function () {\n"use strict";\n',
-        footer: '})();'
-      },
       dist: {
+        options: {
+          banner: '/* CARNIVAL.JS */\n(function () {\n"use strict";\n',
+          footer: '})();'
+        },
         src: ['app/**/*.js',
               '!app/**/*.spec.js',
               '!app/karma.conf.js',
@@ -50,6 +50,16 @@ module.exports = function (grunt) {
 
         ],
         dest: 'build/carnival.js'
+      },
+
+      css: {
+        src: [
+          'styles/carnival.css',
+          'bower_components/bootstrap/dist/css/bootstrap.css',
+          'bower_components/font-awesome/css/font-awesome.css',
+          'bower_components/angular-datepicker/dist/index.css'
+        ],
+        dest: 'build/carnival.css'
       }
     },
 
@@ -94,13 +104,6 @@ module.exports = function (grunt) {
       },
     },
 
-    copy: {
-      css: {
-        src: 'styles/carnival.css',
-        dest: 'build/carnival.css'
-      }
-    },
-
     cssmin: {
       target: {
         files: [{
@@ -127,6 +130,6 @@ module.exports = function (grunt) {
   grunt.registerTask('dev', ['connect', 'watch:dev']);
   grunt.registerTask('test', ['jshint', 'html2js:dist', 'karma:unit', 'clean:tmp']);
   grunt.registerTask('test:watch', ['jshint', 'html2js:dist', 'karma:continuous', 'clean:tmp']);
-  grunt.registerTask('build', ['jshint', 'html2js:dist', 'concat:dist', 'ngAnnotate:dist', 'karma:unit', 'uglify:dist', 'copy:css', 'cssmin', 'clean:tmp']);
+  grunt.registerTask('build', ['jshint', 'html2js:dist', 'concat:dist', 'concat:css', 'cssmin', 'ngAnnotate:dist', 'karma:unit', 'uglify:dist',  'clean:tmp']);
 
 };
