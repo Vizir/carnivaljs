@@ -7,5 +7,6 @@ angular.module('carnival.components.fields', [
   'carnival.components.fields.text',
   'carnival.components.fields.wysiwyg',
   'carnival.components.fields.boolean',
+  'carnival.components.fields.date',
   'carnival.components.fields.file'
 ]);

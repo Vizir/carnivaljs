@@ -45,7 +45,9 @@ module.exports = function (grunt) {
               'bower_components/textAngular/src/textAngular.js',
               'bower_components/textAngular/src/textAngular-sanitize.js',
               'bower_components/textAngular/src/textAngularSetup.js',
-              'bower_components/angular-translate/angular-translate.js'
+              'bower_components/angular-translate/angular-translate.js',
+              'bower_components/angular-datepicker/dist/index.js'
+
         ],
         dest: 'build/carnival.js'
       }
