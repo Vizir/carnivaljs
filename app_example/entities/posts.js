@@ -79,6 +79,24 @@ app.config(function (ConfigurationProvider) {
           }
         }
       },
+      'published': {
+        type: 'boolean',
+        label: 'Published',
+        views: {
+          index: {
+            enable: true
+          },
+          create: {
+            enable: true
+          },
+          edit: {
+            enable: true
+          },
+          show: {
+            enable: true
+          }
+        }
+      },
       // ---- Category (Relation) Field ----
       'category': { // If this field will be a relation, this will turn into the endpoint
         type: 'belongsTo',

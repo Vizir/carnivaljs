@@ -148,6 +148,24 @@ angular.module('carnival.components.fields.belongsTo', [])
   };
 });
 
+angular.module('carnival.components.fields.boolean', [])
+.directive('carnivalBooleanField', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      data: '=',
+      editable: '='
+    },
+    templateUrl: 'components/fields/boolean/boolean.html',
+    link: function (scope, element, attrs) {
+      if (!scope.editable) {
+        element.attr('disabled', 'true');
+      }
+    }
+  };
+});
+
 angular.module('carnival.components.fields', [
   'carnival.components.fields.number',
   'carnival.components.fields.select',
@@ -156,6 +174,7 @@ angular.module('carnival.components.fields', [
   'carnival.components.fields.string',
   'carnival.components.fields.text',
   'carnival.components.fields.wysiwyg',
+  'carnival.components.fields.boolean',
   'carnival.components.fields.file'
 ]);
 
@@ -577,9 +596,9 @@ angular.module('carnival.components.navbar', [])
     templateUrl: 'components/navbar/navbar.html',
     controller: ["$scope", "$stateParams", "urlParams", "$location", function ($scope, $stateParams, urlParams, $location) {
     
-      var urlPrefix = "";
-      if(!$location.$$html5){
-        urlPrefix = "#";
+      var urlPrefix = "#";
+      if($location.$$html5){
+        urlPrefix = "";
       }
 
       $scope.buildUrl = function (link) {
@@ -1853,7 +1872,7 @@ angular.module('carnival')
 
 }]);
 
-angular.module('carnival.templates', ['components/button/button.html', 'components/delete-button/delete-button.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
+angular.module('carnival.templates', ['components/button/button.html', 'components/delete-button/delete-button.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
 
 angular.module("components/button/button.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/button/button.html",
@@ -1879,6 +1898,12 @@ angular.module("components/fields/belongs-to/belongs-to.html", []).run(["$templa
     "  <a ng-if='canShowNestedForm(field)' ng-init='nestedFormIndex.value = nestedFormIndex.value + 1; formIndex = nestedFormIndex.value' class=\"btn btn-default btn-xs\"  ng-click=\"open(formIndex)\">Create</a>\n" +
     "\n" +
     "</div>\n" +
+    "");
+}]);
+
+angular.module("components/fields/boolean/boolean.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/fields/boolean/boolean.html",
+    "<input type=\"checkbox\" ng-model=\"data\"></input>\n" +
     "");
 }]);
 
@@ -1963,6 +1988,7 @@ angular.module("components/form/form.html", []).run(["$templateCache", function(
     "      <!-- Fields -->\n" +
     "      <carnival-text-field ng-switch-when=\"text\" data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-text-field>\n" +
     "      <carnival-wysiwyg-field ng-switch-when=\"wysiwyg\" data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-wysiwyg-field>\n" +
+    "      <carnival-boolean-field ng-switch-when=\"boolean\" data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-boolean-field>\n" +
     "      <carnival-string-field ng-switch-when=\"string\" data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-string-field>\n" +
     "      <carnival-number-field ng-switch-when=\"number\" data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-number-field>\n" +
     "      <carnival-file-field ng-switch-when=\"file\" data=\"datas[field.name]\" field=\"field\" editable=\"editable\"></carnival-file-field>\n" +
