@@ -7,6 +7,14 @@ angular.module('carnival')
     $state.go('main.edit', { entity: entity.name, id: entity.datas.id });
   };
 
+  $scope.getValue = function (item, field) {
+    for (var i = 0, x = field.values.length; i < x; i += 1) {
+      if (field.values[i].value === item) {
+        return field.values[i].label;
+      }
+    }
+  };
+
   var init = function () {
     entity = $scope.entity = EntityResources.prepareForShowState($stateParams.entity);
 

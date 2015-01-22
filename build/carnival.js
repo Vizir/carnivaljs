@@ -1908,6 +1908,14 @@ angular.module('carnival')
     $state.go('main.edit', { entity: entity.name, id: entity.datas.id });
   };
 
+  $scope.getValue = function (item, field) {
+    for (var i = 0, x = field.values.length; i < x; i += 1) {
+      if (field.values[i].value === item) {
+        return field.values[i].label;
+      }
+    }
+  };
+
   var init = function () {
     entity = $scope.entity = EntityResources.prepareForShowState($stateParams.entity);
 
@@ -2345,7 +2353,9 @@ angular.module("states/main.show/show.html", []).run(["$templateCache", function
     "          </li>\n" +
     "       </ul>\n" +
     "    </div>\n" +
-    "\n" +
+    "    <div class=\"col-sm-10\" ng-switch-when=\"enum\">\n" +
+    "      {{ getValue(entity.datas[field.name], field) }}\n" +
+    "    </div>\n" +
     "    <div class=\"col-sm-10\" ng-switch-default>\n" +
     "      {{entity.datas[field.name]}}\n" +
     "    </div>\n" +
