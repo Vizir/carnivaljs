@@ -17,34 +17,48 @@ angular.module('carnival.components.form', [])
     controller: function ($rootScope, $scope, utils, FormService, $element) {
       $scope.utils = utils;
 
-      $scope.buttonAction = function(){
+      $scope.canShow = function(field){
+        if(field.type != 'hasMany' && field.type != 'belongsTo')
+          return true;
 
-        if($scope.type !== 'nested'){
+        if(!$scope.entity.parentEntity)
+          return true;
+
+        if($scope.entity.parentEntity.name !== field.entityName)
+            return true;
+
+        return false;
+      };
+
+      $scope.buttonAction = function(){
+        if($scope.type === 'nested'){
+          FormService.saveNested($scope.entity.name);
+        }else{
           if(FormService.hasUnsavedNested()){
             console.log('Não é possivel salvar o form pois existem nested não salvos');
             return;
           }
-        }else{
-          FormService.saveNested($scope.entity.name);
+        }
+
+        var successSaveCallback = function(data){
+          if(Object.keys($scope.entity.nestedForms).length > 0){
+
+            if($scope.state === 'edit')
+              FormService.closeNested($scope.entity.name);
+
+            $scope.state = 'edit';
+            $scope.entity.datas = data;
+          }else{
+            FormService.closeNested($scope.entity.name);
+          }
         }
 
         $scope.action.click(function(error, data){
-
           if(error){
             console.log('Aconteceu um erro ao salvar');
           }else{
-            console.log('Salvo com sucesso, dados: ', data);
-            if(Object.keys($scope.entity.nestedForms).length > 0){
-              if($scope.state === 'edit' && $scope.type === 'nested'){
-                FormService.closeNested($scope.entity.name);
-              }
-              $scope.state = 'edit';
-              $scope.entity.datas = data;
-            }else{
-              if($scope.type === 'nested')
-                  FormService.closeNested($scope.entity.name);
-            }
-
+            if($scope.type === 'nested')
+              successSaveCallback(data);
           }
         });
       };

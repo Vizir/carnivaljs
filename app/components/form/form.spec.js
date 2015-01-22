@@ -1,6 +1,20 @@
 describe('On carnival-form component', function () {
   var compile, element, scope, isolateScope;
 
+  //Need to create a cross browser click() function no .click() in PhantomJS
+  function click(el){
+      var ev = document.createEvent('MouseEvent');
+      ev.initMouseEvent(
+          'click',
+          true /* bubble */, true /* cancelable */,
+          window, null,
+          0, 0, 0, 0, /* coordinates */
+          false, false, false, false, /* modifier keys */
+          0 /*left*/, null
+      );
+      el.dispatchEvent(ev);
+  }
+
   var setScopeData = function (scope) {
     scope.fields = [
       { name: 'food', label: 'Food' },
@@ -42,6 +56,12 @@ describe('On carnival-form component', function () {
   it('should create an action button', function () {
     expect(element.html())
     .to.contain('Engravin');
+  });
+
+  describe('when user click on submitButton', function(){
+    describe('on Success', function(){
+      scope.buttonAction();
+    });
   });
 
 });

@@ -5,6 +5,9 @@ angular.module('carnival')
       entity.datas[fieldToUpdate.name] = fieldData;
       entity.relatedResources[fieldToUpdate.endpoint].push(fieldData);
     }else if(fieldToUpdate.type === 'hasMany'){
+      if(!entity.datas[fieldToUpdate.name])
+        entity.datas[fieldToUpdate.name] = [];
+
       entity.datas[fieldToUpdate.name].push(fieldData);
       entity.relatedResources[fieldToUpdate.endpoint].push(fieldData);
     }

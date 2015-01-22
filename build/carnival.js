@@ -422,34 +422,48 @@ angular.module('carnival.components.form', [])
     controller: ["$rootScope", "$scope", "utils", "FormService", "$element", function ($rootScope, $scope, utils, FormService, $element) {
       $scope.utils = utils;
 
-      $scope.buttonAction = function(){
+      $scope.canShow = function(field){
+        if(field.type != 'hasMany' && field.type != 'belongsTo')
+          return true;
 
-        if($scope.type !== 'nested'){
+        if(!$scope.entity.parentEntity)
+          return true;
+
+        if($scope.entity.parentEntity.name !== field.entityName)
+            return true;
+
+        return false;
+      };
+
+      $scope.buttonAction = function(){
+        if($scope.type === 'nested'){
+          FormService.saveNested($scope.entity.name);
+        }else{
           if(FormService.hasUnsavedNested()){
             console.log('Não é possivel salvar o form pois existem nested não salvos');
             return;
           }
-        }else{
-          FormService.saveNested($scope.entity.name);
+        }
+
+        var successSaveCallback = function(data){
+          if(Object.keys($scope.entity.nestedForms).length > 0){
+
+            if($scope.state === 'edit')
+              FormService.closeNested($scope.entity.name);
+
+            $scope.state = 'edit';
+            $scope.entity.datas = data;
+          }else{
+            FormService.closeNested($scope.entity.name);
+          }
         }
 
         $scope.action.click(function(error, data){
-
           if(error){
             console.log('Aconteceu um erro ao salvar');
           }else{
-            console.log('Salvo com sucesso, dados: ', data);
-            if(Object.keys($scope.entity.nestedForms).length > 0){
-              if($scope.state === 'edit' && $scope.type === 'nested'){
-                FormService.closeNested($scope.entity.name);
-              }
-              $scope.state = 'edit';
-              $scope.entity.datas = data;
-            }else{
-              if($scope.type === 'nested')
-                  FormService.closeNested($scope.entity.name);
-            }
-
+            if($scope.type === 'nested')
+              successSaveCallback(data);
           }
         });
       };
@@ -1368,6 +1382,9 @@ angular.module('carnival')
       entity.datas[fieldToUpdate.name] = fieldData;
       entity.relatedResources[fieldToUpdate.endpoint].push(fieldData);
     }else if(fieldToUpdate.type === 'hasMany'){
+      if(!entity.datas[fieldToUpdate.name])
+        entity.datas[fieldToUpdate.name] = [];
+
       entity.datas[fieldToUpdate.name].push(fieldData);
       entity.relatedResources[fieldToUpdate.endpoint].push(fieldData);
     }
@@ -2110,7 +2127,7 @@ angular.module("components/form/form.html", []).run(["$templateCache", function(
   $templateCache.put("components/form/form.html",
     "<form class=\"simple-form form-horizontal\" ng-init=\"nestedFormIndex = {value: 0}\" novalidate>\n" +
     "  <div class=\"form-group\" ng-repeat=\"field in fields\">\n" +
-    "    <label class=\"col-sm-2 control-label\">{{ field.label }}</label>\n" +
+    "    <label ng-if='canShow(field)' class=\"col-sm-2 control-label\">{{ field.label }}</label>\n" +
     "    <div class=\"col-sm-10\" ng-switch=\"field.type\">\n" +
     "      <!-- Fields -->\n" +
     "      <carnival-text-field ng-switch-when=\"text\" data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-text-field>\n" +
@@ -2120,8 +2137,8 @@ angular.module("components/form/form.html", []).run(["$templateCache", function(
     "      <carnival-number-field ng-switch-when=\"number\" data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-number-field>\n" +
     "      <carnival-date-field ng-switch-when=\"date\" data=\"datas[field.name]\" editable=\"editable\"></carnival-date-field>\n" +
     "      <carnival-file-field ng-switch-when=\"file\" data=\"datas[field.name]\" field=\"field\" editable=\"editable\"></carnival-file-field>\n" +
-    "      <carnival-belongs-to-field ng-switch-when=\"belongsTo\" nested-form-index=\"nestedFormIndex\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"  editable=\"true\"></carnival-belongs-to-field>\n" +
-    "      <carnival-has-many-field ng-switch-when=\"hasMany\" entity=\"entity\" nested-form-index=\"nestedFormIndex\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\" editable=\"true\"></carnival-has-many-field>\n" +
+    "      <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when=\"belongsTo\" nested-form-index=\"nestedFormIndex\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"  editable=\"true\"></carnival-belongs-to-field>\n" +
+    "      <carnival-has-many-field ng-if='canShow(field)' ng-switch-when=\"hasMany\" entity=\"entity\" nested-form-index=\"nestedFormIndex\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\" editable=\"true\"></carnival-has-many-field>\n" +
     "      <carnival-text-field ng-switch-default data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-text-field>\n" +
     "    </div>\n" +
     "  </div>\n" +
