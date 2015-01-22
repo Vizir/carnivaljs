@@ -917,7 +917,7 @@ angular.module('carnival')
   };
 
   function Entity (name, options) {
-    if (Configuration.validateEntities) EntityValidation(name, options);
+    if (Configuration.validateEntities) EntityValidation(name, options); // TODO DSL VALIDATION
     this.name = name;
     this.endpoint       = options.endpoint || this.name;
     this.label          = options.label || this.name;
@@ -1200,9 +1200,10 @@ angular.module('carnival')
       identifier: fieldParams.identifier || 'id',
       entityName: fieldParams.entityName || field_name,
       type:       fieldParams.type,
-      views:      buildViews(fieldParams.views),
       uploader:   fieldParams.uploader,
-      gallery:    fieldParams.gallery
+      gallery:    fieldParams.gallery,
+      values:     fieldParams.values,
+      views:      buildViews(fieldParams.views)
     };
 
      field.foreignKey = resolveForeignKey(field);
@@ -1735,6 +1736,7 @@ angular.module('carnival')
     if (!n) return str;
     if (!str) throw 'cutString: to cut a string you must pass a string!';
     if (str.length <= n) return str;
+    if (typeof str !== 'string') return str;
     str = str.substr(0, n - 1) + '...';
     return str;
   };
