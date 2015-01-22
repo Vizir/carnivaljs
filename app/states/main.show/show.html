@@ -14,7 +14,9 @@
           </li>
        </ul>
     </div>
-
+    <div class="col-sm-10" ng-switch-when="enum">
+      {{ getValue(entity.datas[field.name], field) }}
+    </div>
     <div class="col-sm-10" ng-switch-default>
       {{entity.datas[field.name]}}
     </div>

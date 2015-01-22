@@ -15,5 +15,7 @@ angular.module('carnival.components', [
   'carnival.components.quickfilter-controller',
   'carnival.components.listingFieldFile',
   'carnival.components.uploader',
-  'carnival.components.gallery'
+  'carnival.components.gallery',
+  'carnival.components.listingFieldEnum',
+  'carnival.components.fields.enum'
 ]);

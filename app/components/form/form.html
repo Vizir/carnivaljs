@@ -5,9 +5,12 @@
       <!-- Fields -->
       <carnival-text-field ng-switch-when="text" data="datas[field.name]" label="field.label" editable="editable"></carnival-text-field>
       <carnival-wysiwyg-field ng-switch-when="wysiwyg" data="datas[field.name]" label="field.label" editable="editable"></carnival-wysiwyg-field>
+      <carnival-boolean-field ng-switch-when="boolean" data="datas[field.name]" editable="editable"></carnival-boolean-field>
       <carnival-string-field ng-switch-when="string" data="datas[field.name]" label="field.label" editable="editable"></carnival-string-field>
       <carnival-number-field ng-switch-when="number" data="datas[field.name]" label="field.label" editable="editable"></carnival-number-field>
+      <carnival-date-field ng-switch-when="date" data="datas[field.name]" editable="editable"></carnival-date-field>
       <carnival-file-field ng-switch-when="file" data="datas[field.name]" field="field" editable="editable"></carnival-file-field>
+      <carnival-enum-field ng-switch-when="enum" data="datas[field.name]" field="field"></carnival-enum-field>
       <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when="belongsTo" nested-form-index="nestedFormIndex" entity="entity" field="field" datas="entity.datas" action="entity.action" related-resources="entity.relatedResources" editable="true"></carnival-belongs-to-field>
       <carnival-has-many-field ng-if='canShow(field)' ng-switch-when="hasMany" entity="entity" nested-form-index="nestedFormIndex" field="field" datas="entity.datas" action="entity.action" related-resources="entity.relatedResources" state="{{state}}" editable="true"></carnival-has-many-field>
       <carnival-text-field ng-switch-default data="datas[field.name]" label="field.label" editable="editable"></carnival-text-field>

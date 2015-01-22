@@ -79,6 +79,24 @@ app.config(function (ConfigurationProvider) {
           }
         }
       },
+      'published': {
+        type: 'boolean',
+        label: 'Published',
+        views: {
+          index: {
+            enable: true
+          },
+          create: {
+            enable: true
+          },
+          edit: {
+            enable: true
+          },
+          show: {
+            enable: true
+          }
+        }
+      },
       // ---- Category (Relation) Field ----
       'category': { // If this field will be a relation, this will turn into the endpoint
         type: 'belongsTo',
@@ -168,6 +186,31 @@ app.config(function (ConfigurationProvider) {
         // gallery: {
         //   url: 'http://localhost:3010' // You can use your own file manager as gallery to pick a file, you just need to access window.opener.CARNIVAL.gallery.sendUrl(<string: your_url>) to send the Url for the file.
         // },
+        views: {
+          index: {
+            enable: true,
+            sortable: false,
+            searchable: false
+          },
+          create: {
+            enable: true
+          },
+          edit: {
+            enable: true
+          },
+          show: {
+            enable: true
+          }
+        }
+      },
+      'state': {
+        type: 'enum',
+        label: 'State',
+        values: [ // For enums field you will need to define the values...
+          { value: 1, label: 'Published' }, // Every possible option will have a value, that is the value that your backend will send/receive
+          { value: 2, label: 'Pending' },// And will need to have the label, that is what it will show on your application
+          { value: 3, label: 'Deleted' }
+        ],
         views: {
           index: {
             enable: true,

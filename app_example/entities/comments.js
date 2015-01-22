@@ -27,6 +27,24 @@ app.config(function (ConfigurationProvider) {
           }
         }
       },
+      'date': {
+        type: 'date',
+        label: 'Date',
+        views: {
+          index: {
+            enable: true
+          },
+          create: {
+            enable: true
+          },
+          edit: {
+            enable: true
+          },
+          show: {
+            enable: true
+          }
+        }
+      },
       'email': {
         type: 'string',
         label: 'Email',

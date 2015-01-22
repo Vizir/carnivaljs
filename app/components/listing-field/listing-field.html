@@ -2,6 +2,7 @@
   <carnival-listing-field-belongs-to ng-switch-when="belongsTo" item="item" field="field"></carnival-listing-field-belongs-to>
   <carnival-listing-field-has-many ng-switch-when="hasMany" item="item" field="field"></carnival-listing-field-has-many>
   <carnival-listing-field-file ng-switch-when="file" item="item" field="field"></carnival-listing-field-file>
+  <carnival-listing-field-enum ng-switch-when="enum" item="item" field="field"></carnival-listing-field-enum>
   <span ng-switch-default>
     {{item[field.name]}}
   </span>

@@ -11,6 +11,7 @@ module.exports = function(config) {
       'bower_components/textAngular/src/textAngularSetup.js',
       'bower_components/angular-loading-bar/build/*.js',
       'bower_components/angular-translate/*.js',
+      'bower_components/angular-datepicker/dist/index.js',
       'dist/tmp/*.js',
       'app/carnival.js',
       'app/**/!(*spec).js',
