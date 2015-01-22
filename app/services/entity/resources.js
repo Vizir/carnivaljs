@@ -5,7 +5,7 @@ angular.module('carnival')
     if(!field.views[stateName] || !field.views[stateName].nested)
        return;
 
-    entity.nestedForms[field.endpoint] = prepareEntityForState(field.endpoint, 'create', {field:field, parentEntity: entity});
+    entity.nestedForms[field.endpoint] = prepareEntityForState(field.endpoint, 'create', entity);
     entity.nestedForms[field.endpoint].parentEntity = entity;
   };
 
@@ -25,7 +25,7 @@ angular.module('carnival')
     return (type === 'belongsTo' || type === 'hasMany');
   };
 
-  var prepareField = function(entityWrapper, stateName, field, isField){
+  var prepareField = function(entityWrapper, stateName, field, parentEntity){
     if (!entityWrapper.model.checkFieldView(field.name, stateName))
       return;
 
@@ -35,15 +35,15 @@ angular.module('carnival')
       return;
 
     getRelatedResources(entityWrapper, field.endpoint);
-    if(!isField || (isField.field.entityName !== isField.parentEntity.name && self.entityName === isField.parentEntity.name))
+    if(!parentEntity || (field.entityName !== self.entityName && self.entityName === parentEntity.name))
       getNestedForm(entityWrapper, stateName, field);
   };
 
-  var prepareFields = function(entityWrapper, stateName, isField){
+  var prepareFields = function(entityWrapper, stateName, parentEntity){
     entityWrapper.relatedResources = {};
     for (var i = entityWrapper.model.fields.length - 1; i >= 0; i -= 1) {
       var field = entityWrapper.model.fields[i];
-      prepareField(entityWrapper, stateName, field, isField);
+      prepareField(entityWrapper, stateName, field, parentEntity);
     }
   };
 
@@ -52,7 +52,7 @@ angular.module('carnival')
     entityWrapper[actionObj.name] = actionObj.value;
   };
 
-  var prepareEntityForState = function(entityName, stateName, isField){
+  var prepareEntityForState = function(entityName, stateName, parentEntity){
     var entityWrapper = {};
     entityWrapper.nestedForms = {};
     entityWrapper.model = Configuration.getEntity(entityName);
@@ -61,14 +61,14 @@ angular.module('carnival')
     entityWrapper.identifier = entityWrapper.model.identifier;
     entityWrapper.fields = [];
     entityWrapper.datas = {};
-    prepareFields(entityWrapper, stateName, isField);
-    prepareActions(entityWrapper, stateName, isField);
+    prepareFields(entityWrapper, stateName, parentEntity);
+    prepareActions(entityWrapper, stateName, parentEntity);
     return entityWrapper;
   };
 
-  this.prepareForState = function(entityName, stateName, isField){
+  this.prepareForState = function(entityName, stateName){
     this.entityName = entityName;
-    return prepareEntityForState(entityName, stateName, isField);
+    return prepareEntityForState(entityName, stateName);
   };
 
   this.prepareForCreateState = function(entityName){

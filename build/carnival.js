@@ -456,7 +456,7 @@ angular.module('carnival.components.form', [])
           }else{
             FormService.closeNested($scope.entity.name);
           }
-        }
+        };
 
         $scope.action.click(function(error, data){
           if(error){
@@ -676,6 +676,12 @@ angular.module('carnival.components.nested-form-area', [])
         var nestedDiv = document.querySelector('#nesteds_'+$scope.field.entityName);
         angular.element(nestedDiv).append(newElement);
       };
+
+      $scope.isHasMany = function(){
+        return $scope.relationType === 'hasMany';
+      };
+
+
 
     }]
   };
@@ -1292,7 +1298,7 @@ angular.module('carnival')
     if(!field.views[stateName] || !field.views[stateName].nested)
        return;
 
-    entity.nestedForms[field.endpoint] = prepareEntityForState(field.endpoint, 'create', {field:field, parentEntity: entity});
+    entity.nestedForms[field.endpoint] = prepareEntityForState(field.endpoint, 'create', entity);
     entity.nestedForms[field.endpoint].parentEntity = entity;
   };
 
@@ -1312,7 +1318,7 @@ angular.module('carnival')
     return (type === 'belongsTo' || type === 'hasMany');
   };
 
-  var prepareField = function(entityWrapper, stateName, field, isField){
+  var prepareField = function(entityWrapper, stateName, field, parentEntity){
     if (!entityWrapper.model.checkFieldView(field.name, stateName))
       return;
 
@@ -1322,15 +1328,15 @@ angular.module('carnival')
       return;
 
     getRelatedResources(entityWrapper, field.endpoint);
-    if(!isField || (isField.field.entityName !== isField.parentEntity.name && self.entityName === isField.parentEntity.name))
+    if(!parentEntity || (field.entityName !== self.entityName && self.entityName === parentEntity.name))
       getNestedForm(entityWrapper, stateName, field);
   };
 
-  var prepareFields = function(entityWrapper, stateName, isField){
+  var prepareFields = function(entityWrapper, stateName, parentEntity){
     entityWrapper.relatedResources = {};
     for (var i = entityWrapper.model.fields.length - 1; i >= 0; i -= 1) {
       var field = entityWrapper.model.fields[i];
-      prepareField(entityWrapper, stateName, field, isField);
+      prepareField(entityWrapper, stateName, field, parentEntity);
     }
   };
 
@@ -1339,7 +1345,7 @@ angular.module('carnival')
     entityWrapper[actionObj.name] = actionObj.value;
   };
 
-  var prepareEntityForState = function(entityName, stateName, isField){
+  var prepareEntityForState = function(entityName, stateName, parentEntity){
     var entityWrapper = {};
     entityWrapper.nestedForms = {};
     entityWrapper.model = Configuration.getEntity(entityName);
@@ -1348,14 +1354,14 @@ angular.module('carnival')
     entityWrapper.identifier = entityWrapper.model.identifier;
     entityWrapper.fields = [];
     entityWrapper.datas = {};
-    prepareFields(entityWrapper, stateName, isField);
-    prepareActions(entityWrapper, stateName, isField);
+    prepareFields(entityWrapper, stateName, parentEntity);
+    prepareActions(entityWrapper, stateName, parentEntity);
     return entityWrapper;
   };
 
-  this.prepareForState = function(entityName, stateName, isField){
+  this.prepareForState = function(entityName, stateName){
     this.entityName = entityName;
-    return prepareEntityForState(entityName, stateName, isField);
+    return prepareEntityForState(entityName, stateName);
   };
 
   this.prepareForCreateState = function(entityName){
@@ -2084,8 +2090,13 @@ angular.module("components/fields/has-many/has-many.html", []).run(["$templateCa
     "    </select>\n" +
     "    <a class=\"btn btn-default btn-xs\" ng-click=\"addHasManyOption()\">Add</a>\n" +
     "  </span>\n" +
-    "  </carnival-select-field>\n" +
-    "  <carnival-nested-form-area state=\"{{state}}\" entity=\"entity\" field=\"field\" datas=\"datas\" relation-type=\"belongsTo\"></carnival-nested-form-area>\n" +
+    "  <ul class='has-many-field-list'>\n" +
+    "    <li ng-repeat='data in datas[field.name]'>\n" +
+    "      {{data[field.field]}}\n" +
+    "      <a id='removeHasManyOption' ng-click='remove(data.id);' class=\"btn btn-default btn-xs\">Delete</a>\n" +
+    "    </li>\n" +
+    "  </ul>\n" +
+    "  <carnival-nested-form-area state=\"{{state}}\" entity=\"entity\" field=\"field\" datas=\"datas\" relation-type=\"hasMany\"></carnival-nested-form-area>\n" +
     "</div>\n" +
     "");
 }]);
@@ -2244,12 +2255,7 @@ angular.module("components/nested-form/nested-form-area.html", []).run(["$templa
   $templateCache.put("components/nested-form/nested-form-area.html",
     "<div>\n" +
     "  <a ng-if='canOpenNestedForm()' class=\"btn btn-default btn-xs\"  ng-click=\"open()\">Create</a>\n" +
-    "  <ul ng-if=\"relationType == 'hasMany'\" class='has-many-field-list'>\n" +
-    "    <li ng-repeat='data in datas[field.name]'>\n" +
-    "      {{data[field.field]}}\n" +
-    "      <a id='removeHasManyOption' ng-click='remove(data.id);' class=\"btn btn-default btn-xs\">Delete</a>\n" +
-    "    </li>\n" +
-    "  </ul>\n" +
+    "\n" +
     "  <div id=\"nesteds_{{field.entityName}}\">\n" +
     "  </div>\n" +
     "</div>\n" +
