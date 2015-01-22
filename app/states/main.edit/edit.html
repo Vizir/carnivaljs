@@ -2,12 +2,5 @@
 
   <h3>{{ 'Edit' | translate }} {{ entity.label }}</h3>
   <carnival-form type='normal' entity="entity" fields="entity.fields" datas="entity.datas" action="entity.action" state="edit" related-resources="entity.relatedResources" editable="true"></carnival-form>
-  <div ng-if="entity.nestedForms[field.endpoint]" ng-show="entity.nestedForms[field.endpoint].opened" class='nested-form-modal' ng-repeat="field in entity.fields">
-    <div class="nested-form-modal-overlay" ng-click="entity.nestedForms[field.endpoint].opened = false">
-    </div>
-    <div class="nested-form-modal-content">
-      <h3>{{ 'Create' | translate }} {{ entity.nestedForms[field.endpoint].label }}</h3>
-      <carnival-form type='nested' entity="entity.nestedForms[field.endpoint]" fields="entity.nestedForms[field.endpoint].fields" datas="entity.nestedForms[field.endpoint].datas" action="entity.nestedForms[field.endpoint].action" state="create" related-resources="entity.nestedForms[field.endpoint].relatedResources" editable="true"></carnival-form>
-    </div>
-  </div>
+
 </div>

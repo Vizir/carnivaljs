@@ -18,11 +18,14 @@ angular.module('carnival.components.fields.hasMany', [])
         element.attr('disabled', 'true');
       }
     },
-    controller: function ($rootScope, $scope, utils, Configuration) {
+    controller: function ($rootScope, $scope, utils, Configuration, $compile, $element, $document) {
       $scope.utils = utils;
 
       $scope.open = function(index){
-        $scope.entity.nestedForms[$scope.field.endpoint].opened = true;
+        var directive = '<carnival-nested-form type="nested" entity="entity.nestedForms[field.endpoint]"></carnival-nested-form></div>';
+        var newElement = $compile(directive)($scope);
+        var nestedDiv = document.querySelector('#nesteds_'+$scope.field.entityName);
+        angular.element(nestedDiv).append(newElement);
       };
 
       $scope.canOpenNestedForm = function(){
