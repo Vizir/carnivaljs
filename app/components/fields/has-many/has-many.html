@@ -4,5 +4,11 @@
     </select>
     <a class="btn btn-default btn-xs" ng-click="addHasManyOption()">Add</a>
   </span>
+  <ul class='has-many-field-list'>
+    <li ng-repeat='data in datas[field.name]'>
+      {{data[field.field]}}
+      <a id='removeHasManyOption' ng-click='remove(data.id);' class="btn btn-default btn-xs">Delete</a>
+    </li>
+  </ul>
   <carnival-nested-form-area state="{{state}}" entity="entity" field="field" datas="datas" relation-type="hasMany"></carnival-nested-form-area>
 </div>
