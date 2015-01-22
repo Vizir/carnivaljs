@@ -4,13 +4,6 @@
     </select>
     <a class="btn btn-default btn-xs" ng-click="addHasManyOption()">Add</a>
   </span>
-  <a ng-if='canOpenNestedForm()' ng-init='nestedFormIndex.value = nestedFormIndex.value + 1; formIndex = nestedFormIndex.value' class="btn btn-default btn-xs"  ng-click="open(formIndex)">Create</a>
-  <ul class='has-many-field-list'>
-    <li ng-repeat='data in datas[field.name]'>
-      {{data[field.field]}}
-      <a id='removeHasManyOption' ng-click='remove(data.id);' class="btn btn-default btn-xs">Delete</a>
-    </li>
-  </ul>
-  <div id="nesteds_{{field.entityName}}">
-  </div>
+  </carnival-select-field>
+  <carnival-nested-form-area state="{{state}}" entity="entity" field="field" datas="datas" relation-type="belongsTo"></carnival-nested-form-area>
 </div>

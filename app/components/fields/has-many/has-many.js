@@ -6,7 +6,7 @@ angular.module('carnival.components.fields.hasMany', [])
     scope: {
       datas: '=',
       field: '=',
-      state: '@state',
+      state: '@',
       entity: '=',
       nestedFormIndex: '=',
       relatedResources: '=',
@@ -21,22 +21,6 @@ angular.module('carnival.components.fields.hasMany', [])
     controller: function ($rootScope, $scope, utils, Configuration, $compile, $element, $document) {
       $scope.utils = utils;
 
-      $scope.open = function(index){
-        var directive = '<carnival-nested-form type="nested" entity="entity.nestedForms[field.endpoint]"></carnival-nested-form></div>';
-        var newElement = $compile(directive)($scope);
-        var nestedDiv = document.querySelector('#nesteds_'+$scope.field.entityName);
-        angular.element(nestedDiv).append(newElement);
-      };
-
-      $scope.canOpenNestedForm = function(){
-        if(!$scope.entity.nestedForms[$scope.field.name])
-          return false;
-
-        if($scope.state === 'create')
-          return false;
-
-        return true;
-      };
 
       $scope.canShow = function(){
         var fieldEntity = Configuration.getEntity($scope.field.entityName);
