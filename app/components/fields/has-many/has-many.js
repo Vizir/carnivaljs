@@ -58,29 +58,9 @@ angular.module('carnival.components.fields.hasMany', [])
         }
       };
 
-      var deleteIfNeeded = function(id){
-        if($scope.field.views[$scope.state].enableDelete){
-          var fieldEntity = Configuration.getEntity($scope.field.entityName);
-          fieldEntity.delete(id)
-          .success(function () {
-            new Notification('Item deleted with success!', 'warning');
-            $state.reload();
-          })
-          .error(function (data) {
-            new Notification(data, 'danger');
-          });
-        }
-      };
 
-      $scope.remove = function(id){
-        var items = $scope.datas[$scope.field.name];
-        var index = getItemIndex(id, items);
-        if(index < 0)
-          return;
-        items.splice(index, 1);
 
-        deleteIfNeeded(id);
-      };
+
     }
   };
 });

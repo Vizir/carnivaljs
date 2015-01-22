@@ -5,6 +5,7 @@ angular.module('carnival.components.nested-form', [])
     replace: true,
     scope: {
       entity: '=',
+      state: '@',
       editable: '='
     },
     templateUrl: 'components/nested-form/nested-form.html',

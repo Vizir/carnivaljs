@@ -276,29 +276,9 @@ angular.module('carnival.components.fields.hasMany', [])
         }
       };
 
-      var deleteIfNeeded = function(id){
-        if($scope.field.views[$scope.state].enableDelete){
-          var fieldEntity = Configuration.getEntity($scope.field.entityName);
-          fieldEntity.delete(id)
-          .success(function () {
-            new Notification('Item deleted with success!', 'warning');
-            $state.reload();
-          })
-          .error(function (data) {
-            new Notification(data, 'danger');
-          });
-        }
-      };
 
-      $scope.remove = function(id){
-        var items = $scope.datas[$scope.field.name];
-        var index = getItemIndex(id, items);
-        if(index < 0)
-          return;
-        items.splice(index, 1);
 
-        deleteIfNeeded(id);
-      };
+
     }]
   };
 });
@@ -655,7 +635,7 @@ angular.module('carnival.components.nested-form-area', [])
       editable: '='
     },
     templateUrl: 'components/nested-form/nested-form-area.html',
-    controller: ["$rootScope", "$scope", "utils", "$element", "$compile", "FormService", function ($rootScope, $scope, utils, $element,  $compile, FormService) {
+    controller: ["$rootScope", "$scope", "utils", "$element", "$compile", "FormService", "Configuration", function ($rootScope, $scope, utils, $element,  $compile, FormService, Configuration) {
 
       $scope.canOpenNestedForm = function(){
         if(!$scope.entity.nestedForms[$scope.field.endpoint])
@@ -667,22 +647,62 @@ angular.module('carnival.components.nested-form-area', [])
         return true;
       };
 
-      $scope.open = function(){
+      var openNestedForm = function(){
+
+      }
+
+      $scope.openWithData = function(data){
         if(FormService.isNestedOpen($scope.field.entityName))
           return;
+        var state = 'create';
+        if(Object.keys(data).length > 0)
+          state = 'edit';
+        $scope.entity.nestedForms[$scope.field.endpoint].datas = data;
         FormService.openNested($scope.field.entityName);
-        var directive = '<carnival-nested-form type="nested" entity="entity.nestedForms[field.endpoint]"></carnival-nested-form></div>';
+        var directive = '<carnival-nested-form state="'+state+'" type="nested" entity="entity.nestedForms[field.endpoint]"></carnival-nested-form></div>';
         var newElement = $compile(directive)($scope);
         var nestedDiv = document.querySelector('#nesteds_'+$scope.field.entityName);
         angular.element(nestedDiv).append(newElement);
+      }
+
+      $scope.open = function(){
+        $scope.openWithData({});
       };
 
       $scope.isHasMany = function(){
         return $scope.relationType === 'hasMany';
       };
 
+      var getItemIndex = function(id, items){
+        for(var i = 0; i < items.length; i++){
+          if(items[i].id === id)
+            return i;
+        }
+        return -1;
+      };
 
+      var deleteIfNeeded = function(id){
+        if($scope.field.views[$scope.state].enableDelete){
+          var fieldEntity = Configuration.getEntity($scope.field.entityName);
+          fieldEntity.delete(id)
+          .success(function () {
+            new Notification('Item deleted with success!', 'warning');
+          })
+          .error(function (data) {
+            new Notification(data, 'danger');
+          });
+        }
+      };
 
+      $scope.remove = function(id){
+        var items = $scope.datas[$scope.field.name];
+        var index = getItemIndex(id, items);
+        if(index < 0)
+          return;
+        items.splice(index, 1);
+
+        deleteIfNeeded(id);
+      };
     }]
   };
 });
@@ -694,6 +714,7 @@ angular.module('carnival.components.nested-form', [])
     replace: true,
     scope: {
       entity: '=',
+      state: '@',
       editable: '='
     },
     templateUrl: 'components/nested-form/nested-form.html',
@@ -2090,12 +2111,7 @@ angular.module("components/fields/has-many/has-many.html", []).run(["$templateCa
     "    </select>\n" +
     "    <a class=\"btn btn-default btn-xs\" ng-click=\"addHasManyOption()\">Add</a>\n" +
     "  </span>\n" +
-    "  <ul class='has-many-field-list'>\n" +
-    "    <li ng-repeat='data in datas[field.name]'>\n" +
-    "      {{data[field.field]}}\n" +
-    "      <a id='removeHasManyOption' ng-click='remove(data.id);' class=\"btn btn-default btn-xs\">Delete</a>\n" +
-    "    </li>\n" +
-    "  </ul>\n" +
+    "\n" +
     "  <carnival-nested-form-area state=\"{{state}}\" entity=\"entity\" field=\"field\" datas=\"datas\" relation-type=\"hasMany\"></carnival-nested-form-area>\n" +
     "</div>\n" +
     "");
@@ -2256,6 +2272,12 @@ angular.module("components/nested-form/nested-form-area.html", []).run(["$templa
     "<div>\n" +
     "  <a ng-if='canOpenNestedForm()' class=\"btn btn-default btn-xs\"  ng-click=\"open()\">Create</a>\n" +
     "\n" +
+    "  <ul ng-if=\"isHasMany()\" class='has-many-field-list'>\n" +
+    "    <li ng-repeat='data in datas[field.name]' ng-click='openWithData(data)'>\n" +
+    "      {{data[field.field]}}\n" +
+    "      <a id='removeHasManyOption' ng-click='remove(data.id);' class=\"btn btn-default btn-xs\">Delete</a>\n" +
+    "    </li>\n" +
+    "  </ul>\n" +
     "  <div id=\"nesteds_{{field.entityName}}\">\n" +
     "  </div>\n" +
     "</div>\n" +
@@ -2267,7 +2289,7 @@ angular.module("components/nested-form/nested-form.html", []).run(["$templateCac
     "<div class=\"nested-container\">\n" +
     "\n" +
     "  <h3>{{ 'Create' | translate }} {{ entity.label }}</h3>\n" +
-    "  <carnival-form type='nested' entity='entity' fields=\"entity.fields\" action=\"entity.action\" datas=\"entity.datas\" state=\"create\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form>\n" +
+    "  <carnival-form type='nested' entity='entity' fields=\"entity.fields\" action=\"entity.action\" datas=\"entity.datas\" state=\"{{state}}\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form>\n" +
     "\n" +
     "</div>\n" +
     "");
