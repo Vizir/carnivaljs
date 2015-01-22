@@ -203,6 +203,26 @@ app.config(function (ConfigurationProvider) {
           }
         }
       },
+      'price': {
+        type: 'currency',
+        label: 'Price',
+        views: {
+          index: {
+            enable: true,
+            sortable: false,
+            searchable: false
+          },
+          create: {
+            enable: true
+          },
+          edit: {
+            enable: true
+          },
+          show: {
+            enable: true
+          }
+        }
+      },
       'state': {
         type: 'enum',
         label: 'State',
