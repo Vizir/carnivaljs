@@ -206,9 +206,9 @@ app.config(function (ConfigurationProvider) {
       'state': {
         type: 'enum',
         label: 'State',
-        values: [
-          { value: 1, label: 'Published' },
-          { value: 2, label: 'Pending' },
+        values: [ // For enums field you will need to define the values...
+          { value: 1, label: 'Published' }, // Every possible option will have a value, that is the value that your backend will send/receive
+          { value: 2, label: 'Pending' },// And will need to have the label, that is what it will show on your application
           { value: 3, label: 'Deleted' }
         ],
         views: {
