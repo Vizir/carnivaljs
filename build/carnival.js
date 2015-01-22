@@ -79,7 +79,8 @@ angular.module('carnival.components', [
   'carnival.components.listingFieldFile',
   'carnival.components.uploader',
   'carnival.components.gallery',
-  'carnival.components.listingFieldEnum'
+  'carnival.components.listingFieldEnum',
+  'carnival.components.fields.enum'
 ]);
 
 angular.module('carnival.components.delete-button', [])
@@ -183,6 +184,19 @@ angular.module('carnival.components.fields.date', [])
         element.attr('disabled', 'true');
       }
     }
+  };
+});
+
+angular.module('carnival.components.fields.enum', [])
+.directive('carnivalEnumField', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      data: '=',
+      field: '='
+    },
+    templateUrl: 'components/fields/enum/enum.html'
   };
 });
 
@@ -1916,7 +1930,7 @@ angular.module('carnival')
 
 }]);
 
-angular.module('carnival.templates', ['components/button/button.html', 'components/delete-button/delete-button.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/date/date.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-enum/listing-field-enum.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
+angular.module('carnival.templates', ['components/button/button.html', 'components/delete-button/delete-button.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/date/date.html', 'components/fields/enum/enum.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-enum/listing-field-enum.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
 
 angular.module("components/button/button.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/button/button.html",
@@ -1955,6 +1969,14 @@ angular.module("components/fields/date/date.html", []).run(["$templateCache", fu
   $templateCache.put("components/fields/date/date.html",
     "<div>\n" +
     "  <input type=\"datetime\" date-time ng-model=\"data\" view=\"date\" ></input>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("components/fields/enum/enum.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/fields/enum/enum.html",
+    "<div>\n" +
+    "  <carnival-select-field data=\"data\" field=\"'label'\" identifier=\"'value'\" items=\"field.values\" editable=\"true\"></carnival-select-field>\n" +
     "</div>\n" +
     "");
 }]);
@@ -2045,6 +2067,7 @@ angular.module("components/form/form.html", []).run(["$templateCache", function(
     "      <carnival-number-field ng-switch-when=\"number\" data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-number-field>\n" +
     "      <carnival-date-field ng-switch-when=\"date\" data=\"datas[field.name]\" editable=\"editable\"></carnival-date-field>\n" +
     "      <carnival-file-field ng-switch-when=\"file\" data=\"datas[field.name]\" field=\"field\" editable=\"editable\"></carnival-file-field>\n" +
+    "      <carnival-enum-field ng-switch-when=\"enum\" data=\"datas[field.name]\" field=\"field\"></carnival-enum-field>\n" +
     "      <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when=\"belongsTo\" nested-form-index=\"nestedFormIndex\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-belongs-to-field>\n" +
     "      <carnival-has-many-field ng-if='canShow(field)' ng-switch-when=\"hasMany\" entity=\"entity\" nested-form-index=\"nestedFormIndex\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\" editable=\"true\"></carnival-has-many-field>\n" +
     "      <carnival-text-field ng-switch-default data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-text-field>\n" +
