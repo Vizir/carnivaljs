@@ -449,28 +449,46 @@ angular.module('carnival.components.form', [])
       editable: '='
     },
     templateUrl: 'components/form/form.html',
-    controller: ["$rootScope", "$scope", "utils", function ($rootScope, $scope, utils) {
+    controller: ["$rootScope", "$scope", "utils", "FormService", function ($rootScope, $scope, utils, FormService) {
       $scope.utils = utils;
+      var init = function(){
+        $scope.id = new Date().getTime();
+        if($scope.type === 'nested')
+          FormService.openNested($scope.id);
+      }
+
       $scope.canShow = function(field){
         if(field.type != 'hasMany' && field.type != 'belongsTo')
           return true;
-        
+
         if(!$scope.entity.parentEntity)
           return true;
         return false;
       };
 
-      var closeAllNestedForms = function(){
-        for(var form in $scope.entity.parentEntity.nestedForms){
-          $scope.entity.parentEntity.nestedForms[form].opened = false;
-        }
-      };
-
       $scope.buttonAction = function(){
-        $scope.action.click();
-        if($scope.type === 'nested')
-          closeAllNestedForms();
+
+        if($scope.type !== 'nested'){
+          if(FormService.hasUnsavedNested()){
+            console.log('Não é possivel salvar o form pois existem nested não salvos');
+            return;
+          }
+        }else{
+          FormService.saveNested($scope.id);
+        }
+
+        $scope.action.click(function(error, data){
+          if(error){
+            console.log('Aconteceu um erro ao salvar');
+          }else{
+            console.log('Salvo com sucesso, dados: ', data);
+            $scope.entity.hasUnfinishedForms = false;
+            $scope.state = 'edit';
+            $scope.entity.datas = data;
+          }
+        });
       };
+      init();
     }]
   };
 });
@@ -1064,7 +1082,7 @@ angular.module('carnival')
 .service('ActionFactory', ["Notification", "$state", "ParametersParser", "EntityUpdater", function (Notification, $state, ParametersParser, EntityUpdater) {
 
   this.buildCreateFunction = function(entity, hasNestedForm, isToNestedForm){
-    return function () {
+    return function (callback) {
       entity.model.create(ParametersParser.parse(entity.datas, entity))
       .success(function (data, status, headers, config) {
         if(isToNestedForm){
@@ -1079,9 +1097,14 @@ angular.module('carnival')
           else
             $state.go('main.list', { entity: entity.model.name });
         }
+        if(callback){
+          callback(false, data);
+        }
       })
       .error(function (data) {
         new Notification(data, 'danger');
+        if(callback)
+          callback(true, data);
       });
     };
   };
@@ -1334,6 +1357,38 @@ angular.module('carnival')
     }
   };
 });
+
+angular.module('carnival')
+.service('FormService', ["Configuration", "ActionFactory", function (Configuration, ActionFactory) {
+  this.nesteds = {};
+  this.init = function(entity){
+    this.entity = entity;
+    this.nesteds = {};
+  };
+
+  this.openNested = function(formId){
+    if(!this.nesteds[formId])
+        this.nesteds[formId] = {};
+
+    var nestedForms = this.nesteds[formId];
+    nestedForms.saved = false;
+  };
+
+  this.saveNested = function(formId){
+    var nestedForms = this.nesteds[formId];
+    nestedForms.saved = true;
+  };
+
+  this.hasUnsavedNested = function(){
+    for(var key in this.nesteds){
+      var nestedForm = this.nesteds[key];
+      if(!nestedForm.saved)
+        return true;
+    }
+    return false;
+  };
+}]);
+
 
 angular.module('carnival')
 

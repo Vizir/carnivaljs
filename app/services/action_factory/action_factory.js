@@ -2,7 +2,7 @@ angular.module('carnival')
 .service('ActionFactory', function (Notification, $state, ParametersParser, EntityUpdater) {
 
   this.buildCreateFunction = function(entity, hasNestedForm, isToNestedForm){
-    return function () {
+    return function (callback) {
       entity.model.create(ParametersParser.parse(entity.datas, entity))
       .success(function (data, status, headers, config) {
         if(isToNestedForm){
@@ -17,9 +17,14 @@ angular.module('carnival')
           else
             $state.go('main.list', { entity: entity.model.name });
         }
+        if(callback){
+          callback(false, data);
+        }
       })
       .error(function (data) {
         new Notification(data, 'danger');
+        if(callback)
+          callback(true, data);
       });
     };
   };
