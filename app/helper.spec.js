@@ -32,6 +32,7 @@ SpecHelper.catConfiguration = {
           type: 'belongsTo',
           resourceLabel: 'name',
           endpoint: 'owners',
+          entityName: 'owners',
           views: {
             edit: {
               enable: true,
@@ -73,10 +74,10 @@ SpecHelper.catConfiguration = {
         return {
           success: function(func){
             func({
-            
+
             });
           }
-        }; 
+        };
       },
       getList: function () {
         return {
@@ -110,7 +111,7 @@ SpecHelper.ownerConfiguration = {
               enable: true
             }
           }
-        }      
+        }
       ],
       checkFieldView: function () {
         return true;
@@ -119,10 +120,10 @@ SpecHelper.ownerConfiguration = {
         return {
           success: function(func){
             func({
-            
+
             });
           }
-        }; 
+        };
       },
       getList: function () {
         return {

@@ -2,8 +2,6 @@ describe('On EditController', function() {
 
   var controller, EditController, rootScope = {};
 
-  var Configuration = SpecHelper.Configuration;
-
   var $stateParams = {
     entity: 'cats'
   };
@@ -11,11 +9,17 @@ describe('On EditController', function() {
   beforeEach(function () {
     module('carnival');
 
-    inject(function($controller, $rootScope, $injector){
+    inject(function($controller, $rootScope, _Configuration_){
       controller = $controller;
       rootScope = $rootScope;
-      configurationService = $injector.get('Configuration');
-      configurationService.getEntity = Configuration.getEntity;
+      Configuration = _Configuration_;
+    });
+
+    sinon.stub(Configuration, 'getEntity', function(name){
+      if(name === 'cats')
+        return SpecHelper.catConfiguration;
+      else if(name === 'owners')
+        return SpecHelper.ownerConfiguration;
     });
 
     controller('MainController', {
@@ -25,7 +29,8 @@ describe('On EditController', function() {
     $scope = rootScope.$new();
     EditController = controller('EditController', {
       $scope: $scope,
-      Configuration: Configuration
+      Configuration: Configuration,
+      $stateParams: $stateParams
     });
     $scope.entity.datas = { whiskers: 'Mr Wiggle TypeX Alpha-Badass', fur: 'Pure Evil\'s Color' };
   });

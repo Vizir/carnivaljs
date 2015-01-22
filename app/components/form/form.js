@@ -51,7 +51,7 @@ angular.module('carnival.components.form', [])
           }else{
             FormService.closeNested($scope.entity.name);
           }
-        }
+        };
 
         $scope.action.click(function(error, data){
           if(error){

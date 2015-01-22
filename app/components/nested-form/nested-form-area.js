@@ -34,6 +34,12 @@ angular.module('carnival.components.nested-form-area', [])
         angular.element(nestedDiv).append(newElement);
       };
 
+      $scope.isHasMany = function(){
+        return $scope.relationType === 'hasMany';
+      };
+
+
+
     }
   };
 });

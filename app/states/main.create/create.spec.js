@@ -2,19 +2,23 @@ describe('On CreateController', function() {
 
   var controller, CreateController, rootScope = {};
 
-  var Configuration = SpecHelper.Configuration;
-
   var $stateParams = {
     entity: 'cats'
   };
 
   beforeEach(function () {
     module('carnival');
-    inject(function($controller, $rootScope, $injector){
+    inject(function($controller, $rootScope, _Configuration_){
       controller = $controller;
       rootScope = $rootScope;
-      configurationService = $injector.get('Configuration');
-      configurationService.getEntity = Configuration.getEntity;
+      Configuration = _Configuration_;
+    });
+
+    sinon.stub(Configuration, 'getEntity', function(name){
+      if(name === 'cats')
+        return SpecHelper.catConfiguration;
+      else if(name === 'owners')
+        return SpecHelper.ownerConfiguration;
     });
 
     controller('MainController', {

@@ -58,10 +58,6 @@ describe('On carnival-form component', function () {
     .to.contain('Engravin');
   });
 
-  describe('when user click on submitButton', function(){
-    describe('on Success', function(){
-      scope.buttonAction();
-    });
-  });
+
 
 });

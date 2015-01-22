@@ -33,6 +33,8 @@ describe('On carnival-has-many component', function () {
       title: 'title'
     };
 
+    scope.relationType = 'hasMany';
+
     scope.field = {
       name: 'tags',
       identifier: 'id',
@@ -76,7 +78,7 @@ describe('On carnival-has-many component', function () {
     });
     setScopeData(scope);
 
-    element = angular.element('<carnival-has-many-field entity="entity" nested-form-index="nestedFormIndex" field="field" datas="datas" action="entity.action" state="edit" related-resources="relatedResources" editable="true"></carnival-has-many-field>');
+    element = angular.element('<carnival-has-many-field relation-type="hasMany" entity="entity" nested-form-index="nestedFormIndex" field="field" datas="datas" action="entity.action" state="edit" related-resources="relatedResources" editable="true"></carnival-has-many-field>');
     compiledElement = compile(element)(scope);
     scope.$digest();
   });
@@ -109,7 +111,7 @@ describe('On carnival-has-many component', function () {
     });
   });
 
-  describe('user click on remove and the field has a enableDelelte enable', function(){
+  describe('user click on remove and the field has a enableDelete enable', function(){
     it('should call the delete function on entity field', function(done){
       scope.state = 'edit';
       scope.datas.tags = [{id: 1, name: 'one'}];
