@@ -2,7 +2,14 @@ describe('On carnival-currency-field component', function () {
   var compile, element, scope, compiledElement;
 
   var setScopeData = function (scope) {
-    scope.data = true;
+    scope.data = 20;
+    scope.field = {
+      currencyOptions: {
+        symbol: '$',
+        decimalDelimiter: '.',
+        thousandsDelimiter: ','
+      }
+    };
   };
 
   beforeEach(function () {
@@ -15,15 +22,18 @@ describe('On carnival-currency-field component', function () {
 
     setScopeData(scope);
 
-    element = angular.element('<carnival-currency-field label="label" data="data"></carnival-currency-field>');
+    element = angular.element('<carnival-currency-field field="field" data="data"></carnival-currency-field>');
     compiledElement = compile(element)(scope);
     scope.$digest();
 
   });
 
-  it('should be checked', function () {
-    expect(element.isolateScope().data).to.equal(true);
+  it('should render the template', function () {
+    expect(element.html()).to.not.be.equal('');
   });
 
+  it('should show the value formatted with the currency options', function () {
+    expect(element[0].getElementsByTagName('input')[0].value).to.be.equal('$ 20.00');
+  });
 
 });

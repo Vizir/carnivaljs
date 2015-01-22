@@ -206,9 +206,9 @@ app.config(function (ConfigurationProvider) {
       'price': {
         type: 'currency',
         currencyOptions: {
-          symbol: 'R$',
-          decimalDelimiter: ',',
-          thousandsDelimiter: '.'
+          symbol: '$',
+          decimalDelimiter: '.',
+          thousandsDelimiter: ','
         },
         label: 'Price',
         views: {
