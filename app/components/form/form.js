@@ -14,22 +14,8 @@ angular.module('carnival.components.form', [])
       editable: '='
     },
     templateUrl: 'components/form/form.html',
-    controller: function ($rootScope, $scope, utils, FormService) {
+    controller: function ($rootScope, $scope, utils, FormService, $element) {
       $scope.utils = utils;
-      var init = function(){
-        $scope.id = new Date().getTime();
-        if($scope.type === 'nested')
-          FormService.openNested($scope.id);
-      };
-
-      $scope.canShow = function(field){
-        if(field.type != 'hasMany' && field.type != 'belongsTo')
-          return true;
-
-        if(!$scope.entity.parentEntity)
-          return true;
-        return false;
-      };
 
       $scope.buttonAction = function(){
 
@@ -39,21 +25,29 @@ angular.module('carnival.components.form', [])
             return;
           }
         }else{
-          FormService.saveNested($scope.id);
+          FormService.saveNested($scope.entity.name);
         }
 
         $scope.action.click(function(error, data){
+
           if(error){
             console.log('Aconteceu um erro ao salvar');
           }else{
             console.log('Salvo com sucesso, dados: ', data);
-            $scope.entity.hasUnfinishedForms = false;
-            $scope.state = 'edit';
-            $scope.entity.datas = data;
+            if(Object.keys($scope.entity.nestedForms).length > 0){
+              if($scope.state === 'edit' && $scope.type === 'nested'){
+                FormService.closeNested($scope.entity.name);
+              }
+              $scope.state = 'edit';
+              $scope.entity.datas = data;
+            }else{
+              if($scope.type === 'nested')
+                  FormService.closeNested($scope.entity.name);
+            }
+
           }
         });
       };
-      init();
     }
   };
 });

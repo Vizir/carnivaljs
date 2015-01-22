@@ -27,5 +27,15 @@ angular.module('carnival')
     }
     return false;
   };
+
+  this.isNestedOpen = function(formId){
+    if(!this.nesteds[formId])
+      return false;
+    return true;
+  };
+
+  this.closeNested = function(formId){
+    delete this.nesteds[formId];
+  };
 });
 

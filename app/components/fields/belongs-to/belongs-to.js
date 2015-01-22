@@ -17,8 +17,9 @@ angular.module('carnival.components.fields.belongsTo', [])
         element.attr('disabled', 'true');
       }
     },
-    controller: function ($rootScope, $scope, utils, $compile, $element) {
+    controller: function ($rootScope, $scope, utils, $compile, $element, FormService) {
       $scope.utils = utils;
+      $scope.nesteds = {};
 
       $scope.canShowNestedForm = function(field){
         if(!$scope.entity.nestedForms[field.endpoint])
@@ -29,7 +30,10 @@ angular.module('carnival.components.fields.belongsTo', [])
         return true;
       };
 
-      $scope.open = function(index){
+      $scope.open = function(){
+        if(FormService.isNestedOpen($scope.field.entityName))
+          return;
+        FormService.openNested($scope.field.entityName);
         var directive = '<carnival-nested-form type="nested" entity="entity.nestedForms[field.endpoint]"></carnival-nested-form></div>';
         var newElement = $compile(directive)($scope);
         var nestedDiv = document.querySelector('#nesteds_'+$scope.field.entityName);

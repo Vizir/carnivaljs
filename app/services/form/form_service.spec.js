@@ -35,6 +35,25 @@ describe('FormService', function(){
     });
   });
 
+  describe('#isNestedOpen', function(){
+    describe('when is a not open', function(){
+      it('should return false', function(){
+        FormService.init('entityName');
+        var result = FormService.isNestedOpen('nestedName');
+        expect(result).to.be.equal(false);
+      });
+    });
+
+    describe('when is open', function(){
+      it('should return true', function(){
+        FormService.init('entityName');
+        FormService.openNested('nestedName');
+        var result = FormService.isNestedOpen('nestedName');
+        expect(result).to.be.equal(true);
+      });
+    });
+  });
+
   describe('#saveNested', function(){
     it('should update a nestedForm with saved == true', function(){
       FormService.openNested('newFormId');
