@@ -199,7 +199,7 @@ angular.module('carnival.components.fields.currency', [])
       }
 
       var decimalDelimiter   = scope.field.currencyOptions.decimalDelimiter || '.',
-          thousandsDelimiter = scope.field.currencyOptions.thousandsDelimiter || ',',
+          thousandsDelimiter = scope.field.currencyOptions.thousandsDelimiter || '',
           currencySym        = scope.field.currencyOptions.symbol || '$',
           decimals           = parseInt(attrs.currency, 10);
 
