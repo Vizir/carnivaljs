@@ -202,6 +202,31 @@ app.config(function (ConfigurationProvider) {
             enable: true
           }
         }
+      },
+      'state': {
+        type: 'enum',
+        label: 'State',
+        values: [
+          { value: 1, label: 'Published' },
+          { value: 2, label: 'Pending' },
+          { value: 3, label: 'Deleted' }
+        ],
+        views: {
+          index: {
+            enable: true,
+            sortable: false,
+            searchable: false
+          },
+          create: {
+            enable: true
+          },
+          edit: {
+            enable: true
+          },
+          show: {
+            enable: true
+          }
+        }
       }
     }
   });
