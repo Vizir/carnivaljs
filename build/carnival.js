@@ -2490,6 +2490,8 @@ angular.module("states/main.show/show.html", []).run(["$templateCache", function
     "    <div class=\"col-sm-10\" ng-switch-when=\"enum\">\n" +
     "      {{ getValue(entity.datas[field.name], field) }}\n" +
     "    </div>\n" +
+    "    <carnival-listing-field-file ng-switch-when=\"file\" item=\"entity.datas\" field=\"field\"></carnival-listing-field-file>\n" +
+    "    <carnival-listing-field-currency ng-switch-when=\"currency\" item=\"entity.datas\" field=\"field\"></carnival-listing-field-currency>\n" +
     "    <div class=\"col-sm-10\" ng-switch-default>\n" +
     "      {{entity.datas[field.name]}}\n" +
     "    </div>\n" +
