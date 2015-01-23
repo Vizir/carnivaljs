@@ -2,11 +2,13 @@
   <a ng-if='canOpenNestedForm()' class="btn btn-default btn-xs"  ng-click="open()">Create</a>
 
   <ul ng-if="isHasMany()" class='has-many-field-list'>
-    <li ng-repeat='data in datas[field.name]' ng-click='openWithData(data)'>
+    <li ng-repeat='data in datas[field.name]'>
       {{data[field.field]}}
       <a id='removeHasManyOption' ng-click='remove(data.id);' class="btn btn-default btn-xs">Delete</a>
+      <a id='editHasManyOption' ng-click='openWithData(data);' class="btn btn-warning btn-xs">Edit</a>
+      <div id="edit_nested_{{field.name}}_{{data[field.identifier]}}"></div>
     </li>
   </ul>
-  <div id="nesteds_{{field.entityName}}">
+  <div id="create_nested_{{field.entityName}}">
   </div>
 </div>

@@ -789,7 +789,7 @@ angular.module('carnival.components.nested-form-area', [])
       editable: '='
     },
     templateUrl: 'components/nested-form/nested-form-area.html',
-    controller: ["$rootScope", "$scope", "utils", "$element", "$compile", "FormService", "Configuration", function ($rootScope, $scope, utils, $element,  $compile, FormService, Configuration) {
+    controller: ["$rootScope", "$scope", "$timeout", "utils", "$element", "$compile", "FormService", "Configuration", function ($rootScope, $scope, $timeout, utils, $element,  $compile, FormService, Configuration) {
 
       $scope.canOpenNestedForm = function(){
         if(!$scope.entity.nestedForms[$scope.field.endpoint])
@@ -806,17 +806,24 @@ angular.module('carnival.components.nested-form-area', [])
       };
 
       $scope.openWithData = function(data){
+        var containerId = '#create_nested_'+ $scope.field.entityName;
         $scope.entity.nestedForms[$scope.field.endpoint].datas = data;
         if(FormService.isNestedOpen($scope.field.entityName)){
+          FormService.closeNested($scope.field.entityName);
+          $timeout(function(){
+            $scope.openWithData(data);
+          }, 100);
           return;
         }
         var state = 'create';
-        if(Object.keys(data).length > 0)
+        if(Object.keys(data).length > 0){
+          containerId = '#edit_nested_'+ $scope.field.entityName + '_' + data[$scope.field.identifier];
           state = 'edit';
+        }
         FormService.openNested($scope.field.entityName);
         var directive = '<carnival-nested-form state="'+state+'" type="nested" entity="entity.nestedForms[field.endpoint]"></carnival-nested-form></div>';
         var newElement = $compile(directive)($scope);
-        var nestedDiv = document.querySelector('#nesteds_'+$scope.field.entityName);
+        var nestedDiv = document.querySelector(containerId);
         angular.element(nestedDiv).append(newElement);
       };
 
@@ -2520,12 +2527,14 @@ angular.module("components/nested-form/nested-form-area.html", []).run(["$templa
     "  <a ng-if='canOpenNestedForm()' class=\"btn btn-default btn-xs\"  ng-click=\"open()\">Create</a>\n" +
     "\n" +
     "  <ul ng-if=\"isHasMany()\" class='has-many-field-list'>\n" +
-    "    <li ng-repeat='data in datas[field.name]' ng-click='openWithData(data)'>\n" +
+    "    <li ng-repeat='data in datas[field.name]'>\n" +
     "      {{data[field.field]}}\n" +
     "      <a id='removeHasManyOption' ng-click='remove(data.id);' class=\"btn btn-default btn-xs\">Delete</a>\n" +
+    "      <a id='editHasManyOption' ng-click='openWithData(data);' class=\"btn btn-warning btn-xs\">Edit</a>\n" +
+    "      <div id=\"edit_nested_{{field.name}}_{{data[field.identifier]}}\"></div>\n" +
     "    </li>\n" +
     "  </ul>\n" +
-    "  <div id=\"nesteds_{{field.entityName}}\">\n" +
+    "  <div id=\"create_nested_{{field.entityName}}\">\n" +
     "  </div>\n" +
     "</div>\n" +
     "");

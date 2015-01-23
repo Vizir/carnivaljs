@@ -12,7 +12,7 @@ angular.module('carnival.components.nested-form-area', [])
       editable: '='
     },
     templateUrl: 'components/nested-form/nested-form-area.html',
-    controller: function ($rootScope, $scope, utils, $element,  $compile, FormService, Configuration) {
+    controller: function ($rootScope, $scope, $timeout, utils, $element,  $compile, FormService, Configuration) {
 
       $scope.canOpenNestedForm = function(){
         if(!$scope.entity.nestedForms[$scope.field.endpoint])
@@ -29,17 +29,24 @@ angular.module('carnival.components.nested-form-area', [])
       };
 
       $scope.openWithData = function(data){
+        var containerId = '#create_nested_'+ $scope.field.entityName;
         $scope.entity.nestedForms[$scope.field.endpoint].datas = data;
         if(FormService.isNestedOpen($scope.field.entityName)){
+          FormService.closeNested($scope.field.entityName);
+          $timeout(function(){
+            $scope.openWithData(data);
+          }, 100);
           return;
         }
         var state = 'create';
-        if(Object.keys(data).length > 0)
+        if(Object.keys(data).length > 0){
+          containerId = '#edit_nested_'+ $scope.field.entityName + '_' + data[$scope.field.identifier];
           state = 'edit';
+        }
         FormService.openNested($scope.field.entityName);
         var directive = '<carnival-nested-form state="'+state+'" type="nested" entity="entity.nestedForms[field.endpoint]"></carnival-nested-form></div>';
         var newElement = $compile(directive)($scope);
-        var nestedDiv = document.querySelector('#nesteds_'+$scope.field.entityName);
+        var nestedDiv = document.querySelector(containerId);
         angular.element(nestedDiv).append(newElement);
       };
 
