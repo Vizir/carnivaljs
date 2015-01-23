@@ -26,7 +26,7 @@ angular.module('carnival.components.nested-form-area', [])
 
       var openNestedForm = function(){
 
-      }
+      };
 
       $scope.openWithData = function(data){
         if(FormService.isNestedOpen($scope.field.entityName))
@@ -40,7 +40,7 @@ angular.module('carnival.components.nested-form-area', [])
         var newElement = $compile(directive)($scope);
         var nestedDiv = document.querySelector('#nesteds_'+$scope.field.entityName);
         angular.element(nestedDiv).append(newElement);
-      }
+      };
 
       $scope.open = function(){
         $scope.openWithData({});

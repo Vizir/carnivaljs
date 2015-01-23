@@ -17,6 +17,10 @@ angular.module('carnival.components.form', [])
     controller: function ($rootScope, $scope, utils, FormService, $element) {
       $scope.utils = utils;
 
+      if($scope.type !== 'nested'){
+        FormService.init();
+      }
+
       $scope.canShow = function(field){
         if(field.type != 'hasMany' && field.type != 'belongsTo')
           return true;

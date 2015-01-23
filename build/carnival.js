@@ -402,6 +402,10 @@ angular.module('carnival.components.form', [])
     controller: ["$rootScope", "$scope", "utils", "FormService", "$element", function ($rootScope, $scope, utils, FormService, $element) {
       $scope.utils = utils;
 
+      if($scope.type !== 'nested'){
+        FormService.init();
+      }
+
       $scope.canShow = function(field){
         if(field.type != 'hasMany' && field.type != 'belongsTo')
           return true;
@@ -649,7 +653,7 @@ angular.module('carnival.components.nested-form-area', [])
 
       var openNestedForm = function(){
 
-      }
+      };
 
       $scope.openWithData = function(data){
         if(FormService.isNestedOpen($scope.field.entityName))
@@ -663,7 +667,7 @@ angular.module('carnival.components.nested-form-area', [])
         var newElement = $compile(directive)($scope);
         var nestedDiv = document.querySelector('#nesteds_'+$scope.field.entityName);
         angular.element(nestedDiv).append(newElement);
-      }
+      };
 
       $scope.open = function(){
         $scope.openWithData({});
@@ -722,6 +726,10 @@ angular.module('carnival.components.nested-form', [])
 
       $scope.isClosed = function(){
         return !FormService.nesteds[$scope.entity.name];
+      };
+
+      $scope.close = function(){
+        FormService.closeNested($scope.entity.name);
       };
 
       $scope.$watch('isClosed()', function(newValue, oldValue){
@@ -2287,7 +2295,7 @@ angular.module("components/nested-form/nested-form-area.html", []).run(["$templa
 angular.module("components/nested-form/nested-form.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/nested-form/nested-form.html",
     "<div class=\"nested-container\">\n" +
-    "\n" +
+    "<a class='close-nested btn btn-default btn-xs' ng-click='close()'>Close</a>\n" +
     "  <h3>{{ 'Create' | translate }} {{ entity.label }}</h3>\n" +
     "  <carnival-form type='nested' entity='entity' fields=\"entity.fields\" action=\"entity.action\" datas=\"entity.datas\" state=\"{{state}}\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form>\n" +
     "\n" +

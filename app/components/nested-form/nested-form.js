@@ -15,6 +15,10 @@ angular.module('carnival.components.nested-form', [])
         return !FormService.nesteds[$scope.entity.name];
       };
 
+      $scope.close = function(){
+        FormService.closeNested($scope.entity.name);
+      };
+
       $scope.$watch('isClosed()', function(newValue, oldValue){
         if(newValue === oldValue)
             return;
