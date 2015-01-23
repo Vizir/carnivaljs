@@ -45,6 +45,7 @@ angular.module('carnival')
       uploader:   fieldParams.uploader,
       gallery:    fieldParams.gallery,
       values:     fieldParams.values,
+      currencyOptions: fieldParams.currencyOptions,
       views:      buildViews(fieldParams.views)
     };
 
