@@ -1,10 +1,11 @@
-angular.module('carnival').provider('Configuration', function() {
+angular.module('carnival').provider('Configuration', function($stateProvider) {
 
   var appName = null;
   var baseApiUrl = null;
   var validateEntities = false;
   var entities = [];
   var navbar = [];
+  var extraStates = [];
 
   return {
     setBaseApiUrl: function (url) {
@@ -30,6 +31,10 @@ angular.module('carnival').provider('Configuration', function() {
 
     addNavbarItem: function (options) {
       navbar.push(options);
+    },
+
+    addState: function (state){
+      extraStates.push(state);
     },
 
     $get: function () {
@@ -58,6 +63,17 @@ angular.module('carnival').provider('Configuration', function() {
 
         getEntities: function () {
           return entities;
+        },
+
+        addExtraStates: function (){
+          for (var i = 0; i < extraStates.length; i++){
+            var state = extraStates[i];
+            $stateProvider.state('main.'+state.name, {
+              url: state.url,
+              templateUrl: state.templateUrl,
+              controller: state.controller
+            });
+          }
         },
 
         getNavbarItems: function () {
