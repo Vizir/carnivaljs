@@ -1078,13 +1078,14 @@ angular.module('carnival.components.uploader', [])
   };
 }]);
 
-angular.module('carnival').provider('Configuration', function() {
+angular.module('carnival').provider('Configuration', ["$stateProvider", function($stateProvider) {
 
   var appName = null;
   var baseApiUrl = null;
   var validateEntities = false;
   var entities = [];
   var navbar = [];
+  var extraStates = [];
 
   return {
     setBaseApiUrl: function (url) {
@@ -1110,6 +1111,10 @@ angular.module('carnival').provider('Configuration', function() {
 
     addNavbarItem: function (options) {
       navbar.push(options);
+    },
+
+    addState: function (state){
+      extraStates.push(state);
     },
 
     $get: function () {
@@ -1140,6 +1145,17 @@ angular.module('carnival').provider('Configuration', function() {
           return entities;
         },
 
+        addExtraStates: function (){
+          for (var i = 0; i < extraStates.length; i++){
+            var state = extraStates[i];
+            $stateProvider.state('main.'+state.name, {
+              url: state.url,
+              templateUrl: state.templateUrl,
+              controller: state.controller
+            });
+          }
+        },
+
         getNavbarItems: function () {
           return navbar;
         }
@@ -1149,7 +1165,7 @@ angular.module('carnival').provider('Configuration', function() {
 
   };
 
-});
+}]);
 
 angular.module('carnival')
 .factory('Entity', ["EntityValidation", "$http", "Configuration", "RequestBuilder", "FieldBuilder", function (EntityValidation, $http, Configuration, RequestBuilder, FieldBuilder) {
@@ -2122,7 +2138,6 @@ angular.module('carnival')
 .controller('EditController', ["$rootScope", "$scope", "$stateParams", "$state", "Configuration", "EntityResources", function ($rootScope, $scope, $stateParams, $state, Configuration, EntityResources) {
 
   var entity = $scope.entity = {};
-  
 
   var init = function () {
     $scope.entity = entity = EntityResources.prepareForEditState($stateParams.entity);
@@ -2131,9 +2146,6 @@ angular.module('carnival')
     .success(function (data) {
       entity.id = $stateParams.id;
       entity.datas = data;
-      for(var formName in entity.nestedForms){
-        //entity.nestedForms[formName].datas[entity.name] = data;
-      }
     });
   };
 
@@ -2645,13 +2657,7 @@ angular.module("states/main.create/create.html", []).run(["$templateCache", func
     "\n" +
     "  <h3>{{ 'Create' | translate }} {{ entity.label }}</h3>\n" +
     "  <carnival-form entity='entity' fields=\"entity.fields\" action=\"entity.action\" datas=\"entity.datas\" state=\"create\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form>\n" +
-    "  \n" +
-    "  <div ng-if=\"entity.nestedForms[field.endpoint]\" ng-show=\"entity.nestedForms[field.endpoint].opened\" class='nested-form-modal' ng-repeat=\"field in entity.fields\">\n" +
-    "    <div class=\"nested-form-modal-content\">\n" +
-    "      <h3>{{ 'Create' | translate }} {{ entity.nestedForms[field.endpoint].label }}</h3>\n" +
-    "      <carnival-form type='nested' entity=\"entity.nestedForms[field.endpoint]\" fields=\"entity.nestedForms[field.endpoint].fields\" datas=\"entity.nestedForms[field.endpoint].datas\" action=\"entity.nestedForms[field.endpoint].action\" state=\"create\" related-resources=\"entity.nestedForms[field.endpoint].relatedResources\" editable=\"true\"></carnival-form>\n" +
-    "    </div>\n" +
-    "  </div>\n" +
+    "\n" +
     "</div>\n" +
     "");
 }]);
