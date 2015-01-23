@@ -29,12 +29,13 @@ angular.module('carnival.components.nested-form-area', [])
       };
 
       $scope.openWithData = function(data){
-        if(FormService.isNestedOpen($scope.field.entityName))
+        $scope.entity.nestedForms[$scope.field.endpoint].datas = data;
+        if(FormService.isNestedOpen($scope.field.entityName)){
           return;
+        }
         var state = 'create';
         if(Object.keys(data).length > 0)
           state = 'edit';
-        $scope.entity.nestedForms[$scope.field.endpoint].datas = data;
         FormService.openNested($scope.field.entityName);
         var directive = '<carnival-nested-form state="'+state+'" type="nested" entity="entity.nestedForms[field.endpoint]"></carnival-nested-form></div>';
         var newElement = $compile(directive)($scope);
