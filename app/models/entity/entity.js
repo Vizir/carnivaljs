@@ -26,7 +26,7 @@ angular.module('carnival')
   };
 
   function Entity (name, options) {
-    if (Configuration.validateEntities) EntityValidation(name, options);
+    if (Configuration.validateEntities) EntityValidation(name, options); // TODO DSL VALIDATION
     this.name = name;
     this.endpoint       = options.endpoint || this.name;
     this.label          = options.label || this.name;

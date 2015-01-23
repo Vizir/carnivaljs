@@ -79,8 +79,10 @@ angular.module('carnival.components', [
   'carnival.components.notification',
   'carnival.components.quickfilter-controller',
   'carnival.components.listingFieldFile',
+  'carnival.components.listingFieldCurrency',
   'carnival.components.uploader',
-  'carnival.components.gallery'
+  'carnival.components.gallery',
+  'carnival.components.listingFieldEnum'
 ]);
 
 angular.module('carnival.components.delete-button', [])
@@ -156,6 +158,77 @@ angular.module('carnival.components.fields.boolean', [])
   };
 });
 
+angular.module('carnival.components.fields.currency', [])
+.directive('carnivalCurrencyField', ["$filter", function ($filter) {
+  return {
+    restrict: 'E',
+    scope: {
+      data: '=',
+      field: '='
+    },
+    templateUrl: 'components/fields/currency/currency.html'
+  };
+}])
+.directive('currency', ["$parse", function ($parse) {
+  return {
+    restrict: 'A',
+    require: '?ngModel',
+    link: function (scope, element, attrs, ctrl) {
+      if (!ctrl) {
+        return;
+      }
+
+      function clearDelimitersAndLeadingZeros (value) {
+        var cleanValue = value.replace(/^-/,'').replace(/^0*/, '');
+        cleanValue = cleanValue.replace(/[^0-9]/g, '');
+        return cleanValue;
+      }
+
+      function prepareNumberToFormatter (value, decimals) {
+        return clearDelimitersAndLeadingZeros((parseFloat(value)).toFixed(decimals));
+      }
+
+      var decimalDelimiter   = scope.field.currencyOptions.decimalDelimiter || '.',
+          thousandsDelimiter = scope.field.currencyOptions.thousandsDelimiter || '',
+          currencySym        = scope.field.currencyOptions.symbol || '$',
+          decimals           = parseInt(scope.field.currencyOptions.decimals, 10);
+
+      if (isNaN(decimals)) {
+        decimals = 2;
+      }
+
+      var decimalsPattern = decimals > 0 ? decimalDelimiter + new Array(decimals + 1).join('0') : '';
+      var maskPattern     = currencySym + ' #' + thousandsDelimiter + '##0' + decimalsPattern;
+      var moneyMask       = new StringMask(maskPattern, {reverse: true});
+
+      ctrl.$formatters.push(function (value) {
+        if(angular.isUndefined(value)) {
+          return value;
+        }
+        var valueToFormat = prepareNumberToFormatter(value, decimals);
+        return moneyMask.apply(valueToFormat);
+      });
+
+      function parse (value) {
+        if (!value) {
+          return value;
+        }
+        var actualNumber = value.replace(/[^\d]+/g,'');
+        actualNumber = actualNumber.replace(/^[0]+([1-9])/,'$1');
+        var formatedValue = moneyMask.apply(actualNumber);
+        if (value !== formatedValue) {
+          ctrl.$setViewValue(formatedValue);
+          ctrl.$render();
+        }
+        return formatedValue ? parseInt(formatedValue.replace(/[^\d]+/g,''))/Math.pow(10,decimals) : null;
+      }
+
+      ctrl.$parsers.push(parse);
+
+    }
+  };
+}]);
+
 angular.module('carnival.components.fields.date', [])
 .directive('carnivalDateField', function () {
   return {
@@ -174,6 +247,19 @@ angular.module('carnival.components.fields.date', [])
   };
 });
 
+angular.module('carnival.components.fields.enum', [])
+.directive('carnivalEnumField', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      data: '=',
+      field: '='
+    },
+    templateUrl: 'components/fields/enum/enum.html'
+  };
+});
+
 angular.module('carnival.components.fields', [
   'carnival.components.fields.number',
   'carnival.components.fields.select',
@@ -184,7 +270,9 @@ angular.module('carnival.components.fields', [
   'carnival.components.fields.wysiwyg',
   'carnival.components.fields.boolean',
   'carnival.components.fields.date',
-  'carnival.components.fields.file'
+  'carnival.components.fields.file',
+  'carnival.components.fields.enum',
+  'carnival.components.fields.currency'
 ]);
 
 angular.module('carnival.components.fields.file', [])
@@ -501,6 +589,69 @@ angular.module('carnival.components.listingfieldbelongsto', [])
         return $scope.item[$scope.field.name][$scope.field.field];
       };
     }]
+  };
+});
+
+angular.module('carnival.components.listingFieldCurrency', [])
+.directive('carnivalListingFieldCurrency', function () {
+  return {
+    restrict: 'E',
+    scope: {
+      item: '=',
+      field: '='
+    },
+    templateUrl: 'components/listing-field-currency/listing-field-currency.html',
+    link: function (scope) {
+      scope.toCurrency = function (value) {
+
+        function clearDelimitersAndLeadingZeros (value) {
+          var cleanValue = value.replace(/^-/,'').replace(/^0*/, '');
+          cleanValue = cleanValue.replace(/[^0-9]/g, '');
+          return cleanValue;
+        }
+
+        function prepareNumberToFormatter (value, decimals) {
+          return clearDelimitersAndLeadingZeros((parseFloat(value)).toFixed(decimals));
+        }
+
+        var decimalDelimiter   = scope.field.currencyOptions.decimalDelimiter || '.',
+            thousandsDelimiter = scope.field.currencyOptions.thousandsDelimiter || '',
+            currencySym        = scope.field.currencyOptions.symbol || '$',
+            decimals           = parseInt(scope.field.currencyOptions.decimals, 10);
+
+            if (isNaN(decimals)) {
+              decimals = 2;
+            }
+
+        var decimalsPattern = decimals > 0 ? decimalDelimiter + new Array(decimals + 1).join('0') : '';
+        var maskPattern     = currencySym + ' #' + thousandsDelimiter + '##0' + decimalsPattern;
+        var moneyMask       = new StringMask(maskPattern, {reverse: true});
+
+        var valueToFormat = prepareNumberToFormatter(value, decimals);
+        return moneyMask.apply(valueToFormat);
+      };
+    }
+  };
+});
+
+angular.module('carnival.components.listingFieldEnum', [])
+.directive('carnivalListingFieldEnum', function () {
+  return {
+    restrict: 'E',
+    scope: {
+      item: '=',
+      field: '='
+    },
+    templateUrl: 'components/listing-field-enum/listing-field-enum.html',
+    link: function (scope, elem, attrs) {
+      scope.getValue = function (item) {
+        for (var i = 0, x = scope.field.values.length; i < x; i += 1) {
+          if (scope.field.values[i].value === item) {
+            return scope.field.values[i].label;
+          }
+        }
+      };
+    }
   };
 });
 
@@ -1020,7 +1171,7 @@ angular.module('carnival')
   };
 
   function Entity (name, options) {
-    if (Configuration.validateEntities) EntityValidation(name, options);
+    if (Configuration.validateEntities) EntityValidation(name, options); // TODO DSL VALIDATION
     this.name = name;
     this.endpoint       = options.endpoint || this.name;
     this.label          = options.label || this.name;
@@ -1308,9 +1459,11 @@ angular.module('carnival')
       identifier: fieldParams.identifier || 'id',
       entityName: fieldParams.entityName || field_name,
       type:       fieldParams.type,
-      views:      buildViews(fieldParams.views),
       uploader:   fieldParams.uploader,
-      gallery:    fieldParams.gallery
+      gallery:    fieldParams.gallery,
+      values:     fieldParams.values,
+      currencyOptions: fieldParams.currencyOptions,
+      views:      buildViews(fieldParams.views)
     };
 
      field.foreignKey = resolveForeignKey(field);
@@ -2067,6 +2220,14 @@ angular.module('carnival')
     $state.go('main.edit', { entity: entity.name, id: entity.datas.id });
   };
 
+  $scope.getValue = function (item, field) {
+    for (var i = 0, x = field.values.length; i < x; i += 1) {
+      if (field.values[i].value === item) {
+        return field.values[i].label;
+      }
+    }
+  };
+
   var init = function () {
     entity = $scope.entity = EntityResources.prepareForShowState($stateParams.entity);
 
@@ -2089,7 +2250,11 @@ angular.module('carnival')
 
 }]);
 
+<<<<<<< HEAD
 angular.module('carnival.templates', ['components/button/button.html', 'components/delete-button/delete-button.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/date/date.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/nested-form/nested-form-area.html', 'components/nested-form/nested-form.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
+=======
+angular.module('carnival.templates', ['components/button/button.html', 'components/delete-button/delete-button.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/currency/currency.html', 'components/fields/date/date.html', 'components/fields/enum/enum.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-currency/listing-field-currency.html', 'components/listing-field-enum/listing-field-enum.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
+>>>>>>> development
 
 angular.module("components/button/button.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/button/button.html",
@@ -2124,10 +2289,26 @@ angular.module("components/fields/boolean/boolean.html", []).run(["$templateCach
     "");
 }]);
 
+angular.module("components/fields/currency/currency.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/fields/currency/currency.html",
+    "<div>\n" +
+    "  <input class=\"form-control\" type=\"text\" ng-model=\"data\" currency></input>\n" +
+    "</div>\n" +
+    "");
+}]);
+
 angular.module("components/fields/date/date.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/fields/date/date.html",
     "<div>\n" +
     "  <input type=\"datetime\" date-time ng-model=\"data\" view=\"date\" ></input>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("components/fields/enum/enum.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/fields/enum/enum.html",
+    "<div>\n" +
+    "  <carnival-select-field data=\"data\" field=\"'label'\" identifier=\"'value'\" items=\"field.values\" editable=\"true\"></carnival-select-field>\n" +
     "</div>\n" +
     "");
 }]);
@@ -2213,7 +2394,13 @@ angular.module("components/form/form.html", []).run(["$templateCache", function(
     "      <carnival-number-field ng-switch-when=\"number\" data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-number-field>\n" +
     "      <carnival-date-field ng-switch-when=\"date\" data=\"datas[field.name]\" editable=\"editable\"></carnival-date-field>\n" +
     "      <carnival-file-field ng-switch-when=\"file\" data=\"datas[field.name]\" field=\"field\" editable=\"editable\"></carnival-file-field>\n" +
+<<<<<<< HEAD
     "      <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when=\"belongsTo\" nested-form-index=\"nestedFormIndex\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"  editable=\"true\"></carnival-belongs-to-field>\n" +
+=======
+    "      <carnival-enum-field ng-switch-when=\"enum\" data=\"datas[field.name]\" field=\"field\"></carnival-enum-field>\n" +
+    "      <carnival-currency-field ng-switch-when=\"currency\" data=\"datas[field.name]\" field=\"field\"></carnival-currency-field>\n" +
+    "      <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when=\"belongsTo\" nested-form-index=\"nestedFormIndex\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-belongs-to-field>\n" +
+>>>>>>> development
     "      <carnival-has-many-field ng-if='canShow(field)' ng-switch-when=\"hasMany\" entity=\"entity\" nested-form-index=\"nestedFormIndex\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\" editable=\"true\"></carnival-has-many-field>\n" +
     "      <carnival-text-field ng-switch-default data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-text-field>\n" +
     "    </div>\n" +
@@ -2241,6 +2428,22 @@ angular.module("components/listing-field-belongs-to/listing-field-belongs-to.htm
     "");
 }]);
 
+angular.module("components/listing-field-currency/listing-field-currency.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/listing-field-currency/listing-field-currency.html",
+    "<div>\n" +
+    "  {{ toCurrency(item[field.name]) }}\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("components/listing-field-enum/listing-field-enum.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/listing-field-enum/listing-field-enum.html",
+    "<div>\n" +
+    "  {{ getValue(item[field.name]) }}\n" +
+    "</div>\n" +
+    "");
+}]);
+
 angular.module("components/listing-field-file/listing-field-file.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/listing-field-file/listing-field-file.html",
     "<div>\n" +
@@ -2264,6 +2467,8 @@ angular.module("components/listing-field/listing-field.html", []).run(["$templat
     "  <carnival-listing-field-belongs-to ng-switch-when=\"belongsTo\" item=\"item\" field=\"field\"></carnival-listing-field-belongs-to>\n" +
     "  <carnival-listing-field-has-many ng-switch-when=\"hasMany\" item=\"item\" field=\"field\"></carnival-listing-field-has-many>\n" +
     "  <carnival-listing-field-file ng-switch-when=\"file\" item=\"item\" field=\"field\"></carnival-listing-field-file>\n" +
+    "  <carnival-listing-field-enum ng-switch-when=\"enum\" item=\"item\" field=\"field\"></carnival-listing-field-enum>\n" +
+    "  <carnival-listing-field-currency ng-switch-when=\"currency\" item=\"item\" field=\"field\"></carnival-listing-field-currency>\n" +
     "  <span ng-switch-default>\n" +
     "    {{item[field.name]}}\n" +
     "  </span>\n" +
@@ -2502,7 +2707,11 @@ angular.module("states/main.show/show.html", []).run(["$templateCache", function
     "          </li>\n" +
     "       </ul>\n" +
     "    </div>\n" +
-    "\n" +
+    "    <div class=\"col-sm-10\" ng-switch-when=\"enum\">\n" +
+    "      {{ getValue(entity.datas[field.name], field) }}\n" +
+    "    </div>\n" +
+    "    <carnival-listing-field-file ng-switch-when=\"file\" item=\"entity.datas\" field=\"field\"></carnival-listing-field-file>\n" +
+    "    <carnival-listing-field-currency ng-switch-when=\"currency\" item=\"entity.datas\" field=\"field\"></carnival-listing-field-currency>\n" +
     "    <div class=\"col-sm-10\" ng-switch-default>\n" +
     "      {{entity.datas[field.name]}}\n" +
     "    </div>\n" +
@@ -12896,4 +13105,192 @@ angular.module("datePicker").run(["$templateCache", function($templateCache) {
   );
 
 }]);
-})(angular);})();
+})(angular);
+var StringMask = (function() {
+	var tokens = {
+		'0': {pattern: /\d/, _default: '0'},
+		'9': {pattern: /\d/, optional: true},
+		'#': {pattern: /\d/, optional: true, recursive: true},
+		'S': {pattern: /[a-zA-Z]/},
+		'U': {pattern: /[a-zA-Z]/, transform: function (c) { return c.toLocaleUpperCase(); }},
+		'L': {pattern: /[a-zA-Z]/, transform: function (c) { return c.toLocaleLowerCase(); }},
+		'$': {escape: true}
+	};
+	var isEscaped = function(pattern, pos) {
+		var count = 0;
+		var i = pos - 1;
+		var token = {escape: true};
+		while (i >= 0 && token && token.escape) {
+			token = tokens[pattern.charAt(i)];
+			count += token && token.escape ? 1 : 0;
+			i--;
+		}
+		return count > 0 && count%2 === 1;
+	};
+	var calcOptionalNumbersToUse = function(pattern, value) {
+		var numbersInP = pattern.replace(/[^0]/g,'').length;
+		var numbersInV = value.replace(/[^\d]/g,'').length;
+		return numbersInV - numbersInP;
+	};
+	var concatChar = function(text, character, options, token) {
+		if (token && typeof token.transform === 'function') character = token.transform(character);
+		if (options.reverse) return character + text;
+		return text + character;
+	};
+	var hasMoreTokens = function(pattern, pos, inc) {
+		var pc = pattern.charAt(pos);
+		var token = tokens[pc];
+		if (pc === '') return false;
+		return token && !token.escape ? true : hasMoreTokens(pattern, pos + inc, inc);
+	};
+	var insertChar = function(text, char, position) {
+		var t = text.split('');
+		t.splice(position >= 0 ? position: 0, 0, char);
+		return t.join('');
+	};
+	var StringMask = function(pattern, opt) {
+		this.options = opt || {};
+		this.options = {
+			reverse: this.options.reverse || false,
+			usedefaults: this.options.usedefaults || this.options.reverse
+		};
+		this.pattern = pattern;
+
+		StringMask.prototype.process = function proccess(value) {
+			if (!value) return '';
+			value = value + '';
+			var pattern2 = this.pattern;
+			var valid = true;
+			var formatted = '';
+			var valuePos = this.options.reverse ? value.length - 1 : 0;
+			var optionalNumbersToUse = calcOptionalNumbersToUse(pattern2, value);
+			var escapeNext = false;
+			var recursive = [];
+			var inRecursiveMode = false;
+
+			var steps = {
+				start: this.options.reverse ? pattern2.length - 1 : 0,
+				end: this.options.reverse ? -1 : pattern2.length,
+				inc: this.options.reverse ? -1 : 1
+			};
+
+			var continueCondition = function(options) {
+				if (!inRecursiveMode && hasMoreTokens(pattern2, i, steps.inc)) {
+					return true;
+				} else if (!inRecursiveMode) {
+					inRecursiveMode = recursive.length > 0;
+				}
+
+				if (inRecursiveMode) {
+					var pc = recursive.shift();
+					recursive.push(pc);
+					if (options.reverse && valuePos >= 0) {
+						i++;
+						pattern2 = insertChar(pattern2, pc, i);
+						return true;
+					} else if (!options.reverse && valuePos < value.length) {
+						pattern2 = insertChar(pattern2, pc, i);
+						return true;
+					}
+				}
+				return i < pattern2.length && i >= 0;
+			};
+
+			for (var i = steps.start; continueCondition(this.options); i = i + steps.inc) {
+				var pc = pattern2.charAt(i);
+				var vc = value.charAt(valuePos);
+				var token = tokens[pc];
+				if (!inRecursiveMode || vc) {
+					if (this.options.reverse && isEscaped(pattern2, i)) {
+						formatted = concatChar(formatted, pc, this.options, token);
+						i = i + steps.inc;
+						continue;
+					} else if (!this.options.reverse && escapeNext) {
+						formatted = concatChar(formatted, pc, this.options, token);
+						escapeNext = false;
+						continue;
+					} else if (!this.options.reverse && token && token.escape) {
+						escapeNext = true;
+						continue;
+					}
+				}
+
+				if (!inRecursiveMode && token && token.recursive) {
+					recursive.push(pc);
+				} else if (inRecursiveMode && !vc) {
+					if (!token || !token.recursive) formatted = concatChar(formatted, pc, this.options, token);
+					continue;
+				} else if (recursive.length > 0 && token && !token.recursive) {
+					// Recursive tokens most be the last tokens of the pattern
+					valid = false;
+					continue;
+				} else if (!inRecursiveMode && recursive.length > 0 && !vc) {
+					continue;
+				}
+
+				if (!token) {
+					formatted = concatChar(formatted, pc, this.options, token);
+					if (!inRecursiveMode && recursive.length) {
+						recursive.push(pc);
+					}
+				} else if (token.optional) {
+					if (token.pattern.test(vc) && optionalNumbersToUse) {
+						formatted = concatChar(formatted, vc, this.options, token);
+						valuePos = valuePos + steps.inc;
+						optionalNumbersToUse--;
+					} else if (recursive.length > 0 && vc) {
+						valid = false;
+						break;
+					}
+				} else if (token.pattern.test(vc)) {
+					formatted = concatChar(formatted, vc, this.options, token);
+					valuePos = valuePos + steps.inc;
+				} else if (!vc && token._default && this.options.usedefaults) {
+					formatted = concatChar(formatted, token._default, this.options, token);
+				} else {
+					valid = false;
+					break;
+				}
+			}
+
+			return {result: formatted, valid: valid};
+		};
+
+		StringMask.prototype.apply = function(value) {
+			return this.process(value).result;
+		};
+
+		StringMask.prototype.validate = function(value) {
+			return this.process(value).valid;
+		};
+	};
+
+	StringMask.process = function(value, pattern, options) {
+		return new StringMask(pattern, options).process(value);
+	};
+
+	StringMask.apply = function(value, pattern, options) {
+		return new StringMask(pattern, options).apply(value);
+	};
+
+	StringMask.validate = function(value, pattern, options) {
+		return new StringMask(pattern, options).validate(value);
+	};
+
+	return StringMask;
+}());
+
+/** Used to determine if values are of the language type Object */
+var objectTypes = {
+	'boolean': false,
+	'function': true,
+	'object': true,
+	'number': false,
+	'string': false,
+	'undefined': false
+};
+
+if (objectTypes[typeof module]) {
+	module.exports = StringMask;
+}
+})();

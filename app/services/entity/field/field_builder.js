@@ -42,9 +42,11 @@ angular.module('carnival')
       identifier: fieldParams.identifier || 'id',
       entityName: fieldParams.entityName || field_name,
       type:       fieldParams.type,
-      views:      buildViews(fieldParams.views),
       uploader:   fieldParams.uploader,
-      gallery:    fieldParams.gallery
+      gallery:    fieldParams.gallery,
+      values:     fieldParams.values,
+      currencyOptions: fieldParams.currencyOptions,
+      views:      buildViews(fieldParams.views)
     };
 
      field.foreignKey = resolveForeignKey(field);
