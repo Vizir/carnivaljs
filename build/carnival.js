@@ -77,6 +77,7 @@ angular.module('carnival.components', [
   'carnival.components.notification',
   'carnival.components.quickfilter-controller',
   'carnival.components.listingFieldFile',
+  'carnival.components.listingFieldCurrency',
   'carnival.components.uploader',
   'carnival.components.gallery',
   'carnival.components.listingFieldEnum'
@@ -201,7 +202,7 @@ angular.module('carnival.components.fields.currency', [])
       var decimalDelimiter   = scope.field.currencyOptions.decimalDelimiter || '.',
           thousandsDelimiter = scope.field.currencyOptions.thousandsDelimiter || '',
           currencySym        = scope.field.currencyOptions.symbol || '$',
-          decimals           = parseInt(attrs.currency, 10);
+          decimals           = parseInt(scope.field.currencyOptions.decimals, 10);
 
       if (isNaN(decimals)) {
         decimals = 2;
@@ -603,6 +604,48 @@ angular.module('carnival.components.listingfieldbelongsto', [])
         return $scope.item[$scope.field.name][$scope.field.field];
       };
     }]
+  };
+});
+
+angular.module('carnival.components.listingFieldCurrency', [])
+.directive('carnivalListingFieldCurrency', function () {
+  return {
+    restrict: 'E',
+    scope: {
+      item: '=',
+      field: '='
+    },
+    templateUrl: 'components/listing-field-currency/listing-field-currency.html',
+    link: function (scope) {
+      scope.toCurrency = function (value) {
+
+        function clearDelimitersAndLeadingZeros (value) {
+          var cleanValue = value.replace(/^-/,'').replace(/^0*/, '');
+          cleanValue = cleanValue.replace(/[^0-9]/g, '');
+          return cleanValue;
+        }
+
+        function prepareNumberToFormatter (value, decimals) {
+          return clearDelimitersAndLeadingZeros((parseFloat(value)).toFixed(decimals));
+        }
+
+        var decimalDelimiter   = scope.field.currencyOptions.decimalDelimiter || '.',
+            thousandsDelimiter = scope.field.currencyOptions.thousandsDelimiter || '',
+            currencySym        = scope.field.currencyOptions.symbol || '$',
+            decimals           = parseInt(scope.field.currencyOptions.decimals, 10);
+
+            if (isNaN(decimals)) {
+              decimals = 2;
+            }
+
+        var decimalsPattern = decimals > 0 ? decimalDelimiter + new Array(decimals + 1).join('0') : '';
+        var maskPattern     = currencySym + ' #' + thousandsDelimiter + '##0' + decimalsPattern;
+        var moneyMask       = new StringMask(maskPattern, {reverse: true});
+
+        var valueToFormat = prepareNumberToFormatter(value, decimals);
+        return moneyMask.apply(valueToFormat);
+      };
+    }
   };
 });
 
@@ -2011,7 +2054,7 @@ angular.module('carnival')
 
 }]);
 
-angular.module('carnival.templates', ['components/button/button.html', 'components/delete-button/delete-button.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/currency/currency.html', 'components/fields/date/date.html', 'components/fields/enum/enum.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-enum/listing-field-enum.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
+angular.module('carnival.templates', ['components/button/button.html', 'components/delete-button/delete-button.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/currency/currency.html', 'components/fields/date/date.html', 'components/fields/enum/enum.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-currency/listing-field-currency.html', 'components/listing-field-enum/listing-field-enum.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
 
 angular.module("components/button/button.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/button/button.html",
@@ -2049,7 +2092,7 @@ angular.module("components/fields/boolean/boolean.html", []).run(["$templateCach
 angular.module("components/fields/currency/currency.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/fields/currency/currency.html",
     "<div>\n" +
-    "  <input class=\"form-control\" type=\"text\" ng-model=\"data\" currency=\"2\"></input>\n" +
+    "  <input class=\"form-control\" type=\"text\" ng-model=\"data\" currency></input>\n" +
     "</div>\n" +
     "");
 }]);
@@ -2186,6 +2229,14 @@ angular.module("components/listing-field-belongs-to/listing-field-belongs-to.htm
     "");
 }]);
 
+angular.module("components/listing-field-currency/listing-field-currency.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/listing-field-currency/listing-field-currency.html",
+    "<div>\n" +
+    "  {{ toCurrency(item[field.name]) }}\n" +
+    "</div>\n" +
+    "");
+}]);
+
 angular.module("components/listing-field-enum/listing-field-enum.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/listing-field-enum/listing-field-enum.html",
     "<div>\n" +
@@ -2218,6 +2269,7 @@ angular.module("components/listing-field/listing-field.html", []).run(["$templat
     "  <carnival-listing-field-has-many ng-switch-when=\"hasMany\" item=\"item\" field=\"field\"></carnival-listing-field-has-many>\n" +
     "  <carnival-listing-field-file ng-switch-when=\"file\" item=\"item\" field=\"field\"></carnival-listing-field-file>\n" +
     "  <carnival-listing-field-enum ng-switch-when=\"enum\" item=\"item\" field=\"field\"></carnival-listing-field-enum>\n" +
+    "  <carnival-listing-field-currency ng-switch-when=\"currency\" item=\"item\" field=\"field\"></carnival-listing-field-currency>\n" +
     "  <span ng-switch-default>\n" +
     "    {{item[field.name]}}\n" +
     "  </span>\n" +

@@ -208,7 +208,8 @@ app.config(function (ConfigurationProvider) {
         currencyOptions: {
           symbol: '$',
           decimalDelimiter: '.',
-          thousandsDelimiter: ','
+          thousandsDelimiter: ',',
+          decimals: 2
         },
         label: 'Price',
         views: {

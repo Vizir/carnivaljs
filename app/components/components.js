@@ -14,6 +14,7 @@ angular.module('carnival.components', [
   'carnival.components.notification',
   'carnival.components.quickfilter-controller',
   'carnival.components.listingFieldFile',
+  'carnival.components.listingFieldCurrency',
   'carnival.components.uploader',
   'carnival.components.gallery',
   'carnival.components.listingFieldEnum'

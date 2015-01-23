@@ -31,7 +31,7 @@ angular.module('carnival.components.fields.currency', [])
       var decimalDelimiter   = scope.field.currencyOptions.decimalDelimiter || '.',
           thousandsDelimiter = scope.field.currencyOptions.thousandsDelimiter || '',
           currencySym        = scope.field.currencyOptions.symbol || '$',
-          decimals           = parseInt(attrs.currency, 10);
+          decimals           = parseInt(scope.field.currencyOptions.decimals, 10);
 
       if (isNaN(decimals)) {
         decimals = 2;
