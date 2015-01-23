@@ -2,7 +2,6 @@ angular.module('carnival')
 .controller('EditController', function ($rootScope, $scope, $stateParams, $state, Configuration, EntityResources) {
 
   var entity = $scope.entity = {};
-  
 
   var init = function () {
     $scope.entity = entity = EntityResources.prepareForEditState($stateParams.entity);
@@ -11,9 +10,6 @@ angular.module('carnival')
     .success(function (data) {
       entity.id = $stateParams.id;
       entity.datas = data;
-      for(var formName in entity.nestedForms){
-        //entity.nestedForms[formName].datas[entity.name] = data;
-      }
     });
   };
 
