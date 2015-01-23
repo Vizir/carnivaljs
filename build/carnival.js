@@ -42,6 +42,7 @@ angular.module('carnival', [
 }])
 .run(["Configuration", "Entity", function (Configuration, Entity){
   // Model entities
+  Configuration.addExtraStates();
   for (var i = 0, entities = Configuration.entities, x = entities.length; i < x; i++) {
     entities[i] = new Entity(entities[i].name, entities[i].options);
   }
