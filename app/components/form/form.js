@@ -33,6 +33,18 @@ angular.module('carnival.components.form', [])
 
         return false;
       };
+      var successSaveCallback = function(data){
+        if(Object.keys($scope.entity.nestedForms).length > 0){
+
+          if($scope.state === 'edit')
+            FormService.closeNested($scope.entity.name);
+
+          $scope.state = 'edit';
+          $scope.entity.datas = data;
+        }else{
+          FormService.closeNested($scope.entity.name);
+        }
+      };
 
       $scope.buttonAction = function(){
         if($scope.type === 'nested'){
@@ -43,19 +55,6 @@ angular.module('carnival.components.form', [])
             return;
           }
         }
-
-        var successSaveCallback = function(data){
-          if(Object.keys($scope.entity.nestedForms).length > 0){
-
-            if($scope.state === 'edit')
-              FormService.closeNested($scope.entity.name);
-
-            $scope.state = 'edit';
-            $scope.entity.datas = data;
-          }else{
-            FormService.closeNested($scope.entity.name);
-          }
-        };
 
         $scope.action.click(function(error, data){
           if(error){

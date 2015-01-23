@@ -22,7 +22,10 @@ describe('EntityUpdater', function(){
           ]
         },
         relatedResources: {
-          comments: [],
+          comments: [
+            {id: 1, name: 'comment1'},
+            {id: 2, name: 'comment2'}
+          ],
           categories: []
         },
 
@@ -88,9 +91,20 @@ describe('EntityUpdater', function(){
 
         EntityUpdater.updateEntity(parentEntity, parentEntity.fields[0], fieldData);
         expect(parentEntity.datas.comments.length).to.be.equal(3);
-        expect(parentEntity.relatedResources.comments.length).to.be.equal(1);
-
+        expect(parentEntity.relatedResources.comments.length).to.be.equal(3);
       });
+
+      describe('when are updating a nested item', function(){
+        it('should update the item', function(){
+          var updateData = parentEntity.datas.comments[0];
+          updateData.name = 'updatedCommnet';
+          EntityUpdater.updateEntity(parentEntity, parentEntity.fields[0], updateData);
+          expect(parentEntity.datas.comments.length).to.be.equal(2);
+          expect(parentEntity.datas.comments[0].name).to.be.equal(updateData.name);
+          expect(parentEntity.relatedResources.comments.length).to.be.equal(2);
+        });
+      });
+
     });
   });
 
