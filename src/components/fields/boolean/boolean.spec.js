@@ -2,7 +2,6 @@ describe('On carnival-boolean component', function () {
   var compile, element, scope, compiledElement;
 
   var setScopeData = function (scope) {
-    scope.data = true;
   };
 
   beforeEach(function () {
@@ -21,7 +20,13 @@ describe('On carnival-boolean component', function () {
 
   });
 
+  it('should not be checked', function () {
+    expect(element.isolateScope().data).to.equal(false);
+  });
+
   it('should be checked', function () {
+    scope.data = true;
+    scope.$digest();
     expect(element.isolateScope().data).to.equal(true);
   });
 

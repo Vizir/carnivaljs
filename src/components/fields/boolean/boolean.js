@@ -12,6 +12,10 @@ angular.module('carnival.components.fields.boolean', [])
       if (!scope.editable) {
         element.attr('disabled', 'true');
       }
+    },
+    controller: function($scope){
+      if($scope.data === undefined)
+        $scope.data = false;
     }
   };
 });
