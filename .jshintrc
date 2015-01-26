@@ -3,5 +3,6 @@
   "regexp": true,
   "globals": {
     "angular": false
-  }
+  },
+  "strict": false
 }
