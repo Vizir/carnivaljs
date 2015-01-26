@@ -578,7 +578,6 @@ angular.module('carnival.components.listingextraaction', [])
     },
     templateUrl: 'components/listing-extra-action/listing-extra-action.html',
     controller: ["$scope", "$stateParams", "Configuration", function($scope, $stateParams, Configuration){
-      var entityModel = Configuration.getEntity($stateParams.entity);
 
       var replaceWithParams = function(url){
         var regex =  /\/:([a-z]*)($ || \/)/;
