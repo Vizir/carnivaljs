@@ -14,16 +14,16 @@ module.exports = function(config) {
       'bower_components/angular-datepicker/dist/index.js',
       'bower_components/string-mask/src/string-mask.js',
       'dist/tmp/*.js',
-      'app/carnival.js',
-      'app/**/!(*spec).js',
+      'src/carnival.js',
+      'src/**/!(*spec).js',
       // Tests
       'bower_components/angular-mocks/angular-mocks.js',
       // Specs
-      'app/**/*.spec.js',
-      'app/*.spec.js'
+      'src/**/*.spec.js',
+      'src/*.spec.js'
     ],
     exclude: [],
-    preprocessors: {'app/**/!(*spec).js': ['coverage']},
+    preprocessors: {'src/**/!(*spec).js': ['coverage']},
     reporters: ['progress', 'coverage'],
     port: 9876,
     colors: true,
