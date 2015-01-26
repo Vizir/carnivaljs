@@ -4,23 +4,23 @@ module.exports = function (grunt) {
     pkg: grunt.file.readJSON('package.json'),
 
     jshint: {
-      all: ['Gruntfile.js', '!app/**/*.spec.js', 'app/**/*.js']
+      all: ['Gruntfile.js', '!src/**/*.spec.js', 'src/**/*.js']
     },
 
     html2js: {
       options: {
-        base: 'app',
+        base: 'src',
         module: 'carnival.templates'
       },
       dist: {
-        src: 'app/**/*.html',
+        src: 'src/**/*.html',
         dest: 'dist/tmp/templates.js'
       }
     },
 
     karma: {
       options: {
-        configFile: 'app/karma.conf.js'
+        configFile: 'src/karma.conf.js'
       },
       unit: {
         singleRun: true
@@ -37,9 +37,9 @@ module.exports = function (grunt) {
           banner: '/* CARNIVAL.JS */\n(function () {\n"use strict";\n',
           footer: '})();'
         },
-        src: ['app/**/*.js',
-              '!app/**/*.spec.js',
-              '!app/karma.conf.js',
+        src: ['src/**/*.js',
+              '!src/**/*.spec.js',
+              '!src/karma.conf.js',
               'dist/tmp/*.js',
               'bower_components/angular-ui-router/release/angular-ui-router.js',
               'bower_components/textAngular/src/textAngular.js',
@@ -80,7 +80,7 @@ module.exports = function (grunt) {
 
     watch: {
       dev: {
-        files: ['Gruntfile.js', '!app/**/*.spec.js', 'app/**/*.js', 'app/**/*.html'],
+        files: ['Gruntfile.js', '!src/**/*.spec.js', 'src/**/*.js', 'src/**/*.html'],
         tasks: ['html2js:dist', 'concat:dist', 'ngAnnotate:dist']
       },
       options: {
