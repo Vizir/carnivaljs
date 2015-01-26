@@ -85,7 +85,7 @@ describe('On Entities Model', function () {
       expect(entity.checkFieldView('color', 'index')).to.be.equal(true);
     });
   });
-  
+
   describe('actions', function(){
 
     describe('list', function(){
@@ -94,9 +94,9 @@ describe('On Entities Model', function () {
           expect(params !== null).to.be.equal(true);
         });
 
-        entity.getList('offset', 'limit', 'order', 'orderDir', 'search');  
-      }); 
-    }); 
+        entity.getList('offset', 'limit', 'order', 'orderDir', 'search');
+      });
+    });
 
     describe('getOne', function(){
       it('should make the correct request', function(){
@@ -104,9 +104,9 @@ describe('On Entities Model', function () {
           expect(params !== null).to.be.equal(true);
         });
 
-        entity.getOne(10);  
-      }); 
-    }); 
+        entity.getOne(10);
+      });
+    });
 
     describe('delete', function(){
       it('should make the correct request', function(){
@@ -114,9 +114,9 @@ describe('On Entities Model', function () {
           expect(params !== null).to.be.equal(true);
         });
 
-        entity.delete(10);  
-      }); 
-    }); 
+        entity.delete(10);
+      });
+    });
 
     describe('create', function(){
       it('should make the correct request', function(){
@@ -124,9 +124,9 @@ describe('On Entities Model', function () {
           expect(params !== null).to.be.equal(true);
         });
 
-        entity.create({name: 'Vizir'});  
-      }); 
-    }); 
+        entity.create({name: 'Vizir'});
+      });
+    });
 
     describe('update', function(){
       it('should make the correct request', function(){
@@ -134,9 +134,9 @@ describe('On Entities Model', function () {
           expect(params !== null).to.be.equal(true);
         });
 
-        entity.update(100, {name: 'Vizir'});  
-      }); 
-    }); 
+        entity.update(100, {name: 'Vizir'});
+      });
+    });
   });
 
   describe('actions with extraParams', function(){
@@ -155,8 +155,9 @@ describe('On Entities Model', function () {
           extra: 'extra'
         }
       };
-    
-    }); 
+
+    });
+
     describe('list', function(){
       it('should make the correct request', function(){
         sinon.stub(entity, 'request', function(params){
@@ -164,9 +165,9 @@ describe('On Entities Model', function () {
           expect(params.extraParams !== null).to.be.equal(true);
         });
 
-        entity.getList('offset', 'limit', 'order', 'orderDir', 'search');  
-      }); 
-    }); 
+        entity.getList('offset', 'limit', 'order', 'orderDir', 'search');
+      });
+    });
 
     describe('getOne', function(){
       it('should make the correct request', function(){
@@ -175,9 +176,9 @@ describe('On Entities Model', function () {
           expect(params.extraParams !== null).to.be.equal(true);
         });
 
-        entity.getOne(10);  
-      }); 
-    }); 
+        entity.getOne(10);
+      });
+    });
 
     describe('delete', function(){
       it('should make the correct request', function(){
@@ -186,9 +187,9 @@ describe('On Entities Model', function () {
           expect(params.extraParams !== null).to.be.equal(true);
         });
 
-        entity.delete(10);  
-      }); 
-    }); 
+        entity.delete(10);
+      });
+    });
 
     describe('create', function(){
       it('should make the correct request', function(){
@@ -197,9 +198,9 @@ describe('On Entities Model', function () {
           expect(params.extraParams !== null).to.be.equal(true);
         });
 
-        entity.create({name: 'Vizir'});  
-      }); 
-    }); 
+        entity.create({name: 'Vizir'});
+      });
+    });
 
     describe('update', function(){
       it('should make the correct request', function(){
@@ -208,9 +209,32 @@ describe('On Entities Model', function () {
           expect(params.extraParams !== null).to.be.equal(true);
         });
 
-        entity.update(100, {name: 'Vizir'});  
-      }); 
-    }); 
+        entity.update(100, {name: 'Vizir'});
+      });
+    });
+  });
+
+  describe('extraActions', function(){
+    beforeEach(function(){
+      datas.options.extraActions = {
+        'createComment':{
+          url: '/createComment/:id',
+          views: {
+            index: {
+              enable: true
+            }
+          }
+        }
+      };
+
+      entity = new Entity(datas.name, datas.options);
+
+    });
+
+    it('should parse extraAction', function(){
+      expect(entity.extraActions.length).to.be.equal(1);
+    });
+
   });
 
 

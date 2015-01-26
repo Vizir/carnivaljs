@@ -17,14 +17,10 @@ app.config(function (ConfigurationProvider) {
       }}
     ],
 
-    actions:{
+    extraActions:{
       'createComment':{
-        url: '/createComment/:id',
-        views: {
-          index: {
-            enable: true
-          }
-        }
+        label: 'New Comment',
+        url: '/createComment/:id'
       }
     },
 

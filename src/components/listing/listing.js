@@ -7,6 +7,7 @@ angular.module('carnival.components.listing', [])
       fields: '=',
       datas: '=',
       actions: '=',
+      extraActions: '=',
       identifier: '=',
       entityName: '='
     },

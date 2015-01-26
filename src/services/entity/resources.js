@@ -60,6 +60,7 @@ angular.module('carnival')
     entityWrapper.label = entityWrapper.model.label;
     entityWrapper.identifier = entityWrapper.model.identifier;
     entityWrapper.fields = [];
+    entityWrapper.extraActions = entityWrapper.model.extraActions;
     entityWrapper.datas = {};
     prepareFields(entityWrapper, stateName, parentEntity);
     prepareActions(entityWrapper, stateName, parentEntity);
