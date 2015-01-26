@@ -14,7 +14,7 @@ angular.module('carnival.components.form', [])
       editable: '='
     },
     templateUrl: 'components/form/form.html',
-    controller: function ($rootScope, $scope, utils, FormService, $element) {
+    controller: function ($rootScope, $scope, utils, FormService, $element, EntityResources) {
       $scope.utils = utils;
 
       if($scope.type !== 'nested'){
@@ -33,12 +33,13 @@ angular.module('carnival.components.form', [])
 
         return false;
       };
-      var successSaveCallback = function(data){
+      var saveCallbackForNested = function(data){
         if(Object.keys($scope.entity.nestedForms).length > 0){
 
           if($scope.state === 'edit')
             FormService.closeNested($scope.entity.name);
 
+          $scope.entity = EntityResources.prepareForEditState($scope.entity.name);
           $scope.state = 'edit';
           $scope.entity.datas = data;
         }else{
@@ -61,7 +62,7 @@ angular.module('carnival.components.form', [])
             console.log('Aconteceu um erro ao salvar');
           }else{
             if($scope.type === 'nested')
-              successSaveCallback(data);
+             saveCallbackForNested(data);
           }
         });
       };

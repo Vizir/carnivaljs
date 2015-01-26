@@ -12,7 +12,7 @@ angular.module('carnival.components.nested-form-area', [])
       editable: '='
     },
     templateUrl: 'components/nested-form/nested-form-area.html',
-    controller: function ($rootScope, $scope, $timeout, utils, $element,  $compile, FormService, Configuration) {
+    controller: function ($rootScope, $scope, $timeout, utils, $element,  $compile, FormService, Configuration, EntityResources) {
 
       $scope.canOpenNestedForm = function(){
         if(!$scope.entity.nestedForms[$scope.field.endpoint])
@@ -24,34 +24,35 @@ angular.module('carnival.components.nested-form-area', [])
         return true;
       };
 
-      var openNestedForm = function(){
-
-      };
-
-      $scope.openWithData = function(data){
-        var containerId = '#create_nested_'+ $scope.field.entityName;
-        $scope.entity.nestedForms[$scope.field.endpoint].datas = data;
+      $scope.openNestedForm = function(nestedEntity, data, state, containerId){
         if(FormService.isNestedOpen($scope.field.entityName)){
           FormService.closeNested($scope.field.entityName);
           $timeout(function(){
-            $scope.openWithData(data);
-          }, 100);
+            $scope.openNestedForm(nestedEntity, data, state, containerId);
+          }, 200);
           return;
         }
-        var state = 'create';
-        if(Object.keys(data).length > 0){
-          containerId = '#edit_nested_'+ $scope.field.entityName + '_' + data[$scope.field.identifier];
-          state = 'edit';
-        }
         FormService.openNested($scope.field.entityName);
-        var directive = '<carnival-nested-form state="'+state+'" type="nested" entity="entity.nestedForms[field.endpoint]"></carnival-nested-form></div>';
+        $scope.nestedEntity = nestedEntity;
+        nestedEntity.datas = data;
+        var directive = '<carnival-nested-form state="'+state+'" type="nested" entity="nestedEntity"></carnival-nested-form></div>';
         var newElement = $compile(directive)($scope);
         var nestedDiv = document.querySelector(containerId);
         angular.element(nestedDiv).append(newElement);
       };
 
+      $scope.openWithData = function(data){
+        var containerId = '#edit_nested_'+ $scope.field.entityName + '_' + data[$scope.field.identifier];
+        var state = 'edit';
+        var nestedEntity = EntityResources.prepareForEditState($scope.field.entityName);
+        $scope.openNestedForm(nestedEntity, data, state, containerId);
+      };
+
       $scope.open = function(){
-        $scope.openWithData({});
+        var containerId = '#create_nested_'+ $scope.field.entityName;
+        var state = 'create';
+        var nestedEntity = $scope.entity.nestedForms[$scope.field.endpoint];
+        $scope.openNestedForm(nestedEntity, {}, 'create', containerId);
       };
 
       $scope.isHasMany = function(){
