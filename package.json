@@ -1,16 +1,16 @@
 {
   "name": "carnivaljs",
   "version": "0.0.1",
-  "description": "",
+  "description": "Carnival JS",
   "main": "index.js",
   "scripts": {
-    "start:watch": "grunt dev",
-    "test": "grunt test:unit",
-    "test:watch": "grunt test:watch",
-    "build": "grunt build",
-    "bower:install": "bower install"
+    "install": "bower install",
+    "start": "grunt start",
+    "start:watch": "grunt start:watch",
+    "test": "grunt test",
+    "build": "grunt build"
   },
-  "author": "",
+  "author": "Vizir Software Studio",
   "license": "MIT",
   "dependencies": {
     "express": "^4.10.4"

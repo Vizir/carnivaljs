@@ -94,6 +94,13 @@ module.exports = function (grunt) {
           hostname: 'localhost',
           port: 3010
         }
+      },
+      keep: {
+        options: {
+          hostname: 'localhost',
+          port: 3010,
+          keepalive: true
+        }
       }
     },
 
@@ -128,9 +135,9 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
 
-  grunt.registerTask('dev', ['connect', 'watch:dev']);
+  grunt.registerTask('start', ['concat:dist', 'concat:css', 'ngAnnotate:dist', 'clean:tmp', 'html2js:dist', 'connect:keep']);
+  grunt.registerTask('start:watch', ['connect:server', 'watch:dev']);
   grunt.registerTask('test', ['jshint', 'html2js:dist', 'karma:unit', 'clean:tmp']);
-  grunt.registerTask('test:watch', ['jshint', 'html2js:dist', 'karma:continuous', 'clean:tmp']);
-  grunt.registerTask('build', ['jshint', 'html2js:dist', 'concat:dist', 'concat:css', 'cssmin', 'ngAnnotate:dist', 'karma:unit', 'uglify:dist',  'clean:tmp']);
+  grunt.registerTask('build', ['jshint', 'html2js:dist', 'concat:dist', 'concat:css', 'ngAnnotate:dist', 'karma:unit', 'uglify:dist', 'cssmin', 'clean:tmp']);
 
 };
