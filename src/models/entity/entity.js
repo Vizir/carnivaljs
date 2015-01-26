@@ -25,6 +25,22 @@ angular.module('carnival')
     that.fields = _fields;
   };
 
+  var buildExtraActions = function (extraActions, that){
+    that.extraActions = [];
+    if(!extraActions)
+      return;
+
+    for(var actionName in extraActions){
+      var action = {
+        name: actionName,
+        url: extraActions[actionName].url,
+        label: extraActions[actionName].label
+      };
+
+      that.extraActions.push(action);
+    }
+  };
+
   function Entity (name, options) {
     if (Configuration.validateEntities) EntityValidation(name, options); // TODO DSL VALIDATION
     this.name = name;
@@ -36,6 +52,7 @@ angular.module('carnival')
     this.pagination     = options.pagination     || null;
     this.fields = [];
     buildFields(options.fields, this);
+    buildExtraActions(options.extraActions, this);
   }
 
   Entity.prototype.checkFieldView = function (name, view) {

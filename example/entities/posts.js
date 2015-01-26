@@ -17,6 +17,13 @@ app.config(function (ConfigurationProvider) {
       }}
     ],
 
+    extraActions:{
+      'createComment':{
+        label: 'New Comment',
+        url: '/createComment/:id'
+      }
+    },
+
     fields: {
       // ---- ID Field ----
       'id' /* required: field name */: {
