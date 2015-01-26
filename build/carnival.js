@@ -336,7 +336,7 @@ angular.module('carnival.components.fields.hasMany', [])
         if(f === null)
           return true;
 
-        if(f.type === 'belongsTo' && f.required)
+        if(f.type === 'belongsTo' && !$scope.field.views[$scope.state].showOptions)
           return false;
 
         return true;
@@ -1512,6 +1512,7 @@ angular.module('carnival')
       _views[view_name] = {
         enable:    views[view_name].enable,
         searchable: views[view_name].searchable || true,
+        showOptions: views[view_name].showOptions || false,
         enableDelete: views[view_name].enableDelete || false,
         nested: views[view_name].nested || false,
         sortable:   views[view_name].sortable   || true
@@ -1542,7 +1543,6 @@ angular.module('carnival')
       label:      fieldParams.label,
       foreignKey: fieldParams.foreignKey,
       endpoint:   fieldParams.endpoint || field_name,
-      required:   fieldParams.required,
       field:      fieldParams.field,
       identifier: fieldParams.identifier || 'id',
       entityName: fieldParams.entityName || field_name,
