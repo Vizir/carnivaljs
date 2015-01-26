@@ -28,7 +28,7 @@ angular.module('carnival.components.fields.hasMany', [])
         if(f === null)
           return true;
 
-        if(f.type === 'belongsTo' && f.required)
+        if(f.type === 'belongsTo' && !$scope.field.views[$scope.state].showOptions)
           return false;
 
         return true;

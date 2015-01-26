@@ -18,7 +18,7 @@ describe('On carnival-has-many component', function () {
   tagEntity = {
         name: 'tags',
         fields: [
-          {name: 'post', type: 'hasMany', entityName: 'posts', required: 'true'}
+          {name: 'post', type: 'hasMany', entityName: 'posts', views:{edit: {showOptions: 'true'}}}
         ]
       };
   tagEntity.getFieldByEntityName = function(){return tagEntity.fields[0];};
@@ -103,7 +103,7 @@ describe('On carnival-has-many component', function () {
     });
   });
 
-  describe('the fieldEntity has a belongsTo relation with the entity and is required', function(){
+  describe('the fieldEntity has a belongsTo relation with the entity and is shoyOptions == true', function(){
     it('should not render the selec', function(){
       tagEntity.fields[0].type = 'belongsTo';
       scope.$digest();
