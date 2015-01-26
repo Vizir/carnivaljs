@@ -85,7 +85,6 @@ app.config(function (ConfigurationProvider) {
       },
       'post': {
         type: 'belongsTo',
-        required: true,
         entityName: 'posts',
         label: 'Post',
         endpoint: 'posts',
