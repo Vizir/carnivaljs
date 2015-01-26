@@ -17,6 +17,17 @@ app.config(function (ConfigurationProvider) {
       }}
     ],
 
+    actions:{
+      'createComment':{
+        url: '/createComment/:id',
+        views: {
+          index: {
+            enable: true
+          }
+        }
+      }
+    },
+
     fields: {
       // ---- ID Field ----
       'id' /* required: field name */: {
