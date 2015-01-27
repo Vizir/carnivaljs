@@ -25,8 +25,13 @@ angular.module('carnival.components.form', [])
        return FormService.canShowThisField($scope.entity, $scope.state, field);
       };
 
+      var entityHasNesteds = function(){
+        return ($scope.entity.nestedForms && Object.keys($scope.entity.nestedForms).length > 0);
+      };
+
       var saveCallbackForNested = function(error, data){
-        FormService.closeNested($scope.entity.name);
+        if($scope.state === 'edit' || !entityHasNesteds())
+          FormService.closeNested($scope.entity.name);
         var parentEntity = $scope.entity.parentEntity;
         var fieldToUpdate = parentEntity.model.getFieldByEntityName($scope.entity.name);
         EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
