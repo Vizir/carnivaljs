@@ -45,6 +45,8 @@ angular.module('carnival.components.nested-form-area', [])
         var containerId = '#edit_nested_'+ $scope.field.entityName + '_' + data[$scope.field.identifier];
         var state = 'edit';
         var nestedEntity = EntityResources.prepareForEditState($scope.field.entityName);
+        var identifier = nestedEntity.identifier;
+        nestedEntity[identifier] = data[identifier];
         $scope.openNestedForm(nestedEntity, data, state, containerId);
       };
 
