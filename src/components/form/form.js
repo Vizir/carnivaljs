@@ -14,7 +14,7 @@ angular.module('carnival.components.form', [])
       editable: '='
     },
     templateUrl: 'components/form/form.html',
-    controller: function ($rootScope, $scope, utils, FormService, $element, EntityResources) {
+    controller: function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater) {
       $scope.utils = utils;
 
       if($scope.type !== 'nested'){
@@ -26,20 +26,14 @@ angular.module('carnival.components.form', [])
       };
 
       var saveCallbackForNested = function(error, data){
-        if(Object.keys($scope.entity.nestedForms).length > 0){
-
-          if($scope.state === 'edit')
-            FormService.closeNested($scope.entity.name);
-          var parentEntity = $scope.entity.parentEntity;
-          $scope.entity = EntityResources.prepareForEditState($scope.entity.name);
-          $scope.entity.parentEntity = parentEntity;
-          var identifier = $scope.entity.identifier;
-          $scope.entity[identifier] = data[identifier];
-          $scope.state = 'edit';
-          $scope.entity.datas = data;
-        }else{
-          FormService.closeNested($scope.entity.name);
-        }
+        FormService.closeNested($scope.entity.name);
+        var parentEntity = $scope.entity.parentEntity;
+        var fieldToUpdate = parentEntity.model.getFieldByEntityName($scope.entity.name);
+        EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
+        var identifier = $scope.entity.identifier;
+        $scope.entity[identifier] = data[identifier];
+        $scope.state = 'edit';
+        $scope.entity.datas = data;
       };
 
       $scope.buttonAction = function(){
