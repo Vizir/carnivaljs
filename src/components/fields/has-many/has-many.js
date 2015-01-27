@@ -18,20 +18,12 @@ angular.module('carnival.components.fields.hasMany', [])
         element.attr('disabled', 'true');
       }
     },
-    controller: function ($rootScope, $scope, utils, Configuration, $compile, $element, $document) {
+    controller: function ($rootScope, $scope, utils, Configuration, $compile, $element, $document, FormService) {
       $scope.utils = utils;
 
 
       $scope.canShow = function(){
-        var fieldEntity = Configuration.getEntity($scope.field.entityName);
-        var f = fieldEntity.getFieldByEntityName($scope.entity.name);
-        if(f === null)
-          return true;
-
-        if(f.type === 'belongsTo' && !$scope.field.views[$scope.state].showOptions)
-          return false;
-
-        return true;
+        return FormService.canShowThisHasManyField($scope.entity, $scope.state, $scope.field);
       };
 
       var getItemIndex = function(id, items){

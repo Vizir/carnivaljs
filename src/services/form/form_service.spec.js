@@ -1,8 +1,10 @@
 describe('FormService', function(){
+  var Configuration, FormService;
   beforeEach(function(){
     module('carnival');
     inject(function(_FormService_, _Configuration_, _ActionFactory_){
       FormService = _FormService_;
+      Configuration = _Configuration_;
     });
   });
 
@@ -82,4 +84,55 @@ describe('FormService', function(){
     });
   });
 
+  describe('#canShowThisField', function(){
+    describe('when field is not a relation', function(){
+      var formEntity = {};
+      var state = 'create';
+      var field = {type: 'string'};
+
+      it('should return true', function(){
+        var result = FormService.canShowThisField(formEntity, state, field);
+        expect(result).to.be.equal(true);
+      });
+    });
+
+    describe('when is a nested Form', function(){
+      describe('when field entity is the same as the parentEntity', function(){
+        var formEntity = {parentEntity:{name: 'nameOfEntity'}};
+        var state = 'create';
+        var field = {type: 'hasMany', entityName: 'nameOfEntity'};
+        it('should respond false', function(){
+          var result = FormService.canShowThisField(formEntity, state, field);
+          expect(result).to.be.equal(false);
+        });
+      });
+    });
+
+    describe('when is a create', function(){
+      describe('when the relation are hasMany <=> belongsTo', function(){
+        var formEntity = {};
+        var state = 'create';
+        var field = {type: 'hasMany', views: {create: {showOptions: false}}, entityName: 'nameOfEntity'};
+
+        var relationField = {
+            getFieldByEntityName: function(){
+              return {
+                type: 'belongsTo'
+              };
+            }
+          };
+          beforeEach(function(){
+            sinon.stub(Configuration, 'getEntity', function(){
+              return relationField;
+            });
+          });
+
+        it('should return false', function(){
+          var result = FormService.canShowThisField(formEntity, state, field);
+          expect(result).to.be.equal(false);
+        });
+      });
+    });
+
+  });
 });
