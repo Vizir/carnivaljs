@@ -482,7 +482,7 @@ angular.module('carnival.components.form', [])
       editable: '='
     },
     templateUrl: 'components/form/form.html',
-    controller: ["$rootScope", "$scope", "utils", "FormService", "$element", "EntityResources", function ($rootScope, $scope, utils, FormService, $element, EntityResources) {
+    controller: ["$rootScope", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater) {
       $scope.utils = utils;
 
       if($scope.type !== 'nested'){
@@ -494,20 +494,14 @@ angular.module('carnival.components.form', [])
       };
 
       var saveCallbackForNested = function(error, data){
-        if(Object.keys($scope.entity.nestedForms).length > 0){
-
-          if($scope.state === 'edit')
-            FormService.closeNested($scope.entity.name);
-          var parentEntity = $scope.entity.parentEntity;
-          $scope.entity = EntityResources.prepareForEditState($scope.entity.name);
-          $scope.entity.parentEntity = parentEntity;
-          var identifier = $scope.entity.identifier;
-          $scope.entity[identifier] = data[identifier];
-          $scope.state = 'edit';
-          $scope.entity.datas = data;
-        }else{
-          FormService.closeNested($scope.entity.name);
-        }
+        FormService.closeNested($scope.entity.name);
+        var parentEntity = $scope.entity.parentEntity;
+        var fieldToUpdate = parentEntity.model.getFieldByEntityName($scope.entity.name);
+        EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
+        var identifier = $scope.entity.identifier;
+        $scope.entity[identifier] = data[identifier];
+        $scope.state = 'edit';
+        $scope.entity.datas = data;
       };
 
       $scope.buttonAction = function(){
@@ -1379,9 +1373,7 @@ angular.module('carnival')
           callback(false, data);
         }else{
           if(isToNestedForm){
-            var parentEntity = entity.parentEntity;
-            var fieldToUpdate = parentEntity.model.getFieldByEntityName(entity.name);
-            EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
+
           }
           else{
             new Notification('Item created with success!', 'success');
@@ -1406,7 +1398,7 @@ angular.module('carnival')
       entity.model.update(entity.id, ParametersParser.parse(entity.datas, entity))
       .success(function () {
         if(callback){
-          callback(false, entity);
+          callback(false, entity.datas);
         }else{
           new Notification('Modifications saved with success!', 'success');
           $state.go('main.show', { entity: entity.model.name, id: entity.id });
