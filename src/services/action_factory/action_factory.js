@@ -9,9 +9,7 @@ angular.module('carnival')
           callback(false, data);
         }else{
           if(isToNestedForm){
-            var parentEntity = entity.parentEntity;
-            var fieldToUpdate = parentEntity.model.getFieldByEntityName(entity.name);
-            EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
+
           }
           else{
             new Notification('Item created with success!', 'success');
@@ -36,7 +34,7 @@ angular.module('carnival')
       entity.model.update(entity.id, ParametersParser.parse(entity.datas, entity))
       .success(function () {
         if(callback){
-          callback(false, entity);
+          callback(false, entity.datas);
         }else{
           new Notification('Modifications saved with success!', 'success');
           $state.go('main.show', { entity: entity.model.name, id: entity.id });
