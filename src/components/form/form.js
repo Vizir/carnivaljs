@@ -22,16 +22,7 @@ angular.module('carnival.components.form', [])
       }
 
       $scope.canShow = function(field){
-        if(field.type != 'hasMany' && field.type != 'belongsTo')
-          return true;
-
-        if(!$scope.entity.parentEntity)
-          return true;
-
-        if($scope.entity.parentEntity.name !== field.entityName)
-            return true;
-
-        return false;
+       return FormService.canShowThisField($scope.entity, $scope.state, field);
       };
 
       var saveCallbackForNested = function(error, data){
@@ -39,8 +30,9 @@ angular.module('carnival.components.form', [])
 
           if($scope.state === 'edit')
             FormService.closeNested($scope.entity.name);
-
+          var parentEntity = $scope.entity.parentEntity;
           $scope.entity = EntityResources.prepareForEditState($scope.entity.name);
+          $scope.entity.parentEntity = parentEntity;
           var identifier = $scope.entity.identifier;
           $scope.entity[identifier] = data[identifier];
           $scope.state = 'edit';
