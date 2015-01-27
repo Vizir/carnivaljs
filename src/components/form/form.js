@@ -25,7 +25,7 @@ angular.module('carnival.components.form', [])
         if(field.type != 'hasMany' && field.type != 'belongsTo')
           return true;
 
-        if(!$scope.entity.parentEntity)
+        if($scope.type !== 'nested')
           return true;
 
         if($scope.entity.parentEntity.name !== field.entityName)
