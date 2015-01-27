@@ -5,21 +5,23 @@ angular.module('carnival')
     return function (callback) {
       entity.model.create(ParametersParser.parse(entity.datas, entity))
       .success(function (data, status, headers, config) {
-        if(isToNestedForm){
-          var parentEntity = entity.parentEntity;
-          var fieldToUpdate = parentEntity.model.getFieldByEntityName(entity.name);
-          EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
-        }
-        else{
-          new Notification('Item created with success!', 'success');
-          if(hasNestedForm)
-            $state.go('main.edit', { entity: entity.model.name, id: data.id });
-          else
-            $state.go('main.list', { entity: entity.model.name });
-        }
         if(callback){
           callback(false, data);
+        }else{
+          if(isToNestedForm){
+            var parentEntity = entity.parentEntity;
+            var fieldToUpdate = parentEntity.model.getFieldByEntityName(entity.name);
+            EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
+          }
+          else{
+            new Notification('Item created with success!', 'success');
+            if(hasNestedForm)
+              $state.go('main.edit', { entity: entity.model.name, id: data.id });
+            else
+              $state.go('main.list', { entity: entity.model.name });
+          }
         }
+
       })
       .error(function (data) {
         new Notification(data, 'danger');
@@ -30,14 +32,19 @@ angular.module('carnival')
   };
 
   this.buildEditFunction = function(entity){
-    return function () {
+    return function (callback) {
       entity.model.update(entity.id, ParametersParser.parse(entity.datas, entity))
       .success(function () {
-        new Notification('Modifications saved with success!', 'success');
-        $state.go('main.show', { entity: entity.model.name, id: entity.id });
+        if(callback){
+          callback(false, entity);
+        }else{
+          new Notification('Modifications saved with success!', 'success');
+          $state.go('main.show', { entity: entity.model.name, id: entity.id });
+        }
       })
       .error(function (data) {
         new Notification(data, 'danger');
+        callback(true, data);
       });
     };
   };

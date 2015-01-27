@@ -58,9 +58,6 @@ angular.module('carnival.components.fields.hasMany', [])
         }
       };
 
-
-
-
     }
   };
 });
