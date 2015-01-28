@@ -497,9 +497,13 @@ angular.module('carnival.components.form', [])
         return ($scope.entity.nestedForms && Object.keys($scope.entity.nestedForms).length > 0);
       };
 
-      var saveCallbackForNested = function(error, data){
-        if($scope.state === 'edit' || !entityHasNesteds())
-          FormService.closeNested($scope.entity.name);
+      var updateEntity = function(){
+        var parentEntity = $scope.entity.parentEntity;
+        $scope.entity = EntityResources.prepareForEditState($scope.entity.name);
+        $scope.entity.parentEntity = parentEntity;
+      };
+
+      var updateEntityData = function(data){
         var parentEntity = $scope.entity.parentEntity;
         var fieldToUpdate = parentEntity.model.getFieldByEntityName($scope.entity.name);
         EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
@@ -507,6 +511,13 @@ angular.module('carnival.components.form', [])
         $scope.entity[identifier] = data[identifier];
         $scope.state = 'edit';
         $scope.entity.datas = data;
+      };
+
+      var saveCallbackForNested = function(error, data){
+        if($scope.state === 'edit' || !entityHasNesteds())
+          FormService.closeNested($scope.entity.name);
+        updateEntity();
+        updateEntityData(data);
       };
 
       $scope.buttonAction = function(){
@@ -1204,19 +1215,6 @@ angular.module('carnival').provider('Configuration', ["$stateProvider", function
 angular.module('carnival')
 .factory('Entity', ["EntityValidation", "$http", "Configuration", "RequestBuilder", "FieldBuilder", function (EntityValidation, $http, Configuration, RequestBuilder, FieldBuilder) {
 
-  var buildViews = function (views) {
-    var _views = {};
-    Object.keys(views).forEach(function (view_name) {
-      _views[view_name] = {
-        enable:     views[view_name].enable,
-        searchable: views[view_name].searchable || true,
-        nested:     views[view_name].nested || false,
-        sortable:   views[view_name].sortable   || true
-      };
-    });
-    return _views;
-  };
-
   var buildFields = function (fields, that) {
     var _fields = [];
 
@@ -1501,13 +1499,14 @@ angular.module('carnival')
   var buildViews = function (views) {
     var _views = {};
     Object.keys(views).forEach(function (view_name) {
+      var view_options = views[view_name];
       _views[view_name] = {
-        enable:    views[view_name].enable,
-        searchable: views[view_name].searchable || true,
-        showOptions: views[view_name].showOptions || false,
-        enableDelete: views[view_name].enableDelete || false,
-        nested: views[view_name].nested || false,
-        sortable:   views[view_name].sortable   || true
+        enable:    view_options.enable,
+        searchable: typeof view_options.searchable === 'boolean' ? view_options.searchable : true,
+        showOptions: view_options.showOptions || false,
+        enableDelete: view_options.enableDelete || false,
+        nested: view_options.nested || false,
+        sortable: typeof view_options.sortable === 'boolean' ? view_options.sortable : true
       };
     });
     return _views;
