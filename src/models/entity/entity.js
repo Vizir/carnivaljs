@@ -1,19 +1,6 @@
 angular.module('carnival')
 .factory('Entity', function (EntityValidation, $http, Configuration, RequestBuilder, FieldBuilder) {
 
-  var buildViews = function (views) {
-    var _views = {};
-    Object.keys(views).forEach(function (view_name) {
-      _views[view_name] = {
-        enable:     views[view_name].enable,
-        searchable: views[view_name].searchable || true,
-        nested:     views[view_name].nested || false,
-        sortable:   views[view_name].sortable   || true
-      };
-    });
-    return _views;
-  };
-
   var buildFields = function (fields, that) {
     var _fields = [];
 

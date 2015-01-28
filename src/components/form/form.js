@@ -29,9 +29,13 @@ angular.module('carnival.components.form', [])
         return ($scope.entity.nestedForms && Object.keys($scope.entity.nestedForms).length > 0);
       };
 
-      var saveCallbackForNested = function(error, data){
-        if($scope.state === 'edit' || !entityHasNesteds())
-          FormService.closeNested($scope.entity.name);
+      var updateEntity = function(){
+        var parentEntity = $scope.entity.parentEntity;
+        $scope.entity = EntityResources.prepareForEditState($scope.entity.name);
+        $scope.entity.parentEntity = parentEntity;
+      };
+
+      var updateEntityData = function(data){
         var parentEntity = $scope.entity.parentEntity;
         var fieldToUpdate = parentEntity.model.getFieldByEntityName($scope.entity.name);
         EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
@@ -39,6 +43,13 @@ angular.module('carnival.components.form', [])
         $scope.entity[identifier] = data[identifier];
         $scope.state = 'edit';
         $scope.entity.datas = data;
+      };
+
+      var saveCallbackForNested = function(error, data){
+        if($scope.state === 'edit' || !entityHasNesteds())
+          FormService.closeNested($scope.entity.name);
+        updateEntity();
+        updateEntityData(data);
       };
 
       $scope.buttonAction = function(){

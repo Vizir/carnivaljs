@@ -4,13 +4,14 @@ angular.module('carnival')
   var buildViews = function (views) {
     var _views = {};
     Object.keys(views).forEach(function (view_name) {
+      var view_options = views[view_name];
       _views[view_name] = {
-        enable:    views[view_name].enable,
-        searchable: views[view_name].searchable || true,
-        showOptions: views[view_name].showOptions || false,
-        enableDelete: views[view_name].enableDelete || false,
-        nested: views[view_name].nested || false,
-        sortable:   views[view_name].sortable   || true
+        enable:    view_options.enable,
+        searchable: typeof view_options.searchable === 'boolean' ? view_options.searchable : true,
+        showOptions: view_options.showOptions || false,
+        enableDelete: view_options.enableDelete || false,
+        nested: view_options.nested || false,
+        sortable: typeof view_options.sortable === 'boolean' ? view_options.sortable : true
       };
     });
     return _views;
