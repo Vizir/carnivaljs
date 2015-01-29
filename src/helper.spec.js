@@ -1,6 +1,4 @@
-SpecHelper = {
-
-};
+SpecHelper = {};
 
 SpecHelper.catConfiguration = {
       name: 'cats',
