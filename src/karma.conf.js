@@ -6,8 +6,8 @@ module.exports = function(config) {
       // Carnival
       'bower_components/angular/angular.js',
       'bower_components/angular-ui-router/release/angular-ui-router.js',
-      'bower_components/angular-loading-bar/build/*.js',
       'bower_components/ng-wig/dist/ng-wig.js',
+      'bower_components/angular-loading-bar/build/loading-bar.js',
       'bower_components/angular-translate/*.js',
       'bower_components/angular-datepicker/dist/index.js',
       'bower_components/string-mask/src/string-mask.js',
