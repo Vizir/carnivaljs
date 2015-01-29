@@ -1,5 +1,5 @@
 module.exports = {
   tmp: {
-    src: ['build/tmp']
+    src: ['build/tmp', 'coverage']
   }
 };
