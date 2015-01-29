@@ -91,7 +91,8 @@ app.config(function (ConfigurationProvider) {
         label: 'Published',
         views: {
           index: {
-            enable: true
+            enable: true,
+            searchable: false
           },
           create: {
             enable: true
