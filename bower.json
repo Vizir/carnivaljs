@@ -16,7 +16,6 @@
     "bootstrap": "~3.3.1",
     "angular-ui-router": "~0.2.13",
     "angular-translate": "~2.5.2",
-    "textAngular": "1.2.2",
     "font-awesome": "~4.2.0",
     "angular-datepicker": "~1.0.3",
     "string-mask": "~0.2.0"
