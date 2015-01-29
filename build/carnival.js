@@ -156,7 +156,11 @@ angular.module('carnival.components.fields.boolean', [])
       if (!scope.editable) {
         element.attr('disabled', 'true');
       }
-    }
+    },
+    controller: ["$scope", function($scope){
+      if($scope.data === undefined)
+        $scope.data = false;
+    }]
   };
 });
 
@@ -326,20 +330,12 @@ angular.module('carnival.components.fields.hasMany', [])
         element.attr('disabled', 'true');
       }
     },
-    controller: ["$rootScope", "$scope", "utils", "Configuration", "$compile", "$element", "$document", function ($rootScope, $scope, utils, Configuration, $compile, $element, $document) {
+    controller: ["$rootScope", "$scope", "utils", "Configuration", "$compile", "$element", "$document", "FormService", function ($rootScope, $scope, utils, Configuration, $compile, $element, $document, FormService) {
       $scope.utils = utils;
 
 
       $scope.canShow = function(){
-        var fieldEntity = Configuration.getEntity($scope.field.entityName);
-        var f = fieldEntity.getFieldByEntityName($scope.entity.name);
-        if(f === null)
-          return true;
-
-        if(f.type === 'belongsTo' && f.required)
-          return false;
-
-        return true;
+        return FormService.canShowThisHasManyField($scope.entity, $scope.state, $scope.field);
       };
 
       var getItemIndex = function(id, items){
@@ -365,9 +361,6 @@ angular.module('carnival.components.fields.hasMany', [])
           $scope.datas[$scope.field.name].push(selectedItem);
         }
       };
-
-
-
 
     }]
   };
@@ -489,7 +482,7 @@ angular.module('carnival.components.form', [])
       editable: '='
     },
     templateUrl: 'components/form/form.html',
-    controller: ["$rootScope", "$scope", "utils", "FormService", "$element", function ($rootScope, $scope, utils, FormService, $element) {
+    controller: ["$rootScope", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater) {
       $scope.utils = utils;
 
       if($scope.type !== 'nested'){
@@ -497,33 +490,41 @@ angular.module('carnival.components.form', [])
       }
 
       $scope.canShow = function(field){
-        if(field.type != 'hasMany' && field.type != 'belongsTo')
-          return true;
-
-        if(!$scope.entity.parentEntity)
-          return true;
-
-        if($scope.entity.parentEntity.name !== field.entityName)
-            return true;
-
-        return false;
+       return FormService.canShowThisField($scope.entity, $scope.state, field);
       };
-      var successSaveCallback = function(data){
-        if(Object.keys($scope.entity.nestedForms).length > 0){
 
-          if($scope.state === 'edit')
-            FormService.closeNested($scope.entity.name);
+      var entityHasNesteds = function(){
+        return ($scope.entity.nestedForms && Object.keys($scope.entity.nestedForms).length > 0);
+      };
 
-          $scope.state = 'edit';
-          $scope.entity.datas = data;
-        }else{
+      var updateEntity = function(){
+        var parentEntity = $scope.entity.parentEntity;
+        $scope.entity = EntityResources.prepareForEditState($scope.entity.name);
+        $scope.entity.parentEntity = parentEntity;
+      };
+
+      var updateEntityData = function(data){
+        var parentEntity = $scope.entity.parentEntity;
+        var fieldToUpdate = parentEntity.model.getFieldByEntityName($scope.entity.name);
+        EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
+        var identifier = $scope.entity.identifier;
+        $scope.entity[identifier] = data[identifier];
+        $scope.state = 'edit';
+        $scope.entity.datas = data;
+      };
+
+      var saveCallbackForNested = function(error, data){
+        if($scope.state === 'edit' || !entityHasNesteds())
           FormService.closeNested($scope.entity.name);
-        }
+        updateEntity();
+        updateEntityData(data);
       };
 
       $scope.buttonAction = function(){
+        var callbackFunction = null;
         if($scope.type === 'nested'){
           FormService.saveNested($scope.entity.name);
+          callbackFunction = saveCallbackForNested;
         }else{
           if(FormService.hasUnsavedNested()){
             console.log('Não é possivel salvar o form pois existem nested não salvos');
@@ -531,14 +532,7 @@ angular.module('carnival.components.form', [])
           }
         }
 
-        $scope.action.click(function(error, data){
-          if(error){
-            console.log('Aconteceu um erro ao salvar');
-          }else{
-            if($scope.type === 'nested')
-              successSaveCallback(data);
-          }
-        });
+        $scope.action.click(callbackFunction);
       };
     }]
   };
@@ -578,7 +572,6 @@ angular.module('carnival.components.listingextraaction', [])
     },
     templateUrl: 'components/listing-extra-action/listing-extra-action.html',
     controller: ["$scope", "$stateParams", "Configuration", function($scope, $stateParams, Configuration){
-      var entityModel = Configuration.getEntity($stateParams.entity);
 
       var replaceWithParams = function(url){
         var regex =  /\/:([a-z]*)($ || \/)/;
@@ -837,7 +830,7 @@ angular.module('carnival.components.nested-form-area', [])
       editable: '='
     },
     templateUrl: 'components/nested-form/nested-form-area.html',
-    controller: ["$rootScope", "$scope", "$timeout", "utils", "$element", "$compile", "FormService", "Configuration", function ($rootScope, $scope, $timeout, utils, $element,  $compile, FormService, Configuration) {
+    controller: ["$rootScope", "$scope", "$timeout", "utils", "$element", "$compile", "FormService", "Configuration", "EntityResources", function ($rootScope, $scope, $timeout, utils, $element,  $compile, FormService, Configuration, EntityResources) {
 
       $scope.canOpenNestedForm = function(){
         if(!$scope.entity.nestedForms[$scope.field.endpoint])
@@ -849,34 +842,38 @@ angular.module('carnival.components.nested-form-area', [])
         return true;
       };
 
-      var openNestedForm = function(){
-
-      };
-
-      $scope.openWithData = function(data){
-        var containerId = '#create_nested_'+ $scope.field.entityName;
-        $scope.entity.nestedForms[$scope.field.endpoint].datas = data;
+      $scope.openNestedForm = function(nestedEntity, data, state, containerId){
         if(FormService.isNestedOpen($scope.field.entityName)){
           FormService.closeNested($scope.field.entityName);
           $timeout(function(){
-            $scope.openWithData(data);
-          }, 100);
+            $scope.openNestedForm(nestedEntity, data, state, containerId);
+          }, 200);
           return;
         }
-        var state = 'create';
-        if(Object.keys(data).length > 0){
-          containerId = '#edit_nested_'+ $scope.field.entityName + '_' + data[$scope.field.identifier];
-          state = 'edit';
-        }
         FormService.openNested($scope.field.entityName);
-        var directive = '<carnival-nested-form state="'+state+'" type="nested" entity="entity.nestedForms[field.endpoint]"></carnival-nested-form></div>';
+        nestedEntity.parentEntity = $scope.entity;
+        $scope.nestedEntity = nestedEntity;
+        nestedEntity.datas = data;
+        var directive = '<carnival-nested-form state="'+state+'" type="nested" entity="nestedEntity"></carnival-nested-form></div>';
         var newElement = $compile(directive)($scope);
         var nestedDiv = document.querySelector(containerId);
         angular.element(nestedDiv).append(newElement);
       };
 
+      $scope.openWithData = function(data){
+        var containerId = '#edit_nested_'+ $scope.field.entityName + '_' + data[$scope.field.identifier];
+        var state = 'edit';
+        var nestedEntity = EntityResources.prepareForEditState($scope.field.entityName);
+        var identifier = nestedEntity.identifier;
+        nestedEntity[identifier] = data[identifier];
+        $scope.openNestedForm(nestedEntity, data, state, containerId);
+      };
+
       $scope.open = function(){
-        $scope.openWithData({});
+        var containerId = '#create_nested_'+ $scope.field.entityName;
+        var state = 'create';
+        var nestedEntity = $scope.entity.nestedForms[$scope.field.endpoint];
+        $scope.openNestedForm(nestedEntity, {}, 'create', containerId);
       };
 
       $scope.isHasMany = function(){
@@ -1218,19 +1215,6 @@ angular.module('carnival').provider('Configuration', ["$stateProvider", function
 angular.module('carnival')
 .factory('Entity', ["EntityValidation", "$http", "Configuration", "RequestBuilder", "FieldBuilder", function (EntityValidation, $http, Configuration, RequestBuilder, FieldBuilder) {
 
-  var buildViews = function (views) {
-    var _views = {};
-    Object.keys(views).forEach(function (view_name) {
-      _views[view_name] = {
-        enable:     views[view_name].enable,
-        searchable: views[view_name].searchable || true,
-        nested:     views[view_name].nested || false,
-        sortable:   views[view_name].sortable   || true
-      };
-    });
-    return _views;
-  };
-
   var buildFields = function (fields, that) {
     var _fields = [];
 
@@ -1388,21 +1372,21 @@ angular.module('carnival')
     return function (callback) {
       entity.model.create(ParametersParser.parse(entity.datas, entity))
       .success(function (data, status, headers, config) {
-        if(isToNestedForm){
-          var parentEntity = entity.parentEntity;
-          var fieldToUpdate = parentEntity.model.getFieldByEntityName(entity.name);
-          EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
-        }
-        else{
-          new Notification('Item created with success!', 'success');
-          if(hasNestedForm)
-            $state.go('main.edit', { entity: entity.model.name, id: data.id });
-          else
-            $state.go('main.list', { entity: entity.model.name });
-        }
         if(callback){
           callback(false, data);
+        }else{
+          if(isToNestedForm){
+
+          }
+          else{
+            new Notification('Item created with success!', 'success');
+            if(hasNestedForm)
+              $state.go('main.edit', { entity: entity.model.name, id: data.id });
+            else
+              $state.go('main.list', { entity: entity.model.name });
+          }
         }
+
       })
       .error(function (data) {
         new Notification(data, 'danger');
@@ -1413,14 +1397,19 @@ angular.module('carnival')
   };
 
   this.buildEditFunction = function(entity){
-    return function () {
+    return function (callback) {
       entity.model.update(entity.id, ParametersParser.parse(entity.datas, entity))
       .success(function () {
-        new Notification('Modifications saved with success!', 'success');
-        $state.go('main.show', { entity: entity.model.name, id: entity.id });
+        if(callback){
+          callback(false, entity.datas);
+        }else{
+          new Notification('Modifications saved with success!', 'success');
+          $state.go('main.show', { entity: entity.model.name, id: entity.id });
+        }
       })
       .error(function (data) {
         new Notification(data, 'danger');
+        callback(true, data);
       });
     };
   };
@@ -1510,12 +1499,14 @@ angular.module('carnival')
   var buildViews = function (views) {
     var _views = {};
     Object.keys(views).forEach(function (view_name) {
+      var view_options = views[view_name];
       _views[view_name] = {
-        enable:    views[view_name].enable,
-        searchable: views[view_name].searchable || true,
-        enableDelete: views[view_name].enableDelete || false,
-        nested: views[view_name].nested || false,
-        sortable:   views[view_name].sortable   || true
+        enable:    view_options.enable,
+        searchable: typeof view_options.searchable === 'boolean' ? view_options.searchable : true,
+        showOptions: view_options.showOptions || false,
+        enableDelete: view_options.enableDelete || false,
+        nested: view_options.nested || false,
+        sortable: typeof view_options.sortable === 'boolean' ? view_options.sortable : true
       };
     });
     return _views;
@@ -1543,7 +1534,6 @@ angular.module('carnival')
       label:      fieldParams.label,
       foreignKey: fieldParams.foreignKey,
       endpoint:   fieldParams.endpoint || field_name,
-      required:   fieldParams.required,
       field:      fieldParams.field,
       identifier: fieldParams.identifier || 'id',
       entityName: fieldParams.entityName || field_name,
@@ -1748,6 +1738,36 @@ angular.module('carnival')
 
   this.closeNested = function(formId){
     delete this.nesteds[formId];
+  };
+
+  var isARelation = function(field){
+    if(field.type != 'hasMany' && field.type != 'belongsTo')
+      return false;
+    return true;
+  };
+
+  this.canShowThisField = function(formEntity, state, field){
+    if(!isARelation(field))
+      return true;
+
+    if(formEntity.parentEntity){
+      if(formEntity.parentEntity.name === field.entityName)
+          return false;
+    }
+
+    if(state === 'create' && field.type === 'hasMany'){
+      return this.canShowThisHasManyField(formEntity, state, field);
+    }
+    return true;
+  };
+
+  this.canShowThisHasManyField = function(formEntity, state, field){
+    var fieldEntity = Configuration.getEntity(field.entityName);
+    var relationField = fieldEntity.getFieldByEntityName(formEntity.name);
+    if(relationField.type === 'belongsTo' && !field.views[state].showOptions)
+      return false;
+
+    return true;
   };
 }]);
 
@@ -2633,7 +2653,6 @@ angular.module("components/nested-form/nested-form.html", []).run(["$templateCac
     "<a class='close-nested btn btn-default btn-xs' ng-click='close()'>Close</a>\n" +
     "  <h3>{{ 'Create' | translate }} {{ entity.label }}</h3>\n" +
     "  <carnival-form type='nested' entity='entity' fields=\"entity.fields\" action=\"entity.action\" datas=\"entity.datas\" state=\"{{state}}\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form>\n" +
-    "\n" +
     "</div>\n" +
     "");
 }]);
