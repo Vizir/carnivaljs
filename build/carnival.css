@@ -68,8 +68,8 @@
 .close-nested{
   float: right;
 }
-.carnival-wysiwyg {
-  height: 280px;
+.nw-editor {
+  height: 230px !important;
 }
 /*!
  * Bootstrap v3.3.2 (http://getbootstrap.com)
