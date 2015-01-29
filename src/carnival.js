@@ -3,7 +3,8 @@ angular.module('carnival', [
   'ui.router',
   'carnival.components',
   'pascalprecht.translate',
-  'datePicker'
+  'datePicker',
+  'ngWig'
 ])
 .config(function ($stateProvider, $urlRouterProvider, $translateProvider, $locationProvider) {
 
