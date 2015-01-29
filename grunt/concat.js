@@ -10,9 +10,7 @@ module.exports = {
       '!src/karma.conf.js',
       'build/tmp/*.js',
       'bower_components/angular-ui-router/release/angular-ui-router.js',
-      'bower_components/textAngular/src/textAngular.js',
-      'bower_components/textAngular/src/textAngular-sanitize.js',
-      'bower_components/textAngular/src/textAngularSetup.js',
+      'bower_components/ng-wig/dist/ng-wig.js',
       'bower_components/angular-translate/angular-translate.js',
       'bower_components/angular-datepicker/dist/index.js',
       'bower_components/string-mask/src/string-mask.js'
