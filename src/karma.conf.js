@@ -13,7 +13,7 @@ module.exports = function(config) {
       'bower_components/angular-translate/*.js',
       'bower_components/angular-datepicker/dist/index.js',
       'bower_components/string-mask/src/string-mask.js',
-      'dist/tmp/*.js',
+      'build/tmp/*.js',
       'src/carnival.js',
       'src/**/!(*spec).js',
       // Tests

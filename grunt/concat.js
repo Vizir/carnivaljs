@@ -4,18 +4,18 @@ module.exports = {
       banner: '/* CARNIVAL.JS */\n(function () {\n"use strict";\n',
       footer: '})();'
     },
-    src: ['src/**/*.js',
-          '!src/**/*.spec.js',
-          '!src/karma.conf.js',
-          'dist/tmp/*.js',
-          'bower_components/angular-ui-router/release/angular-ui-router.js',
-          'bower_components/textAngular/src/textAngular.js',
-          'bower_components/textAngular/src/textAngular-sanitize.js',
-          'bower_components/textAngular/src/textAngularSetup.js',
-          'bower_components/angular-translate/angular-translate.js',
-          'bower_components/angular-datepicker/dist/index.js',
-          'bower_components/string-mask/src/string-mask.js'
-
+    src: [
+      'src/**/*.js',
+      '!src/**/*.spec.js',
+      '!src/karma.conf.js',
+      'build/tmp/*.js',
+      'bower_components/angular-ui-router/release/angular-ui-router.js',
+      'bower_components/textAngular/src/textAngular.js',
+      'bower_components/textAngular/src/textAngular-sanitize.js',
+      'bower_components/textAngular/src/textAngularSetup.js',
+      'bower_components/angular-translate/angular-translate.js',
+      'bower_components/angular-datepicker/dist/index.js',
+      'bower_components/string-mask/src/string-mask.js'
     ],
     dest: 'build/carnival.js'
   },

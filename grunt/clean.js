@@ -1,5 +1,5 @@
 module.exports = {
   tmp: {
-    src: ['dist/tmp']
+    src: ['build/tmp']
   }
 };

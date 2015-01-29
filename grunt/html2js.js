@@ -5,6 +5,6 @@ module.exports = {
   },
   dist: {
     src: 'src/**/*.html',
-    dest: 'dist/tmp/templates.js'
+    dest: 'build/tmp/templates.js'
   }
 };
