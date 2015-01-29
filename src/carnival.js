@@ -4,7 +4,8 @@ angular.module('carnival', [
   'carnival.components',
   'pascalprecht.translate',
   'datePicker',
-  'ngWig'
+  'ngWig',
+  'angular-loading-bar'
 ])
 .config(function ($stateProvider, $urlRouterProvider, $translateProvider, $locationProvider) {
 
