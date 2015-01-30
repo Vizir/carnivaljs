@@ -242,15 +242,9 @@ angular.module('carnival.components.fields.date', [])
     restrict: 'E',
     replace: true,
     scope: {
-      data: '=',
-      editable: '='
+      data: '='
     },
-    templateUrl: 'components/fields/date/date.html',
-    link: function (scope, element, attrs) {
-      if (!scope.editable) {
-        element.attr('disabled', 'true');
-      }
-    }
+    templateUrl: 'components/fields/date/date.html'
   };
 });
 
@@ -2225,7 +2219,7 @@ angular.module("components/fields/currency/currency.html", []).run(["$templateCa
 angular.module("components/fields/date/date.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/fields/date/date.html",
     "<div>\n" +
-    "  <input type=\"datetime\" date-time ng-model=\"data\" view=\"date\" ></input>\n" +
+    "  <input type=\"datetime\" date-time ng-model=\"$parent.data\">\n" +
     "</div>\n" +
     "");
 }]);
