@@ -515,10 +515,12 @@ angular.module('carnival.components.form', [])
       };
 
       var saveCallbackForNested = function(error, data){
-        if($scope.state === 'edit' || !entityHasNesteds())
-          FormService.closeNested($scope.entity.name);
-        updateEntity();
-        updateEntityData(data);
+        if(!error){
+          if($scope.state === 'edit' || !entityHasNesteds())
+            FormService.closeNested($scope.entity.name);
+          updateEntity();
+          updateEntityData(data);
+        }
       };
 
       $scope.buttonAction = function(){
