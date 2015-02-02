@@ -12,7 +12,7 @@ angular.module('carnival.components.nested-form-area', [])
       editable: '='
     },
     templateUrl: 'components/nested-form/nested-form-area.html',
-    controller: function ($rootScope, $scope, $timeout, utils, $element,  $compile, FormService, Configuration, EntityResources) {
+    controller: function ($rootScope, $scope, $timeout, utils, $element,  $compile, FormService, Configuration, EntityResources, Notification) {
 
       $scope.canOpenNestedForm = function(){
         if(!$scope.entity.nestedForms[$scope.field.endpoint])
