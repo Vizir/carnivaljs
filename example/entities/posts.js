@@ -92,7 +92,7 @@ app.config(function (ConfigurationProvider) {
         views: {
           index: {
             enable: true,
-            searchable: false
+            searchable: true
           },
           create: {
             enable: true
@@ -224,7 +224,7 @@ app.config(function (ConfigurationProvider) {
           index: {
             enable: true,
             sortable: false,
-            searchable: false
+            searchable: true
           },
           create: {
             enable: true
@@ -249,7 +249,7 @@ app.config(function (ConfigurationProvider) {
           index: {
             enable: true,
             sortable: false,
-            searchable: false
+            searchable: true
           },
           create: {
             enable: true

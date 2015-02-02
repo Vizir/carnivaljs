@@ -2544,8 +2544,12 @@ angular.module("components/search-controller/search-controller.html", []).run(["
     "  <hr/>\n" +
     "    <p ng-repeat=\"field in fields\" ng-if=\"field.views.index.searchable\" ng-switch=\"field.type\">\n" +
     "      <label ng-if=\"field.type !== 'hasMany'\">{{ field.label }}</label>\n" +
-    "      <carnival-text-field ng-switch-when=\"text\" label=\"field.label\" data=\"searchParams[field.name]\" editable=\"true\"></carnival-text-field>\n" +
-    "      <carnival-string-field ng-switch-when=\"string\" label=\"field.label\" data=\"searchParams[field.name]\" editable=\"true\"></carnival-string-field>\n" +
+    "      <carnival-text-field ng-switch-when=\"wysiwyg\" data=\"searchParams[field.name]\" editable=\"true\"></carnival-text-field>\n" +
+    "      <carnival-text-field ng-switch-when=\"text\" data=\"searchParams[field.name]\" editable=\"true\"></carnival-text-field>\n" +
+    "      <carnival-string-field ng-switch-when=\"string\" data=\"searchParams[field.name]\" editable=\"true\"></carnival-string-field>\n" +
+    "      <carnival-boolean-field ng-switch-when=\"boolean\" data=\"searchParams[field.name]\" editable=\"true\"></carnival-boolean-field>\n" +
+    "      <carnival-currency-field ng-switch-when=\"currency\" data=\"searchParams[field.name]\" field=\"field\"></carnival-currency-field>\n" +
+    "      <carnival-enum-field ng-switch-when=\"enum\" data=\"searchParams[field.name]\" field=\"field\"></carnival-enum-field>\n" +
     "      <carnival-select-field ng-switch-when=\"belongsTo\" editable=\"true\" field=\"field.field\" identifier=\"field.identifier\" items=\"relatedResources[field.endpoint]\" data=\"searchParams[field.foreignKey]\"></carnival-select-field>\n" +
     "      <carnival-number-field ng-switch-when=\"number\" data=\"searchParams[field.name]\" label=\"field.label\" editable=\"true\"></carnival-number-field>\n" +
     "    </p>\n" +
