@@ -3,7 +3,7 @@ angular.module('carnival.components.nested-form-area', [])
   return {
     restrict: 'E',
     replace: true,
-    scope: {Notification
+    scope: {
       entity: '=',
       field: '=',
       state: '@',
