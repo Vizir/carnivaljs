@@ -10,7 +10,7 @@ angular.module('carnival', [
   'ngWig',
   'angular-loading-bar'
 ])
-.config(["$stateProvider", "$urlRouterProvider", "$translateProvider", "$locationProvider", function ($stateProvider, $urlRouterProvider, $translateProvider, $locationProvider) {
+.config(function ($stateProvider, $urlRouterProvider, $translateProvider, $locationProvider) {
 
   $urlRouterProvider.otherwise('/');
   $stateProvider
@@ -40,14 +40,14 @@ angular.module('carnival', [
       controller: 'EditController'
     });
 
-}])
-.run(["Configuration", "Entity", function (Configuration, Entity){
+})
+.run(function (Configuration, Entity){
   // Model entities
   Configuration.addExtraStates();
   for (var i = 0, entities = Configuration.entities, x = entities.length; i < x; i++) {
     entities[i] = new Entity(entities[i].name, entities[i].options);
   }
-}]);
+});
 
 angular.module('carnival.components.button', [])
 .directive('carnivalButton', function () {
@@ -98,7 +98,7 @@ angular.module('carnival.components.delete-button', [])
       itemId: '='
     },
     templateUrl: 'components/delete-button/delete-button.html',
-    controller: ["$scope", function ($scope) {
+    controller: function ($scope) {
 
       $scope.isDeleting = false;
 
@@ -113,7 +113,7 @@ angular.module('carnival.components.delete-button', [])
       $scope.confirm = function () {
         $scope.action($scope.itemId);
       };
-    }]
+    }
   };
 });
 
@@ -137,9 +137,9 @@ angular.module('carnival.components.fields.belongsTo', [])
         element.attr('disabled', 'true');
       }
     },
-    controller: ["$rootScope", "$scope", function ($rootScope, $scope) {
+    controller: function ($rootScope, $scope) {
 
-    }]
+    }
   };
 });
 
@@ -158,15 +158,15 @@ angular.module('carnival.components.fields.boolean', [])
         element.attr('disabled', 'true');
       }
     },
-    controller: ["$scope", function($scope){
+    controller: function($scope){
       if($scope.data === undefined)
         $scope.data = false;
-    }]
+    }
   };
 });
 
 angular.module('carnival.components.fields.currency', [])
-.directive('carnivalCurrencyField', ["$filter", function ($filter) {
+.directive('carnivalCurrencyField', function ($filter) {
   return {
     restrict: 'E',
     scope: {
@@ -175,8 +175,8 @@ angular.module('carnival.components.fields.currency', [])
     },
     templateUrl: 'components/fields/currency/currency.html'
   };
-}])
-.directive('currency', ["$parse", function ($parse) {
+})
+.directive('currency', function ($parse) {
   return {
     restrict: 'A',
     require: '?ngModel',
@@ -234,7 +234,7 @@ angular.module('carnival.components.fields.currency', [])
 
     }
   };
-}]);
+});
 
 angular.module('carnival.components.fields.date', [])
 .directive('carnivalDateField', function () {
@@ -287,7 +287,7 @@ angular.module('carnival.components.fields.file', [])
       editable: '='
     },
     templateUrl: 'components/fields/file/file.html',
-    controller: ["$scope", "$http", "Configuration", function ($scope, $http, Configuration) {
+    controller: function ($scope, $http, Configuration) {
 
       $scope.checkIfIsImage = function (file) {
         return (/\.(gif|jpg|jpeg|tiff|png)$/i).test(file);
@@ -301,7 +301,7 @@ angular.module('carnival.components.fields.file', [])
         return typeof $scope.field.gallery !== 'undefined';
       };
 
-    }]
+    }
   };
 });
 
@@ -325,7 +325,7 @@ angular.module('carnival.components.fields.hasMany', [])
         element.attr('disabled', 'true');
       }
     },
-    controller: ["$rootScope", "$scope", "utils", "Configuration", "$compile", "$element", "$document", "FormService", function ($rootScope, $scope, utils, Configuration, $compile, $element, $document, FormService) {
+    controller: function ($rootScope, $scope, utils, Configuration, $compile, $element, $document, FormService) {
       $scope.utils = utils;
 
 
@@ -357,7 +357,7 @@ angular.module('carnival.components.fields.hasMany', [])
         }
       };
 
-    }]
+    }
   };
 });
 
@@ -398,9 +398,9 @@ angular.module('carnival.components.fields.select', [])
         element.attr('disabled', 'true');
       }
     },
-    controller: ["$rootScope", "$scope", "utils", function ($rootScope, $scope, utils) {
+    controller: function ($rootScope, $scope, utils) {
       $scope.utils = utils;
-    }]
+    }
   };
 });
 
@@ -477,7 +477,7 @@ angular.module('carnival.components.form', [])
       editable: '='
     },
     templateUrl: 'components/form/form.html',
-    controller: ["$rootScope", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater) {
+    controller: function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater) {
       $scope.utils = utils;
 
       if($scope.type !== 'nested'){
@@ -531,7 +531,7 @@ angular.module('carnival.components.form', [])
 
         $scope.action.click(callbackFunction);
       };
-    }]
+    }
   };
 });
 
@@ -544,7 +544,7 @@ angular.module('carnival.components.gallery', [])
       gallery: '=',
       fileUrl: '='
     },
-    controller: ["$scope", function ($scope) {
+    controller: function ($scope) {
       if (!window.CARNIVAL) window.CARNIVAL = {};
       if (!window.CARNIVAL.gallery) window.CARNIVAL.gallery = {};
       window.CARNIVAL.gallery.sendUrl = function (url) {
@@ -553,7 +553,7 @@ angular.module('carnival.components.gallery', [])
       $scope.open = function () {
         window.open($scope.gallery.url, 'WINDOW_GALLERY', 'dialog');
       };
-    }],
+    },
     templateUrl: 'components/gallery/gallery.html'
   };
 });
@@ -568,7 +568,7 @@ angular.module('carnival.components.listingextraaction', [])
       item: '='
     },
     templateUrl: 'components/listing-extra-action/listing-extra-action.html',
-    controller: ["$scope", "$stateParams", "Configuration", function($scope, $stateParams, Configuration){
+    controller: function($scope, $stateParams, Configuration){
 
       var replaceWithParams = function(url){
         var regex =  /\/:([a-z]*)($ || \/)/;
@@ -598,7 +598,7 @@ angular.module('carnival.components.listingextraaction', [])
       $scope.getLabel = function(){
         return $scope.extraAction.label;
       };
-    }]
+    }
   };
 });
 
@@ -612,7 +612,7 @@ angular.module('carnival.components.listingfieldbelongsto', [])
       field: '='
     },
     templateUrl: 'components/listing-field-belongs-to/listing-field-belongs-to.html',
-    controller: ["$scope", "$stateParams", "Configuration", function($scope, $stateParams, Configuration){
+    controller: function($scope, $stateParams, Configuration){
       var entityModel = Configuration.getEntity($stateParams.entity);
 
       $scope.getUrl = function(){
@@ -625,7 +625,7 @@ angular.module('carnival.components.listingfieldbelongsto', [])
       $scope.getLabel = function(){
         return $scope.item[$scope.field.name][$scope.field.field];
       };
-    }]
+    }
   };
 });
 
@@ -702,11 +702,11 @@ angular.module('carnival.components.listingFieldFile', [])
       field: '='
     },
     templateUrl: 'components/listing-field-file/listing-field-file.html',
-    controller: ["$scope", function ($scope) {
+    controller: function ($scope) {
       $scope.checkIfIsImage = function (file) {
         return (/\.(gif|jpg|jpeg|tiff|png)$/i).test(file);
       };
-    }]
+    }
   };
 });
 
@@ -720,7 +720,7 @@ angular.module('carnival.components.listingfieldhasmany', [])
       field: '='
     },
     templateUrl: 'components/listing-field-has-many/listing-field-has-many.html',
-    controller: ["$scope", "$stateParams", "Configuration", "urlParams", function ($scope, $stateParams, Configuration, urlParams) {
+    controller: function ($scope, $stateParams, Configuration, urlParams) {
       var entity = Configuration.getEntity($stateParams.entity);
       
       var getRelationField = function(fields){
@@ -744,7 +744,7 @@ angular.module('carnival.components.listingfieldhasmany', [])
 
         return '#/list/' + $scope.field.endpoint + '?page=1&search.' + hasManyEntityField.foreignKey + '=' + $scope.item[entity.identifier];
       };
-    }]
+    }
   };
 });
 
@@ -788,7 +788,7 @@ angular.module('carnival.components.navbar', [])
       menuItems: '='
     },
     templateUrl: 'components/navbar/navbar.html',
-    controller: ["$scope", "$stateParams", "urlParams", "$location", function ($scope, $stateParams, urlParams, $location) {
+    controller: function ($scope, $stateParams, urlParams, $location) {
     
       var urlPrefix = "#";
       if($location.$$html5){
@@ -809,7 +809,7 @@ angular.module('carnival.components.navbar', [])
           return false;
         }
       };
-    }]
+    }
   };
 });
 
@@ -818,7 +818,7 @@ angular.module('carnival.components.nested-form-area', [])
   return {
     restrict: 'E',
     replace: true,
-    scope: {
+    scope: {Notification
       entity: '=',
       field: '=',
       state: '@',
@@ -827,7 +827,7 @@ angular.module('carnival.components.nested-form-area', [])
       editable: '='
     },
     templateUrl: 'components/nested-form/nested-form-area.html',
-    controller: ["$rootScope", "$scope", "$timeout", "utils", "$element", "$compile", "FormService", "Configuration", "EntityResources", function ($rootScope, $scope, $timeout, utils, $element,  $compile, FormService, Configuration, EntityResources) {
+    controller: function ($rootScope, $scope, $timeout, utils, $element,  $compile, FormService, Configuration, EntityResources, Notification) {
 
       $scope.canOpenNestedForm = function(){
         if(!$scope.entity.nestedForms[$scope.field.endpoint])
@@ -907,7 +907,7 @@ angular.module('carnival.components.nested-form-area', [])
 
         deleteIfNeeded(id);
       };
-    }]
+    }
   };
 });
 
@@ -922,7 +922,7 @@ angular.module('carnival.components.nested-form', [])
       editable: '='
     },
     templateUrl: 'components/nested-form/nested-form.html',
-    controller: ["$rootScope", "$scope", "utils", "$element", "FormService", function ($rootScope, $scope, utils, $element, FormService) {
+    controller: function ($rootScope, $scope, utils, $element, FormService) {
 
       $scope.isClosed = function(){
         return !FormService.nesteds[$scope.entity.name];
@@ -939,7 +939,7 @@ angular.module('carnival.components.nested-form', [])
           $element.remove();
         }
       });
-    }]
+    }
   };
 });
 
@@ -950,9 +950,9 @@ angular.module('carnival.components.notification', [])
     replace: true,
     scope: {},
     templateUrl: 'components/notification/notification.html',
-    controller: ["$scope", "notificationFactory", function ($scope, notificationFactory) {
+    controller: function ($scope, notificationFactory) {
       $scope.notifications = notificationFactory;
-    }]
+    }
   };
 });
 
@@ -965,7 +965,7 @@ angular.module('carnival.components.order-controller', [])
       field: '='
     },
     templateUrl: 'components/order-controller/order-controller.html',
-    controller: ["$scope", "urlParams", function ($scope, urlParams) {
+    controller: function ($scope, urlParams) {
       $scope.toggleOrder = function () {
         var orderDirValue = (urlParams.getParam('order') !== $scope.field) ? 'asc' :
                             (urlParams.getParam('orderDir') === 'asc' && urlParams.getParam('order') === $scope.field) ? 'desc' : 'asc';
@@ -977,7 +977,7 @@ angular.module('carnival.components.order-controller', [])
         if (urlParams.getParam('order') === $scope.field && urlParams.getParam('orderDir') === 'asc') return true;
         return false;
       };
-    }]
+    }
   };
 });
 
@@ -991,7 +991,7 @@ angular.module('carnival.components.pagination-controller', [])
       totalPages: '='
     },
     templateUrl: 'components/pagination-controller/pagination-controller.html',
-    controller: ["$scope", "$rootScope", "urlParams", function ($scope, $rootScope, urlParams) {
+    controller: function ($scope, $rootScope, urlParams) {
       $scope.jumpTo = function (page) {
         urlParams.setParam('page', page, true);
       };
@@ -1006,7 +1006,7 @@ angular.module('carnival.components.pagination-controller', [])
       $rootScope.$on('paramsChange', function () {
         $scope.currentPage = parseInt(urlParams.getParam('page'), 10);
       });
-    }]
+    }
   };
 });
 
@@ -1019,7 +1019,7 @@ angular.module('carnival.components.quickfilter-controller', [])
       filters: '='
     },
     templateUrl: 'components/quickfilter-controller/quickfilter-controller.html',
-    controller: ["$scope", "urlParams", function ($scope, urlParams) {
+    controller: function ($scope, urlParams) {
 
       $scope.isSelected = function (field, value) {
         return value === urlParams.getParam('search.' + field);
@@ -1029,7 +1029,7 @@ angular.module('carnival.components.quickfilter-controller', [])
         urlParams.setParam('search.' + field, value, true);
       };
 
-    }]
+    }
   };
 });
 
@@ -1043,7 +1043,7 @@ angular.module('carnival.components.search-controller', [])
       relatedResources: '='
     },
     templateUrl: 'components/search-controller/search-controller.html',
-    controller: ["$scope", "urlParams", function ($scope, urlParams) {
+    controller: function ($scope, urlParams) {
 
       var getSearchParams = function () {
         $scope.searchParams = {};
@@ -1065,7 +1065,7 @@ angular.module('carnival.components.search-controller', [])
 
       getSearchParams();
 
-    }]
+    }
   };
 });
 
@@ -1079,7 +1079,7 @@ angular.module('carnival.components.uploader', [])
       fileUrl: '='
     },
     templateUrl: 'components/uploader/uploader.html',
-    controller: ["$scope", "$http", "Uploader", "Notification", "Configuration", function ($scope, $http, Uploader, Notification, Configuration) {
+    controller: function ($scope, $http, Uploader, Notification, Configuration) {
 
       var getRequestUrl = function () {
         if ($scope.uploader.endpoint && $scope.uploader.endpointUrl) {
@@ -1103,11 +1103,11 @@ angular.module('carnival.components.uploader', [])
         });
 
       };
-    }]
+    }
   };
 })
 
-.directive('fileInput', ["$parse", function ($parse) {
+.directive('fileInput', function ($parse) {
   return {
     restrict: 'A',
     link: function (scope, element, attributes) {
@@ -1118,9 +1118,9 @@ angular.module('carnival.components.uploader', [])
       });
     }
   };
-}]);
+});
 
-angular.module('carnival').provider('Configuration', ["$stateProvider", function($stateProvider) {
+angular.module('carnival').provider('Configuration', function($stateProvider) {
 
   var appName = null;
   var baseApiUrl = null;
@@ -1207,10 +1207,10 @@ angular.module('carnival').provider('Configuration', ["$stateProvider", function
 
   };
 
-}]);
+});
 
 angular.module('carnival')
-.factory('Entity', ["EntityValidation", "$http", "Configuration", "RequestBuilder", "FieldBuilder", function (EntityValidation, $http, Configuration, RequestBuilder, FieldBuilder) {
+.factory('Entity', function (EntityValidation, $http, Configuration, RequestBuilder, FieldBuilder) {
 
   var buildFields = function (fields, that) {
     var _fields = [];
@@ -1341,7 +1341,7 @@ angular.module('carnival')
 
   return Entity;
 
-}]);
+});
 
 angular.module('carnival')
 .factory('EntityValidation', function () {
@@ -1363,7 +1363,7 @@ angular.module('carnival')
 });
 
 angular.module('carnival')
-.service('ActionFactory', ["Notification", "$state", "ParametersParser", "EntityUpdater", function (Notification, $state, ParametersParser, EntityUpdater) {
+.service('ActionFactory', function (Notification, $state, ParametersParser, EntityUpdater) {
 
   this.buildCreateFunction = function(entity, hasNestedForm, isToNestedForm){
     return function (callback) {
@@ -1488,7 +1488,7 @@ angular.module('carnival')
         return {};
     }
   };
-}]);
+});
 
 angular.module('carnival')
 .service('FieldBuilder', function () {
@@ -1549,7 +1549,7 @@ angular.module('carnival')
 });
 
 angular.module('carnival')
-.service('EntityResources', ["Configuration", "ActionFactory", function (Configuration, ActionFactory) {
+.service('EntityResources', function (Configuration, ActionFactory) {
   var self = this;
   var getNestedForm = function(entity, stateName, field){
     if(!field.views[stateName] || !field.views[stateName].nested)
@@ -1637,7 +1637,7 @@ angular.module('carnival')
   this.prepareForListState = function(entityName){
     return this.prepareForState(entityName, 'index');
   };
-}]);
+});
 
 angular.module('carnival')
 .service('EntityUpdater', function () {
@@ -1698,7 +1698,7 @@ angular.module('carnival')
 });
 
 angular.module('carnival')
-.service('FormService', ["Configuration", "ActionFactory", function (Configuration, ActionFactory) {
+.service('FormService', function (Configuration, ActionFactory) {
   this.nesteds = {};
   this.init = function(entity){
     this.entity = entity;
@@ -1766,7 +1766,7 @@ angular.module('carnival')
 
     return true;
   };
-}]);
+});
 
 
 angular.module('carnival')
@@ -1805,7 +1805,7 @@ angular.module('carnival')
 });
 
 angular.module('carnival')
-.service('Notification', ["$timeout", "notificationFactory", function ($timeout, notificationFactory) {
+.service('Notification', function ($timeout, notificationFactory) {
 
   var notificationKiller = function () {
     notificationFactory.splice(notificationFactory.length - 1, 1);
@@ -1820,10 +1820,10 @@ angular.module('carnival')
 
   return Notification;
 
-}]);
+});
 
 angular.module('carnival')
-.service('RequestBuilder', ["HttpAdapter", function (HttpAdapter) {
+.service('RequestBuilder', function (HttpAdapter) {
   
   var prebuildRequest = function(method, params){
     var request = {};
@@ -1880,7 +1880,7 @@ angular.module('carnival')
     request.data = params.entityData;
     return request;
   };
-}]);
+});
 
 
 angular.module('carnival')
@@ -1953,7 +1953,7 @@ angular.module('carnival')
 });
 
 angular.module('carnival')
-.service('Uploader', ["$http", "Configuration", function ($http, Configuration) {
+.service('Uploader', function ($http, Configuration) {
 
   var upload = function (requestUrl, file) {
     var formData = new FormData();
@@ -1968,10 +1968,10 @@ angular.module('carnival')
     upload: upload
   };
 
-}]);
+});
 
 angular.module('carnival')
-.service('urlParams', ["$rootScope", "$location", "$state", function ($rootScope, $location, $state) {
+.service('urlParams', function ($rootScope, $location, $state) {
 
   this.defaultParams = {
     page: 1
@@ -2004,7 +2004,7 @@ angular.module('carnival')
 
   this.reload = this.emitLoadEvent;
 
-}]);
+});
 
 angular.module('carnival')
 .service('utils', function () {
@@ -2025,7 +2025,7 @@ angular.module('carnival')
 });
 
 angular.module('carnival')
-.controller('CreateController', ["$scope", "$stateParams", "$state", "Configuration", "Notification", "EntityResources", function ($scope, $stateParams, $state, Configuration, Notification, EntityResources) {
+.controller('CreateController', function ($scope, $stateParams, $state, Configuration, Notification, EntityResources) {
 
   var entity = $scope.entity = {};
 
@@ -2037,10 +2037,10 @@ angular.module('carnival')
 
   init();
 
-}]);
+});
 
 angular.module('carnival')
-.controller('EditController', ["$rootScope", "$scope", "$stateParams", "$state", "Configuration", "EntityResources", function ($rootScope, $scope, $stateParams, $state, Configuration, EntityResources) {
+.controller('EditController', function ($rootScope, $scope, $stateParams, $state, Configuration, EntityResources) {
 
   var entity = $scope.entity = {};
 
@@ -2056,10 +2056,10 @@ angular.module('carnival')
 
   init();
 
-}]);
+});
 
 angular.module('carnival')
-.controller('ListController', ["$rootScope", "$scope", "$stateParams", "$state", "Configuration", "Notification", "urlParams", "EntityResources", function ($rootScope, $scope, $stateParams, $state, Configuration, Notification, urlParams, EntityResources) {
+.controller('ListController', function ($rootScope, $scope, $stateParams, $state, Configuration, Notification, urlParams, EntityResources) {
 
   var entity = $scope.entity = {},
 
@@ -2134,10 +2134,10 @@ angular.module('carnival')
 
   init();
 
-}]);
+});
 
 angular.module('carnival')
-.controller('ShowController', ["$scope", "$stateParams", "$state", "Configuration", "EntityResources", function ($scope, $stateParams, $state, Configuration, EntityResources) {
+.controller('ShowController', function ($scope, $stateParams, $state, Configuration, EntityResources) {
 
   var entity = $scope.entity = {};
 
@@ -2165,15 +2165,15 @@ angular.module('carnival')
 
   init();
 
-}]);
+});
 
 angular.module('carnival')
-.controller('MainController', ["$scope", "Configuration", function ($scope, Configuration) {
+.controller('MainController', function ($scope, Configuration) {
 
   var app_name = $scope.app_name = Configuration.getAppName(),
       menu_items = $scope.menu_items = Configuration.getNavbarItems();
 
-}]);
+});
 
 angular.module('carnival.templates', ['components/button/button.html', 'components/delete-button/delete-button.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/currency/currency.html', 'components/fields/date/date.html', 'components/fields/enum/enum.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/listing-extra-action/listing-extra-action.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-currency/listing-field-currency.html', 'components/listing-field-enum/listing-field-enum.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/nested-form/nested-form-area.html', 'components/nested-form/nested-form.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
 
@@ -9783,7 +9783,7 @@ function getVisibleHours(date) {
   return hours;
 }
 
-Module.directive('datePicker', ["datePickerConfig", function datePickerDirective(datePickerConfig) {
+Module.directive('datePicker', function datePickerDirective(datePickerConfig) {
 
   //noinspection JSUnusedLocalSymbols
   return {
@@ -9963,7 +9963,7 @@ Module.directive('datePicker', ["datePickerConfig", function datePickerDirective
       };
     }
   };
-}]);
+});
 
 'use strict';
 
@@ -10025,7 +10025,7 @@ Module.directive('dateTimeAppend', function () {
   };
 });
 
-Module.directive('dateTime', ["$compile", "$document", "$filter", "dateTimeConfig", "$parse", function ($compile, $document, $filter, dateTimeConfig, $parse) {
+Module.directive('dateTime', function ($compile, $document, $filter, dateTimeConfig, $parse) {
   var body = $document.find('body');
   var dateFilter = $filter('date');
 
@@ -10130,7 +10130,7 @@ Module.directive('dateTime', ["$compile", "$document", "$filter", "dateTimeConfi
       element.bind('blur', clear);
     }
   };
-}]);
+});
 
 angular.module("datePicker").run(["$templateCache", function($templateCache) {
 
