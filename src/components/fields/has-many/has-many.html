@@ -2,7 +2,7 @@
   <span ng-show='canShow()' >
     <select ng-model="selectedHasMany" ng-options="item[field.identifier] as utils.cutString(item[field.field], 25) for item in relatedResources[field.endpoint]">
     </select>
-    <a class="btn btn-default btn-xs" ng-click="addHasManyOption()">Add</a>
+    <a class="button default tiny" ng-click="addHasManyOption()">Add</a>
   </span>
 
   <carnival-nested-form-area state="{{state}}" entity="entity" field="field" datas="datas" relation-type="hasMany"></carnival-nested-form-area>

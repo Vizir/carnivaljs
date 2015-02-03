@@ -17,8 +17,8 @@
       </td>
       <td>
         <carnival-listing-extra-action ng-repeat="extraAction in extraActions" item="data" extra-action='extraAction'></carnival-listing-extra-action>
-        <carnival-button label="{{ 'Show' | translate }}" style="primary" size="xs" ng-click="actions.show(data[identifier])"></carnival-button>
-        <carnival-button label="{{ 'Edit' | translate }}" style="warning" size="xs" ng-click="actions.edit(data[identifier])"></carnival-button>
+        <carnival-button label="{{ 'Show' | translate }}" style="primary" size="tiny" ng-click="actions.show(data[identifier])"></carnival-button>
+        <carnival-button label="{{ 'Edit' | translate }}" style="warning" size="tiny" ng-click="actions.edit(data[identifier])"></carnival-button>
         <carnival-delete-button item-id="data[identifier]" action="actions.delete"></carnival-button>
       </td>
     </tr>

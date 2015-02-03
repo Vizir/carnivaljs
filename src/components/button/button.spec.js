@@ -23,11 +23,11 @@ describe('On carnival-button component', function () {
   });
 
   it('should render a button with the specified style class', function () {
-    expect(element[0].getAttribute('class')).to.contain('btn-primary');
+    expect(element[0].getAttribute('class')).to.contain('primary');
   });
 
   it('should render a button with the specified size class', function () {
-    expect(element[0].getAttribute('class')).to.contain('btn-xs');
+    expect(element[0].getAttribute('class')).to.contain('xs');
   });
 
   it('should render a button with the specified label', function () {

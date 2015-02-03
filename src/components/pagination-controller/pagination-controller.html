@@ -1,5 +1,5 @@
 <nav>
-  <ul class="pagination pagination-sm" style="cursor: pointer;">
+  <ul class="pagination" style="cursor: pointer;">
 
     <li ng-class="{ disabled: currentPage === 1 }">
       <a ng-click="prevPage()">&laquo;</a>
@@ -13,7 +13,7 @@
       <a ng-click="jumpTo(currentPage - 1)">{{ currentPage - 1 }}</a>
     </li>
 
-    <li class="active">
+    <li class="current">
       <a>{{ currentPage }}</a>
     </li>
 
