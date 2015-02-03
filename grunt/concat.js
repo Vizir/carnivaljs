@@ -22,7 +22,6 @@ module.exports = {
   css: {
     src: [
       'src/styles/carnival.css',
-      'bower_components/bootstrap/dist/css/bootstrap.css',
       'bower_components/ng-wig/dist/css/ng-wig.css',
       'bower_components/angular-datepicker/dist/index.css'
     ],

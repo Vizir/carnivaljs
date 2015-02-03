@@ -1,5 +1,7 @@
 <div class="nested-container">
 <a class='close-nested btn btn-default btn-xs' ng-click='close()'>Close</a>
-  <h3>{{ 'Create' | translate }} {{ entity.label }}</h3>
+  <fieldset>
+  <legend>{{ 'Create' | translate }} {{ entity.label }}</legend>
   <carnival-form type='nested' entity='entity' fields="entity.fields" action="entity.action" datas="entity.datas" state="{{state}}" related-resources="entity.relatedResources" editable="true"></carnival-form>
+  </fieldset>
 </div>

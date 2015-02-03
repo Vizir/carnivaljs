@@ -1,29 +1,29 @@
-<div class="container">
+<div class="row">
 
   <h3>{{ 'Show' | translate }} {{ entity.label }}</h3>
 
   <div class='row' ng-switch="field.type" ng-repeat="field in entity.fields">
-    <label class="col-sm-2 control-label">{{ field.label }}</label>
-    <div class="col-sm-10" ng-switch-when="belongsTo">
+    <label class="column larger-2 control-label">{{ field.label }}</label>
+    <div class="column larger-10" ng-switch-when="belongsTo">
       {{entity.datas[field.name][field.field]}}
     </div>
-    <div class="col-sm-10" ng-switch-when="hasMany">
+    <div class="column larger-10" ng-switch-when="hasMany">
        <ul>
           <li ng-repeat="data in entity.datas[field.name]">
             {{data[field.field]}}
           </li>
        </ul>
     </div>
-    <div class="col-sm-10" ng-switch-when="enum">
+    <div class="column larger-10" ng-switch-when="enum">
       {{ getValue(entity.datas[field.name], field) }}
     </div>
     <carnival-listing-field-file ng-switch-when="file" item="entity.datas" field="field"></carnival-listing-field-file>
     <carnival-listing-field-currency ng-switch-when="currency" item="entity.datas" field="field"></carnival-listing-field-currency>
-    <div class="col-sm-10" ng-switch-default>
+    <div class="column larger-10" ng-switch-default>
       {{entity.datas[field.name]}}
     </div>
   </div>
-  <label class="col-sm-2 control-label">
-    <carnival-button label="Edit" style="warning" size="sm" ng-click="buttonAction()"></carnival-button>
+  <label class="column larger-2 control-label">
+    <carnival-button label="Edit" style="warning" size="small" ng-click="buttonAction()"></carnival-button>
   </label>
 </div>

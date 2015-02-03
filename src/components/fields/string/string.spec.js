@@ -1,4 +1,4 @@
-describe('On carnival-button component', function () {
+describe('On carnival-string component', function () {
   var compile, element, scope;
 
   var setScopeData = function (scope) {

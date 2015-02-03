@@ -1,18 +1,17 @@
-<div class="container">
-  <div class="col-md-10" style="text-align:left">
+<div class="row">
+  <div class="column large-10" style="text-align:left">
     <h3>{{ 'List of' | translate }} {{ entity.label }}</h3>
   </div>
-  <div class="col-md-2" style="text-align:right">
-    <carnival-button label="{{ 'Create' | translate }}" style="success" size="sm" ng-click="entity.actions.create()"></carnival-button>
+  <div class="column large-2" style="text-align:right">
+    <carnival-button label="{{ 'Create' | translate }}" style="success" size="small" ng-click="entity.actions.create()"></carnival-button>
   </div>
-  <div class="col-md-3"></div>
-  <div class="col-md-9">
+  <div class="column large-12">
     <carnival-quick-filter filters="entity.model.quickFilters"></carnival-quick-filter>
   </div>
-  <div class="col-md-3">
+  <div class="column large-3">
     <carnival-search-ctrl fields="entity.fields" related-resources="entity.relatedResources"></carnival-search-ctrl>
   </div>
-  <div class="col-md-9">
+  <div class="column large-9">
     <carnival-listing entity="entity" entity-name="entity.name" actions="entity.actions" extra-actions="entity.extraActions" identifier="entity.identifier" datas="entity.datas" fields="entity.fields"></carnival-listing>
     <carnival-pagination-ctrl current-page="pages.current" total-pages="pages.total"></carnival-pagination-ctrl>
   </div>

@@ -1,10 +1,15 @@
-<div class="navbar navbar-default">
-  <div class="container">
-  <a class="navbar-brand">{{ appName }}</a>
-  <ul class="nav navbar-nav">
-    <li ng-class="{ active: checkSelEntity($index) }" ng-repeat="item in menuItems">
-    <a href="{{ buildUrl(item.link) }}" ng-click="resetPage()">{{ item.label }}</a>
+<nav class="top-bar" data-topbar role='navigation'>
+  <ul class='title-area'>
+    <li class='name'>
+      <h1><a href="#">{{ appName }}</h1>
     </li>
   </ul>
-  </div>
-</div>
+
+  <section class='top-bar-section'>
+    <ul class="left">
+      <li ng-class="{ active: checkSelEntity($index) }" ng-repeat="item in menuItems">
+      <a href="{{ buildUrl(item.link) }}" ng-click="resetPage()">{{ item.label }}</a>
+      </li>
+    </ul>
+  </section>
+</nav>
