@@ -55,9 +55,7 @@
 }
 
 .nested-container{
-  border: 1px solid;
   padding: 10px;
-  padding-bottom: 50px;
 }
 .close-nested{
   float: right;
