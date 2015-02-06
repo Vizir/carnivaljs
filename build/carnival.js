@@ -549,6 +549,7 @@ angular.module('carnival.components.gallery', [])
       if (!window.CARNIVAL.gallery) window.CARNIVAL.gallery = {};
       window.CARNIVAL.gallery.sendUrl = function (url) {
         $scope.fileUrl = url;
+        $scope.$parent.$parent.$apply();
       };
       $scope.open = function () {
         window.open($scope.gallery.url, 'WINDOW_GALLERY', 'dialog');
