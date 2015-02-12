@@ -5,14 +5,8 @@ angular.module('carnival.components.fields.string', [])
     replace: true,
     scope: {
       label: '=',
-      data: '=',
-      editable: '='
+      data: '='
     },
-    templateUrl: 'components/fields/string/string.html',
-    link: function (scope, element, attrs) {
-      if (!scope.editable) {
-        element.attr('disabled', 'true');
-      }
-    }
+    templateUrl: 'components/fields/string/string.html'
   };
 });

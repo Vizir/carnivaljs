@@ -127,18 +127,9 @@ angular.module('carnival.components.fields.belongsTo', [])
       entity: '=',
       state: '@',
       nestedFormIndex: '=',
-      relatedResources: '=',
-      editable: '='
+      relatedResources: '='
     },
-    templateUrl: 'components/fields/belongs-to/belongs-to.html',
-    link: function (scope, element, attrs) {
-      if (!scope.editable) {
-        element.attr('disabled', 'true');
-      }
-    },
-    controller: ["$rootScope", "$scope", function ($rootScope, $scope) {
-
-    }]
+    templateUrl: 'components/fields/belongs-to/belongs-to.html'
   };
 });
 
@@ -148,15 +139,9 @@ angular.module('carnival.components.fields.boolean', [])
     restrict: 'E',
     replace: true,
     scope: {
-      data: '=',
-      editable: '='
+      data: '='
     },
     templateUrl: 'components/fields/boolean/boolean.html',
-    link: function (scope, element, attrs) {
-      if (!scope.editable) {
-        element.attr('disabled', 'true');
-      }
-    },
     controller: ["$scope", function($scope){
       if($scope.data === undefined)
         $scope.data = false;
@@ -282,8 +267,7 @@ angular.module('carnival.components.fields.file', [])
     replace: true,
     scope: {
       data: '=',
-      field: '=',
-      editable: '='
+      field: '='
     },
     templateUrl: 'components/fields/file/file.html',
     controller: ["$scope", "$http", "Configuration", function ($scope, $http, Configuration) {
@@ -315,18 +299,11 @@ angular.module('carnival.components.fields.hasMany', [])
       state: '@',
       entity: '=',
       nestedFormIndex: '=',
-      relatedResources: '=',
-      editable: '='
+      relatedResources: '='
     },
     templateUrl: 'components/fields/has-many/has-many.html',
-    link: function (scope, element, attrs) {
-      if (!scope.editable) {
-        element.attr('disabled', 'true');
-      }
-    },
     controller: ["$rootScope", "$scope", "utils", "Configuration", "$compile", "$element", "$document", "FormService", function ($rootScope, $scope, utils, Configuration, $compile, $element, $document, FormService) {
       $scope.utils = utils;
-
 
       $scope.canShow = function(){
         return FormService.canShowThisHasManyField($scope.entity, $scope.state, $scope.field);
@@ -367,15 +344,9 @@ angular.module('carnival.components.fields.number', [])
     replace: true,
     scope: {
       label: '=',
-      data: '=',
-      editable: '='
+      data: '='
     },
-    templateUrl: 'components/fields/number/number.html',
-    link: function (scope, element, attrs) {
-      if (!scope.editable) {
-        element.attr('disabled', 'true');
-      }
-    }
+    templateUrl: 'components/fields/number/number.html'
   };
 });
 
@@ -410,15 +381,9 @@ angular.module('carnival.components.fields.string', [])
     replace: true,
     scope: {
       label: '=',
-      data: '=',
-      editable: '='
+      data: '='
     },
-    templateUrl: 'components/fields/string/string.html',
-    link: function (scope, element, attrs) {
-      if (!scope.editable) {
-        element.attr('disabled', 'true');
-      }
-    }
+    templateUrl: 'components/fields/string/string.html'
   };
 });
 
@@ -429,15 +394,9 @@ angular.module('carnival.components.fields.text', [])
     replace: true,
     scope: {
       label: '=',
-      data: '=',
-      editable: '='
+      data: '='
     },
-    templateUrl: 'components/fields/text/text.html',
-    link: function (scope, element, attrs) {
-      if (!scope.editable) {
-        element.attr('disabled', 'true');
-      }
-    }
+    templateUrl: 'components/fields/text/text.html'
   };
 });
 
@@ -448,15 +407,9 @@ angular.module('carnival.components.fields.wysiwyg', [])
     replace: true,
     scope: {
       label: '=',
-      data: '=',
-      editable: '='
+      data: '='
     },
-    templateUrl: 'components/fields/wysiwyg/wysiwyg.html',
-    link: function (scope, element, attrs) {
-      if (!scope.editable) {
-        element.attr('disabled', 'true');
-      }
-    }
+    templateUrl: 'components/fields/wysiwyg/wysiwyg.html'
   };
 });
 
@@ -1961,19 +1914,34 @@ angular.module('carnival')
 
 angular.module('carnival')
 .constant('defaultTranslations', {
-  'CREATE_STATE_TITLE': 'Create' 
+  'CREATE_STATE_TITLE': 'Create',
+  'EDIT_STATE_TITLE': 'Edit',
+  'LIST_STATE_TITLE': 'List',
+  'SHOW_STATE_TITLE': 'Show',
+  'LIST_STATE_BUTTON_CREATE': 'Create',
+  'DELETE_BUTTON_DELETE': 'Delete',
+  'DELETE_BUTTON_CANCEL': 'Cancel',
+  'DELETE_BUTTON_CONFIRM': 'Confirm',
+  'FORM_BUTTON_SAVE': 'Save',
+  'GALLERY_BUTTON_OPEN': 'Open Gallery',
+  'LISTING_ACTIONS': 'Actions',
+  'LISTING_BUTTON_SHOW': 'Show',
+  'LISTING_BUTTON_EDIT': 'Edit',
+  'NESTED_FORM_BUTTON_CREATE': 'Create',
+  'NESTED_FORM_TITLE_CREATE': 'Create',
+  'SEARCH_FORM_TITLE': 'Search',
+  'SEARCH_FORM_SUBMIT': 'Submit',
+  'UPLOAD_BUTTON': 'Upload'
 });
 
 angular.module('carnival')
 .filter('translate', ["Translation", function (Translation) {
   return function (value) {
-
-    console.log(Translation);
     if (!Translation.table) { 
       return Translation.defaults[value] || value;
     }
-    return  Translation.table[translation] || value;
-  }
+    return  Translation.table[value] || value;
+  };
 }]);
 
 angular.module('carnival')
@@ -1985,15 +1953,14 @@ angular.module('carnival')
   return {
 
     setTranslation: function (table) {
-      if (typeof table === 'Object')
-        translationTable = table;
+      translationTable = table;
     },
 
     $get: function () {
       return {
         defaults: defaults,
         table: translationTable 
-      }
+      };
     }
 
   };
@@ -2234,9 +2201,9 @@ angular.module("components/button/button.html", []).run(["$templateCache", funct
 angular.module("components/delete-button/delete-button.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/delete-button/delete-button.html",
     "<span>\n" +
-    "  <a ng-hide=\"isDeleting\" class=\"button alert tiny\" ng-click=\"start()\">{{ 'Delete' | translate }}</a>\n" +
-    "  <a ng-show=\"isDeleting\" class=\"button default tiny\" ng-click=\"cancel()\">{{ 'Cancel' | translate }}</a>\n" +
-    "  <a ng-show=\"isDeleting\" class=\"button alert tiny\" ng-click=\"confirm()\">{{ 'Confirm' | translate }}</a>\n" +
+    "  <a ng-hide=\"isDeleting\" class=\"button alert tiny\" ng-click=\"start()\">{{ 'DELETE_BUTTON_DELETE' | translate }}</a>\n" +
+    "  <a ng-show=\"isDeleting\" class=\"button default tiny\" ng-click=\"cancel()\">{{ 'DELETE_BUTTON_CANCEL' | translate }}</a>\n" +
+    "  <a ng-show=\"isDeleting\" class=\"button alert tiny\" ng-click=\"confirm()\">{{ 'DELETE_BUTTON_CONFIRM' | translate }}</a>\n" +
     "</span>\n" +
     "");
 }]);
@@ -2358,23 +2325,23 @@ angular.module("components/form/form.html", []).run(["$templateCache", function(
     "      {{ field.label }}\n" +
     "      <div class=\"col-sm-10\" ng-switch=\"field.type\">\n" +
     "        <!-- Fields -->\n" +
-    "        <carnival-text-field ng-switch-when=\"text\" data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-text-field>\n" +
-    "        <carnival-wysiwyg-field ng-switch-when=\"wysiwyg\" data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-wysiwyg-field>\n" +
-    "        <carnival-boolean-field ng-switch-when=\"boolean\" data=\"datas[field.name]\" editable=\"editable\"></carnival-boolean-field>\n" +
-    "        <carnival-string-field ng-switch-when=\"string\" data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-string-field>\n" +
-    "        <carnival-number-field ng-switch-when=\"number\" data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-number-field>\n" +
-    "        <carnival-date-field ng-switch-when=\"date\" data=\"datas[field.name]\" editable=\"editable\"></carnival-date-field>\n" +
-    "        <carnival-file-field ng-switch-when=\"file\" data=\"datas[field.name]\" field=\"field\" editable=\"editable\"></carnival-file-field>\n" +
+    "        <carnival-text-field ng-switch-when=\"text\" data=\"datas[field.name]\" label=\"field.label\"></carnival-text-field>\n" +
+    "        <carnival-wysiwyg-field ng-switch-when=\"wysiwyg\" data=\"datas[field.name]\" label=\"field.label\"></carnival-wysiwyg-field>\n" +
+    "        <carnival-boolean-field ng-switch-when=\"boolean\" data=\"datas[field.name]\"></carnival-boolean-field>\n" +
+    "        <carnival-string-field ng-switch-when=\"string\" data=\"datas[field.name]\" label=\"field.label\"></carnival-string-field>\n" +
+    "        <carnival-number-field ng-switch-when=\"number\" data=\"datas[field.name]\" label=\"field.label\"></carnival-number-field>\n" +
+    "        <carnival-date-field ng-switch-when=\"date\" data=\"datas[field.name]\"></carnival-date-field>\n" +
+    "        <carnival-file-field ng-switch-when=\"file\" data=\"datas[field.name]\" field=\"field\"></carnival-file-field>\n" +
     "        <carnival-enum-field ng-switch-when=\"enum\" data=\"datas[field.name]\" field=\"field\"></carnival-enum-field>\n" +
     "        <carnival-currency-field ng-switch-when=\"currency\" data=\"datas[field.name]\" field=\"field\"></carnival-currency-field>\n" +
-    "        <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when=\"belongsTo\" nested-form-index=\"nestedFormIndex\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"  editable=\"true\"></carnival-belongs-to-field>\n" +
-    "        <carnival-has-many-field ng-if='canShow(field)' ng-switch-when=\"hasMany\" entity=\"entity\" nested-form-index=\"nestedFormIndex\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\" editable=\"true\"></carnival-has-many-field>\n" +
-    "        <carnival-text-field ng-switch-default data=\"datas[field.name]\" label=\"field.label\" editable=\"editable\"></carnival-text-field>\n" +
+    "        <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when=\"belongsTo\" nested-form-index=\"nestedFormIndex\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
+    "        <carnival-has-many-field ng-if='canShow(field)' ng-switch-when=\"hasMany\" entity=\"entity\" nested-form-index=\"nestedFormIndex\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-has-many-field>\n" +
+    "        <carnival-text-field ng-switch-default data=\"datas[field.name]\" label=\"field.label\"></carnival-text-field>\n" +
     "      </div>\n" +
     "    </label>\n" +
     "  </div>\n" +
     "  <label class=\"col-sm-2 control-label\">\n" +
-    "    <carnival-button label=\"{{ action.label | translate }}\" style=\"success\" size=\"small\" ng-click=\"buttonAction()\"></carnival-button>\n" +
+    "    <carnival-button label=\"{{ 'FORM_BUTTON_SAVE' | translate }}\" style=\"success\" size=\"small\" ng-click=\"buttonAction()\"></carnival-button>\n" +
     "  </label>\n" +
     "</form>\n" +
     "");
@@ -2383,7 +2350,7 @@ angular.module("components/form/form.html", []).run(["$templateCache", function(
 angular.module("components/gallery/gallery.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/gallery/gallery.html",
     "<div>\n" +
-    "  <carnival-button label=\"Open Gallery\" style=\"default\" size=\"small\" ng-click=\"open()\"></carnival-button>\n" +
+    "  <carnival-button label=\"{{ 'GALLERY_BUTTON_OPEN' | translate }}\" style=\"default\" size=\"small\" ng-click=\"open()\"></carnival-button>\n" +
     "</div>\n" +
     "");
 }]);
@@ -2391,7 +2358,7 @@ angular.module("components/gallery/gallery.html", []).run(["$templateCache", fun
 angular.module("components/listing-extra-action/listing-extra-action.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/listing-extra-action/listing-extra-action.html",
     "<span>\n" +
-    "<a class=\"button default tiny\" ng-href='{{getUrl()}}'>{{ getLabel() }}</a>\n" +
+    "  <a class=\"button default tiny\" ng-href='{{getUrl()}}'>{{ getLabel() }}</a>\n" +
     "</span>\n" +
     "");
 }]);
@@ -2462,7 +2429,7 @@ angular.module("components/listing/listing.html", []).run(["$templateCache", fun
     "        <carnival-order-ctrl field=\"field.name\"></carnival-order-ctrl>\n" +
     "      </th>\n" +
     "      <th ng-if=\"actions\" style=\"width: 30%\">\n" +
-    "        {{ 'Actions' | translate }}\n" +
+    "        {{ 'LISTING_ACTIONS' | translate }}\n" +
     "      </th>\n" +
     "    </tr>\n" +
     "  </thead>\n" +
@@ -2473,8 +2440,8 @@ angular.module("components/listing/listing.html", []).run(["$templateCache", fun
     "      </td>\n" +
     "      <td>\n" +
     "        <carnival-listing-extra-action ng-repeat=\"extraAction in extraActions\" item=\"data\" extra-action='extraAction'></carnival-listing-extra-action>\n" +
-    "        <carnival-button label=\"{{ 'Show' | translate }}\" style=\"primary\" size=\"tiny\" ng-click=\"actions.show(data[identifier])\"></carnival-button>\n" +
-    "        <carnival-button label=\"{{ 'Edit' | translate }}\" style=\"warning\" size=\"tiny\" ng-click=\"actions.edit(data[identifier])\"></carnival-button>\n" +
+    "        <carnival-button label=\"{{ 'LISTING_BUTTON_SHOW' | translate }}\" style=\"primary\" size=\"tiny\" ng-click=\"actions.show(data[identifier])\"></carnival-button>\n" +
+    "        <carnival-button label=\"{{ 'LISTING_BUTTON_EDIT' | translate }}\" style=\"warning\" size=\"tiny\" ng-click=\"actions.edit(data[identifier])\"></carnival-button>\n" +
     "        <carnival-delete-button item-id=\"data[identifier]\" action=\"actions.delete\"></carnival-button>\n" +
     "      </td>\n" +
     "    </tr>\n" +
@@ -2506,7 +2473,7 @@ angular.module("components/navbar/navbar.html", []).run(["$templateCache", funct
 angular.module("components/nested-form/nested-form-area.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/nested-form/nested-form-area.html",
     "<div>\n" +
-    "  <a ng-if='canOpenNestedForm()' class=\"button default tiny\"  ng-click=\"open()\">Create</a>\n" +
+    "  <a ng-if='canOpenNestedForm()' class=\"button default tiny\"  ng-click=\"open()\">{{ 'NESTED_FORM_BUTTON_CREATE' | translate }}</a>\n" +
     "\n" +
     "  <ul ng-if=\"isHasMany()\" class='has-many-field-list'>\n" +
     "    <li ng-repeat='data in datas[field.name]'>\n" +
@@ -2527,7 +2494,7 @@ angular.module("components/nested-form/nested-form.html", []).run(["$templateCac
     "<div class=\"nested-container\">\n" +
     "<a class='close-nested btn btn-default btn-xs' ng-click='close()'>Close</a>\n" +
     "  <fieldset>\n" +
-    "  <legend>{{ 'Create' | translate }} {{ entity.label }}</legend>\n" +
+    "  <legend>{{ 'NESTED_FORM_TITLE_CREATE' | translate }} {{ entity.label }}</legend>\n" +
     "  <carnival-form type='nested' entity='entity' fields=\"entity.fields\" action=\"entity.action\" datas=\"entity.datas\" state=\"{{state}}\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form>\n" +
     "  </fieldset>\n" +
     "</div>\n" +
@@ -2598,7 +2565,7 @@ angular.module("components/quickfilter-controller/quickfilter-controller.html", 
 angular.module("components/search-controller/search-controller.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/search-controller/search-controller.html",
     "<div>\n" +
-    "  <h4>{{ 'Search' | translate }}</h4>\n" +
+    "  <h4>{{ 'SEARCH_FORM_TITLE' | translate }}</h4>\n" +
     "  <hr/>\n" +
     "    <p ng-repeat=\"field in fields\" ng-if=\"field.views.index.searchable\" ng-switch=\"field.type\">\n" +
     "      <label ng-if=\"field.type !== 'hasMany'\">{{ field.label }}</label>\n" +
@@ -2612,7 +2579,7 @@ angular.module("components/search-controller/search-controller.html", []).run(["
     "      <carnival-number-field ng-switch-when=\"number\" data=\"searchParams[field.name]\" label=\"field.label\" editable=\"true\"></carnival-number-field>\n" +
     "    </p>\n" +
     "  <hr/>\n" +
-    "  <carnival-button label=\"Submit\" size=\"small\" style=\"default\" ng-click=\"submit()\"></carnival-button>\n" +
+    "  <carnival-button label=\"{{ 'SEARCH_FORM_SUBMIT' | translate }}\" size=\"small\" style=\"default\" ng-click=\"submit()\"></carnival-button>\n" +
     "</div>\n" +
     "");
 }]);
@@ -2621,7 +2588,7 @@ angular.module("components/uploader/uploader.html", []).run(["$templateCache", f
   $templateCache.put("components/uploader/uploader.html",
     "<div>\n" +
     "  <input type=\"file\" file-input=\"files\"></input>\n" +
-    "  <carnival-button label=\"Upload\" style=\"default\" size=\"small\" ng-click=\"upload()\"></carnival-button>\n" +
+    "  <carnival-button label=\"{{ 'UPLOAD_BUTTON' | translate }}\" style=\"default\" size=\"small\" ng-click=\"upload()\"></carnival-button>\n" +
     "</div>\n" +
     "");
 }]);
@@ -2652,10 +2619,10 @@ angular.module("states/main.list/list.html", []).run(["$templateCache", function
   $templateCache.put("states/main.list/list.html",
     "<div class=\"row\">\n" +
     "  <div class=\"column large-10\" style=\"text-align:left\">\n" +
-    "    <h3>{{ 'List of' | translate }} {{ entity.label }}</h3>\n" +
+    "    <h3>{{ 'LIST_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
     "  </div>\n" +
     "  <div class=\"column large-2\" style=\"text-align:right\">\n" +
-    "    <carnival-button label=\"{{ 'Create' | translate }}\" style=\"success\" size=\"small\" ng-click=\"entity.actions.create()\"></carnival-button>\n" +
+    "    <carnival-button label=\"{{ 'LIST_STATE_BUTTON_CREATE' | translate }}\" style=\"success\" size=\"small\" ng-click=\"entity.actions.create()\"></carnival-button>\n" +
     "  </div>\n" +
     "  <div class=\"column large-12\">\n" +
     "    <carnival-quick-filter filters=\"entity.model.quickFilters\"></carnival-quick-filter>\n" +
@@ -2675,7 +2642,7 @@ angular.module("states/main.show/show.html", []).run(["$templateCache", function
   $templateCache.put("states/main.show/show.html",
     "<div class=\"row\">\n" +
     "\n" +
-    "  <h3>{{ 'Show' | translate }} {{ entity.label }}</h3>\n" +
+    "  <h3>{{ 'SHOW_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
     "\n" +
     "  <div class='row' ng-switch=\"field.type\" ng-repeat=\"field in entity.fields\">\n" +
     "    <label class=\"column larger-2 control-label\">{{ field.label }}</label>\n" +

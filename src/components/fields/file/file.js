@@ -5,8 +5,7 @@ angular.module('carnival.components.fields.file', [])
     replace: true,
     scope: {
       data: '=',
-      field: '=',
-      editable: '='
+      field: '='
     },
     templateUrl: 'components/fields/file/file.html',
     controller: function ($scope, $http, Configuration) {

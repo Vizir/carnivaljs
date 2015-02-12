@@ -7,15 +7,14 @@ angular.module('carnival')
   return {
 
     setTranslation: function (table) {
-      if (typeof table === 'Object')
-        translationTable = table;
+      translationTable = table;
     },
 
     $get: function () {
       return {
         defaults: defaults,
         table: translationTable 
-      }
+      };
     }
 
   };

@@ -1,5 +1,5 @@
 <div>
-  <h4>{{ 'Search' | translate }}</h4>
+  <h4>{{ 'SEARCH_FORM_TITLE' | translate }}</h4>
   <hr/>
     <p ng-repeat="field in fields" ng-if="field.views.index.searchable" ng-switch="field.type">
       <label ng-if="field.type !== 'hasMany'">{{ field.label }}</label>
@@ -13,5 +13,5 @@
       <carnival-number-field ng-switch-when="number" data="searchParams[field.name]" label="field.label" editable="true"></carnival-number-field>
     </p>
   <hr/>
-  <carnival-button label="Submit" size="small" style="default" ng-click="submit()"></carnival-button>
+  <carnival-button label="{{ 'SEARCH_FORM_SUBMIT' | translate }}" size="small" style="default" ng-click="submit()"></carnival-button>
 </div>

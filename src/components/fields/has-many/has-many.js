@@ -9,18 +9,11 @@ angular.module('carnival.components.fields.hasMany', [])
       state: '@',
       entity: '=',
       nestedFormIndex: '=',
-      relatedResources: '=',
-      editable: '='
+      relatedResources: '='
     },
     templateUrl: 'components/fields/has-many/has-many.html',
-    link: function (scope, element, attrs) {
-      if (!scope.editable) {
-        element.attr('disabled', 'true');
-      }
-    },
     controller: function ($rootScope, $scope, utils, Configuration, $compile, $element, $document, FormService) {
       $scope.utils = utils;
-
 
       $scope.canShow = function(){
         return FormService.canShowThisHasManyField($scope.entity, $scope.state, $scope.field);

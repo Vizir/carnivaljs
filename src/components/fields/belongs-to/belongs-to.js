@@ -9,17 +9,8 @@ angular.module('carnival.components.fields.belongsTo', [])
       entity: '=',
       state: '@',
       nestedFormIndex: '=',
-      relatedResources: '=',
-      editable: '='
+      relatedResources: '='
     },
-    templateUrl: 'components/fields/belongs-to/belongs-to.html',
-    link: function (scope, element, attrs) {
-      if (!scope.editable) {
-        element.attr('disabled', 'true');
-      }
-    },
-    controller: function ($rootScope, $scope) {
-
-    }
+    templateUrl: 'components/fields/belongs-to/belongs-to.html'
   };
 });
