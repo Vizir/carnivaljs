@@ -1,4 +1,5 @@
-angular.module('carnival').provider('Configuration', function($stateProvider) {
+angular.module('carnival')
+.provider('Configuration', function ($stateProvider) {
 
   var appName = null;
   var baseApiUrl = null;
@@ -36,7 +37,7 @@ angular.module('carnival').provider('Configuration', function($stateProvider) {
     addState: function (state){
       extraStates.push(state);
     },
-
+   
     $get: function () {
       return {
 
