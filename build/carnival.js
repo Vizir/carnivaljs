@@ -1921,6 +1921,7 @@ angular.module('carnival')
   'FORM_BUTTON_SAVE': 'Save',
   'GALLERY_BUTTON_OPEN': 'Open Gallery',
   'LISTING_ACTIONS': 'Actions',
+  'LISTING_EXTRA_ACTIONS': 'Extra Actions',
   'LISTING_BUTTON_SHOW': 'Show',
   'LISTING_BUTTON_EDIT': 'Edit',
   'LISTING_HAS_MANY_PREFIX': 'View',
@@ -2425,6 +2426,9 @@ angular.module("components/listing/listing.html", []).run(["$templateCache", fun
     "        {{ field.label }}\n" +
     "        <carnival-order-ctrl field=\"field.name\"></carnival-order-ctrl>\n" +
     "      </th>\n" +
+    "      <th ng-show=\"extraActions[0]\">\n" +
+    "        {{ 'LISTING_EXTRA_ACTIONS' | translate }}\n" +
+    "      </th>\n" +
     "      <th ng-if=\"actions\" style=\"width: 30%\">\n" +
     "        {{ 'LISTING_ACTIONS' | translate }}\n" +
     "      </th>\n" +
@@ -2435,8 +2439,10 @@ angular.module("components/listing/listing.html", []).run(["$templateCache", fun
     "      <td ng-repeat=\"field in fields\">\n" +
     "        <carnival-listing-field item=\"data\" field=\"field\"></carnival-listing-field>\n" +
     "      </td>\n" +
-    "      <td>\n" +
+    "      <td ng-show=\"extraActions[0]\">\n" +
     "        <carnival-listing-extra-action ng-repeat=\"extraAction in extraActions\" item=\"data\" extra-action='extraAction'></carnival-listing-extra-action>\n" +
+    "      </td>\n" +
+    "      <td>\n" +
     "        <carnival-button label=\"{{ 'LISTING_BUTTON_SHOW' | translate }}\" style=\"primary\" size=\"tiny\" ng-click=\"actions.show(data[identifier])\"></carnival-button>\n" +
     "        <carnival-button label=\"{{ 'LISTING_BUTTON_EDIT' | translate }}\" style=\"warning\" size=\"tiny\" ng-click=\"actions.edit(data[identifier])\"></carnival-button>\n" +
     "        <carnival-delete-button item-id=\"data[identifier]\" action=\"actions.delete\"></carnival-button>\n" +

@@ -5,6 +5,9 @@
         {{ field.label }}
         <carnival-order-ctrl field="field.name"></carnival-order-ctrl>
       </th>
+      <th ng-show="extraActions[0]">
+        {{ 'LISTING_EXTRA_ACTIONS' | translate }}
+      </th>
       <th ng-if="actions" style="width: 30%">
         {{ 'LISTING_ACTIONS' | translate }}
       </th>
@@ -15,8 +18,10 @@
       <td ng-repeat="field in fields">
         <carnival-listing-field item="data" field="field"></carnival-listing-field>
       </td>
-      <td>
+      <td ng-show="extraActions[0]">
         <carnival-listing-extra-action ng-repeat="extraAction in extraActions" item="data" extra-action='extraAction'></carnival-listing-extra-action>
+      </td>
+      <td>
         <carnival-button label="{{ 'LISTING_BUTTON_SHOW' | translate }}" style="primary" size="tiny" ng-click="actions.show(data[identifier])"></carnival-button>
         <carnival-button label="{{ 'LISTING_BUTTON_EDIT' | translate }}" style="warning" size="tiny" ng-click="actions.edit(data[identifier])"></carnival-button>
         <carnival-delete-button item-id="data[identifier]" action="actions.delete"></carnival-button>
