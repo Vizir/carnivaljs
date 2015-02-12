@@ -12,6 +12,7 @@ app.config(function (TranslationProvider) {
     'FORM_BUTTON_SAVE': 'Save',
     'GALLERY_BUTTON_OPEN': 'Open Gallery',
     'LISTING_ACTIONS': 'Actions',
+    'LISTING_EXTRA_ACTIONS': 'Extra Actions',
     'LISTING_BUTTON_SHOW': 'Show',
     'LISTING_BUTTON_EDIT': 'Edit',
     'LISTING_HAS_MANY_PREFIX': 'View',
