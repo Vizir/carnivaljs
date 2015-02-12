@@ -2622,10 +2622,10 @@ angular.module("states/main.list/list.html", []).run(["$templateCache", function
     "  <div class=\"column large-12\">\n" +
     "    <carnival-quick-filter filters=\"entity.model.quickFilters\"></carnival-quick-filter>\n" +
     "  </div>\n" +
-    "  <div class=\"column large-3\">\n" +
+    "  <div class=\"column large-6\">\n" +
     "    <carnival-search-ctrl fields=\"entity.fields\" related-resources=\"entity.relatedResources\"></carnival-search-ctrl>\n" +
     "  </div>\n" +
-    "  <div class=\"column large-9\">\n" +
+    "  <div class=\"column large-6\">\n" +
     "    <carnival-listing entity=\"entity\" entity-name=\"entity.name\" actions=\"entity.actions\" extra-actions=\"entity.extraActions\" identifier=\"entity.identifier\" datas=\"entity.datas\" fields=\"entity.fields\"></carnival-listing>\n" +
     "    <carnival-pagination-ctrl current-page=\"pages.current\" total-pages=\"pages.total\"></carnival-pagination-ctrl>\n" +
     "  </div>\n" +
