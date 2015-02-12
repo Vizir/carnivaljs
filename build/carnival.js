@@ -2429,7 +2429,7 @@ angular.module("components/listing/listing.html", []).run(["$templateCache", fun
     "      <th ng-show=\"extraActions[0]\">\n" +
     "        {{ 'LISTING_EXTRA_ACTIONS' | translate }}\n" +
     "      </th>\n" +
-    "      <th ng-if=\"actions\" style=\"width: 30%\">\n" +
+    "      <th ng-if=\"actions\">\n" +
     "        {{ 'LISTING_ACTIONS' | translate }}\n" +
     "      </th>\n" +
     "    </tr>\n" +
