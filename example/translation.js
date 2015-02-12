@@ -14,6 +14,7 @@ app.config(function (TranslationProvider) {
     'LISTING_ACTIONS': 'Actions',
     'LISTING_BUTTON_SHOW': 'Show',
     'LISTING_BUTTON_EDIT': 'Edit',
+    'LISTING_HAS_MANY_PREFIX': 'View',
     'NESTED_FORM_BUTTON_CREATE': 'Create',
     'NESTED_FORM_TITLE_CREATE': 'Create',
     'SEARCH_FORM_TITLE': 'Search',

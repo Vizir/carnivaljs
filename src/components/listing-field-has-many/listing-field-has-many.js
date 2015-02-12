@@ -22,10 +22,6 @@ angular.module('carnival.components.listingfieldhasmany', [])
         }
         return null;
       };
-
-      $scope.getLabel = function () {
-        return 'View ' + $scope.field.label;
-      };
       $scope.getUrl = function () {
         var hasManyEntity = Configuration.getEntity($scope.field.entityName);
         var hasManyEntityField = getRelationField(hasManyEntity.fields);

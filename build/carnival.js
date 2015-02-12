@@ -687,10 +687,6 @@ angular.module('carnival.components.listingfieldhasmany', [])
         }
         return null;
       };
-
-      $scope.getLabel = function () {
-        return 'View ' + $scope.field.label;
-      };
       $scope.getUrl = function () {
         var hasManyEntity = Configuration.getEntity($scope.field.entityName);
         var hasManyEntityField = getRelationField(hasManyEntity.fields);
@@ -1927,6 +1923,7 @@ angular.module('carnival')
   'LISTING_ACTIONS': 'Actions',
   'LISTING_BUTTON_SHOW': 'Show',
   'LISTING_BUTTON_EDIT': 'Edit',
+  'LISTING_HAS_MANY_PREFIX': 'View',
   'NESTED_FORM_BUTTON_CREATE': 'Create',
   'NESTED_FORM_TITLE_CREATE': 'Create',
   'SEARCH_FORM_TITLE': 'Search',
@@ -2399,7 +2396,7 @@ angular.module("components/listing-field-file/listing-field-file.html", []).run(
 angular.module("components/listing-field-has-many/listing-field-has-many.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/listing-field-has-many/listing-field-has-many.html",
     "<span>\n" +
-    "  <a href=\"{{ getUrl() }}\">{{ getLabel() }}</a>\n" +
+    "  <a href=\"{{ getUrl() }}\">{{ 'LISTING_HAS_MANY_PREFIX' | translate }} {{ field.label }}</a>\n" +
     "</span>\n" +
     "");
 }]);
