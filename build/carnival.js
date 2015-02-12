@@ -359,15 +359,9 @@ angular.module('carnival.components.fields.select', [])
       data: '=',
       items: '=',
       field: '=',
-      identifier: '=',
-      editable: '='
+      identifier: '='
     },
     templateUrl: 'components/fields/select/select.html',
-    link: function (scope, element, attrs) {
-      if (!scope.editable) {
-        element.attr('disabled', 'true');
-      }
-    },
     controller: ["$rootScope", "$scope", "utils", function ($rootScope, $scope, utils) {
       $scope.utils = utils;
     }]
@@ -2209,11 +2203,9 @@ angular.module("components/delete-button/delete-button.html", []).run(["$templat
 angular.module("components/fields/belongs-to/belongs-to.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/fields/belongs-to/belongs-to.html",
     "<div>\n" +
-    "  <carnival-select-field data=\"datas[field.foreignKey]\" field=\"field.field\" identifier=\"field.identifier\" items=\"relatedResources[field.endpoint]\" editable=\"editable\">\n" +
-    "\n" +
+    "  <carnival-select-field data=\"datas[field.foreignKey]\" field=\"field.field\" identifier=\"field.identifier\" items=\"relatedResources[field.endpoint]\"> \n" +
     "  </carnival-select-field>\n" +
     "  <carnival-nested-form-area state=\"{{state}}\" entity=\"entity\" field=\"field\" datas=\"datas\" relation-type=\"belongsTo\"></carnival-nested-form-area>\n" +
-    "\n" +
     "</div>\n" +
     "");
 }]);
