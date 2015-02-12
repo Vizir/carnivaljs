@@ -12,7 +12,6 @@ module.exports = {
       'bower_components/angular-ui-router/release/angular-ui-router.js',
       'bower_components/ng-wig/dist/ng-wig.js',
       'bower_components/angular-loading-bar/build/loading-bar.js',
-      'bower_components/angular-translate/angular-translate.js',
       'bower_components/angular-datepicker/dist/index.js',
       'bower_components/string-mask/src/string-mask.js'
     ],

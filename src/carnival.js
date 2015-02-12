@@ -2,12 +2,11 @@ angular.module('carnival', [
   'carnival.templates',
   'ui.router',
   'carnival.components',
-  'pascalprecht.translate',
   'datePicker',
   'ngWig',
   'angular-loading-bar'
 ])
-.config(function ($stateProvider, $urlRouterProvider, $translateProvider, $locationProvider) {
+.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
 
   $urlRouterProvider.otherwise('/');
   $stateProvider

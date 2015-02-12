@@ -53,11 +53,4 @@ describe('On carnival-form component', function () {
     .to.not.be.null();
   });
 
-  it('should create an action button', function () {
-    expect(element.html())
-    .to.contain('Engravin');
-  });
-
-
-
 });
