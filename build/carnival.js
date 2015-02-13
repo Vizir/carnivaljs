@@ -2211,7 +2211,7 @@ angular.module("components/button/button.html", []).run(["$templateCache", funct
 
 angular.module("components/delete-button/delete-button.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/delete-button/delete-button.html",
-    "<span>\n" +
+    "<span class=\"btn-delete\">\n" +
     "  <a ng-hide=\"isDeleting\" class=\"button alert tiny\" ng-click=\"start()\">{{ 'DELETE_BUTTON_DELETE' | translate }}</a>\n" +
     "  <a ng-show=\"isDeleting\" class=\"button default tiny\" ng-click=\"cancel()\">{{ 'DELETE_BUTTON_CANCEL' | translate }}</a>\n" +
     "  <a ng-show=\"isDeleting\" class=\"button alert tiny\" ng-click=\"confirm()\">{{ 'DELETE_BUTTON_CONFIRM' | translate }}</a>\n" +
@@ -2443,37 +2443,39 @@ angular.module("components/listing-field/listing-field.html", []).run(["$templat
 
 angular.module("components/listing/listing.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/listing/listing.html",
-    "<table class=\"table table-hover\">\n" +
-    "  <thead>\n" +
-    "    <tr>\n" +
-    "      <th ng-repeat=\"field in fields\">\n" +
-    "        {{ field.label }}\n" +
-    "        <carnival-order-ctrl field=\"field.name\"></carnival-order-ctrl>\n" +
-    "      </th>\n" +
-    "      <th ng-show=\"extraActions[0]\">\n" +
-    "        {{ 'LISTING_EXTRA_ACTIONS' | translate }}\n" +
-    "      </th>\n" +
-    "      <th ng-if=\"actions\">\n" +
-    "        {{ 'LISTING_ACTIONS' | translate }}\n" +
-    "      </th>\n" +
-    "    </tr>\n" +
-    "  </thead>\n" +
-    "  <tbody>\n" +
-    "    <tr ng-repeat=\"data in datas\">\n" +
-    "      <td ng-repeat=\"field in fields\">\n" +
-    "        <carnival-listing-field item=\"data\" field=\"field\"></carnival-listing-field>\n" +
-    "      </td>\n" +
-    "      <td ng-show=\"extraActions[0]\">\n" +
-    "        <carnival-listing-extra-action ng-repeat=\"extraAction in extraActions\" item=\"data\" extra-action='extraAction'></carnival-listing-extra-action>\n" +
-    "      </td>\n" +
-    "      <td>\n" +
-    "        <carnival-button label=\"{{ 'LISTING_BUTTON_SHOW' | translate }}\" style=\"primary\" size=\"tiny\" ng-click=\"actions.show(data[identifier])\"></carnival-button>\n" +
-    "        <carnival-button label=\"{{ 'LISTING_BUTTON_EDIT' | translate }}\" style=\"warning\" size=\"tiny\" ng-click=\"actions.edit(data[identifier])\"></carnival-button>\n" +
-    "        <carnival-delete-button item-id=\"data[identifier]\" action=\"actions.delete\"></carnival-button>\n" +
-    "      </td>\n" +
-    "    </tr>\n" +
-    "  </tbody>\n" +
-    "</table>\n" +
+    "<div class=\"listing\">\n" +
+    "  <table class=\"table table-hover\">\n" +
+    "    <thead>\n" +
+    "      <tr>\n" +
+    "        <th ng-repeat=\"field in fields\">\n" +
+    "          {{ field.label }}\n" +
+    "          <carnival-order-ctrl field=\"field.name\"></carnival-order-ctrl>\n" +
+    "        </th>\n" +
+    "        <th ng-show=\"extraActions[0]\">\n" +
+    "          {{ 'LISTING_EXTRA_ACTIONS' | translate }}\n" +
+    "        </th>\n" +
+    "        <th ng-if=\"actions\">\n" +
+    "          {{ 'LISTING_ACTIONS' | translate }}\n" +
+    "        </th>\n" +
+    "      </tr>\n" +
+    "    </thead>\n" +
+    "    <tbody>\n" +
+    "      <tr ng-repeat=\"data in datas\">\n" +
+    "        <td ng-repeat=\"field in fields\">\n" +
+    "          <carnival-listing-field item=\"data\" field=\"field\"></carnival-listing-field>\n" +
+    "        </td>\n" +
+    "        <td ng-show=\"extraActions[0]\">\n" +
+    "          <carnival-listing-extra-action ng-repeat=\"extraAction in extraActions\" item=\"data\" extra-action='extraAction'></carnival-listing-extra-action>\n" +
+    "        </td>\n" +
+    "        <td>\n" +
+    "          <carnival-button label=\"{{ 'LISTING_BUTTON_SHOW' | translate }}\" style=\"primary btn-details\" size=\"tiny\" ng-click=\"actions.show(data[identifier])\"></carnival-button>\n" +
+    "          <carnival-button label=\"{{ 'LISTING_BUTTON_EDIT' | translate }}\" style=\"warning btn-edit\" size=\"tiny\" ng-click=\"actions.edit(data[identifier])\"></carnival-button>\n" +
+    "          <carnival-delete-button item-id=\"data[identifier]\" action=\"actions.delete\"></carnival-button>\n" +
+    "        </td>\n" +
+    "      </tr>\n" +
+    "    </tbody>\n" +
+    "  </table>\n" +
+    "</div>\n" +
     "");
 }]);
 
@@ -2591,7 +2593,7 @@ angular.module("components/quickfilter-controller/quickfilter-controller.html", 
 
 angular.module("components/search-controller/search-controller.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/search-controller/search-controller.html",
-    "<div>\n" +
+    "<div class=\"advanced-search\">\n" +
     "  <h4>{{ 'SEARCH_FORM_TITLE' | translate }}</h4>\n" +
     "  <hr/>\n" +
     "    <p ng-repeat=\"field in fields\" ng-if=\"field.views.index.searchable\" ng-switch=\"field.type\">\n" +
@@ -2645,22 +2647,24 @@ angular.module("states/main.edit/edit.html", []).run(["$templateCache", function
 angular.module("states/main.list/list.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("states/main.list/list.html",
     "<div class=\"row\">\n" +
+    "\n" +
     "  <div class=\"column large-10\" style=\"text-align:left\">\n" +
     "    <h3>{{ 'LIST_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
     "  </div>\n" +
+    "\n" +
     "  <div class=\"column large-2\" style=\"text-align:right\">\n" +
     "    <carnival-button label=\"{{ 'LIST_STATE_BUTTON_CREATE' | translate }}\" style=\"success\" size=\"small\" ng-click=\"entity.actions.create()\"></carnival-button>\n" +
     "  </div>\n" +
+    "\n" +
     "  <div class=\"column large-12\">\n" +
     "    <carnival-quick-filter filters=\"entity.model.quickFilters\"></carnival-quick-filter>\n" +
     "  </div>\n" +
-    "  <div class=\"column large-6\">\n" +
-    "    <carnival-search-ctrl fields=\"entity.fields\" related-resources=\"entity.relatedResources\"></carnival-search-ctrl>\n" +
-    "  </div>\n" +
-    "  <div class=\"column large-6\">\n" +
-    "    <carnival-listing entity=\"entity\" entity-name=\"entity.name\" actions=\"entity.actions\" extra-actions=\"entity.extraActions\" identifier=\"entity.identifier\" datas=\"entity.datas\" fields=\"entity.fields\"></carnival-listing>\n" +
-    "    <carnival-pagination-ctrl current-page=\"pages.current\" total-pages=\"pages.total\"></carnival-pagination-ctrl>\n" +
-    "  </div>\n" +
+    "\n" +
+    "  <carnival-search-ctrl fields=\"entity.fields\" related-resources=\"entity.relatedResources\"></carnival-search-ctrl>\n" +
+    "\n" +
+    "  <carnival-listing entity=\"entity\" entity-name=\"entity.name\" actions=\"entity.actions\" extra-actions=\"entity.extraActions\" identifier=\"entity.identifier\" datas=\"entity.datas\" fields=\"entity.fields\"></carnival-listing>\n" +
+    "  <carnival-pagination-ctrl current-page=\"pages.current\" total-pages=\"pages.total\"></carnival-pagination-ctrl>\n" +
+    "\n" +
     "</div>\n" +
     "");
 }]);
