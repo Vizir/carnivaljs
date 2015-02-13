@@ -28,9 +28,9 @@ angular.module('carnival.components.column-form', [])
         $scope.cssClass = 'fadeOutRight';
 
         $timeout(function(){
-          $element.remove()
+          $element.remove();
         }, 1000);
-      }
+      };
     }
   };
 });

@@ -31,13 +31,13 @@ angular.module('carnival.components.form', [])
           return true;
         }
         return false;
-      }
+      };
 
       $scope.showRelatedFields = function(){
         if($scope.type === 'normal')
           return true;
         return $scope.hasRelatedFields();
-      }
+      };
 
       $scope.canShow = function(field){
        return FormService.canShowThisField($scope.entity, $scope.state, field);
@@ -78,7 +78,7 @@ angular.module('carnival.components.form', [])
           updateEntityData(data);
           $scope.$parent.remove();
         }
-      }
+      };
 
       $scope.buttonAction = function(){
         var callbackFunction = null;

@@ -1,5 +1,5 @@
 angular.module('carnival')
-.service('FormService', function (Configuration, ActionFactory, $document, $compile) {
+.service('FormService', function (Configuration, ActionFactory, $document, $compile, $timeout) {
   this.nesteds = {};
   this.init = function(entity){
     this.entity = entity;
@@ -32,6 +32,22 @@ angular.module('carnival')
       var nestedDiv = document.querySelector('#form-columns');
       angular.element(nestedDiv).append(newElement);
     });
+  };
+
+  this.openSimpleNested = function(state, containerId, scope){
+    if(this.isNestedOpen(scope.field.entityName)){
+      var self = this;
+      this.closeNested(scope.field.entityName);
+      $timeout(function(){
+        self.openSimpleNested(state, containerId, scope);
+      }, 200);
+      return;
+    }
+    this.openNested(scope.field.entityName);
+    var directive = '<carnival-nested-form state="'+state+'" type="nested" entity="nestedEntity"></carnival-nested-form></div>';
+    var newElement = $compile(directive)(scope);
+    var nestedDiv = document.querySelector(containerId);
+    angular.element(nestedDiv).append(newElement);
   };
 
   this.saveNested = function(formId){
