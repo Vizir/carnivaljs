@@ -157,6 +157,9 @@ app.config(function (ConfigurationProvider) {
       'thumbnail': {
         type: 'file',
         label: 'Thumbnail',
+        options: {
+          showPreview: true
+        },
         uploader: {
           endpoint: 'files', // The endpoint where the upload will be requested.
           // endpointUrl: 'http://localhost:3000/files', // If use endpointUrl it will overwrite the base url setted for this application.
@@ -213,7 +216,7 @@ app.config(function (ConfigurationProvider) {
       },
       'price': {
         type: 'currency',
-        currencyOptions: {
+        options: {
           symbol: '$',
           decimalDelimiter: '.',
           thousandsDelimiter: ',',

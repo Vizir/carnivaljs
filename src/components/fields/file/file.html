@@ -1,5 +1,5 @@
 <div>
-  <div>
+  <div ng-show="field.options.showPreview">
     <img ng-if="checkIfIsImage(data)" ng-src="{{ data }}" width="200" height="120"/>
     <a ng-if="!checkIfIsImage(data)" href="{{ data }}">{{ data }}</a>
   </div>

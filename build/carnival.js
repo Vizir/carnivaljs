@@ -179,10 +179,10 @@ angular.module('carnival.components.fields.currency', [])
         return clearDelimitersAndLeadingZeros((parseFloat(value)).toFixed(decimals));
       }
 
-      var decimalDelimiter   = scope.field.currencyOptions.decimalDelimiter || '.',
-          thousandsDelimiter = scope.field.currencyOptions.thousandsDelimiter || '',
-          currencySym        = scope.field.currencyOptions.symbol || '$',
-          decimals           = parseInt(scope.field.currencyOptions.decimals, 10);
+      var decimalDelimiter   = scope.field.options.decimalDelimiter || '.',
+          thousandsDelimiter = scope.field.options.thousandsDelimiter || '',
+          currencySym        = scope.field.options.symbol || '$',
+          decimals           = parseInt(scope.field.options.decimals, 10);
 
       if (isNaN(decimals)) {
         decimals = 2;
@@ -598,10 +598,10 @@ angular.module('carnival.components.listingFieldCurrency', [])
           return clearDelimitersAndLeadingZeros((parseFloat(value)).toFixed(decimals));
         }
 
-        var decimalDelimiter   = scope.field.currencyOptions.decimalDelimiter || '.',
-            thousandsDelimiter = scope.field.currencyOptions.thousandsDelimiter || '',
-            currencySym        = scope.field.currencyOptions.symbol || '$',
-            decimals           = parseInt(scope.field.currencyOptions.decimals, 10);
+        var decimalDelimiter   = scope.field.options.decimalDelimiter || '.',
+            thousandsDelimiter = scope.field.options.thousandsDelimiter || '',
+            currencySym        = scope.field.options.symbol || '$',
+            decimals           = parseInt(scope.field.options.decimals, 10);
 
             if (isNaN(decimals)) {
               decimals = 2;
@@ -1500,7 +1500,7 @@ angular.module('carnival')
       gallery:    fieldParams.gallery,
       values:     fieldParams.values,
       grid:       parseGrid(fieldParams.grid || 'row column-12'),
-      currencyOptions: fieldParams.currencyOptions,
+      options:    fieldParams.options,
       views:      buildViews(fieldParams.views)
     };
 
@@ -2255,7 +2255,7 @@ angular.module("components/fields/enum/enum.html", []).run(["$templateCache", fu
 angular.module("components/fields/file/file.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/fields/file/file.html",
     "<div>\n" +
-    "  <div>\n" +
+    "  <div ng-show=\"field.options.showPreview\">\n" +
     "    <img ng-if=\"checkIfIsImage(data)\" ng-src=\"{{ data }}\" width=\"200\" height=\"120\"/>\n" +
     "    <a ng-if=\"!checkIfIsImage(data)\" href=\"{{ data }}\">{{ data }}</a>\n" +
     "  </div>\n" +
