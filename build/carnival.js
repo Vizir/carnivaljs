@@ -2530,6 +2530,7 @@ angular.module("components/form/form.html", []).run(["$templateCache", function(
     "          <carnival-enum-field ng-switch-when=\"enum\" data=\"datas[field.name]\" field=\"field\"></carnival-enum-field>\n" +
     "          <carnival-currency-field ng-switch-when=\"currency\" data=\"datas[field.name]\" field=\"field\"></carnival-currency-field>\n" +
     "          <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when=\"belongsTo\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
+    "          <carnival-text-field ng-switch-default data=\"datas[field.name]\" label=\"field.label\"></carnival-text-field>\n" +
     "        </div>\n" +
     "      </label>\n" +
     "    </div>\n" +
