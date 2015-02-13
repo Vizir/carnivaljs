@@ -3,13 +3,10 @@
     <img ng-if="checkIfIsImage(data)" ng-src="{{ data }}" width="200" height="120"/>
     <a ng-if="!checkIfIsImage(data)" href="{{ data }}">{{ data }}</a>
   </div>
-  <div ng-if="editable">
-    <carnival-string-field label="field.label" data="$parent.data" editable="editable"></carnival-string-field>
-    <div ng-if="checkIfHasUploader()">
-      <carnival-uploader uploader="field.uploader" file-url="$parent.$parent.data"></carnival-uploader>
-    </div>
-    <div ng-if="checkIfHasGallery()">
-      <carnival-gallery gallery="field.gallery" file-url="$parent.$parent.data"></carnival-gallery>
-    </div>
+  <carnival-string-field label="field.label" data="$parent.data" editable="editable"></carnival-string-field>
+  <div ng-if="checkIfHasUploader()">
+    <carnival-uploader uploader="field.uploader" file-url="$parent.$parent.data"></carnival-uploader>
   </div>
+  <div ng-if="checkIfHasGallery()">
+    <carnival-gallery gallery="field.gallery" file-url="$parent.$parent.data"></carnival-gallery>
 </div>
