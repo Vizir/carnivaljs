@@ -71,9 +71,7 @@ app.config(function (ConfigurationProvider) {
         label: 'Content',
         views: {
           index: {
-            enable: true,
-            searchable: false,
-            sortable: false
+            enable: false
           },
           create: {
             enable: true
@@ -91,8 +89,7 @@ app.config(function (ConfigurationProvider) {
         label: 'Published',
         views: {
           index: {
-            enable: true,
-            searchable: true
+            enable: false
           },
           create: {
             enable: true
@@ -167,7 +164,7 @@ app.config(function (ConfigurationProvider) {
         field: 'name',
         views: {
           index: {
-            enable: true
+            enable: false
           },
           create: {
             enable: true
@@ -196,7 +193,7 @@ app.config(function (ConfigurationProvider) {
         // },
         views: {
           index: {
-            enable: true,
+            enable: false,
             sortable: false,
             searchable: false
           },
