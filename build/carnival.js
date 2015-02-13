@@ -1467,7 +1467,6 @@ angular.module('carnival')
   var resolveForeignKey = function(field){
     if(field.type !== 'belongsTo' && field.type !== 'hasMany')
       return;
-
     if(field.foreignKey)
       return field.foreignKey;
     if(!field.identifier)//TODO Is impossible to discover tthe foreignKey name without identifier
@@ -1478,7 +1477,7 @@ angular.module('carnival')
   this.build = function(field_name, fieldParams){
     var field = {
       name:       field_name,
-      label:      fieldParams.label,
+      label:      fieldParams.label || field_name,
       foreignKey: fieldParams.foreignKey,
       endpoint:   fieldParams.endpoint || field_name,
       field:      fieldParams.field,
@@ -1488,6 +1487,7 @@ angular.module('carnival')
       uploader:   fieldParams.uploader,
       gallery:    fieldParams.gallery,
       values:     fieldParams.values,
+      grid:       fieldParams.grid || 'row column-12',
       currencyOptions: fieldParams.currencyOptions,
       views:      buildViews(fieldParams.views)
     };
