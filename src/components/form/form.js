@@ -37,10 +37,6 @@ angular.module('carnival.components.form', [])
         return $scope.hasRelatedFields();
       };
 
-      $scope.canShow = function(field){
-       return FormService.canShowThisField($scope.entity, $scope.state, field);
-      };
-
       var entityHasNesteds = function(){
         return ($scope.entity.nestedForms && Object.keys($scope.entity.nestedForms).length > 0);
       };

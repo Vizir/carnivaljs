@@ -14,8 +14,13 @@ angular.module('carnival.components.fields.hasMany', [])
     controller: function ($rootScope, $scope, utils, Configuration, $compile, $element, $document, FormService) {
       $scope.utils = utils;
 
-      $scope.canShow = function(){
-        return FormService.canShowThisHasManyField($scope.entity, $scope.state, $scope.field);
+      $scope.showOptions = function(){
+        var fieldEntity = Configuration.getEntity($scope.field.entityName);
+        var relationField = fieldEntity.getFieldByEntityName($scope.entity.name);
+        if(relationField.type === 'belongsTo' && !$scope.field.views[$scope.state].showOptions)
+          return false;
+
+        return true;
       };
 
       var getItemIndex = function(id, items){
@@ -33,17 +38,13 @@ angular.module('carnival.components.fields.hasMany', [])
           return items[index];
       };
 
-
-
       $scope.addHasManyOption = function(){
         var selectedItem = getSelectedItem();
         if(!$scope.datas[$scope.field.name])
           $scope.datas[$scope.field.name] = [];
-        if(selectedItem){
+        if(selectedItem)
           $scope.datas[$scope.field.name].push(selectedItem);
-        }
       };
-
     }
   };
 });

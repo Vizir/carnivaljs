@@ -68,28 +68,5 @@ angular.module('carnival')
     return true;
   };
 
-  this.canShowThisField = function(formEntity, state, field){
-    if(!isARelation(field))
-      return true;
-
-    if(formEntity.parentEntity){
-      if(formEntity.parentEntity.name === field.entityName)
-          return false;
-    }
-
-    if(state === 'create' && field.type === 'hasMany'){
-      return this.canShowThisHasManyField(formEntity, state, field);
-    }
-    return true;
-  };
-
-  this.canShowThisHasManyField = function(formEntity, state, field){
-    var fieldEntity = Configuration.getEntity(field.entityName);
-    var relationField = fieldEntity.getFieldByEntityName(formEntity.name);
-    if(relationField.type === 'belongsTo' && !field.views[state].showOptions)
-      return false;
-
-    return true;
-  };
 });
 

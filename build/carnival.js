@@ -360,8 +360,13 @@ angular.module('carnival.components.fields.hasMany', [])
     controller: ["$rootScope", "$scope", "utils", "Configuration", "$compile", "$element", "$document", "FormService", function ($rootScope, $scope, utils, Configuration, $compile, $element, $document, FormService) {
       $scope.utils = utils;
 
-      $scope.canShow = function(){
-        return FormService.canShowThisHasManyField($scope.entity, $scope.state, $scope.field);
+      $scope.showOptions = function(){
+        var fieldEntity = Configuration.getEntity($scope.field.entityName);
+        var relationField = fieldEntity.getFieldByEntityName($scope.entity.name);
+        if(relationField.type === 'belongsTo' && !$scope.field.views[$scope.state].showOptions)
+          return false;
+
+        return true;
       };
 
       var getItemIndex = function(id, items){
@@ -379,17 +384,13 @@ angular.module('carnival.components.fields.hasMany', [])
           return items[index];
       };
 
-
-
       $scope.addHasManyOption = function(){
         var selectedItem = getSelectedItem();
         if(!$scope.datas[$scope.field.name])
           $scope.datas[$scope.field.name] = [];
-        if(selectedItem){
+        if(selectedItem)
           $scope.datas[$scope.field.name].push(selectedItem);
-        }
       };
-
     }]
   };
 });
@@ -541,10 +542,6 @@ angular.module('carnival.components.form', [])
         if($scope.type === 'normal')
           return true;
         return $scope.hasRelatedFields();
-      };
-
-      $scope.canShow = function(field){
-       return FormService.canShowThisField($scope.entity, $scope.state, field);
       };
 
       var entityHasNesteds = function(){
@@ -1879,29 +1876,6 @@ angular.module('carnival')
     return true;
   };
 
-  this.canShowThisField = function(formEntity, state, field){
-    if(!isARelation(field))
-      return true;
-
-    if(formEntity.parentEntity){
-      if(formEntity.parentEntity.name === field.entityName)
-          return false;
-    }
-
-    if(state === 'create' && field.type === 'hasMany'){
-      return this.canShowThisHasManyField(formEntity, state, field);
-    }
-    return true;
-  };
-
-  this.canShowThisHasManyField = function(formEntity, state, field){
-    var fieldEntity = Configuration.getEntity(field.entityName);
-    var relationField = fieldEntity.getFieldByEntityName(formEntity.name);
-    if(relationField.type === 'belongsTo' && !field.views[state].showOptions)
-      return false;
-
-    return true;
-  };
 }]);
 
 
@@ -2479,7 +2453,7 @@ angular.module("components/fields/file/file.html", []).run(["$templateCache", fu
 angular.module("components/fields/has-many/has-many.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/fields/has-many/has-many.html",
     "<div>\n" +
-    "  <span ng-show='canShow()' >\n" +
+    "  <span ng-show='showOptions()' >\n" +
     "    <select ng-model=\"selectedHasMany\" ng-options=\"item[field.identifier] as utils.cutString(item[field.field], 25) for item in relatedResources[field.endpoint]\">\n" +
     "    </select>\n" +
     "    <a class=\"button default tiny\" ng-click=\"addHasManyOption()\">Add</a>\n" +

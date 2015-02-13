@@ -1,5 +1,5 @@
 <div>
-  <span ng-show='canShow()' >
+  <span ng-show='showOptions()' >
     <select ng-model="selectedHasMany" ng-options="item[field.identifier] as utils.cutString(item[field.field], 25) for item in relatedResources[field.endpoint]">
     </select>
     <a class="button default tiny" ng-click="addHasManyOption()">Add</a>
