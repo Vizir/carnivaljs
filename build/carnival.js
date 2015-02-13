@@ -2319,29 +2319,32 @@ angular.module("components/fields/wysiwyg/wysiwyg.html", []).run(["$templateCach
 angular.module("components/form/form.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/form/form.html",
     "<form ng-init=\"nestedFormIndex = {value: 0}\" novalidate>\n" +
-    "  <div class=\"row\" ng-repeat=\"field in fields\">\n" +
-    "    <label ng-if='canShow(field)' class=\"col-sm-2 control-label\">\n" +
-    "      {{ field.label }}\n" +
-    "      <div class=\"col-sm-10\" ng-switch=\"field.type\">\n" +
-    "        <!-- Fields -->\n" +
-    "        <carnival-text-field ng-switch-when=\"text\" data=\"datas[field.name]\" label=\"field.label\"></carnival-text-field>\n" +
-    "        <carnival-wysiwyg-field ng-switch-when=\"wysiwyg\" data=\"datas[field.name]\" label=\"field.label\"></carnival-wysiwyg-field>\n" +
-    "        <carnival-boolean-field ng-switch-when=\"boolean\" data=\"datas[field.name]\"></carnival-boolean-field>\n" +
-    "        <carnival-string-field ng-switch-when=\"string\" data=\"datas[field.name]\" label=\"field.label\"></carnival-string-field>\n" +
-    "        <carnival-number-field ng-switch-when=\"number\" data=\"datas[field.name]\" label=\"field.label\"></carnival-number-field>\n" +
-    "        <carnival-date-field ng-switch-when=\"date\" data=\"datas[field.name]\"></carnival-date-field>\n" +
-    "        <carnival-file-field ng-switch-when=\"file\" data=\"datas[field.name]\" field=\"field\"></carnival-file-field>\n" +
-    "        <carnival-enum-field ng-switch-when=\"enum\" data=\"datas[field.name]\" field=\"field\"></carnival-enum-field>\n" +
-    "        <carnival-currency-field ng-switch-when=\"currency\" data=\"datas[field.name]\" field=\"field\"></carnival-currency-field>\n" +
-    "        <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when=\"belongsTo\" nested-form-index=\"nestedFormIndex\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
-    "        <carnival-has-many-field ng-if='canShow(field)' ng-switch-when=\"hasMany\" entity=\"entity\" nested-form-index=\"nestedFormIndex\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-has-many-field>\n" +
-    "        <carnival-text-field ng-switch-default data=\"datas[field.name]\" label=\"field.label\"></carnival-text-field>\n" +
+    "  <div ng-repeat=\"field in fields\">\n" +
+    "    <div ng-class=\"{ row: field.grid.newRow, inline-div: !field.grid.newRow }\">\n" +
+    "      <div class=\"column small-{{ field.grid.columnSize }}\">\n" +
+    "        <label ng-if='canShow(field)' class=\"col-sm-2 control-label\">\n" +
+    "          {{ field.label }}\n" +
+    "        </label>\n" +
+    "        <div ng-switch=\"field.type\">\n" +
+    "          <carnival-text-field ng-switch-when=\"text\" data=\"datas[field.name]\" label=\"field.label\"></carnival-text-field>\n" +
+    "          <carnival-wysiwyg-field ng-switch-when=\"wysiwyg\" data=\"datas[field.name]\" label=\"field.label\"></carnival-wysiwyg-field>\n" +
+    "          <carnival-boolean-field ng-switch-when=\"boolean\" data=\"datas[field.name]\"></carnival-boolean-field>\n" +
+    "          <carnival-string-field ng-switch-when=\"string\" data=\"datas[field.name]\" label=\"field.label\"></carnival-string-field>\n" +
+    "          <carnival-number-field ng-switch-when=\"number\" data=\"datas[field.name]\" label=\"field.label\"></carnival-number-field>\n" +
+    "          <carnival-date-field ng-switch-when=\"date\" data=\"datas[field.name]\"></carnival-date-field>\n" +
+    "          <carnival-file-field ng-switch-when=\"file\" data=\"datas[field.name]\" field=\"field\"></carnival-file-field>\n" +
+    "          <carnival-enum-field ng-switch-when=\"enum\" data=\"datas[field.name]\" field=\"field\"></carnival-enum-field>\n" +
+    "          <carnival-currency-field ng-switch-when=\"currency\" data=\"datas[field.name]\" field=\"field\"></carnival-currency-field>\n" +
+    "          <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when=\"belongsTo\" nested-form-index=\"nestedFormIndex\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
+    "          <carnival-has-many-field ng-if='canShow(field)' ng-switch-when=\"hasMany\" entity=\"entity\" nested-form-index=\"nestedFormIndex\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-has-many-field>\n" +
+    "          <carnival-text-field ng-switch-default data=\"datas[field.name]\" label=\"field.label\"></carnival-text-field>\n" +
+    "        </div>\n" +
     "      </div>\n" +
-    "    </label>\n" +
+    "    </div>\n" +
     "  </div>\n" +
-    "  <label class=\"col-sm-2 control-label\">\n" +
+    "  <div>\n" +
     "    <carnival-button label=\"{{ 'FORM_BUTTON_SAVE' | translate }}\" style=\"success\" size=\"small\" ng-click=\"buttonAction()\"></carnival-button>\n" +
-    "  </label>\n" +
+    "  </div>\n" +
     "</form>\n" +
     "");
 }]);

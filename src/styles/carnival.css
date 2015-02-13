@@ -63,3 +63,6 @@
 .nw-editor {
   height: 230px !important;
 }
+.inline-div {
+  display: inline !important;
+}

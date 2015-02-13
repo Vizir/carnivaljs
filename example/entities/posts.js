@@ -111,7 +111,7 @@ app.config(function (ConfigurationProvider) {
         endpoint: 'categories',
         identifier: 'id',
         field: 'name',
-        grid: 'row column-6',
+        grid: 'row column-3', // How to use: "[row: if break to a new column] column-[size: column size]"
         views: {
           index: {
             enable: true
@@ -137,7 +137,7 @@ app.config(function (ConfigurationProvider) {
         endpoint: 'tags',
         identifier: 'id',
         field: 'name',
-        grid: 'column-6',
+        grid: 'column-9',
         views: {
           index: {
             enable: false
