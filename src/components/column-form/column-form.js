@@ -18,9 +18,9 @@ angular.module('carnival.components.column-form', [])
 
       $scope.cssClass = 'fadeInRight';
       $scope.style = {
-        zIndex: (FormService.columnNestedsCount() * 10) + 2,
-        left: (FormService.columnNestedsCount() * 20) + 'px',
-        top: (FormService.columnNestedsCount() * 30) + 'px',
+        zIndex: (FormService.columnsCount() * 10) + 2,
+        left: (FormService.columnsCount() * 20) + 'px',
+        top: (FormService.columnsCount() * 30) + 'px',
         padding: '10px'
       };
 
@@ -33,7 +33,7 @@ angular.module('carnival.components.column-form', [])
       };
 
       $scope.isClosed = function(){
-        return !FormService.columnNesteds[$scope.entity.name];
+        return !FormService.columns[$scope.entity.name];
       };
 
       $scope.close = function(){

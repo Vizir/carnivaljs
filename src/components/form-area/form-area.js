@@ -16,11 +16,11 @@ angular.module('carnival.components.form-area', [])
     templateUrl: 'components/form-area/form-area.html',
     controller: function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $state) {
       $scope.show = function(){
-        return FormService.columnNestedsCount() > 1;
+        return FormService.columnsCount() > 1;
 
       };
       var getZIndex = function(){
-        return ((FormService.columnNestedsCount() - 1) * 10) + 3;
+        return ((FormService.columnsCount() - 1) * 10) + 3;
       };
 
       var getHeight = function(){

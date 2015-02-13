@@ -83,9 +83,9 @@ angular.module('carnival.components.column-form', [])
 
       $scope.cssClass = 'fadeInRight';
       $scope.style = {
-        zIndex: (FormService.columnNestedsCount() * 10) + 2,
-        left: (FormService.columnNestedsCount() * 20) + 'px',
-        top: (FormService.columnNestedsCount() * 30) + 'px',
+        zIndex: (FormService.columnsCount() * 10) + 2,
+        left: (FormService.columnsCount() * 20) + 'px',
+        top: (FormService.columnsCount() * 30) + 'px',
         padding: '10px'
       };
 
@@ -98,7 +98,7 @@ angular.module('carnival.components.column-form', [])
       };
 
       $scope.isClosed = function(){
-        return !FormService.columnNesteds[$scope.entity.name];
+        return !FormService.columns[$scope.entity.name];
       };
 
       $scope.close = function(){
@@ -482,11 +482,11 @@ angular.module('carnival.components.form-area', [])
     templateUrl: 'components/form-area/form-area.html',
     controller: ["$rootScope", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", "$state", function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $state) {
       $scope.show = function(){
-        return FormService.columnNestedsCount() > 1;
+        return FormService.columnsCount() > 1;
 
       };
       var getZIndex = function(){
-        return ((FormService.columnNestedsCount() - 1) * 10) + 3;
+        return ((FormService.columnsCount() - 1) * 10) + 3;
       };
 
       var getHeight = function(){
@@ -914,9 +914,9 @@ angular.module('carnival.components.nested-form-area', [])
         nestedEntity.datas = data;
         $scope.nestedEntity = nestedEntity;
         if(nestedType.type === 'column'){
-          FormService.openColumnNested(state, containerId, $scope);
+          FormService.openColumn(state, containerId, $scope);
         }else{
-          FormService.openSimpleNested(state, containerId, $scope);
+          FormService.openNested(state, containerId, $scope);
         }
       };
 
@@ -1798,11 +1798,11 @@ angular.module('carnival')
   this.init = function(entity){
     this.entity = entity;
     this.nesteds = {};
-    this.columnNesteds = {};
+    this.columns = {};
   };
 
-  this.columnNestedsCount = function(){
-    return Object.keys(this.columnNesteds).length + 1;
+  this.columnsCount = function(){
+    return Object.keys(this.columns).length + 1;
   };
 
   var addNested = function(containerId, scope, directive){
@@ -1811,12 +1811,12 @@ angular.module('carnival')
     angular.element(nestedDiv).append(newElement);
   };
 
-  this.openColumnNested = function(state, containerId, scope){
+  this.openColumn = function(state, containerId, scope){
     var formId = scope.field.entityName;
-    if(!this.columnNesteds[formId])
-        this.columnNesteds[formId] = {};
+    if(!this.columns[formId])
+        this.columns[formId] = {};
 
-    var nestedForms = this.columnNesteds[formId];
+    var nestedForms = this.columns[formId];
     nestedForms.saved = false;
     $document.scrollTop(0, 1000).then(function(){
       var directive = '<carnival-column-form  entity="nestedEntity" fields="nestedEntity.fields" datas="nestedEntity.datas" action="nestedEntity.action" state="'+state+'" related-resources="nestedEntity.relatedResources" editable="true"></carnival-column-form>';
@@ -1824,12 +1824,12 @@ angular.module('carnival')
     });
   };
 
-  this.openSimpleNested = function(state, containerId, scope){
+  this.openNested = function(state, containerId, scope){
     if(this.isNestedOpen(scope.field.entityName)){
       var self = this;
       this.closeNested(scope.field.entityName);
       $timeout(function(){
-        self.openSimpleNested(state, containerId, scope);
+        self.openNested(state, containerId, scope);
       }, 200);
       return;
     }
@@ -1849,7 +1849,7 @@ angular.module('carnival')
   };
 
   this.closeColumn = function(formId){
-    delete this.columnNesteds[formId];
+    delete this.columns[formId];
   };
 
   this.closeNested = function(formId){
