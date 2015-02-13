@@ -3,6 +3,8 @@ angular.module('carnival.components', [
   'carnival.components.column-form',
   'carnival.components.form-area',
   'carnival.components.form',
+  'carnival.components.form-fields',
+  'carnival.components.form-fields-next',
   'carnival.components.nested-form',
   'carnival.components.summarized-items',
   'carnival.components.nested-form-area',

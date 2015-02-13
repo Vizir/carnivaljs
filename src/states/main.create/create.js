@@ -3,7 +3,6 @@ angular.module('carnival')
 
   var entity = $scope.entity = {};
 
-
   var init = function () {
     $scope.entity = EntityResources.prepareForCreateState($stateParams.entity);
     entity = $scope.entity;

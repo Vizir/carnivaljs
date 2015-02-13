@@ -28,10 +28,10 @@ angular.module('carnival.components.fields.currency', [])
         return clearDelimitersAndLeadingZeros((parseFloat(value)).toFixed(decimals));
       }
 
-      var decimalDelimiter   = scope.field.currencyOptions.decimalDelimiter || '.',
-          thousandsDelimiter = scope.field.currencyOptions.thousandsDelimiter || '',
-          currencySym        = scope.field.currencyOptions.symbol || '$',
-          decimals           = parseInt(scope.field.currencyOptions.decimals, 10);
+      var decimalDelimiter   = scope.field.options.decimalDelimiter || '.',
+          thousandsDelimiter = scope.field.options.thousandsDelimiter || '',
+          currencySym        = scope.field.options.symbol || '$',
+          decimals           = parseInt(scope.field.options.decimals, 10);
 
       if (isNaN(decimals)) {
         decimals = 2;

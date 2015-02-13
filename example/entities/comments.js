@@ -68,9 +68,7 @@ app.config(function (ConfigurationProvider) {
         label: 'Content',
         views: {
           index: {
-            enable: true,
-            searchable: false,
-            sortable: false
+            enable: false
           },
           create: {
             enable: true
