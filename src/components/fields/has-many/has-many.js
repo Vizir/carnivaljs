@@ -8,7 +8,6 @@ angular.module('carnival.components.fields.hasMany', [])
       field: '=',
       state: '@',
       entity: '=',
-      nestedFormIndex: '=',
       relatedResources: '='
     },
     templateUrl: 'components/fields/has-many/has-many.html',

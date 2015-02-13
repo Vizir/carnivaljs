@@ -8,7 +8,6 @@ angular.module('carnival.components.fields.belongsTo', [])
       field: '=',
       entity: '=',
       state: '@',
-      nestedFormIndex: '=',
       relatedResources: '='
     },
     templateUrl: 'components/fields/belongs-to/belongs-to.html'

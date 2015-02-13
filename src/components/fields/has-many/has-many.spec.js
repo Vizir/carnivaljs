@@ -60,7 +60,6 @@ describe('On carnival-has-many component', function () {
       ]
     };
 
-    scope.nestedFormIndex = 1;
     scope.editable = 'editable';
   };
 
@@ -78,7 +77,7 @@ describe('On carnival-has-many component', function () {
     });
     setScopeData(scope);
 
-    element = angular.element('<carnival-has-many-field relation-type="hasMany" entity="entity" nested-form-index="nestedFormIndex" field="field" datas="datas" action="entity.action" state="edit" related-resources="relatedResources" editable="true"></carnival-has-many-field>');
+    element = angular.element('<carnival-has-many-field relation-type="hasMany" entity="entity" field="field" datas="datas" action="entity.action" state="edit" related-resources="relatedResources" editable="true"></carnival-has-many-field>');
     compiledElement = compile(element)(scope);
     scope.$digest();
   });

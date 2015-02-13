@@ -1,4 +1,4 @@
-<form ng-init="nestedFormIndex = {value: 0}" novalidate>
+<form novalidate>
   <div class="row" ng-repeat="field in fields">
     <label ng-if='canShow(field)' class="col-sm-2 control-label">
       {{ field.label }}
@@ -13,9 +13,8 @@
         <carnival-file-field ng-switch-when="file" data="datas[field.name]" field="field"></carnival-file-field>
         <carnival-enum-field ng-switch-when="enum" data="datas[field.name]" field="field"></carnival-enum-field>
         <carnival-currency-field ng-switch-when="currency" data="datas[field.name]" field="field"></carnival-currency-field>
-        <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when="belongsTo" nested-form-index="nestedFormIndex" entity="entity" field="field" datas="entity.datas" action="entity.action" related-resources="entity.relatedResources" state="{{state}}"></carnival-belongs-to-field>
-        <carnival-has-many-field ng-if='canShow(field)' ng-switch-when="hasMany" entity="entity" nested-form-index="nestedFormIndex" field="field" datas="entity.datas" action="entity.action" related-resources="entity.relatedResources" state="{{state}}"></carnival-has-many-field>
-        <carnival-text-field ng-switch-default data="datas[field.name]" label="field.label"></carnival-text-field>
+        <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when="belongsTo" entity="entity" field="field" datas="entity.datas" action="entity.action" related-resources="entity.relatedResources" state="{{state}}"></carnival-belongs-to-field>
+        <carnival-has-many-field ng-if='canShow(field)' ng-switch-when="hasMany" entity="entity" field="field" datas="entity.datas" action="entity.action" related-resources="entity.relatedResources" state="{{state}}"></carnival-has-many-field>
       </div>
     </label>
   </div>
