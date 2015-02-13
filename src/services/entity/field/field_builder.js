@@ -58,7 +58,7 @@ angular.module('carnival')
       gallery:    fieldParams.gallery,
       values:     fieldParams.values,
       grid:       parseGrid(fieldParams.grid || 'row column-12'),
-      currencyOptions: fieldParams.currencyOptions,
+      options:    fieldParams.options,
       views:      buildViews(fieldParams.views)
     };
 
