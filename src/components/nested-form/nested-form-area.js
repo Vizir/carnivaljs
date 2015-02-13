@@ -34,7 +34,7 @@ angular.module('carnival.components.nested-form-area', [])
             prefix = '_' + data[$scope.field.identifier];
           return '#'+state+'_nested_'+ $scope.field.entityName +  prefix;
         }
-      }
+      };
 
       $scope._openForm = function(nestedEntity, data, state){
         var nestedType = $scope.field.views[state].nested;
@@ -55,7 +55,7 @@ angular.module('carnival.components.nested-form-area', [])
 
       $scope.openWithData = function(data){
         var state = 'edit';
-        var nestedEntity = EntityResources.prepareForEditState($scope.field.entityName);
+        var nestedEntity = EntityResources.prepareForEditState($scope.field.entityName, $scope.entity);
         var identifier = nestedEntity.identifier;
         nestedEntity[identifier] = data[identifier];
         $scope._openForm(nestedEntity, data, 'edit');
@@ -63,7 +63,7 @@ angular.module('carnival.components.nested-form-area', [])
 
       $scope.open = function(){
         var state = 'create';
-        var nestedEntity = $scope.entity.nestedForms[$scope.field.endpoint];
+        var nestedEntity = EntityResources.prepareForCreateState($scope.field.entityName, $scope.entity);
         $scope._openForm(nestedEntity, {}, 'create');
       };
 

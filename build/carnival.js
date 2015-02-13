@@ -553,7 +553,7 @@ angular.module('carnival.components.form', [])
 
       var updateEntity = function(){
         var parentEntity = $scope.entity.parentEntity;
-        $scope.entity = EntityResources.prepareForEditState($scope.entity.name);
+        $scope.entity = EntityResources.prepareForEditState($scope.entity.name, parentEntity);
         $scope.entity.parentEntity = parentEntity;
       };
 
@@ -905,7 +905,7 @@ angular.module('carnival.components.nested-form-area', [])
             prefix = '_' + data[$scope.field.identifier];
           return '#'+state+'_nested_'+ $scope.field.entityName +  prefix;
         }
-      }
+      };
 
       $scope._openForm = function(nestedEntity, data, state){
         var nestedType = $scope.field.views[state].nested;
@@ -926,7 +926,7 @@ angular.module('carnival.components.nested-form-area', [])
 
       $scope.openWithData = function(data){
         var state = 'edit';
-        var nestedEntity = EntityResources.prepareForEditState($scope.field.entityName);
+        var nestedEntity = EntityResources.prepareForEditState($scope.field.entityName, $scope.entity);
         var identifier = nestedEntity.identifier;
         nestedEntity[identifier] = data[identifier];
         $scope._openForm(nestedEntity, data, 'edit');
@@ -934,7 +934,7 @@ angular.module('carnival.components.nested-form-area', [])
 
       $scope.open = function(){
         var state = 'create';
-        var nestedEntity = $scope.entity.nestedForms[$scope.field.endpoint];
+        var nestedEntity = EntityResources.prepareForCreateState($scope.field.entityName, $scope.entity);
         $scope._openForm(nestedEntity, {}, 'create');
       };
 
@@ -1671,17 +1671,34 @@ angular.module('carnival')
     return (type === 'belongsTo' || type === 'hasMany');
   };
 
+  var checkIfFieldAreParent = function(parentEntity, field){
+    if(!parentEntity)
+      return false;
+
+    if(field.entityName === parentEntity.name)
+        return true;
+
+    return checkIfFieldAreParent(parentEntity.parentEntity, field);
+  };
+
   var prepareField = function(entityWrapper, stateName, field, parentEntity){
     if (!entityWrapper.model.checkFieldView(field.name, stateName))
       return;
+
+    if(field.entityName === self.entityName){
+      return;
+    }
+
+    if(checkIfFieldAreParent(parentEntity, field)){
+      return;
+    }
 
     entityWrapper.fields.unshift(field);
     if(!hasRelatedResources(stateName, field.type))
       return;
 
     getRelatedResources(entityWrapper, field.endpoint);
-    if(!parentEntity || (field.entityName !== self.entityName && self.entityName === parentEntity.name))
-      getNestedForm(entityWrapper, stateName, field);
+    getNestedForm(entityWrapper, stateName, field);
   };
 
   var prepareFields = function(entityWrapper, stateName, parentEntity){
@@ -1712,17 +1729,17 @@ angular.module('carnival')
     return entityWrapper;
   };
 
-  this.prepareForState = function(entityName, stateName){
+  this.prepareForState = function(entityName, stateName, parentEntity){
     this.entityName = entityName;
-    return prepareEntityForState(entityName, stateName);
+    return prepareEntityForState(entityName, stateName, parentEntity);
   };
 
-  this.prepareForCreateState = function(entityName){
-    return this.prepareForState(entityName, 'create');
+  this.prepareForCreateState = function(entityName, parentEntity){
+    return this.prepareForState(entityName, 'create', parentEntity);
   };
 
-  this.prepareForEditState = function(entityName){
-    return this.prepareForState(entityName, 'edit');
+  this.prepareForEditState = function(entityName, parentEntity){
+    return this.prepareForState(entityName, 'edit', parentEntity);
   };
 
   this.prepareForShowState = function(entityName){
@@ -2523,7 +2540,7 @@ angular.module("components/form/form.html", []).run(["$templateCache", function(
     "<div>\n" +
     "  <form novalidate>\n" +
     "    <div ng-if=\"field.fieldFormType != 'related'\" class=\"row\" ng-repeat=\"field in fields\">\n" +
-    "      <label ng-if='canShow(field)' class=\"col-sm-2 control-label\">\n" +
+    "      <label class=\"col-sm-2 control-label\">\n" +
     "        {{ field.label }}\n" +
     "        <div class=\"col-sm-10\" ng-switch=\"field.type\">\n" +
     "          <!-- Fields -->\n" +
@@ -2536,7 +2553,7 @@ angular.module("components/form/form.html", []).run(["$templateCache", function(
     "          <carnival-file-field ng-switch-when=\"file\" data=\"datas[field.name]\" field=\"field\"></carnival-file-field>\n" +
     "          <carnival-enum-field ng-switch-when=\"enum\" data=\"datas[field.name]\" field=\"field\"></carnival-enum-field>\n" +
     "          <carnival-currency-field ng-switch-when=\"currency\" data=\"datas[field.name]\" field=\"field\"></carnival-currency-field>\n" +
-    "          <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when=\"belongsTo\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
+    "          <carnival-belongs-to-field ng-switch-when=\"belongsTo\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
     "          <carnival-text-field ng-switch-default data=\"datas[field.name]\" label=\"field.label\"></carnival-text-field>\n" +
     "        </div>\n" +
     "      </label>\n" +
@@ -2548,12 +2565,12 @@ angular.module("components/form/form.html", []).run(["$templateCache", function(
     "  <fieldset ng-show='showRelatedFields()'>\n" +
     "    <legend>Relacionados</legend>\n" +
     "    <div ng-if=\"field.fieldFormType == 'related'\" class=\"row\" ng-repeat=\"field in fields\">\n" +
-    "      <label ng-if='canShow(field)' class=\"col-sm-2 control-label\">\n" +
+    "      <label class=\"col-sm-2 control-label\">\n" +
     "        {{ field.label }}\n" +
     "        <div class=\"col-sm-10\" ng-switch=\"field.type\">\n" +
     "          <!-- Fields -->\n" +
-    "          <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when=\"belongsTo\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
-    "          <carnival-has-many-field ng-if='canShow(field)' ng-switch-when=\"hasMany\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-has-many-field>\n" +
+    "          <carnival-belongs-to-field ng-switch-when=\"belongsTo\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
+    "          <carnival-has-many-field ng-switch-when=\"hasMany\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-has-many-field>\n" +
     "        </div>\n" +
     "      </label>\n" +
     "    </div>\n" +

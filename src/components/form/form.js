@@ -47,7 +47,7 @@ angular.module('carnival.components.form', [])
 
       var updateEntity = function(){
         var parentEntity = $scope.entity.parentEntity;
-        $scope.entity = EntityResources.prepareForEditState($scope.entity.name);
+        $scope.entity = EntityResources.prepareForEditState($scope.entity.name, parentEntity);
         $scope.entity.parentEntity = parentEntity;
       };
 

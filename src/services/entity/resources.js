@@ -25,17 +25,34 @@ angular.module('carnival')
     return (type === 'belongsTo' || type === 'hasMany');
   };
 
+  var checkIfFieldAreParent = function(parentEntity, field){
+    if(!parentEntity)
+      return false;
+
+    if(field.entityName === parentEntity.name)
+        return true;
+
+    return checkIfFieldAreParent(parentEntity.parentEntity, field);
+  };
+
   var prepareField = function(entityWrapper, stateName, field, parentEntity){
     if (!entityWrapper.model.checkFieldView(field.name, stateName))
       return;
+
+    if(field.entityName === self.entityName){
+      return;
+    }
+
+    if(checkIfFieldAreParent(parentEntity, field)){
+      return;
+    }
 
     entityWrapper.fields.unshift(field);
     if(!hasRelatedResources(stateName, field.type))
       return;
 
     getRelatedResources(entityWrapper, field.endpoint);
-    if(!parentEntity || (field.entityName !== self.entityName && self.entityName === parentEntity.name))
-      getNestedForm(entityWrapper, stateName, field);
+    getNestedForm(entityWrapper, stateName, field);
   };
 
   var prepareFields = function(entityWrapper, stateName, parentEntity){
@@ -66,17 +83,17 @@ angular.module('carnival')
     return entityWrapper;
   };
 
-  this.prepareForState = function(entityName, stateName){
+  this.prepareForState = function(entityName, stateName, parentEntity){
     this.entityName = entityName;
-    return prepareEntityForState(entityName, stateName);
+    return prepareEntityForState(entityName, stateName, parentEntity);
   };
 
-  this.prepareForCreateState = function(entityName){
-    return this.prepareForState(entityName, 'create');
+  this.prepareForCreateState = function(entityName, parentEntity){
+    return this.prepareForState(entityName, 'create', parentEntity);
   };
 
-  this.prepareForEditState = function(entityName){
-    return this.prepareForState(entityName, 'edit');
+  this.prepareForEditState = function(entityName, parentEntity){
+    return this.prepareForState(entityName, 'edit', parentEntity);
   };
 
   this.prepareForShowState = function(entityName){
