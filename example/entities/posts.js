@@ -50,7 +50,7 @@ app.config(function (ConfigurationProvider) {
       'title': {
         type: 'string',
         label: 'Title',
-        grid: 'row column-12', // All undefined grids will have this value.
+        grid: 'row column-12', // All undefined grids will be setted with this value.
         views: {
           index: {
             enable: true

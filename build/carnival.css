@@ -63,8 +63,8 @@
 .nw-editor {
   height: 230px !important;
 }
-.inline-grid {
-  display: inline !important;
+.inline-div {
+  display: inline;
 }
 
 /* -------- NG-WIG -------- */
