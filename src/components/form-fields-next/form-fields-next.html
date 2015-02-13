@@ -1,0 +1,21 @@
+<div>
+  <label ng-if='canShow(field)'>
+    {{ fields[$index + 1].label }}
+  </label>
+  <div ng-switch="fields[$index + 1].type">
+    <carnival-text-field ng-switch-when="text" data="datas[fields[$index + 1].name]" label="fields[$index + 1].label"></carnival-text-field>
+    <carnival-wysiwyg-field ng-switch-when="wysiwyg" data="datas[fields[$index + 1].name]" label="fields[$index + 1].label"></carnival-wysiwyg-field>
+    <carnival-boolean-field ng-switch-when="boolean" data="datas[fields[$index + 1].name]"></carnival-boolean-field>
+    <carnival-string-field ng-switch-when="string" data="datas[fields[$index + 1].name]" label="fields[$index + 1].label"></carnival-string-field>
+    <carnival-number-field ng-switch-when="number" data="datas[fields[$index + 1].name]" label="fields[$index + 1].label"></carnival-number-field>
+    <carnival-date-field ng-switch-when="date" data="datas[fields[$index + 1].name]"></carnival-date-field>
+    <carnival-file-field ng-switch-when="file" data="datas[fields[$index + 1].name]" field="fields[$index + 1]"></carnival-file-field>
+    <carnival-enum-field ng-switch-when="enum" data="datas[fields[$index + 1].name]" field="fields[$index + 1]"></carnival-enum-field>
+    <carnival-currency-field ng-switch-when="currency" data="datas[fields[$index + 1].name]" field="fields[$index + 1]"></carnival-currency-field>
+    <carnival-belongs-to-field ng-if='canShow(fields[$index + 1])' ng-switch-when="belongsTo" nested-form-index="nestedFormIndex" entity="entity" field="fields[$index + 1]" datas="entity.datas" action="entity.action" related-resources="entity.relatedResources" state="{{state}}"></carnival-belongs-to-field>
+    <carnival-has-many-field ng-if='canShow(fields[$index + 1])' ng-switch-when="hasMany" entity="entity" nested-form-index="nestedFormIndex" field="fields[$index + 1]" datas="entity.datas" action="entity.action" related-resources="entity.relatedResources" state="{{state}}"></carnival-has-many-field>
+    <carnival-text-field ng-switch-default data="datas[fields[$index + 1].name]" label="fields[$index + 1].label"></carnival-text-field>
+
+  </div>
+</div>
+
