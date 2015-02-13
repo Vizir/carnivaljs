@@ -463,7 +463,7 @@ angular.module('carnival.components.form', [])
       editable: '='
     },
     templateUrl: 'components/form/form.html',
-    controller: ["$rootScope", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater) {
+    controller: ["$rootScope", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", "$state", function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $state) {
       $scope.utils = utils;
 
       if($scope.type !== 'nested'){
@@ -471,11 +471,9 @@ angular.module('carnival.components.form', [])
       }
 
       $scope.hasRelatedFields = function(){
-        for(var i = 0; i < $scope.fields; i++){
+        for(var i = 0; i < $scope.fields.length; i++){
           var field = $scope.fields[i];
           if(field.fieldFormType !== 'related')
-            continue;
-          if(!$scope.canShow(field))
             continue;
           return true;
         }
@@ -504,18 +502,21 @@ angular.module('carnival.components.form', [])
 
       var updateEntityData = function(data){
         var parentEntity = $scope.entity.parentEntity;
-        var fieldToUpdate = parentEntity.model.getFieldByEntityName($scope.entity.name);
-        EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
         var identifier = $scope.entity.identifier;
         $scope.entity[identifier] = data[identifier];
-        $scope.state = 'edit';
         $scope.entity.datas = data;
+        if(!parentEntity)
+          return;
+        var fieldToUpdate = parentEntity.model.getFieldByEntityName($scope.entity.name);
+        EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
       };
 
       var saveCallbackForNested = function(error, data){
         if(!error){
           if($scope.state === 'edit' || !entityHasNesteds())
             FormService.closeNested($scope.entity.name);
+          else
+            $scope.state = 'edit';
           updateEntity();
           updateEntityData(data);
         }
@@ -525,7 +526,15 @@ angular.module('carnival.components.form', [])
         if(!error){
           updateEntity();
           updateEntityData(data);
-          $scope.$parent.remove();
+          if($scope.hasRelatedFields() && $scope.state === 'create'){
+            $scope.state = 'edit';
+            alert('Agora você pode criar os campos relacionados');
+          }else{
+            if($scope.type === 'column')
+              $scope.$parent.remove();
+            else
+              $state.go('main.list', { entity: $scope.entity.name});
+          }
         }
       };
 
@@ -541,6 +550,7 @@ angular.module('carnival.components.form', [])
             console.log('Não é possivel salvar o form pois existem nested não salvos');
             return;
           }
+          callbackFunction = saveCallbackForColumn;
         }
 
         $scope.action.click(callbackFunction);
@@ -851,12 +861,12 @@ angular.module('carnival.components.nested-form-area', [])
       };
 
       $scope.openNestedForm = function(nestedEntity, data, state, containerId){
-        var nestedType = $scope.field.views[$scope.state].nested;
+        var nestedType = $scope.field.views[state].nested;
         nestedEntity.parentEntity = $scope.entity;
         nestedEntity.datas = data;
         $scope.nestedEntity = nestedEntity;
         if(nestedType.type === 'column'){
-          FormService.openColumnNested('aaa', $scope);
+          FormService.openColumnNested(state, $scope.field.entityName, $scope);
         }else{
           FormService.openSimpleNested(state, containerId, $scope);
         }
@@ -872,7 +882,7 @@ angular.module('carnival.components.nested-form-area', [])
         var nestedEntity = EntityResources.prepareForEditState($scope.field.entityName);
         var identifier = nestedEntity.identifier;
         nestedEntity[identifier] = data[identifier];
-        $scope.openNestedForm(nestedEntity, data, state, containerId);
+        $scope.openNestedForm(nestedEntity, data, 'edit', containerId);
       };
 
       $scope.open = function(){
@@ -1776,7 +1786,13 @@ angular.module('carnival')
     return Object.keys(this.columnNesteds).length + 1;
   };
 
-  this.openColumnNested = function(formId, scope){
+  var addNested = function(containerId, scope, directive){
+    var newElement = $compile(directive)(scope);
+    var nestedDiv = document.querySelector(containerId);
+    angular.element(nestedDiv).append(newElement);
+  }
+
+  this.openColumnNested = function(state, formId, scope){
     if(!this.columnNesteds[formId])
         this.columnNesteds[formId] = {};
 
@@ -1784,12 +1800,11 @@ angular.module('carnival')
     nestedForms.saved = false;
     var zIndex = (this.columnNestedsCount() * 10) + 2;
     $document.scrollTop(0, 1000).then(function(){
-      var directive = '<carnival-column-form  entity="nestedEntity" z-index="'+zIndex+'" fields="nestedEntity.fields" datas="nestedEntity.datas" action="nestedEntity.action" state="edit" related-resources="nestedEntity.relatedResources" editable="true"></carnival-column-form>';
-      var newElement = $compile(directive)(scope);
-      var nestedDiv = document.querySelector('#form-columns');
-      angular.element(nestedDiv).append(newElement);
+      var directive = '<carnival-column-form  entity="nestedEntity" z-index="'+zIndex+'" fields="nestedEntity.fields" datas="nestedEntity.datas" action="nestedEntity.action" state="'+state+'" related-resources="nestedEntity.relatedResources" editable="true"></carnival-column-form>';
+      addNested('#form-columns', scope, directive);
     });
   };
+
 
   this.openSimpleNested = function(state, containerId, scope){
     if(this.isNestedOpen(scope.field.entityName)){
@@ -1802,9 +1817,7 @@ angular.module('carnival')
     }
     this.openNested(scope.field.entityName);
     var directive = '<carnival-nested-form state="'+state+'" type="nested" entity="nestedEntity"></carnival-nested-form></div>';
-    var newElement = $compile(directive)(scope);
-    var nestedDiv = document.querySelector(containerId);
-    angular.element(nestedDiv).append(newElement);
+    addNested(containerId, scope, directive);
   };
 
   this.saveNested = function(formId){
@@ -2210,7 +2223,7 @@ angular.module('carnival')
 
   };
   var getZIndex = function(){
-      return ((document.getElementsByClassName('form-column').length - 1) * 10) + 1;
+      return ((document.getElementsByClassName('form-column').length - 1) * 10) + 3;
   };
 
   var getHeight = function(){

@@ -19,7 +19,13 @@ angular.module('carnival')
     return Object.keys(this.columnNesteds).length + 1;
   };
 
-  this.openColumnNested = function(formId, scope){
+  var addNested = function(containerId, scope, directive){
+    var newElement = $compile(directive)(scope);
+    var nestedDiv = document.querySelector(containerId);
+    angular.element(nestedDiv).append(newElement);
+  }
+
+  this.openColumnNested = function(state, formId, scope){
     if(!this.columnNesteds[formId])
         this.columnNesteds[formId] = {};
 
@@ -27,12 +33,11 @@ angular.module('carnival')
     nestedForms.saved = false;
     var zIndex = (this.columnNestedsCount() * 10) + 2;
     $document.scrollTop(0, 1000).then(function(){
-      var directive = '<carnival-column-form  entity="nestedEntity" z-index="'+zIndex+'" fields="nestedEntity.fields" datas="nestedEntity.datas" action="nestedEntity.action" state="edit" related-resources="nestedEntity.relatedResources" editable="true"></carnival-column-form>';
-      var newElement = $compile(directive)(scope);
-      var nestedDiv = document.querySelector('#form-columns');
-      angular.element(nestedDiv).append(newElement);
+      var directive = '<carnival-column-form  entity="nestedEntity" z-index="'+zIndex+'" fields="nestedEntity.fields" datas="nestedEntity.datas" action="nestedEntity.action" state="'+state+'" related-resources="nestedEntity.relatedResources" editable="true"></carnival-column-form>';
+      addNested('#form-columns', scope, directive);
     });
   };
+
 
   this.openSimpleNested = function(state, containerId, scope){
     if(this.isNestedOpen(scope.field.entityName)){
@@ -45,9 +50,7 @@ angular.module('carnival')
     }
     this.openNested(scope.field.entityName);
     var directive = '<carnival-nested-form state="'+state+'" type="nested" entity="nestedEntity"></carnival-nested-form></div>';
-    var newElement = $compile(directive)(scope);
-    var nestedDiv = document.querySelector(containerId);
-    angular.element(nestedDiv).append(newElement);
+    addNested(containerId, scope, directive);
   };
 
   this.saveNested = function(formId){

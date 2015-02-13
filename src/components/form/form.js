@@ -14,7 +14,7 @@ angular.module('carnival.components.form', [])
       editable: '='
     },
     templateUrl: 'components/form/form.html',
-    controller: function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater) {
+    controller: function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $state) {
       $scope.utils = utils;
 
       if($scope.type !== 'nested'){
@@ -22,11 +22,9 @@ angular.module('carnival.components.form', [])
       }
 
       $scope.hasRelatedFields = function(){
-        for(var i = 0; i < $scope.fields; i++){
+        for(var i = 0; i < $scope.fields.length; i++){
           var field = $scope.fields[i];
           if(field.fieldFormType !== 'related')
-            continue;
-          if(!$scope.canShow(field))
             continue;
           return true;
         }
@@ -55,18 +53,21 @@ angular.module('carnival.components.form', [])
 
       var updateEntityData = function(data){
         var parentEntity = $scope.entity.parentEntity;
-        var fieldToUpdate = parentEntity.model.getFieldByEntityName($scope.entity.name);
-        EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
         var identifier = $scope.entity.identifier;
         $scope.entity[identifier] = data[identifier];
-        $scope.state = 'edit';
         $scope.entity.datas = data;
+        if(!parentEntity)
+          return;
+        var fieldToUpdate = parentEntity.model.getFieldByEntityName($scope.entity.name);
+        EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
       };
 
       var saveCallbackForNested = function(error, data){
         if(!error){
           if($scope.state === 'edit' || !entityHasNesteds())
             FormService.closeNested($scope.entity.name);
+          else
+            $scope.state = 'edit';
           updateEntity();
           updateEntityData(data);
         }
@@ -76,7 +77,15 @@ angular.module('carnival.components.form', [])
         if(!error){
           updateEntity();
           updateEntityData(data);
-          $scope.$parent.remove();
+          if($scope.hasRelatedFields() && $scope.state === 'create'){
+            $scope.state = 'edit';
+            alert('Agora você pode criar os campos relacionados');
+          }else{
+            if($scope.type === 'column')
+              $scope.$parent.remove();
+            else
+              $state.go('main.list', { entity: $scope.entity.name});
+          }
         }
       };
 
@@ -92,6 +101,7 @@ angular.module('carnival.components.form', [])
             console.log('Não é possivel salvar o form pois existem nested não salvos');
             return;
           }
+          callbackFunction = saveCallbackForColumn;
         }
 
         $scope.action.click(callbackFunction);

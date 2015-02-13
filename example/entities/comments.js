@@ -83,6 +83,31 @@ app.config(function (ConfigurationProvider) {
           }
         }
       },
+      // ---- Tags (Relation) Field ----
+      'tags': {
+        type: 'hasMany',
+        entityName: 'tags',//manytomany
+        label: 'Tags',
+        endpoint: 'tags',
+        identifier: 'id',
+        field: 'name',
+        views: {
+          index: {
+            enable: true
+          },
+          create: {
+            enable: true,
+            nested: {type: 'column'}
+          },
+          edit: {
+            enable: true,
+            nested: {type: 'column'}
+          },
+          show: {
+            enable: true
+          }
+        }
+      },
       'post': {
         type: 'belongsTo',
         entityName: 'posts',

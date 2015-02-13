@@ -25,12 +25,12 @@ angular.module('carnival.components.nested-form-area', [])
       };
 
       $scope.openNestedForm = function(nestedEntity, data, state, containerId){
-        var nestedType = $scope.field.views[$scope.state].nested;
+        var nestedType = $scope.field.views[state].nested;
         nestedEntity.parentEntity = $scope.entity;
         nestedEntity.datas = data;
         $scope.nestedEntity = nestedEntity;
         if(nestedType.type === 'column'){
-          FormService.openColumnNested('aaa', $scope);
+          FormService.openColumnNested(state, $scope.field.entityName, $scope);
         }else{
           FormService.openSimpleNested(state, containerId, $scope);
         }
@@ -46,7 +46,7 @@ angular.module('carnival.components.nested-form-area', [])
         var nestedEntity = EntityResources.prepareForEditState($scope.field.entityName);
         var identifier = nestedEntity.identifier;
         nestedEntity[identifier] = data[identifier];
-        $scope.openNestedForm(nestedEntity, data, state, containerId);
+        $scope.openNestedForm(nestedEntity, data, 'edit', containerId);
       };
 
       $scope.open = function(){

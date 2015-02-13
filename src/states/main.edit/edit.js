@@ -18,7 +18,7 @@ angular.module('carnival')
 
   };
   var getZIndex = function(){
-      return ((document.getElementsByClassName('form-column').length - 1) * 10) + 1;
+      return ((document.getElementsByClassName('form-column').length - 1) * 10) + 3;
   };
 
   var getHeight = function(){
