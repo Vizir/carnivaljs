@@ -103,6 +103,7 @@ angular.module('carnival.components.column-form', [])
 angular.module('carnival.components', [
   'carnival.components.button',
   'carnival.components.column-form',
+  'carnival.components.form-area',
   'carnival.components.form',
   'carnival.components.nested-form',
   'carnival.components.summarized-items',
@@ -444,6 +445,46 @@ angular.module('carnival.components.fields.wysiwyg', [])
       data: '='
     },
     templateUrl: 'components/fields/wysiwyg/wysiwyg.html'
+  };
+});
+
+angular.module('carnival.components.form-area', [])
+.directive('carnivalFormArea', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      entity: '=',
+      fields: '=',
+      action: '=',
+      state: '@state',
+      type: '@',
+      datas: '=',
+      relatedResources: '=',
+      editable: '='
+    },
+    templateUrl: 'components/form-area/form-area.html',
+    controller: ["$rootScope", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", "$state", function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $state) {
+      $scope.show = function(){
+        return document.getElementsByClassName('form-column').length > 1;
+
+      };
+      var getZIndex = function(){
+          return ((document.getElementsByClassName('form-column').length - 1) * 10) + 3;
+      };
+
+      var getHeight = function(){
+        return (document.querySelector('#master-form').offsetHeight);
+      };
+
+      $scope.getStyle = function(){
+        return {
+          zIndex:  getZIndex(),
+          height: getHeight() + 'px'
+        };
+      };
+
+    }]
   };
 });
 
@@ -1197,7 +1238,7 @@ angular.module('carnival')
     addState: function (state){
       extraStates.push(state);
     },
-   
+
     $get: function () {
       return {
 
@@ -2199,24 +2240,6 @@ angular.module('carnival')
     entity = $scope.entity;
   };
 
-  $scope.show = function(){
-    return document.getElementsByClassName('form-column').length > 1;
-
-  };
-  var getZIndex = function(){
-    return ((document.getElementsByClassName('form-column').length - 1) * 10) + 3;
-  };
-
-  var getHeight = function(){
-    return (document.querySelector('#master-form').offsetHeight);
-  };
-
-  $scope.getStyle = function(){
-    return {
-      zIndex:  getZIndex(),
-      height: getHeight() + 'px'
-    };
-  };
 
   init();
 
@@ -2378,7 +2401,7 @@ angular.module('carnival')
 
 }]);
 
-angular.module('carnival.templates', ['components/button/button.html', 'components/column-form/column-form.html', 'components/delete-button/delete-button.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/currency/currency.html', 'components/fields/date/date.html', 'components/fields/enum/enum.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/listing-extra-action/listing-extra-action.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-currency/listing-field-currency.html', 'components/listing-field-enum/listing-field-enum.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/nested-form/nested-form-area.html', 'components/nested-form/nested-form.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/summarized-items/summarized-items.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
+angular.module('carnival.templates', ['components/button/button.html', 'components/column-form/column-form.html', 'components/delete-button/delete-button.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/currency/currency.html', 'components/fields/date/date.html', 'components/fields/enum/enum.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form-area/form-area.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/listing-extra-action/listing-extra-action.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-currency/listing-field-currency.html', 'components/listing-field-enum/listing-field-enum.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/nested-form/nested-form-area.html', 'components/nested-form/nested-form.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/summarized-items/summarized-items.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
 
 angular.module("components/button/button.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/button/button.html",
@@ -2507,6 +2530,19 @@ angular.module("components/fields/wysiwyg/wysiwyg.html", []).run(["$templateCach
   $templateCache.put("components/fields/wysiwyg/wysiwyg.html",
     "<div>\n" +
     "  <textarea ng-wig=\"data\"></textarea>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("components/form-area/form-area.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/form-area/form-area.html",
+    "<div id='form-columns'>\n" +
+    "  <div ng-show='show()' ng-style='getStyle()' class='disable-form'></div>\n" +
+    "  <div id='master-form'  class='form-column'>\n" +
+    "    <h3 ng-if=\"state == 'edit' \">{{ 'EDIT_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
+    "    <h3 ng-if=\"state == 'create' \">{{ 'CREATE_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
+    "    <carnival-form type='normal' entity=\"entity\" fields=\"fields\" datas=\"datas\" action=\"entity.action\" state=\"edit\" related-resources=\"relatedResources\" editable=\"true\"></carnival-form>\n" +
+    "  </div>\n" +
     "</div>\n" +
     "");
 }]);
@@ -2823,13 +2859,7 @@ angular.module("components/uploader/uploader.html", []).run(["$templateCache", f
 angular.module("states/main.create/create.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("states/main.create/create.html",
     "<div class=\"row\">\n" +
-    "  <div id='form-columns'>\n" +
-    "    <div ng-show='show()' ng-style='getStyle()' class='disable-form'></div>\n" +
-    "    <div id='master-form'  class='form-column'>\n" +
-    "      <h3>{{ 'CREATE_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
-    "      <carnival-form entity='entity' fields=\"entity.fields\" action=\"entity.action\" datas=\"entity.datas\" state=\"create\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form>\n" +
-    "    </div>\n" +
-    "  </div>\n" +
+    "  <carnival-form-area entity=\"entity\" fields=\"entity.fields\" datas=\"entity.datas\" action=\"entity.action\" state=\"create\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form-area>\n" +
     "</div>\n" +
     "");
 }]);
@@ -2837,14 +2867,7 @@ angular.module("states/main.create/create.html", []).run(["$templateCache", func
 angular.module("states/main.edit/edit.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("states/main.edit/edit.html",
     "<div class=\"row\">\n" +
-    "  <div id='form-columns'>\n" +
-    "    <div ng-show='show()' ng-style='getStyle()' class='disable-form'></div>\n" +
-    "    <div id='master-form'  class='form-column'>\n" +
-    "      <h3>{{ 'EDIT_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
-    "      <carnival-form type='normal' entity=\"entity\" fields=\"entity.fields\" datas=\"entity.datas\" action=\"entity.action\" state=\"edit\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form>\n" +
-    "    </div>\n" +
-    "  </div>\n" +
-    "\n" +
+    "  <carnival-form-area entity=\"entity\" fields=\"entity.fields\" datas=\"entity.datas\" action=\"entity.action\" state=\"edit\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form-area>\n" +
     "</div>\n" +
     "");
 }]);
