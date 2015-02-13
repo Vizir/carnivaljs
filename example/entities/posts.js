@@ -145,12 +145,16 @@ app.config(function (ConfigurationProvider) {
           create: {
             enable: true,
             enableDelete: true,
-            nested: true
+            nested: {
+              type: 'side'
+            }
           },
           edit: {
             enable: true,
             enableDelete: true,
-            nested: true
+            nested: {
+              type: 'side'
+            }
           },
           show: {
             enable: true

@@ -1,5 +1,6 @@
 angular.module('carnival.components', [
   'carnival.components.button',
+  'carnival.components.column-form',
   'carnival.components.form',
   'carnival.components.nested-form',
   'carnival.components.nested-form-area',

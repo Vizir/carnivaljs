@@ -13,6 +13,19 @@ angular.module('carnival')
     });
   };
 
+  $scope.show = function(){
+    return document.getElementsByClassName('form-column').length > 1;
+
+  }
+  var getZIndex = function(){
+      return ((document.getElementsByClassName('form-column').length - 1) * 10) + 1;
+  }
+
+  $scope.getStyle = function(){
+    return {zIndex:  getZIndex()};
+  }
+
+
   init();
 
 });

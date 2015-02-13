@@ -1,6 +1,10 @@
 <div class="row">
-
-  <h3>{{ 'EDIT_STATE_TITLE' | translate }} {{ entity.label }}</h3>
-  <carnival-form type='normal' entity="entity" fields="entity.fields" datas="entity.datas" action="entity.action" state="edit" related-resources="entity.relatedResources" editable="true"></carnival-form>
+  <div id='form-columns'>
+    <div ng-show='show()' ng-style='getStyle()' class='disable-form'></div>
+    <div class='master-form form-column'>
+      <h3>{{ 'EDIT_STATE_TITLE' | translate }} {{ entity.label }}</h3>
+      <carnival-form type='normal' entity="entity" fields="entity.fields" datas="entity.datas" action="entity.action" state="edit" related-resources="entity.relatedResources" editable="true"></carnival-form>
+    </div>
+  </div>
 
 </div>
