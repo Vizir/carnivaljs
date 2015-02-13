@@ -1467,7 +1467,6 @@ angular.module('carnival')
   var resolveForeignKey = function(field){
     if(field.type !== 'belongsTo' && field.type !== 'hasMany')
       return;
-
     if(field.foreignKey)
       return field.foreignKey;
     if(!field.identifier)//TODO Is impossible to discover tthe foreignKey name without identifier
@@ -1475,10 +1474,22 @@ angular.module('carnival')
     return field.name + capitalizeFirstLetter(field.identifier);
   };
 
+  var parseGrid = function (grid) {
+    var rowSplitted = grid.split(' ');
+    var newRow = rowSplitted[0] === 'row' ? true : false;
+    if (rowSplitted[0] === 'row') rowSplitted.splice(0, 1);
+    var columnSplitted = rowSplitted[0].split('-');
+    var columnSize = columnSplitted[0] === 'column' ? columnSplitted[1] : '12';
+    return {
+      newRow: newRow,
+      columnSize: columnSize
+    };
+  };
+
   this.build = function(field_name, fieldParams){
     var field = {
       name:       field_name,
-      label:      fieldParams.label,
+      label:      fieldParams.label || field_name,
       foreignKey: fieldParams.foreignKey,
       endpoint:   fieldParams.endpoint || field_name,
       field:      fieldParams.field,
@@ -1488,6 +1499,7 @@ angular.module('carnival')
       uploader:   fieldParams.uploader,
       gallery:    fieldParams.gallery,
       values:     fieldParams.values,
+      grid:       parseGrid(fieldParams.grid || 'row column-12'),
       currencyOptions: fieldParams.currencyOptions,
       views:      buildViews(fieldParams.views)
     };
@@ -2247,15 +2259,12 @@ angular.module("components/fields/file/file.html", []).run(["$templateCache", fu
     "    <img ng-if=\"checkIfIsImage(data)\" ng-src=\"{{ data }}\" width=\"200\" height=\"120\"/>\n" +
     "    <a ng-if=\"!checkIfIsImage(data)\" href=\"{{ data }}\">{{ data }}</a>\n" +
     "  </div>\n" +
-    "  <div ng-if=\"editable\">\n" +
-    "    <carnival-string-field label=\"field.label\" data=\"$parent.data\" editable=\"editable\"></carnival-string-field>\n" +
-    "    <div ng-if=\"checkIfHasUploader()\">\n" +
-    "      <carnival-uploader uploader=\"field.uploader\" file-url=\"$parent.$parent.data\"></carnival-uploader>\n" +
-    "    </div>\n" +
-    "    <div ng-if=\"checkIfHasGallery()\">\n" +
-    "      <carnival-gallery gallery=\"field.gallery\" file-url=\"$parent.$parent.data\"></carnival-gallery>\n" +
-    "    </div>\n" +
+    "  <carnival-string-field label=\"field.label\" data=\"$parent.data\" editable=\"editable\"></carnival-string-field>\n" +
+    "  <div ng-if=\"checkIfHasUploader()\">\n" +
+    "    <carnival-uploader uploader=\"field.uploader\" file-url=\"$parent.$parent.data\"></carnival-uploader>\n" +
     "  </div>\n" +
+    "  <div ng-if=\"checkIfHasGallery()\">\n" +
+    "    <carnival-gallery gallery=\"field.gallery\" file-url=\"$parent.$parent.data\"></carnival-gallery>\n" +
     "</div>\n" +
     "");
 }]);
@@ -2310,29 +2319,32 @@ angular.module("components/fields/wysiwyg/wysiwyg.html", []).run(["$templateCach
 angular.module("components/form/form.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/form/form.html",
     "<form ng-init=\"nestedFormIndex = {value: 0}\" novalidate>\n" +
-    "  <div class=\"row\" ng-repeat=\"field in fields\">\n" +
-    "    <label ng-if='canShow(field)' class=\"col-sm-2 control-label\">\n" +
-    "      {{ field.label }}\n" +
-    "      <div class=\"col-sm-10\" ng-switch=\"field.type\">\n" +
-    "        <!-- Fields -->\n" +
-    "        <carnival-text-field ng-switch-when=\"text\" data=\"datas[field.name]\" label=\"field.label\"></carnival-text-field>\n" +
-    "        <carnival-wysiwyg-field ng-switch-when=\"wysiwyg\" data=\"datas[field.name]\" label=\"field.label\"></carnival-wysiwyg-field>\n" +
-    "        <carnival-boolean-field ng-switch-when=\"boolean\" data=\"datas[field.name]\"></carnival-boolean-field>\n" +
-    "        <carnival-string-field ng-switch-when=\"string\" data=\"datas[field.name]\" label=\"field.label\"></carnival-string-field>\n" +
-    "        <carnival-number-field ng-switch-when=\"number\" data=\"datas[field.name]\" label=\"field.label\"></carnival-number-field>\n" +
-    "        <carnival-date-field ng-switch-when=\"date\" data=\"datas[field.name]\"></carnival-date-field>\n" +
-    "        <carnival-file-field ng-switch-when=\"file\" data=\"datas[field.name]\" field=\"field\"></carnival-file-field>\n" +
-    "        <carnival-enum-field ng-switch-when=\"enum\" data=\"datas[field.name]\" field=\"field\"></carnival-enum-field>\n" +
-    "        <carnival-currency-field ng-switch-when=\"currency\" data=\"datas[field.name]\" field=\"field\"></carnival-currency-field>\n" +
-    "        <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when=\"belongsTo\" nested-form-index=\"nestedFormIndex\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
-    "        <carnival-has-many-field ng-if='canShow(field)' ng-switch-when=\"hasMany\" entity=\"entity\" nested-form-index=\"nestedFormIndex\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-has-many-field>\n" +
-    "        <carnival-text-field ng-switch-default data=\"datas[field.name]\" label=\"field.label\"></carnival-text-field>\n" +
+    "  <div ng-repeat=\"field in fields\">\n" +
+    "    <div ng-class=\"{ row: field.grid.newRow, inline-div: !field.grid.newRow }\">\n" +
+    "      <div class=\"column small-{{ field.grid.columnSize }}\">\n" +
+    "        <label ng-if='canShow(field)' class=\"col-sm-2 control-label\">\n" +
+    "          {{ field.label }}\n" +
+    "        </label>\n" +
+    "        <div ng-switch=\"field.type\">\n" +
+    "          <carnival-text-field ng-switch-when=\"text\" data=\"datas[field.name]\" label=\"field.label\"></carnival-text-field>\n" +
+    "          <carnival-wysiwyg-field ng-switch-when=\"wysiwyg\" data=\"datas[field.name]\" label=\"field.label\"></carnival-wysiwyg-field>\n" +
+    "          <carnival-boolean-field ng-switch-when=\"boolean\" data=\"datas[field.name]\"></carnival-boolean-field>\n" +
+    "          <carnival-string-field ng-switch-when=\"string\" data=\"datas[field.name]\" label=\"field.label\"></carnival-string-field>\n" +
+    "          <carnival-number-field ng-switch-when=\"number\" data=\"datas[field.name]\" label=\"field.label\"></carnival-number-field>\n" +
+    "          <carnival-date-field ng-switch-when=\"date\" data=\"datas[field.name]\"></carnival-date-field>\n" +
+    "          <carnival-file-field ng-switch-when=\"file\" data=\"datas[field.name]\" field=\"field\"></carnival-file-field>\n" +
+    "          <carnival-enum-field ng-switch-when=\"enum\" data=\"datas[field.name]\" field=\"field\"></carnival-enum-field>\n" +
+    "          <carnival-currency-field ng-switch-when=\"currency\" data=\"datas[field.name]\" field=\"field\"></carnival-currency-field>\n" +
+    "          <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when=\"belongsTo\" nested-form-index=\"nestedFormIndex\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
+    "          <carnival-has-many-field ng-if='canShow(field)' ng-switch-when=\"hasMany\" entity=\"entity\" nested-form-index=\"nestedFormIndex\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-has-many-field>\n" +
+    "          <carnival-text-field ng-switch-default data=\"datas[field.name]\" label=\"field.label\"></carnival-text-field>\n" +
+    "        </div>\n" +
     "      </div>\n" +
-    "    </label>\n" +
+    "    </div>\n" +
     "  </div>\n" +
-    "  <label class=\"col-sm-2 control-label\">\n" +
+    "  <div>\n" +
     "    <carnival-button label=\"{{ 'FORM_BUTTON_SAVE' | translate }}\" style=\"success\" size=\"small\" ng-click=\"buttonAction()\"></carnival-button>\n" +
-    "  </label>\n" +
+    "  </div>\n" +
     "</form>\n" +
     "");
 }]);
@@ -2583,7 +2595,7 @@ angular.module("components/uploader/uploader.html", []).run(["$templateCache", f
   $templateCache.put("components/uploader/uploader.html",
     "<div>\n" +
     "  <input type=\"file\" file-input=\"files\"></input>\n" +
-    "  <carnival-button label=\"{{ 'UPLOAD_BUTTON' | translate }}\" style=\"default\" size=\"small\" ng-click=\"upload()\"></carnival-button>\n" +
+    "  <carnival-button label=\"{{ 'UPLOAD_BUTTON' | translate }}\" style=\"default\" size=\"tiny\" ng-click=\"upload()\"></carnival-button>\n" +
     "</div>\n" +
     "");
 }]);
