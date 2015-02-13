@@ -470,7 +470,7 @@ angular.module('carnival.components.form-area', [])
 
       };
       var getZIndex = function(){
-          return ((document.getElementsByClassName('form-column').length - 1) * 10) + 3;
+        return ((document.getElementsByClassName('form-column').length - 1) * 10) + 3;
       };
 
       var getHeight = function(){
@@ -1805,7 +1805,6 @@ angular.module('carnival')
     });
   };
 
-
   this.openSimpleNested = function(state, containerId, scope){
     if(this.isNestedOpen(scope.field.entityName)){
       var self = this;
@@ -1818,20 +1817,6 @@ angular.module('carnival')
     this.openNested(scope.field.entityName);
     var directive = '<carnival-nested-form state="'+state+'" type="nested" entity="nestedEntity"></carnival-nested-form></div>';
     addNested(containerId, scope, directive);
-  };
-
-  this.saveNested = function(formId){
-    var nestedForms = this.nesteds[formId];
-    nestedForms.saved = true;
-  };
-
-  this.hasUnsavedNested = function(){
-    for(var key in this.nesteds){
-      var nestedForm = this.nesteds[key];
-      if(!nestedForm.saved)
-        return true;
-    }
-    return false;
   };
 
   this.isNestedOpen = function(formId){
@@ -2817,17 +2802,13 @@ angular.module("components/uploader/uploader.html", []).run(["$templateCache", f
 
 angular.module("states/main.create/create.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("states/main.create/create.html",
-    "<div class=\"row\">\n" +
-    "  <carnival-form-area entity=\"entity\" fields=\"entity.fields\" datas=\"entity.datas\" action=\"entity.action\" state=\"create\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form-area>\n" +
-    "</div>\n" +
+    "<carnival-form-area entity=\"entity\" fields=\"entity.fields\" datas=\"entity.datas\" action=\"entity.action\" state=\"create\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form-area>\n" +
     "");
 }]);
 
 angular.module("states/main.edit/edit.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("states/main.edit/edit.html",
-    "<div class=\"row\">\n" +
-    "  <carnival-form-area entity=\"entity\" fields=\"entity.fields\" datas=\"entity.datas\" action=\"entity.action\" state=\"edit\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form-area>\n" +
-    "</div>\n" +
+    "<carnival-form-area entity=\"entity\" fields=\"entity.fields\" datas=\"entity.datas\" action=\"entity.action\" state=\"edit\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form-area>\n" +
     "");
 }]);
 

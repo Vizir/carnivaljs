@@ -56,34 +56,6 @@ describe('FormService', function(){
     });
   });
 
-  describe('#saveNested', function(){
-    it('should update a nestedForm with saved == true', function(){
-      FormService.openNested('newFormId');
-      FormService.saveNested('newFormId');
-      expect(FormService.nesteds.newFormId.saved).to.be.equal(true);
-    });
-  });
-
-  describe('#hasUnsavedNested', function(){
-
-    describe('has Unsaved Nested', function(){
-      it('should respond true', function(){
-        FormService.openNested('newFormId');
-        var result = FormService.hasUnsavedNested();
-        expect(result).to.be.equal(true);
-      });
-    });
-
-    describe('not has Unsaved Nested', function(){
-      it('should respond false', function(){
-        FormService.openNested('newFormId');
-        FormService.saveNested('newFormId');
-        var result = FormService.hasUnsavedNested();
-        expect(result).to.be.equal(false);
-      });
-    });
-  });
-
   describe('#canShowThisField', function(){
     describe('when field is not a relation', function(){
       var formEntity = {};

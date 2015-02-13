@@ -38,7 +38,6 @@ angular.module('carnival')
     });
   };
 
-
   this.openSimpleNested = function(state, containerId, scope){
     if(this.isNestedOpen(scope.field.entityName)){
       var self = this;
@@ -51,20 +50,6 @@ angular.module('carnival')
     this.openNested(scope.field.entityName);
     var directive = '<carnival-nested-form state="'+state+'" type="nested" entity="nestedEntity"></carnival-nested-form></div>';
     addNested(containerId, scope, directive);
-  };
-
-  this.saveNested = function(formId){
-    var nestedForms = this.nesteds[formId];
-    nestedForms.saved = true;
-  };
-
-  this.hasUnsavedNested = function(){
-    for(var key in this.nesteds){
-      var nestedForm = this.nesteds[key];
-      if(!nestedForm.saved)
-        return true;
-    }
-    return false;
   };
 
   this.isNestedOpen = function(formId){

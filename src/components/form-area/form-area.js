@@ -20,7 +20,7 @@ angular.module('carnival.components.form-area', [])
 
       };
       var getZIndex = function(){
-          return ((document.getElementsByClassName('form-column').length - 1) * 10) + 3;
+        return ((document.getElementsByClassName('form-column').length - 1) * 10) + 3;
       };
 
       var getHeight = function(){
