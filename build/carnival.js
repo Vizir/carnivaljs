@@ -65,6 +65,7 @@ angular.module('carnival.components.button', [])
 angular.module('carnival.components', [
   'carnival.components.button',
   'carnival.components.form',
+  'carnival.components.form-fields',
   'carnival.components.nested-form',
   'carnival.components.nested-form-area',
   'carnival.components.delete-button',
@@ -407,6 +408,15 @@ angular.module('carnival.components.fields.wysiwyg', [])
   };
 });
 
+angular.module('carnival.components.form-fields', [])
+.directive('carnivalFormFields', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    templateUrl: 'components/form-fields/form-fields.html'
+  };
+});
+
 angular.module('carnival.components.form', [])
 .directive('carnivalForm', function () {
   return {
@@ -419,8 +429,7 @@ angular.module('carnival.components.form', [])
       state: '@state',
       type: '@',
       datas: '=',
-      relatedResources: '=',
-      editable: '='
+      relatedResources: '='
     },
     templateUrl: 'components/form/form.html',
     controller: ["$rootScope", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater) {
@@ -2048,7 +2057,6 @@ angular.module('carnival')
 
   var entity = $scope.entity = {};
 
-
   var init = function () {
     $scope.entity = EntityResources.prepareForCreateState($stateParams.entity);
     entity = $scope.entity;
@@ -2194,7 +2202,7 @@ angular.module('carnival')
 
 }]);
 
-angular.module('carnival.templates', ['components/button/button.html', 'components/delete-button/delete-button.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/currency/currency.html', 'components/fields/date/date.html', 'components/fields/enum/enum.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/listing-extra-action/listing-extra-action.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-currency/listing-field-currency.html', 'components/listing-field-enum/listing-field-enum.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/nested-form/nested-form-area.html', 'components/nested-form/nested-form.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
+angular.module('carnival.templates', ['components/button/button.html', 'components/delete-button/delete-button.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/currency/currency.html', 'components/fields/date/date.html', 'components/fields/enum/enum.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form-fields/form-fields.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/listing-extra-action/listing-extra-action.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-currency/listing-field-currency.html', 'components/listing-field-enum/listing-field-enum.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/nested-form/nested-form-area.html', 'components/nested-form/nested-form.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
 
 angular.module("components/button/button.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/button/button.html",
@@ -2316,29 +2324,38 @@ angular.module("components/fields/wysiwyg/wysiwyg.html", []).run(["$templateCach
     "");
 }]);
 
+angular.module("components/form-fields/form-fields.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/form-fields/form-fields.html",
+    "<div>\n" +
+    "  <label ng-if='canShow(field)' class=\"col-sm-2 control-label\">\n" +
+    "    {{ field.label }}\n" +
+    "  </label>\n" +
+    "  <div ng-switch=\"field.type\">\n" +
+    "    <carnival-text-field ng-switch-when=\"text\" data=\"datas[field.name]\" label=\"field.label\"></carnival-text-field>\n" +
+    "    <carnival-wysiwyg-field ng-switch-when=\"wysiwyg\" data=\"datas[field.name]\" label=\"field.label\"></carnival-wysiwyg-field>\n" +
+    "    <carnival-boolean-field ng-switch-when=\"boolean\" data=\"datas[field.name]\"></carnival-boolean-field>\n" +
+    "    <carnival-string-field ng-switch-when=\"string\" data=\"datas[field.name]\" label=\"field.label\"></carnival-string-field>\n" +
+    "    <carnival-number-field ng-switch-when=\"number\" data=\"datas[field.name]\" label=\"field.label\"></carnival-number-field>\n" +
+    "    <carnival-date-field ng-switch-when=\"date\" data=\"datas[field.name]\"></carnival-date-field>\n" +
+    "    <carnival-file-field ng-switch-when=\"file\" data=\"datas[field.name]\" field=\"field\"></carnival-file-field>\n" +
+    "    <carnival-enum-field ng-switch-when=\"enum\" data=\"datas[field.name]\" field=\"field\"></carnival-enum-field>\n" +
+    "    <carnival-currency-field ng-switch-when=\"currency\" data=\"datas[field.name]\" field=\"field\"></carnival-currency-field>\n" +
+    "    <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when=\"belongsTo\" nested-form-index=\"nestedFormIndex\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
+    "    <carnival-has-many-field ng-if='canShow(field)' ng-switch-when=\"hasMany\" entity=\"entity\" nested-form-index=\"nestedFormIndex\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-has-many-field>\n" +
+    "    <carnival-text-field ng-switch-default data=\"datas[field.name]\" label=\"field.label\"></carnival-text-field>\n" +
+    "  </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "");
+}]);
+
 angular.module("components/form/form.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/form/form.html",
     "<form ng-init=\"nestedFormIndex = {value: 0}\" novalidate>\n" +
     "  <div ng-repeat=\"field in fields\">\n" +
     "    <div ng-class=\"{ row: field.grid.newRow, inline-div: !field.grid.newRow }\">\n" +
     "      <div class=\"column small-{{ field.grid.columnSize }}\">\n" +
-    "        <label ng-if='canShow(field)' class=\"col-sm-2 control-label\">\n" +
-    "          {{ field.label }}\n" +
-    "        </label>\n" +
-    "        <div ng-switch=\"field.type\">\n" +
-    "          <carnival-text-field ng-switch-when=\"text\" data=\"datas[field.name]\" label=\"field.label\"></carnival-text-field>\n" +
-    "          <carnival-wysiwyg-field ng-switch-when=\"wysiwyg\" data=\"datas[field.name]\" label=\"field.label\"></carnival-wysiwyg-field>\n" +
-    "          <carnival-boolean-field ng-switch-when=\"boolean\" data=\"datas[field.name]\"></carnival-boolean-field>\n" +
-    "          <carnival-string-field ng-switch-when=\"string\" data=\"datas[field.name]\" label=\"field.label\"></carnival-string-field>\n" +
-    "          <carnival-number-field ng-switch-when=\"number\" data=\"datas[field.name]\" label=\"field.label\"></carnival-number-field>\n" +
-    "          <carnival-date-field ng-switch-when=\"date\" data=\"datas[field.name]\"></carnival-date-field>\n" +
-    "          <carnival-file-field ng-switch-when=\"file\" data=\"datas[field.name]\" field=\"field\"></carnival-file-field>\n" +
-    "          <carnival-enum-field ng-switch-when=\"enum\" data=\"datas[field.name]\" field=\"field\"></carnival-enum-field>\n" +
-    "          <carnival-currency-field ng-switch-when=\"currency\" data=\"datas[field.name]\" field=\"field\"></carnival-currency-field>\n" +
-    "          <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when=\"belongsTo\" nested-form-index=\"nestedFormIndex\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
-    "          <carnival-has-many-field ng-if='canShow(field)' ng-switch-when=\"hasMany\" entity=\"entity\" nested-form-index=\"nestedFormIndex\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-has-many-field>\n" +
-    "          <carnival-text-field ng-switch-default data=\"datas[field.name]\" label=\"field.label\"></carnival-text-field>\n" +
-    "        </div>\n" +
+    "        <carnival-form-fields></carnival-form-fields>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "  </div>\n" +
@@ -2605,7 +2622,7 @@ angular.module("states/main.create/create.html", []).run(["$templateCache", func
     "<div class=\"row\">\n" +
     "\n" +
     "  <h3>{{ 'CREATE_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
-    "  <carnival-form entity='entity' fields=\"entity.fields\" action=\"entity.action\" datas=\"entity.datas\" state=\"create\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form>\n" +
+    "  <carnival-form entity='entity' fields=\"entity.fields\" action=\"entity.action\" datas=\"entity.datas\" state=\"create\" related-resources=\"entity.relatedResources\"></carnival-form>\n" +
     "\n" +
     "</div>\n" +
     "");

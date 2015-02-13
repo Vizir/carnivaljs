@@ -1,6 +1,7 @@
 angular.module('carnival.components', [
   'carnival.components.button',
   'carnival.components.form',
+  'carnival.components.form-fields',
   'carnival.components.nested-form',
   'carnival.components.nested-form-area',
   'carnival.components.delete-button',
