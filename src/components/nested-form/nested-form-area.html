@@ -1,5 +1,5 @@
 <div>
-  <a ng-if='canOpenNestedForm()' class="button default tiny"  ng-click="open()">{{ 'NESTED_FORM_BUTTON_CREATE' | translate }}</a>
+  <a class="button default tiny"  ng-click="open()">{{ 'NESTED_FORM_BUTTON_CREATE' | translate }}</a>
 
   <ul ng-if="isHasMany()" class='has-many-field-list'>
     <li ng-repeat='data in datas[field.name]'>

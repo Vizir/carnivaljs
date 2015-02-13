@@ -43,7 +43,8 @@ angular.module('carnival')
   var resolveFieldFormType = function(field){
     if(field.type === 'hasMany')
       return 'related';
-
+    if(field.type === 'belongsTo')
+      return 'simple';
     if(hasNested(field, 'create'))
       return 'related';
 
