@@ -62,18 +62,7 @@ angular.module('carnival.components.form', [])
         EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
       };
 
-      var saveCallbackForNested = function(error, data){
-        if(!error){
-          if($scope.state === 'edit' || !entityHasNesteds())
-            FormService.closeNested($scope.entity.name);
-          else
-            $scope.state = 'edit';
-          updateEntity();
-          updateEntityData(data);
-        }
-      };
-
-      var saveCallbackForColumn = function(error, data){
+      var saveCallback = function(error, data){
         if(!error){
           updateEntity();
           updateEntityData(data);
@@ -83,6 +72,8 @@ angular.module('carnival.components.form', [])
           }else{
             if($scope.type === 'column')
               $scope.$parent.remove();
+            else if($scope.type === 'nested')
+              FormService.closeNested($scope.entity.name);
             else
               $state.go('main.list', { entity: $scope.entity.name});
           }
@@ -90,20 +81,7 @@ angular.module('carnival.components.form', [])
       };
 
       $scope.buttonAction = function(){
-        var callbackFunction = null;
-        if($scope.type === 'nested'){
-          FormService.saveNested($scope.entity.name);
-          callbackFunction = saveCallbackForNested;
-        }else if($scope.type === 'column'){
-          callbackFunction = saveCallbackForColumn;
-        }else{
-          if(FormService.hasUnsavedNested()){
-            console.log('Não é possivel salvar o form pois existem nested não salvos');
-            return;
-          }
-          callbackFunction = saveCallbackForColumn;
-        }
-
+        var callbackFunction = saveCallback;
         $scope.action.click(callbackFunction);
       };
     }

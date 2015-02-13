@@ -44,16 +44,8 @@ angular.module('carnival')
   var resolveFieldFormType = function(field){
     if(field.type === 'hasMany')
       return 'related';
-    if(field.type === 'belongsTo')
-      return 'simple';
-    if(hasNested(field, 'create'))
-      return 'related';
-
-    if(hasNested(field, 'edit'))
-      return 'related';
 
     return 'simple';
-
   };
 
   this.build = function(field_name, fieldParams){

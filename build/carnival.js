@@ -552,18 +552,7 @@ angular.module('carnival.components.form', [])
         EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
       };
 
-      var saveCallbackForNested = function(error, data){
-        if(!error){
-          if($scope.state === 'edit' || !entityHasNesteds())
-            FormService.closeNested($scope.entity.name);
-          else
-            $scope.state = 'edit';
-          updateEntity();
-          updateEntityData(data);
-        }
-      };
-
-      var saveCallbackForColumn = function(error, data){
+      var saveCallback = function(error, data){
         if(!error){
           updateEntity();
           updateEntityData(data);
@@ -573,6 +562,8 @@ angular.module('carnival.components.form', [])
           }else{
             if($scope.type === 'column')
               $scope.$parent.remove();
+            else if($scope.type === 'nested')
+              FormService.closeNested($scope.entity.name);
             else
               $state.go('main.list', { entity: $scope.entity.name});
           }
@@ -580,20 +571,7 @@ angular.module('carnival.components.form', [])
       };
 
       $scope.buttonAction = function(){
-        var callbackFunction = null;
-        if($scope.type === 'nested'){
-          FormService.saveNested($scope.entity.name);
-          callbackFunction = saveCallbackForNested;
-        }else if($scope.type === 'column'){
-          callbackFunction = saveCallbackForColumn;
-        }else{
-          if(FormService.hasUnsavedNested()){
-            console.log('Não é possivel salvar o form pois existem nested não salvos');
-            return;
-          }
-          callbackFunction = saveCallbackForColumn;
-        }
-
+        var callbackFunction = saveCallback;
         $scope.action.click(callbackFunction);
       };
     }]
@@ -1455,21 +1433,10 @@ angular.module('carnival')
     return function (callback) {
       entity.model.create(ParametersParser.parse(entity.datas, entity))
       .success(function (data, status, headers, config) {
-        if(callback){
+        if(callback)
           callback(false, data);
-        }else{
-          if(isToNestedForm){
-
-          }
-          else{
-            new Notification('Item created with success!', 'success');
-            if(hasNestedForm)
-              $state.go('main.edit', { entity: entity.model.name, id: data.id });
-            else
-              $state.go('main.list', { entity: entity.model.name });
-          }
-        }
-
+        else
+          $state.go('main.list', { entity: entity.model.name });
       })
       .error(function (data) {
         new Notification(data, 'danger');
@@ -1622,16 +1589,8 @@ angular.module('carnival')
   var resolveFieldFormType = function(field){
     if(field.type === 'hasMany')
       return 'related';
-    if(field.type === 'belongsTo')
-      return 'simple';
-    if(hasNested(field, 'create'))
-      return 'related';
-
-    if(hasNested(field, 'edit'))
-      return 'related';
 
     return 'simple';
-
   };
 
   this.build = function(field_name, fieldParams){
@@ -2541,7 +2500,7 @@ angular.module("components/form-area/form-area.html", []).run(["$templateCache",
     "  <div id='master-form'  class='form-column'>\n" +
     "    <h3 ng-if=\"state == 'edit' \">{{ 'EDIT_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
     "    <h3 ng-if=\"state == 'create' \">{{ 'CREATE_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
-    "    <carnival-form type='normal' entity=\"entity\" fields=\"fields\" datas=\"datas\" action=\"entity.action\" state=\"edit\" related-resources=\"relatedResources\" editable=\"true\"></carnival-form>\n" +
+    "    <carnival-form type='normal' entity=\"entity\" fields=\"fields\" datas=\"datas\" action=\"entity.action\" state=\"{{state}}\" related-resources=\"relatedResources\" editable=\"true\"></carnival-form>\n" +
     "  </div>\n" +
     "</div>\n" +
     "");

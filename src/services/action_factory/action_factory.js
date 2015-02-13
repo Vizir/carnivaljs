@@ -5,21 +5,10 @@ angular.module('carnival')
     return function (callback) {
       entity.model.create(ParametersParser.parse(entity.datas, entity))
       .success(function (data, status, headers, config) {
-        if(callback){
+        if(callback)
           callback(false, data);
-        }else{
-          if(isToNestedForm){
-
-          }
-          else{
-            new Notification('Item created with success!', 'success');
-            if(hasNestedForm)
-              $state.go('main.edit', { entity: entity.model.name, id: data.id });
-            else
-              $state.go('main.list', { entity: entity.model.name });
-          }
-        }
-
+        else
+          $state.go('main.list', { entity: entity.model.name });
       })
       .error(function (data) {
         new Notification(data, 'danger');
