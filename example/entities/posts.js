@@ -50,6 +50,7 @@ app.config(function (ConfigurationProvider) {
       'title': {
         type: 'string',
         label: 'Title',
+        grid: 'row column-12', // All undefined grids will be setted with this value.
         views: {
           index: {
             enable: true
@@ -71,9 +72,7 @@ app.config(function (ConfigurationProvider) {
         label: 'Content',
         views: {
           index: {
-            enable: true,
-            searchable: false,
-            sortable: false
+            enable: false
           },
           create: {
             enable: true
@@ -91,8 +90,7 @@ app.config(function (ConfigurationProvider) {
         label: 'Published',
         views: {
           index: {
-            enable: true,
-            searchable: true
+            enable: false
           },
           create: {
             enable: true
@@ -113,6 +111,7 @@ app.config(function (ConfigurationProvider) {
         endpoint: 'categories',
         identifier: 'id',
         field: 'name',
+        grid: 'row column-3', // How to use: "[row: if break to a new column] column-[size: column size]"
         views: {
           index: {
             enable: true
@@ -124,6 +123,64 @@ app.config(function (ConfigurationProvider) {
           edit: {
             enable: true,
             nested: true
+          },
+          show: {
+            enable: true
+          }
+        }
+      },
+      // ---- Tags (Relation) Field ----
+      'tags': {
+        type: 'hasMany',
+        entityName: 'tags',//manytomany
+        label: 'Tags',
+        endpoint: 'tags',
+        identifier: 'id',
+        field: 'name',
+        grid: 'column-9',
+        views: {
+          index: {
+            enable: false
+          },
+          create: {
+            enable: true
+          },
+          edit: {
+            enable: true,
+            nested: true
+          },
+          show: {
+            enable: true
+          }
+        }
+      },
+      'thumbnail': {
+        type: 'file',
+        label: 'Thumbnail',
+        options: {
+          showPreview: true
+        },
+        uploader: {
+          endpoint: 'files', // The endpoint where the upload will be requested.
+          // endpointUrl: 'http://localhost:3000/files', // If use endpointUrl it will overwrite the base url setted for this application.
+          getUrl: function (data) { // This function will receive the response data, you will need to return the uploaded file's Url.
+            return data.fileUrl;
+          }
+        },
+        // gallery: {
+        //   url: 'http://localhost:3010' // You can use your own file manager as gallery to pick a file, you just need to access window.opener.CARNIVAL.gallery.sendUrl(<string: your_url>) to send the Url for the file.
+        // },
+        views: {
+          index: {
+            enable: false,
+            sortable: false,
+            searchable: false
+          },
+          create: {
+            enable: true
+          },
+          edit: {
+            enable: true
           },
           show: {
             enable: true
@@ -157,63 +214,9 @@ app.config(function (ConfigurationProvider) {
           }
         }
       },
-      // ---- Tags (Relation) Field ----
-      'tags': {
-        type: 'hasMany',
-        entityName: 'tags',//manytomany
-        label: 'Tags',
-        endpoint: 'tags',
-        identifier: 'id',
-        field: 'name',
-        views: {
-          index: {
-            enable: true
-          },
-          create: {
-            enable: true
-          },
-          edit: {
-            enable: true,
-            nested: true
-          },
-          show: {
-            enable: true
-          }
-        }
-      },
-      'thumbnail': {
-        type: 'file',
-        label: 'Thumbnail',
-        uploader: {
-          endpoint: 'files', // The endpoint where the upload will be requested.
-          // endpointUrl: 'http://localhost:3000/files', // If use endpointUrl it will overwrite the base url setted for this application.
-          getUrl: function (data) { // This function will receive the response data, you will need to return the uploaded file's Url.
-            return data.fileUrl;
-          }
-        },
-        // gallery: {
-        //   url: 'http://localhost:3010' // You can use your own file manager as gallery to pick a file, you just need to access window.opener.CARNIVAL.gallery.sendUrl(<string: your_url>) to send the Url for the file.
-        // },
-        views: {
-          index: {
-            enable: true,
-            sortable: false,
-            searchable: false
-          },
-          create: {
-            enable: true
-          },
-          edit: {
-            enable: true
-          },
-          show: {
-            enable: true
-          }
-        }
-      },
       'price': {
         type: 'currency',
-        currencyOptions: {
+        options: {
           symbol: '$',
           decimalDelimiter: '.',
           thousandsDelimiter: ',',

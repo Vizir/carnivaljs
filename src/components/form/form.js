@@ -10,11 +10,11 @@ angular.module('carnival.components.form', [])
       state: '@state',
       type: '@',
       datas: '=',
-      relatedResources: '=',
-      editable: '='
+      relatedResources: '='
     },
     templateUrl: 'components/form/form.html',
     controller: function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater) {
+
       $scope.utils = utils;
 
       if($scope.type !== 'nested'){

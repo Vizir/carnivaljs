@@ -4,7 +4,7 @@ describe('On carnival-currency-field component', function () {
   var setScopeData = function (scope) {
     scope.data = 20;
     scope.field = {
-      currencyOptions: {
+      options: {
         symbol: '$',
         decimalDelimiter: '.',
         thousandsDelimiter: ','
