@@ -33,20 +33,6 @@ angular.module('carnival.components.fields.hasMany', [])
           return items[index];
       };
 
-      var getZIndex = function(){
-        return (document.getElementsByClassName('form-column').length * 10) + 2;
-      }
-
-      $scope.addColumn = function(){
-        $document.scrollTop(0, 1000).then(function(){
-          $scope.relatedEntity = $scope.entity.nestedForms[$scope.field.endpoint];
-          var directive = '<carnival-column-form  entity="relatedEntity" z-index="'+getZIndex()+'" fields="relatedEntity.fields" datas="relatedEntity.datas" action="relatedEntity.action" state="edit" related-resources="relatedEntity.relatedResources" editable="true"></carnival-column-form>';
-          var newElement = $compile(directive)($scope);
-          var nestedDiv = document.querySelector('#form-columns');
-          angular.element(nestedDiv).append(newElement);
-        });
-      };
-
       $scope.addHasManyOption = function(){
         var selectedItem = getSelectedItem();
         if(!$scope.datas[$scope.field.name])

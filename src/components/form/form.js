@@ -54,13 +54,21 @@ angular.module('carnival.components.form', [])
         }
       };
 
+      var saveCallbackForColumn = function(error, data){
+        if(!error){
+          updateEntity();
+          updateEntityData(data);
+          $scope.$parent.remove();
+        }
+      }
+
       $scope.buttonAction = function(){
         var callbackFunction = null;
         if($scope.type === 'nested'){
           FormService.saveNested($scope.entity.name);
           callbackFunction = saveCallbackForNested;
         }else if($scope.type === 'column'){
-          $scope.$parent.remove();
+          callbackFunction = saveCallbackForColumn;
         }else{
           if(FormService.hasUnsavedNested()){
             console.log('Não é possivel salvar o form pois existem nested não salvos');

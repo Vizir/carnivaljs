@@ -25,21 +25,26 @@ angular.module('carnival.components.nested-form-area', [])
       };
 
       $scope.openNestedForm = function(nestedEntity, data, state, containerId){
-        if(FormService.isNestedOpen($scope.field.entityName)){
-          FormService.closeNested($scope.field.entityName);
-          $timeout(function(){
-            $scope.openNestedForm(nestedEntity, data, state, containerId);
-          }, 200);
-          return;
-        }
-        FormService.openNested($scope.field.entityName);
+        var nestedType = $scope.field.views[$scope.state].nested;
         nestedEntity.parentEntity = $scope.entity;
-        $scope.nestedEntity = nestedEntity;
         nestedEntity.datas = data;
-        var directive = '<carnival-nested-form state="'+state+'" type="nested" entity="nestedEntity"></carnival-nested-form></div>';
-        var newElement = $compile(directive)($scope);
-        var nestedDiv = document.querySelector(containerId);
-        angular.element(nestedDiv).append(newElement);
+        $scope.nestedEntity = nestedEntity;
+        if(nestedType.type === 'column'){
+          FormService.openColumnNested('aaa', $scope);
+        }else{
+          if(FormService.isNestedOpen($scope.field.entityName)){
+            FormService.closeNested($scope.field.entityName);
+            $timeout(function(){
+              $scope.openNestedForm(nestedEntity, data, state, containerId);
+            }, 200);
+            return;
+          }
+          FormService.openNested($scope.field.entityName);
+          var directive = '<carnival-nested-form state="'+state+'" type="nested" entity="nestedEntity"></carnival-nested-form></div>';
+          var newElement = $compile(directive)($scope);
+          var nestedDiv = document.querySelector(containerId);
+          angular.element(nestedDiv).append(newElement);
+        }
       };
 
       $scope.openWithData = function(data){

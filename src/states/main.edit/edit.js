@@ -21,8 +21,15 @@ angular.module('carnival')
       return ((document.getElementsByClassName('form-column').length - 1) * 10) + 1;
   }
 
+  var getHeight = function(){
+    return (document.querySelector('#master-form').offsetHeight);
+  }
+
   $scope.getStyle = function(){
-    return {zIndex:  getZIndex()};
+    return {
+      zIndex:  getZIndex(),
+      height: getHeight() + 'px'
+    };
   }
 
 

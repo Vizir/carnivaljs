@@ -20,6 +20,7 @@ angular.module('carnival.components.column-form', [])
       $scope.cssClass = 'fadeInRight';
       $scope.style = {
         zIndex: $scope.zIndex,
+        left: parseInt($scope.zIndex) + 30 + 'px',
         padding: '50px'
       };
 

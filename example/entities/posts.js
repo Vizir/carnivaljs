@@ -146,14 +146,14 @@ app.config(function (ConfigurationProvider) {
             enable: true,
             enableDelete: true,
             nested: {
-              type: 'side'
+              type: 'column'
             }
           },
           edit: {
             enable: true,
             enableDelete: true,
             nested: {
-              type: 'side'
+              type: 'column'
             }
           },
           show: {
