@@ -23,7 +23,7 @@ angular.module('carnival')
     var newElement = $compile(directive)(scope);
     var nestedDiv = document.querySelector(containerId);
     angular.element(nestedDiv).append(newElement);
-  }
+  };
 
   this.openColumnNested = function(state, formId, scope){
     if(!this.columnNesteds[formId])
