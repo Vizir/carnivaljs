@@ -2259,12 +2259,12 @@ angular.module("components/fields/file/file.html", []).run(["$templateCache", fu
     "    <img ng-if=\"checkIfIsImage(data)\" ng-src=\"{{ data }}\" width=\"200\" height=\"120\"/>\n" +
     "    <a ng-if=\"!checkIfIsImage(data)\" href=\"{{ data }}\">{{ data }}</a>\n" +
     "  </div>\n" +
-    "  <carnival-string-field label=\"field.label\" data=\"$parent.data\" editable=\"editable\"></carnival-string-field>\n" +
+    "  <carnival-string-field label=\"field.label\" data=\"data\" editable=\"editable\"></carnival-string-field>\n" +
     "  <div ng-if=\"checkIfHasUploader()\">\n" +
-    "    <carnival-uploader uploader=\"field.uploader\" file-url=\"$parent.$parent.data\"></carnival-uploader>\n" +
+    "    <carnival-uploader uploader=\"field.uploader\" file-url=\"$parent.data\"></carnival-uploader>\n" +
     "  </div>\n" +
     "  <div ng-if=\"checkIfHasGallery()\">\n" +
-    "    <carnival-gallery gallery=\"field.gallery\" file-url=\"$parent.$parent.data\"></carnival-gallery>\n" +
+    "    <carnival-gallery gallery=\"field.gallery\" file-url=\"$parent.data\"></carnival-gallery>\n" +
     "</div>\n" +
     "");
 }]);
