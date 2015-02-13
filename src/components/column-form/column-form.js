@@ -20,8 +20,9 @@ angular.module('carnival.components.column-form', [])
       $scope.cssClass = 'fadeInRight';
       $scope.style = {
         zIndex: $scope.zIndex,
-        left: parseInt($scope.zIndex) + 30 + 'px',
-        padding: '50px'
+        left: (FormService.columnNestedsCount() * 20) + 'px',
+        top: (FormService.columnNestedsCount() * 30) + 'px',
+        padding: '10px'
       };
 
       $scope.remove = function(){

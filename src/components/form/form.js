@@ -17,7 +17,7 @@ angular.module('carnival.components.form', [])
     controller: function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $state) {
       $scope.utils = utils;
 
-      if($scope.type !== 'nested'){
+      if($scope.type === 'normal'){
         FormService.init();
       }
 

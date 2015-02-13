@@ -85,8 +85,9 @@ angular.module('carnival.components.column-form', [])
       $scope.cssClass = 'fadeInRight';
       $scope.style = {
         zIndex: $scope.zIndex,
-        left: parseInt($scope.zIndex) + 30 + 'px',
-        padding: '50px'
+        left: (FormService.columnNestedsCount() * 20) + 'px',
+        top: (FormService.columnNestedsCount() * 30) + 'px',
+        padding: '10px'
       };
 
       $scope.remove = function(){
@@ -466,11 +467,11 @@ angular.module('carnival.components.form-area', [])
     templateUrl: 'components/form-area/form-area.html',
     controller: ["$rootScope", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", "$state", function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $state) {
       $scope.show = function(){
-        return document.getElementsByClassName('form-column').length > 1;
+        return FormService.columnNestedsCount() > 1;
 
       };
       var getZIndex = function(){
-        return ((document.getElementsByClassName('form-column').length - 1) * 10) + 3;
+        return ((FormService.columnNestedsCount() - 1) * 10) + 3;
       };
 
       var getHeight = function(){
@@ -507,7 +508,7 @@ angular.module('carnival.components.form', [])
     controller: ["$rootScope", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", "$state", function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $state) {
       $scope.utils = utils;
 
-      if($scope.type !== 'nested'){
+      if($scope.type === 'normal'){
         FormService.init();
       }
 
@@ -1793,8 +1794,10 @@ angular.module('carnival')
   };
 
   this.openColumnNested = function(state, formId, scope){
+    console.log('Antes Number of columns', this.columnNesteds);
     if(!this.columnNesteds[formId])
         this.columnNesteds[formId] = {};
+    console.log('Depoi16:40:09s Number of columns', this.columnNesteds);
 
     var nestedForms = this.columnNesteds[formId];
     nestedForms.saved = false;
@@ -2802,13 +2805,13 @@ angular.module("components/uploader/uploader.html", []).run(["$templateCache", f
 
 angular.module("states/main.create/create.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("states/main.create/create.html",
-    "<carnival-form-area entity=\"entity\" fields=\"entity.fields\" datas=\"entity.datas\" action=\"entity.action\" state=\"create\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form-area>\n" +
+    "<carnival-form-area type=\"normal\" entity=\"entity\" fields=\"entity.fields\" datas=\"entity.datas\" action=\"entity.action\" state=\"create\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form-area>\n" +
     "");
 }]);
 
 angular.module("states/main.edit/edit.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("states/main.edit/edit.html",
-    "<carnival-form-area entity=\"entity\" fields=\"entity.fields\" datas=\"entity.datas\" action=\"entity.action\" state=\"edit\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form-area>\n" +
+    "<carnival-form-area type='normal' entity=\"entity\" fields=\"entity.fields\" datas=\"entity.datas\" action=\"entity.action\" state=\"edit\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form-area>\n" +
     "");
 }]);
 

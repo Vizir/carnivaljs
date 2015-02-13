@@ -26,8 +26,10 @@ angular.module('carnival')
   };
 
   this.openColumnNested = function(state, formId, scope){
+    console.log('Antes Number of columns', this.columnNesteds);
     if(!this.columnNesteds[formId])
         this.columnNesteds[formId] = {};
+    console.log('Depoi16:40:09s Number of columns', this.columnNesteds);
 
     var nestedForms = this.columnNesteds[formId];
     nestedForms.saved = false;
