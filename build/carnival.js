@@ -2199,6 +2199,25 @@ angular.module('carnival')
     entity = $scope.entity;
   };
 
+  $scope.show = function(){
+    return document.getElementsByClassName('form-column').length > 1;
+
+  };
+  var getZIndex = function(){
+    return ((document.getElementsByClassName('form-column').length - 1) * 10) + 3;
+  };
+
+  var getHeight = function(){
+    return (document.querySelector('#master-form').offsetHeight);
+  };
+
+  $scope.getStyle = function(){
+    return {
+      zIndex:  getZIndex(),
+      height: getHeight() + 'px'
+    };
+  };
+
   init();
 
 }]);
@@ -2803,10 +2822,13 @@ angular.module("components/uploader/uploader.html", []).run(["$templateCache", f
 angular.module("states/main.create/create.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("states/main.create/create.html",
     "<div class=\"row\">\n" +
-    "\n" +
-    "  <h3>{{ 'CREATE_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
-    "  <carnival-form entity='entity' fields=\"entity.fields\" action=\"entity.action\" datas=\"entity.datas\" state=\"create\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form>\n" +
-    "\n" +
+    "  <div id='form-columns'>\n" +
+    "    <div ng-show='show()' ng-style='getStyle()' class='disable-form'></div>\n" +
+    "    <div id='master-form'  class='form-column'>\n" +
+    "      <h3>{{ 'CREATE_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
+    "      <carnival-form entity='entity' fields=\"entity.fields\" action=\"entity.action\" datas=\"entity.datas\" state=\"create\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form>\n" +
+    "    </div>\n" +
+    "  </div>\n" +
     "</div>\n" +
     "");
 }]);
