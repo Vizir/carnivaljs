@@ -21,6 +21,24 @@ angular.module('carnival.components.form', [])
         FormService.init();
       }
 
+      $scope.hasRelatedFields = function(){
+        for(var i = 0; i < $scope.fields; i++){
+          var field = $scope.fields[i];
+          if(field.fieldFormType !== 'related')
+            continue;
+          if(!$scope.canShow(field))
+            continue;
+          return true;
+        }
+        return false;
+      }
+
+      $scope.showRelatedFields = function(){
+        if($scope.type === 'normal')
+          return true;
+        return $scope.hasRelatedFields();
+      }
+
       $scope.canShow = function(field){
        return FormService.canShowThisField($scope.entity, $scope.state, field);
       };

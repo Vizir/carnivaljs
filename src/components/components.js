@@ -3,6 +3,7 @@ angular.module('carnival.components', [
   'carnival.components.column-form',
   'carnival.components.form',
   'carnival.components.nested-form',
+  'carnival.components.summarized-items',
   'carnival.components.nested-form-area',
   'carnival.components.delete-button',
   'carnival.components.listing',

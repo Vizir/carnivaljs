@@ -11,6 +11,7 @@ angular.module('carnival')
         showOptions: view_options.showOptions || false,
         enableDelete: view_options.enableDelete || false,
         nested: view_options.nested || false,
+        showAs: view_options.showAs,
         sortable: typeof view_options.sortable === 'boolean' ? view_options.sortable : true
       };
     });

@@ -47,6 +47,10 @@ angular.module('carnival.components.nested-form-area', [])
         }
       };
 
+      $scope.showAs = function(){
+        return $scope.field.views[$scope.state].nested.showItemsAs;
+      }
+
       $scope.openWithData = function(data){
         var containerId = '#edit_nested_'+ $scope.field.entityName + '_' + data[$scope.field.identifier];
         var state = 'edit';

@@ -33,6 +33,8 @@ angular.module('carnival.components.fields.hasMany', [])
           return items[index];
       };
 
+
+
       $scope.addHasManyOption = function(){
         var selectedItem = getSelectedItem();
         if(!$scope.datas[$scope.field.name])
