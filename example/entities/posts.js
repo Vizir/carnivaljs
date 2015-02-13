@@ -50,6 +50,7 @@ app.config(function (ConfigurationProvider) {
       'title': {
         type: 'string',
         label: 'Title',
+        grid: 'row column-12', // All undefined grids will have this value.
         views: {
           index: {
             enable: true
@@ -110,6 +111,7 @@ app.config(function (ConfigurationProvider) {
         endpoint: 'categories',
         identifier: 'id',
         field: 'name',
+        grid: 'row column-6',
         views: {
           index: {
             enable: true
@@ -120,33 +122,6 @@ app.config(function (ConfigurationProvider) {
           },
           edit: {
             enable: true,
-            nested: true
-          },
-          show: {
-            enable: true
-          }
-        }
-      },
-      // ---- Comments (Relation) Field ----
-      'comments': {
-        type: 'hasMany',
-        entityName: 'comments',
-        label: 'Comments',
-        endpoint: 'comments',
-        identifier: 'id',
-        field: 'email',
-        views: {
-          index: {
-            enable: true
-          },
-          create: {
-            enable: true,
-            enableDelete: true,
-            nested: true
-          },
-          edit: {
-            enable: true,
-            enableDelete: true,
             nested: true
           },
           show: {
@@ -162,6 +137,7 @@ app.config(function (ConfigurationProvider) {
         endpoint: 'tags',
         identifier: 'id',
         field: 'name',
+        grid: 'column-6',
         views: {
           index: {
             enable: false
@@ -202,6 +178,33 @@ app.config(function (ConfigurationProvider) {
           },
           edit: {
             enable: true
+          },
+          show: {
+            enable: true
+          }
+        }
+      },
+      // ---- Comments (Relation) Field ----
+      'comments': {
+        type: 'hasMany',
+        entityName: 'comments',
+        label: 'Comments',
+        endpoint: 'comments',
+        identifier: 'id',
+        field: 'email',
+        views: {
+          index: {
+            enable: true
+          },
+          create: {
+            enable: true,
+            enableDelete: true,
+            nested: true
+          },
+          edit: {
+            enable: true,
+            enableDelete: true,
+            nested: true
           },
           show: {
             enable: true
