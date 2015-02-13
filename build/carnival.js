@@ -413,7 +413,17 @@ angular.module('carnival.components.form-fields', [])
   return {
     restrict: 'E',
     replace: true,
-    templateUrl: 'components/form-fields/form-fields.html'
+    scope: {
+      field: '='
+    },
+    templateUrl: 'components/form-fields/form-fields.html',
+    link: function (scope) {
+      scope.canShow = scope.$parent.canShow;
+      scope.datas   = scope.$parent.datas;
+      scope.nestedFormIndex = scope.$parent.nestedFormIndex;
+      scope.entity  = scope.$parent.entity;
+      scope.state   = scope.$parent.state;
+    }
   };
 });
 
@@ -433,6 +443,7 @@ angular.module('carnival.components.form', [])
     },
     templateUrl: 'components/form/form.html',
     controller: ["$rootScope", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater) {
+
       $scope.utils = utils;
 
       if($scope.type !== 'nested'){
@@ -2327,7 +2338,7 @@ angular.module("components/fields/wysiwyg/wysiwyg.html", []).run(["$templateCach
 angular.module("components/form-fields/form-fields.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/form-fields/form-fields.html",
     "<div>\n" +
-    "  <label ng-if='canShow(field)' class=\"col-sm-2 control-label\">\n" +
+    "  <label ng-if='canShow(field)'>\n" +
     "    {{ field.label }}\n" +
     "  </label>\n" +
     "  <div ng-switch=\"field.type\">\n" +
@@ -2352,17 +2363,17 @@ angular.module("components/form-fields/form-fields.html", []).run(["$templateCac
 angular.module("components/form/form.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/form/form.html",
     "<form ng-init=\"nestedFormIndex = {value: 0}\" novalidate>\n" +
-    "  <div ng-repeat=\"field in fields\">\n" +
-    "    <div ng-class=\"{ row: field.grid.newRow, inline-div: !field.grid.newRow }\">\n" +
-    "      <div class=\"column small-{{ field.grid.columnSize }}\">\n" +
-    "        <carnival-form-fields></carnival-form-fields>\n" +
-    "      </div>\n" +
+    "  <div ng-repeat=\"field in fields\" ng-class=\"{ row: field.grid.newRow }\">\n" +
+    "    <div>\n" +
+    "      <carnival-form-fields field=\"field\" class=\"column small-{{ field.grid.columnSize }}\" ng-show=\"field.grid.newRow\"></carnival-form-fields>\n" +
+    "      <carnival-form-fields field=\"fields[$index + 1]\" class=\"column small-{{ fields[$index + 1].grid.columnSize }}\" ng-show=\"!fields[$index + 1].grid.newRow && $index + 1 !== fields.length && skipRepeater($index)\"></carnival-form-fields>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "  <div>\n" +
     "    <carnival-button label=\"{{ 'FORM_BUTTON_SAVE' | translate }}\" style=\"success\" size=\"small\" ng-click=\"buttonAction()\"></carnival-button>\n" +
     "  </div>\n" +
     "</form>\n" +
+    "\n" +
     "");
 }]);
 
