@@ -1,11 +1,11 @@
-describe('On carnival-listing-field-enum component', function () {
+describe('On carnival-listing-field-currency component', function () {
 
   var element, scope, compile;
 
   var setScopeData = function (scope) {
     scope.field = {
       name: 'catFoodPrice',
-      currencyOptions: {
+      options: {
         symbol: '$',
         decimalDelimiter: '.',
         thousandsDelimiter: ',',
