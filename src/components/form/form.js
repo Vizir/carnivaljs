@@ -71,7 +71,7 @@ angular.module('carnival.components.form', [])
             alert('Agora você pode criar os campos relacionados');
           }else{
             if($scope.type === 'column')
-              $scope.$parent.remove();
+              FormService.closeColumn($scope.entity.name);
             else if($scope.type === 'nested')
               FormService.closeNested($scope.entity.name);
             else

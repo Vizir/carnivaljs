@@ -24,13 +24,26 @@ angular.module('carnival.components.nested-form-area', [])
         return true;
       };
 
-      $scope.openNestedForm = function(nestedEntity, data, state, containerId){
+      var getContainerId = function(state, data){
         var nestedType = $scope.field.views[state].nested;
+        if(nestedType.type === 'column'){
+          return '#form-columns';
+        }else{
+          var prefix = '';
+          if(state === 'edit' )
+            prefix = '_' + data[$scope.field.identifier];
+          return '#'+state+'_nested_'+ $scope.field.entityName +  prefix;
+        }
+      }
+
+      $scope._openForm = function(nestedEntity, data, state){
+        var nestedType = $scope.field.views[state].nested;
+        var containerId = getContainerId(state, data);
         nestedEntity.parentEntity = $scope.entity;
         nestedEntity.datas = data;
         $scope.nestedEntity = nestedEntity;
         if(nestedType.type === 'column'){
-          FormService.openColumnNested(state, $scope.field.entityName, $scope);
+          FormService.openColumnNested(state, containerId, $scope);
         }else{
           FormService.openSimpleNested(state, containerId, $scope);
         }
@@ -41,19 +54,17 @@ angular.module('carnival.components.nested-form-area', [])
       };
 
       $scope.openWithData = function(data){
-        var containerId = '#edit_nested_'+ $scope.field.entityName + '_' + data[$scope.field.identifier];
         var state = 'edit';
         var nestedEntity = EntityResources.prepareForEditState($scope.field.entityName);
         var identifier = nestedEntity.identifier;
         nestedEntity[identifier] = data[identifier];
-        $scope.openNestedForm(nestedEntity, data, 'edit', containerId);
+        $scope._openForm(nestedEntity, data, 'edit');
       };
 
       $scope.open = function(){
-        var containerId = '#create_nested_'+ $scope.field.entityName;
         var state = 'create';
         var nestedEntity = $scope.entity.nestedForms[$scope.field.endpoint];
-        $scope.openNestedForm(nestedEntity, {}, 'create', containerId);
+        $scope._openForm(nestedEntity, {}, 'create');
       };
 
       $scope.isHasMany = function(){

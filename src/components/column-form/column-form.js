@@ -9,7 +9,6 @@ angular.module('carnival.components.column-form', [])
       action: '=',
       state: '@state',
       type: '@',
-      zIndex: '@',
       datas: '=',
       relatedResources: '=',
       editable: '='
@@ -19,7 +18,7 @@ angular.module('carnival.components.column-form', [])
 
       $scope.cssClass = 'fadeInRight';
       $scope.style = {
-        zIndex: $scope.zIndex,
+        zIndex: (FormService.columnNestedsCount() * 10) + 2,
         left: (FormService.columnNestedsCount() * 20) + 'px',
         top: (FormService.columnNestedsCount() * 30) + 'px',
         padding: '10px'
@@ -32,6 +31,22 @@ angular.module('carnival.components.column-form', [])
           $element.remove();
         }, 1000);
       };
+
+      $scope.isClosed = function(){
+        return !FormService.columnNesteds[$scope.entity.name];
+      };
+
+      $scope.close = function(){
+        FormService.closeColumn($scope.entity.name);
+      };
+
+      $scope.$watch('isClosed()', function(newValue, oldValue){
+        if(newValue === oldValue)
+            return;
+        if(newValue){
+          $scope.remove();
+        }
+      });
     }
   };
 });
