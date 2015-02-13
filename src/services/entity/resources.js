@@ -29,7 +29,6 @@ angular.module('carnival')
     if (!entityWrapper.model.checkFieldView(field.name, stateName))
       return;
 
-
     entityWrapper.fields.unshift(field);
     if(!hasRelatedResources(stateName, field.type))
       return;

@@ -126,7 +126,6 @@ angular.module('carnival.components.fields.belongsTo', [])
       field: '=',
       entity: '=',
       state: '@',
-      nestedFormIndex: '=',
       relatedResources: '='
     },
     templateUrl: 'components/fields/belongs-to/belongs-to.html'
@@ -298,7 +297,6 @@ angular.module('carnival.components.fields.hasMany', [])
       field: '=',
       state: '@',
       entity: '=',
-      nestedFormIndex: '=',
       relatedResources: '='
     },
     templateUrl: 'components/fields/has-many/has-many.html',
@@ -1475,6 +1473,27 @@ angular.module('carnival')
     return field.name + capitalizeFirstLetter(field.identifier);
   };
 
+  var hasNested = function(field, viewName){
+    if(!field.views) return false;
+    if(!field.views[viewName]) return false;
+    if(!field.views[viewName].nested) return false;
+    return true;
+  };
+
+  var resolveFieldFormType = function(field){
+    if(field.type === 'hasMany')
+      return 'related';
+
+    if(hasNested(field, 'create'))
+      return 'related';
+
+    if(hasNested(field, 'edit'))
+      return 'related';
+
+    return 'simple';
+
+  };
+
   this.build = function(field_name, fieldParams){
     var field = {
       name:       field_name,
@@ -1492,7 +1511,8 @@ angular.module('carnival')
       views:      buildViews(fieldParams.views)
     };
 
-     field.foreignKey = resolveForeignKey(field);
+    field.fieldFormType = resolveFieldFormType(field);
+    field.foreignKey = resolveForeignKey(field);
 
     return field;
   };
@@ -1528,7 +1548,6 @@ angular.module('carnival')
   var prepareField = function(entityWrapper, stateName, field, parentEntity){
     if (!entityWrapper.model.checkFieldView(field.name, stateName))
       return;
-
 
     entityWrapper.fields.unshift(field);
     if(!hasRelatedResources(stateName, field.type))
@@ -2309,31 +2328,44 @@ angular.module("components/fields/wysiwyg/wysiwyg.html", []).run(["$templateCach
 
 angular.module("components/form/form.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/form/form.html",
-    "<form ng-init=\"nestedFormIndex = {value: 0}\" novalidate>\n" +
-    "  <div class=\"row\" ng-repeat=\"field in fields\">\n" +
-    "    <label ng-if='canShow(field)' class=\"col-sm-2 control-label\">\n" +
-    "      {{ field.label }}\n" +
-    "      <div class=\"col-sm-10\" ng-switch=\"field.type\">\n" +
-    "        <!-- Fields -->\n" +
-    "        <carnival-text-field ng-switch-when=\"text\" data=\"datas[field.name]\" label=\"field.label\"></carnival-text-field>\n" +
-    "        <carnival-wysiwyg-field ng-switch-when=\"wysiwyg\" data=\"datas[field.name]\" label=\"field.label\"></carnival-wysiwyg-field>\n" +
-    "        <carnival-boolean-field ng-switch-when=\"boolean\" data=\"datas[field.name]\"></carnival-boolean-field>\n" +
-    "        <carnival-string-field ng-switch-when=\"string\" data=\"datas[field.name]\" label=\"field.label\"></carnival-string-field>\n" +
-    "        <carnival-number-field ng-switch-when=\"number\" data=\"datas[field.name]\" label=\"field.label\"></carnival-number-field>\n" +
-    "        <carnival-date-field ng-switch-when=\"date\" data=\"datas[field.name]\"></carnival-date-field>\n" +
-    "        <carnival-file-field ng-switch-when=\"file\" data=\"datas[field.name]\" field=\"field\"></carnival-file-field>\n" +
-    "        <carnival-enum-field ng-switch-when=\"enum\" data=\"datas[field.name]\" field=\"field\"></carnival-enum-field>\n" +
-    "        <carnival-currency-field ng-switch-when=\"currency\" data=\"datas[field.name]\" field=\"field\"></carnival-currency-field>\n" +
-    "        <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when=\"belongsTo\" nested-form-index=\"nestedFormIndex\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
-    "        <carnival-has-many-field ng-if='canShow(field)' ng-switch-when=\"hasMany\" entity=\"entity\" nested-form-index=\"nestedFormIndex\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-has-many-field>\n" +
-    "        <carnival-text-field ng-switch-default data=\"datas[field.name]\" label=\"field.label\"></carnival-text-field>\n" +
-    "      </div>\n" +
+    "<div>\n" +
+    "  <form novalidate>\n" +
+    "    <div ng-if=\"field.fieldFormType != 'related'\" class=\"row\" ng-repeat=\"field in fields\">\n" +
+    "      <label ng-if='canShow(field)' class=\"col-sm-2 control-label\">\n" +
+    "        {{ field.label }}\n" +
+    "        <div class=\"col-sm-10\" ng-switch=\"field.type\">\n" +
+    "          <!-- Fields -->\n" +
+    "          <carnival-text-field ng-switch-when=\"text\" data=\"datas[field.name]\" label=\"field.label\"></carnival-text-field>\n" +
+    "          <carnival-wysiwyg-field ng-switch-when=\"wysiwyg\" data=\"datas[field.name]\" label=\"field.label\"></carnival-wysiwyg-field>\n" +
+    "          <carnival-boolean-field ng-switch-when=\"boolean\" data=\"datas[field.name]\"></carnival-boolean-field>\n" +
+    "          <carnival-string-field ng-switch-when=\"string\" data=\"datas[field.name]\" label=\"field.label\"></carnival-string-field>\n" +
+    "          <carnival-number-field ng-switch-when=\"number\" data=\"datas[field.name]\" label=\"field.label\"></carnival-number-field>\n" +
+    "          <carnival-date-field ng-switch-when=\"date\" data=\"datas[field.name]\"></carnival-date-field>\n" +
+    "          <carnival-file-field ng-switch-when=\"file\" data=\"datas[field.name]\" field=\"field\"></carnival-file-field>\n" +
+    "          <carnival-enum-field ng-switch-when=\"enum\" data=\"datas[field.name]\" field=\"field\"></carnival-enum-field>\n" +
+    "          <carnival-currency-field ng-switch-when=\"currency\" data=\"datas[field.name]\" field=\"field\"></carnival-currency-field>\n" +
+    "          <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when=\"belongsTo\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
+    "        </div>\n" +
+    "      </label>\n" +
+    "    </div>\n" +
+    "    <label class=\"col-sm-2 control-label\">\n" +
+    "      <carnival-button label=\"{{ 'FORM_BUTTON_SAVE' | translate }}\" style=\"success\" size=\"small\" ng-click=\"buttonAction()\"></carnival-button>\n" +
     "    </label>\n" +
-    "  </div>\n" +
-    "  <label class=\"col-sm-2 control-label\">\n" +
-    "    <carnival-button label=\"{{ 'FORM_BUTTON_SAVE' | translate }}\" style=\"success\" size=\"small\" ng-click=\"buttonAction()\"></carnival-button>\n" +
-    "  </label>\n" +
-    "</form>\n" +
+    "  </form>\n" +
+    "  <fieldset>\n" +
+    "    <legend>Relacionados</legend>\n" +
+    "      <div ng-if=\"field.fieldFormType == 'related'\" class=\"row\" ng-repeat=\"field in fields\">\n" +
+    "        <label ng-if='canShow(field)' class=\"col-sm-2 control-label\">\n" +
+    "          {{ field.label }}\n" +
+    "          <div class=\"col-sm-10\" ng-switch=\"field.type\">\n" +
+    "            <!-- Fields -->\n" +
+    "            <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when=\"belongsTo\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
+    "            <carnival-has-many-field ng-if='canShow(field)' ng-switch-when=\"hasMany\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-has-many-field>\n" +
+    "          </div>\n" +
+    "        </label>\n" +
+    "      </div>\n" +
+    "  </fieldset>\n" +
+    "</div>\n" +
     "");
 }]);
 

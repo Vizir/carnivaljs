@@ -33,6 +33,27 @@ angular.module('carnival')
     return field.name + capitalizeFirstLetter(field.identifier);
   };
 
+  var hasNested = function(field, viewName){
+    if(!field.views) return false;
+    if(!field.views[viewName]) return false;
+    if(!field.views[viewName].nested) return false;
+    return true;
+  };
+
+  var resolveFieldFormType = function(field){
+    if(field.type === 'hasMany')
+      return 'related';
+
+    if(hasNested(field, 'create'))
+      return 'related';
+
+    if(hasNested(field, 'edit'))
+      return 'related';
+
+    return 'simple';
+
+  };
+
   this.build = function(field_name, fieldParams){
     var field = {
       name:       field_name,
@@ -50,7 +71,8 @@ angular.module('carnival')
       views:      buildViews(fieldParams.views)
     };
 
-     field.foreignKey = resolveForeignKey(field);
+    field.fieldFormType = resolveFieldFormType(field);
+    field.foreignKey = resolveForeignKey(field);
 
     return field;
   };
