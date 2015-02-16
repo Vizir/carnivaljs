@@ -9,7 +9,7 @@ angular.module('carnival.components', [
   'carnival.components.form-fields-next',
   'carnival.components.nested-form',
   'carnival.components.summarized-items',
-  'carnival.components.nested-form-area',
+  'carnival.components.relation-field-area',
   'carnival.components.delete-button',
   'carnival.components.listing',
   'carnival.components.listingfieldbelongsto',

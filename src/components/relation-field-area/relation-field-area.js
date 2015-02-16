@@ -1,5 +1,5 @@
-angular.module('carnival.components.nested-form-area', [])
-.directive('carnivalNestedFormArea', function () {
+angular.module('carnival.components.relation-field-area', [])
+.directive('carnivalRelationFieldArea', function () {
   return {
     restrict: 'E',
     replace: true,
@@ -11,7 +11,7 @@ angular.module('carnival.components.nested-form-area', [])
       relationType: '@',
       editable: '='
     },
-    templateUrl: 'components/nested-form/nested-form-area.html',
+    templateUrl: 'components/relation-field-area/relation-field-area.html',
     controller: function ($rootScope, $scope, $timeout, utils, $element,  $compile, FormService, Configuration, EntityResources, Notification) {
 
       var getContainerId = function(state, data){
