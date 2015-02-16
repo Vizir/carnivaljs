@@ -30,6 +30,19 @@ angular.module('carnival')
     });
   };
 
+  this.openColumnListing = function(state, containerId, scope){
+    var formId = scope.field.entityName;
+    if(!this.columns[formId])
+        this.columns[formId] = {};
+
+    var nestedForms = this.columns[formId];
+    nestedForms.saved = false;
+    $document.scrollTop(0, 1000).then(function(){
+      var directive = '<carnival-column-listing parent-entity="entity" type="column" entity="nestedEntity" entity-name="nestedEntity.name" actions="nestedEntity.actions" identifier="nestedEntity.identifier" datas="entity.datas[field.name]" fields="nestedEntity.fields"></carnival-column-listing>';
+      addNested(containerId, scope, directive);
+    });
+  };
+
   this.openNested = function(state, containerId, scope){
     if(this.isNestedOpen(scope.field.entityName)){
       var self = this;

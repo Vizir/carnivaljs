@@ -205,12 +205,18 @@ app.config(function (ConfigurationProvider) {
           create: {
             enable: true,
             enableDelete: true,
-            nested: {type: 'column'}
+            nested: {
+              type: 'column',
+              showItemsAs: 'summarized'
+            }
           },
           edit: {
             enable: true,
             enableDelete: true,
-            nested: {type: 'column'}
+            nested: {
+              type: 'column',
+              showItemsAs: 'summarized'
+            }
           },
           show: {
             enable: true

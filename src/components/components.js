@@ -1,6 +1,7 @@
 angular.module('carnival.components', [
   'carnival.components.button',
   'carnival.components.column-form',
+  'carnival.components.column-listing',
   'carnival.components.form-area',
   'carnival.components.form',
   'carnival.components.form-fields',

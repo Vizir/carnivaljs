@@ -1,0 +1,27 @@
+<div class="listing form-column {{cssClass}}" ng-style="style">
+  <carnival-button label="{{ 'LIST_STATE_BUTTON_CREATE' | translate }}" style="success" size="small" ng-click="create()"></carnival-button>
+  {{parentEntity.datas['comments']}}
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th ng-repeat="field in getListFields()">
+          {{ field.label }}
+          <carnival-order-ctrl field="field.name"></carnival-order-ctrl>
+        </th>
+        <th ng-if="actions">
+          {{ 'LISTING_ACTIONS' | translate }}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="data in datas">
+        <td ng-repeat="field in getListFields()">
+          <carnival-listing-field item="data" field="field"></carnival-listing-field>
+        </td>
+        <td>
+          <carnival-button label="{{ 'LISTING_BUTTON_EDIT' | translate }}" style="warning btn-edit" size="tiny" ng-click="actions.edit(data[identifier])"></carnival-button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

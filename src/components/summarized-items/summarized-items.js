@@ -4,15 +4,17 @@ angular.module('carnival.components.summarized-items', [])
     restrict: 'E',
     replace: true,
     scope: {
-      entities: '=',
+      entity: '=',
       field: '=',
       state: '@',
       editable: '='
     },
     templateUrl: 'components/summarized-items/summarized-items.html',
-    controller: function ($rootScope, $scope, utils, $element, FormService, Configuration) {
-      $scope.entity = Configuration.getEntity($scope.field.entityName);
-      $scope.teste = $scope.entities;
+    controller: function ($rootScope, $scope, $compile, utils, $element, FormService, Configuration, EntityResources) {
+      $scope.openItems = function(){
+        $scope.nestedEntity = EntityResources.prepareForListState($scope.field.name);
+        FormService.openColumnListing('list', '#form-columns', $scope);
+      };
     }
   };
 });
