@@ -24,20 +24,19 @@ angular.module('carnival.components.column-listing', [])
       };
 
       $scope.create = function(){
-        $scope.field = {
-          entityName:  $scope.entityName
-        };
-        $scope.nestedEntity = EntityResources.prepareForCreateState($scope.entityName, $scope.parentEntity);
-        FormService.openColumn('create', '#form-columns', $scope);
+        var formScope = $scope.$new();
+        formScope.entity = EntityResources.prepareForCreateState($scope.entityName, $scope.parentEntity);
+        FormService.openColumn('create', '#form-columns', formScope);
       };
 
       $scope.edit = function(data){
         $scope.field = {
           entityName: $scope.entityName
         };
-        $scope.nestedEntity = EntityResources.prepareForCreateState($scope.entityName, $scope.parentEntity);
-        $scope.nestedEntity.datas = data;
-        FormService.openColumn('edit', '#form-columns', $scope);
+        var formScope = $scope.$new();
+        formScope.entity = EntityResources.prepareForCreateState($scope.entityName, $scope.parentEntity);
+        formScope.entity.datas = data;
+        FormService.openColumn('edit', '#form-columns', formScope);
       };
 
       $scope.getListFields = function(){

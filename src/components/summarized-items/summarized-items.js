@@ -13,8 +13,10 @@ angular.module('carnival.components.summarized-items', [])
     templateUrl: 'components/summarized-items/summarized-items.html',
     controller: function ($rootScope, $scope, $compile, utils, $element, FormService, Configuration, EntityResources) {
       $scope.openItems = function(){
-        $scope.nestedEntity = EntityResources.prepareForListState($scope.field.name);
-        FormService.openColumnListing('list', '#form-columns', $scope);
+        var nestedEntity = EntityResources.prepareForListState($scope.field.name);
+        var listScope = $scope.$new();
+        listScope.entity = nestedEntity,
+        FormService.openColumnListing('list', '#form-columns', listScope);
       };
     }
   };

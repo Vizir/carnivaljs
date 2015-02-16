@@ -6,7 +6,7 @@ angular.module('carnival.components.fields.belongsTo', [])
     scope: {
       datas: '=',
       field: '=',
-      entity: '=',
+      parentEntity: '=',
       state: '@',
       relatedResources: '='
     },
