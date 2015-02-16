@@ -71,6 +71,7 @@ angular.module('carnival')
   var prepareEntityForState = function(entityName, stateName, parentEntity){
     var entityWrapper = {};
     entityWrapper.nestedForms = {};
+    entityWrapper.parentEntity = parentEntity;
     entityWrapper.model = Configuration.getEntity(entityName);
     entityWrapper.name = entityWrapper.model.name;
     entityWrapper.label = entityWrapper.model.label;

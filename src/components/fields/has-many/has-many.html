@@ -1,8 +1,8 @@
 <div>
   <span ng-show='showOptions()' >
-    <select ng-model="selectedHasMany" ng-options="item[field.identifier] as utils.cutString(item[field.field], 25) for item in relatedResources[field.endpoint]">
+    <select ng-model="selectedHasMany" ng-options="item[field.identifier] as utils.cutString(item[field.field], 25) for item in relatedResources">
     </select>
     <a class="button default tiny" ng-click="addHasManyOption()">Add</a>
   </span>
-  <carnival-nested-form-area state="{{state}}" entity="entity" field="field" datas="datas" relation-type="hasMany"></carnival-nested-form-area>
+  <carnival-nested-form-area state="{{state}}" parent-entity="parentEntity" field="field" datas="datas" relation-type="hasMany"></carnival-nested-form-area>
 </div>

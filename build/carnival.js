@@ -143,12 +143,20 @@ angular.module('carnival.components.column-listing', [])
 
       $scope.create = function(){
         $scope.field = {
-          entityName: 'listing-' + $scope.entityName
+          entityName:  $scope.entityName
         };
         $scope.nestedEntity = EntityResources.prepareForCreateState($scope.entityName, $scope.parentEntity);
-        $scope.nestedEntity.parentEntity = $scope.parentEntity;
         FormService.openColumn('create', '#form-columns', $scope);
-      }
+      };
+
+      $scope.edit = function(data){
+        $scope.field = {
+          entityName: $scope.entityName
+        };
+        $scope.nestedEntity = EntityResources.prepareForCreateState($scope.entityName, $scope.parentEntity);
+        $scope.nestedEntity.datas = data;
+        FormService.openColumn('edit', '#form-columns', $scope);
+      };
 
       $scope.getListFields = function(){
         var fields = [];
@@ -405,7 +413,7 @@ angular.module('carnival.components.fields.hasMany', [])
       datas: '=',
       field: '=',
       state: '@',
-      entity: '=',
+      parentEntity: '=',
       relatedResources: '='
     },
     templateUrl: 'components/fields/has-many/has-many.html',
@@ -414,7 +422,7 @@ angular.module('carnival.components.fields.hasMany', [])
 
       $scope.showOptions = function(){
         var fieldEntity = Configuration.getEntity($scope.field.entityName);
-        var relationField = fieldEntity.getFieldByEntityName($scope.entity.name);
+        var relationField = fieldEntity.getFieldByEntityName($scope.parentEntity.name);
         if(relationField.type === 'belongsTo' && !$scope.field.views[$scope.state].showOptions)
           return false;
 
@@ -430,7 +438,7 @@ angular.module('carnival.components.fields.hasMany', [])
       };
 
       var getSelectedItem = function(){
-        var items = $scope.relatedResources[$scope.field.name];
+        var items = $scope.relatedResources;
         var index = getItemIndex($scope.selectedHasMany, items);
         if(index >= 0)
           return items[index];
@@ -438,10 +446,10 @@ angular.module('carnival.components.fields.hasMany', [])
 
       $scope.addHasManyOption = function(){
         var selectedItem = getSelectedItem();
-        if(!$scope.datas[$scope.field.name])
-          $scope.datas[$scope.field.name] = [];
+        if(!$scope.datas)
+          $scope.datas = [];
         if(selectedItem)
-          $scope.datas[$scope.field.name].push(selectedItem);
+          $scope.datas.push(selectedItem);
       };
     }]
   };
@@ -941,7 +949,7 @@ angular.module('carnival.components.nested-form-area', [])
     restrict: 'E',
     replace: true,
     scope: {
-      entity: '=',
+      parentEntity: '=',
       field: '=',
       state: '@',
       datas: '=',
@@ -952,7 +960,7 @@ angular.module('carnival.components.nested-form-area', [])
     controller: ["$rootScope", "$scope", "$timeout", "utils", "$element", "$compile", "FormService", "Configuration", "EntityResources", "Notification", function ($rootScope, $scope, $timeout, utils, $element,  $compile, FormService, Configuration, EntityResources, Notification) {
 
       $scope.canOpenNestedForm = function(){
-        if(!$scope.entity.nestedForms[$scope.field.endpoint])
+        if(!$scope.parentEntity.nestedForms[$scope.field.endpoint])
           return false;
 
         if($scope.state === 'create')
@@ -976,7 +984,7 @@ angular.module('carnival.components.nested-form-area', [])
       $scope._openForm = function(nestedEntity, data, state){
         var nestedType = $scope.field.views[state].nested;
         var containerId = getContainerId(state, data);
-        nestedEntity.parentEntity = $scope.entity;
+        nestedEntity.parentEntity = $scope.parentEntity;
         nestedEntity.datas = data;
         $scope.nestedEntity = nestedEntity;
         if(nestedType.type === 'column'){
@@ -992,7 +1000,7 @@ angular.module('carnival.components.nested-form-area', [])
 
       $scope.openWithData = function(data){
         var state = 'edit';
-        var nestedEntity = EntityResources.prepareForEditState($scope.field.entityName, $scope.entity);
+        var nestedEntity = EntityResources.prepareForEditState($scope.field.entityName, $scope.parentEntity);
         var identifier = nestedEntity.identifier;
         nestedEntity[identifier] = data[identifier];
         $scope._openForm(nestedEntity, data, 'edit');
@@ -1000,7 +1008,7 @@ angular.module('carnival.components.nested-form-area', [])
 
       $scope.open = function(){
         var state = 'create';
-        var nestedEntity = EntityResources.prepareForCreateState($scope.field.entityName, $scope.entity);
+        var nestedEntity = EntityResources.prepareForCreateState($scope.field.entityName, $scope.parentEntity);
         $scope._openForm(nestedEntity, {}, 'create');
       };
 
@@ -1030,7 +1038,7 @@ angular.module('carnival.components.nested-form-area', [])
       };
 
       $scope.remove = function(id){
-        var items = $scope.datas[$scope.field.name];
+        var items = $scope.datas;
         var index = getItemIndex(id, items);
         if(index < 0)
           return;
@@ -1206,8 +1214,9 @@ angular.module('carnival.components.summarized-items', [])
     restrict: 'E',
     replace: true,
     scope: {
-      entity: '=',
+      parentEntity: '=',
       field: '=',
+      datas: '=',
       state: '@',
       editable: '='
     },
@@ -1797,6 +1806,7 @@ angular.module('carnival')
   var prepareEntityForState = function(entityName, stateName, parentEntity){
     var entityWrapper = {};
     entityWrapper.nestedForms = {};
+    entityWrapper.parentEntity = parentEntity;
     entityWrapper.model = Configuration.getEntity(entityName);
     entityWrapper.name = entityWrapper.model.name;
     entityWrapper.label = entityWrapper.model.label;
@@ -1922,14 +1932,14 @@ angular.module('carnival')
   };
 
   this.openColumnListing = function(state, containerId, scope){
-    var formId = scope.field.entityName;
+    var formId = 'listing-' +  scope.field.entityName;
     if(!this.columns[formId])
         this.columns[formId] = {};
 
     var nestedForms = this.columns[formId];
     nestedForms.saved = false;
     $document.scrollTop(0, 1000).then(function(){
-      var directive = '<carnival-column-listing parent-entity="entity" type="column" entity="nestedEntity" entity-name="nestedEntity.name" actions="nestedEntity.actions" identifier="nestedEntity.identifier" datas="entity.datas[field.name]" fields="nestedEntity.fields"></carnival-column-listing>';
+      var directive = '<carnival-column-listing parent-entity="parentEntity" type="column" entity="nestedEntity" entity-name="nestedEntity.name" actions="nestedEntity.actions" identifier="nestedEntity.identifier" datas="datas" fields="nestedEntity.fields"></carnival-column-listing>';
       addNested(containerId, scope, directive);
     });
   };
@@ -2481,7 +2491,7 @@ angular.module("components/column-listing/column-listing.html", []).run(["$templ
   $templateCache.put("components/column-listing/column-listing.html",
     "<div class=\"listing form-column {{cssClass}}\" ng-style=\"style\">\n" +
     "  <carnival-button label=\"{{ 'LIST_STATE_BUTTON_CREATE' | translate }}\" style=\"success\" size=\"small\" ng-click=\"create()\"></carnival-button>\n" +
-    "  {{parentEntity.datas['comments']}}\n" +
+    "  {{datas}}\n" +
     "  <table class=\"table table-hover\">\n" +
     "    <thead>\n" +
     "      <tr>\n" +
@@ -2500,7 +2510,7 @@ angular.module("components/column-listing/column-listing.html", []).run(["$templ
     "          <carnival-listing-field item=\"data\" field=\"field\"></carnival-listing-field>\n" +
     "        </td>\n" +
     "        <td>\n" +
-    "          <carnival-button label=\"{{ 'LISTING_BUTTON_EDIT' | translate }}\" style=\"warning btn-edit\" size=\"tiny\" ng-click=\"actions.edit(data[identifier])\"></carnival-button>\n" +
+    "          <carnival-button label=\"{{ 'LISTING_BUTTON_EDIT' | translate }}\" style=\"warning btn-edit\" size=\"tiny\" ng-click=\"edit(data)\"></carnival-button>\n" +
     "        </td>\n" +
     "      </tr>\n" +
     "    </tbody>\n" +
@@ -2580,11 +2590,11 @@ angular.module("components/fields/has-many/has-many.html", []).run(["$templateCa
   $templateCache.put("components/fields/has-many/has-many.html",
     "<div>\n" +
     "  <span ng-show='showOptions()' >\n" +
-    "    <select ng-model=\"selectedHasMany\" ng-options=\"item[field.identifier] as utils.cutString(item[field.field], 25) for item in relatedResources[field.endpoint]\">\n" +
+    "    <select ng-model=\"selectedHasMany\" ng-options=\"item[field.identifier] as utils.cutString(item[field.field], 25) for item in relatedResources\">\n" +
     "    </select>\n" +
     "    <a class=\"button default tiny\" ng-click=\"addHasManyOption()\">Add</a>\n" +
     "  </span>\n" +
-    "  <carnival-nested-form-area state=\"{{state}}\" entity=\"entity\" field=\"field\" datas=\"datas\" relation-type=\"hasMany\"></carnival-nested-form-area>\n" +
+    "  <carnival-nested-form-area state=\"{{state}}\" parent-entity=\"parentEntity\" field=\"field\" datas=\"datas\" relation-type=\"hasMany\"></carnival-nested-form-area>\n" +
     "</div>\n" +
     "");
 }]);
@@ -2709,7 +2719,7 @@ angular.module("components/form/form.html", []).run(["$templateCache", function(
     "        <div class=\"col-sm-10\" ng-switch=\"field.type\">\n" +
     "          <!-- Fields -->\n" +
     "          <carnival-belongs-to-field ng-switch-when=\"belongsTo\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
-    "          <carnival-has-many-field ng-switch-when=\"hasMany\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-has-many-field>\n" +
+    "          <carnival-has-many-field ng-switch-when=\"hasMany\" parent-entity=\"entity\" field=\"field\" datas=\"entity.datas[field.name]\" action=\"entity.action\" related-resources=\"entity.relatedResources[field.name]\" state=\"{{state}}\"></carnival-has-many-field>\n" +
     "        </div>\n" +
     "      </label>\n" +
     "    </div>\n" +
@@ -2856,10 +2866,10 @@ angular.module("components/nested-form/nested-form-area.html", []).run(["$templa
     "    <div ng-switch-when='hasMany'>\n" +
     "      <div ng-switch='showAs()'>\n" +
     "        <div ng-switch-when='summarized'>\n" +
-    "          <carnival-summarized-items entity='entity' field='field' state='state' editable='editable'></carnival-summarized-items>\n" +
+    "          <carnival-summarized-items parent-entity='parentEntity' field='field' datas='datas' state='state' editable='editable'></carnival-summarized-items>\n" +
     "        </div>\n" +
     "        <ul ng-switch-default ng-if=\"isHasMany()\" class='has-many-field-list'>\n" +
-    "          <li ng-repeat='data in datas[field.name]'>\n" +
+    "          <li ng-repeat='data in datas'>\n" +
     "            {{data[field.field]}}\n" +
     "            <a id='removeHasManyOption' ng-click='remove(data.id);' class=\"button default tiny\">Delete</a>\n" +
     "            <a id='editHasManyOption' ng-click='openWithData(data);' class=\"button warning tiny\">Edit</a>\n" +
@@ -2973,7 +2983,7 @@ angular.module("components/search-controller/search-controller.html", []).run(["
 angular.module("components/summarized-items/summarized-items.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/summarized-items/summarized-items.html",
     "<div ng-click='openItems()'>\n" +
-    "{{entity.datas[field.name].length}} {{field.name}}\n" +
+    "{{datas.length}} {{field.name}}\n" +
     "</div>\n" +
     "");
 }]);

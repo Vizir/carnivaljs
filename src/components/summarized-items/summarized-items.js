@@ -4,8 +4,9 @@ angular.module('carnival.components.summarized-items', [])
     restrict: 'E',
     replace: true,
     scope: {
-      entity: '=',
+      parentEntity: '=',
       field: '=',
+      datas: '=',
       state: '@',
       editable: '='
     },

@@ -7,7 +7,7 @@ angular.module('carnival.components.fields.hasMany', [])
       datas: '=',
       field: '=',
       state: '@',
-      entity: '=',
+      parentEntity: '=',
       relatedResources: '='
     },
     templateUrl: 'components/fields/has-many/has-many.html',
@@ -16,7 +16,7 @@ angular.module('carnival.components.fields.hasMany', [])
 
       $scope.showOptions = function(){
         var fieldEntity = Configuration.getEntity($scope.field.entityName);
-        var relationField = fieldEntity.getFieldByEntityName($scope.entity.name);
+        var relationField = fieldEntity.getFieldByEntityName($scope.parentEntity.name);
         if(relationField.type === 'belongsTo' && !$scope.field.views[$scope.state].showOptions)
           return false;
 
@@ -32,7 +32,7 @@ angular.module('carnival.components.fields.hasMany', [])
       };
 
       var getSelectedItem = function(){
-        var items = $scope.relatedResources[$scope.field.name];
+        var items = $scope.relatedResources;
         var index = getItemIndex($scope.selectedHasMany, items);
         if(index >= 0)
           return items[index];
@@ -40,10 +40,10 @@ angular.module('carnival.components.fields.hasMany', [])
 
       $scope.addHasManyOption = function(){
         var selectedItem = getSelectedItem();
-        if(!$scope.datas[$scope.field.name])
-          $scope.datas[$scope.field.name] = [];
+        if(!$scope.datas)
+          $scope.datas = [];
         if(selectedItem)
-          $scope.datas[$scope.field.name].push(selectedItem);
+          $scope.datas.push(selectedItem);
       };
     }
   };

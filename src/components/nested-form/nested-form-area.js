@@ -4,7 +4,7 @@ angular.module('carnival.components.nested-form-area', [])
     restrict: 'E',
     replace: true,
     scope: {
-      entity: '=',
+      parentEntity: '=',
       field: '=',
       state: '@',
       datas: '=',
@@ -15,7 +15,7 @@ angular.module('carnival.components.nested-form-area', [])
     controller: function ($rootScope, $scope, $timeout, utils, $element,  $compile, FormService, Configuration, EntityResources, Notification) {
 
       $scope.canOpenNestedForm = function(){
-        if(!$scope.entity.nestedForms[$scope.field.endpoint])
+        if(!$scope.parentEntity.nestedForms[$scope.field.endpoint])
           return false;
 
         if($scope.state === 'create')
@@ -39,7 +39,7 @@ angular.module('carnival.components.nested-form-area', [])
       $scope._openForm = function(nestedEntity, data, state){
         var nestedType = $scope.field.views[state].nested;
         var containerId = getContainerId(state, data);
-        nestedEntity.parentEntity = $scope.entity;
+        nestedEntity.parentEntity = $scope.parentEntity;
         nestedEntity.datas = data;
         $scope.nestedEntity = nestedEntity;
         if(nestedType.type === 'column'){
@@ -55,7 +55,7 @@ angular.module('carnival.components.nested-form-area', [])
 
       $scope.openWithData = function(data){
         var state = 'edit';
-        var nestedEntity = EntityResources.prepareForEditState($scope.field.entityName, $scope.entity);
+        var nestedEntity = EntityResources.prepareForEditState($scope.field.entityName, $scope.parentEntity);
         var identifier = nestedEntity.identifier;
         nestedEntity[identifier] = data[identifier];
         $scope._openForm(nestedEntity, data, 'edit');
@@ -63,7 +63,7 @@ angular.module('carnival.components.nested-form-area', [])
 
       $scope.open = function(){
         var state = 'create';
-        var nestedEntity = EntityResources.prepareForCreateState($scope.field.entityName, $scope.entity);
+        var nestedEntity = EntityResources.prepareForCreateState($scope.field.entityName, $scope.parentEntity);
         $scope._openForm(nestedEntity, {}, 'create');
       };
 
@@ -93,7 +93,7 @@ angular.module('carnival.components.nested-form-area', [])
       };
 
       $scope.remove = function(id){
-        var items = $scope.datas[$scope.field.name];
+        var items = $scope.datas;
         var index = getItemIndex(id, items);
         if(index < 0)
           return;
