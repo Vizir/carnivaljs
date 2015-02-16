@@ -23,9 +23,8 @@ angular.module('carnival')
         this.columns[formId] = {};
 
     var nestedForms = this.columns[formId];
-    nestedForms.saved = false;
     $document.scrollTop(0, 1000).then(function(){
-      var directive = '<carnival-column-form  entity="entity" fields="entity.fields" datas="entity.datas" action="entity.action" state="'+state+'" related-resources="entity.relatedResources" editable="true"></carnival-column-form>';
+      var directive = '<carnival-column-form  entity="entity" state="'+state+'"></carnival-column-form>';
       addNested(containerId, scope, directive);
     });
   };
@@ -36,9 +35,8 @@ angular.module('carnival')
         this.columns[formId] = {};
 
     var nestedForms = this.columns[formId];
-    nestedForms.saved = false;
     $document.scrollTop(0, 1000).then(function(){
-      var directive = '<carnival-column-listing parent-entity="parentEntity" type="column" entity="entity" entity-name="entity.name" actions="entity.actions" identifier="entity.identifier" datas="datas" fields="entity.fields"></carnival-column-listing>';
+      var directive = '<carnival-column-listing entity="entity" field="field" datas="datas"></carnival-column-listing>';
       addNested(containerId, scope, directive);
     });
   };
@@ -56,7 +54,6 @@ angular.module('carnival')
         this.nesteds[scope.field.entityName] = {};
 
     var nestedForms = this.nesteds[scope.field.entityName];
-    nestedForms.saved = false;
     var directive = '<carnival-nested-form state="'+state+'" type="nested" entity="entity"></carnival-nested-form></div>';
     addNested(containerId, scope, directive);
   };
@@ -74,12 +71,5 @@ angular.module('carnival')
   this.closeNested = function(formId){
     delete this.nesteds[formId];
   };
-
-  var isARelation = function(field){
-    if(field.type != 'hasMany' && field.type != 'belongsTo')
-      return false;
-    return true;
-  };
-
 });
 

@@ -1,5 +1,5 @@
 <div>
-  <a class="button default tiny" ng-click="open()">{{ 'NESTED_FORM_BUTTON_CREATE' | translate }}</a>
+  <carnival-field-form-builder state='create' parent-entity='parentEntity' field='field'></carnival-field-form-builder>
   <div ng-switch='relationType'>
     <div ng-switch-when='hasMany'>
       <div ng-switch='showAs()'>
@@ -10,13 +10,10 @@
           <li ng-repeat='data in datas'>
             {{data[field.field]}}
             <a id='removeHasManyOption' ng-click='remove(data.id);' class="button default tiny">Delete</a>
-            <a id='editHasManyOption' ng-click='openWithData(data);' class="button warning tiny">Edit</a>
-            <div id="edit_nested_{{field.name}}_{{data[field.identifier]}}"></div>
+            <carnival-field-form-builder data="data" state='edit' parent-entity='parentEntity' field='field'></carnival-field-form-builder>
           </li>
         </ul>
       </div>
     </div>
-  </div>
-  <div id="create_nested_{{field.entityName}}">
   </div>
 </div>

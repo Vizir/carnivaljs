@@ -1,6 +1,5 @@
 <div class="listing form-column {{cssClass}}" ng-style="style">
-  <carnival-button label="{{ 'LIST_STATE_BUTTON_CREATE' | translate }}" style="success" size="small" ng-click="create()"></carnival-button>
-  {{datas}}
+  <carnival-field-form-builder state='create' parent-entity='entity.parentEntity' field='field'></carnival-field-form-builder>
   <table class="table table-hover">
     <thead>
       <tr>
@@ -8,8 +7,7 @@
           {{ field.label }}
           <carnival-order-ctrl field="field.name"></carnival-order-ctrl>
         </th>
-        <th ng-if="actions">
-          {{ 'LISTING_ACTIONS' | translate }}
+        <th>
         </th>
       </tr>
     </thead>
@@ -19,7 +17,7 @@
           <carnival-listing-field item="data" field="field"></carnival-listing-field>
         </td>
         <td>
-          <carnival-button label="{{ 'LISTING_BUTTON_EDIT' | translate }}" style="warning btn-edit" size="tiny" ng-click="edit(data)"></carnival-button>
+          <carnival-field-form-builder data="data" state='edit' parent-entity='entity.parentEntity' field='field'></carnival-field-form-builder>
         </td>
       </tr>
     </tbody>

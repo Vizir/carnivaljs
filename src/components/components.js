@@ -5,6 +5,7 @@ angular.module('carnival.components', [
   'carnival.components.form-area',
   'carnival.components.form',
   'carnival.components.form-fields',
+  'carnival.components.field-form-builder',
   'carnival.components.form-fields-next',
   'carnival.components.nested-form',
   'carnival.components.summarized-items',

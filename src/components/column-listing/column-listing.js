@@ -4,13 +4,10 @@ angular.module('carnival.components.column-listing', [])
     restrict: 'E',
     replace: true,
     scope: {
-      fields: '=',
       datas: '=',
-      actions: '=',
-      extraActions: '=',
-      parentEntity: '=',
-      identifier: '=',
-      entityName: '='
+      entity: '=',
+      field: '=',
+      identifier: '='
     },
     templateUrl: 'components/column-listing/column-listing.html',
     controller: function($scope, FormService, Configuration, EntityResources){
@@ -23,27 +20,11 @@ angular.module('carnival.components.column-listing', [])
         padding: '10px'
       };
 
-      $scope.create = function(){
-        var formScope = $scope.$new();
-        formScope.entity = EntityResources.prepareForCreateState($scope.entityName, $scope.parentEntity);
-        FormService.openColumn('create', '#form-columns', formScope);
-      };
-
-      $scope.edit = function(data){
-        $scope.field = {
-          entityName: $scope.entityName
-        };
-        var formScope = $scope.$new();
-        formScope.entity = EntityResources.prepareForCreateState($scope.entityName, $scope.parentEntity);
-        formScope.entity.datas = data;
-        FormService.openColumn('edit', '#form-columns', formScope);
-      };
-
       $scope.getListFields = function(){
         var fields = [];
 
-        for(var i = 0; i < $scope.fields.length; i++){
-          var f = $scope.fields[i];
+        for(var i = 0; i < $scope.entity.fields.length; i++){
+          var f = $scope.entity.fields[i];
           if(f.type !== 'belongsTo' && f.type !== 'hasMany')
             fields.push(f);
         }

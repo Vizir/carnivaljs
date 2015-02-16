@@ -101,7 +101,7 @@ angular.module('carnival')
     return this.prepareForState(entityName, 'show');
   };
 
-  this.prepareForListState = function(entityName){
-    return this.prepareForState(entityName, 'index');
+  this.prepareForListState = function(entityName, parentEntity){
+    return this.prepareForState(entityName, 'index', parentEntity);
   };
 });

@@ -5,13 +5,8 @@ angular.module('carnival.components.column-form', [])
     replace: true,
     scope: {
       entity: '=',
-      fields: '=',
-      action: '=',
       state: '@state',
-      type: '@',
-      datas: '=',
-      relatedResources: '=',
-      editable: '='
+      type: '@'
     },
     templateUrl: 'components/column-form/column-form.html',
     controller: function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $timeout) {
