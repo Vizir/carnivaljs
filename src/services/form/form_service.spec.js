@@ -31,9 +31,11 @@ describe('FormService', function(){
   });
 
   describe('#openNested', function(){
-    it('should create a nestedForm with saved == false', function(){
-      FormService.openNested('newFormId');
-      expect(FormService.nesteds.newFormId.saved).to.be.equal(false);
+    it('should create a nestedForm', function(done){
+      sinon.stub(FormService, '_addNested', function(containerId, scope, directive){
+        done();
+      });
+      FormService.openNested('edit', 'containerId', {entity: {name: 'Teste'}});
     });
   });
 
@@ -47,11 +49,14 @@ describe('FormService', function(){
     });
 
     describe('when is open', function(){
-      it('should return true', function(){
+      it('should return true', function(done){
         FormService.init('entityName');
-        FormService.openNested('nestedName');
-        var result = FormService.isNestedOpen('nestedName');
-        expect(result).to.be.equal(true);
+        sinon.stub(FormService, '_addNested', function(containerId, scope, directive){
+          var result = FormService.isNestedOpen('Teste');
+          expect(result).to.be.equal(true);
+          done();
+        });
+        FormService.openNested('edit', 'containerId', {entity: {name: 'Teste'}});
       });
     });
   });

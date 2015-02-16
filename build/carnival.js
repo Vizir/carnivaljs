@@ -1764,7 +1764,7 @@ angular.module('carnival')
     if (!entityWrapper.model.checkFieldView(field.name, stateName))
       return;
 
-    if(field.entityName === self.entityName){
+    if(field.entityName && field.entityName === self.entityName){
       return;
     }
 
@@ -1902,7 +1902,7 @@ angular.module('carnival')
     return Object.keys(this.columns).length + 1;
   };
 
-  var addNested = function(containerId, scope, directive){
+  this._addNested = function(containerId, scope, directive){
     var newElement = $compile(directive)(scope);
     var nestedDiv = document.querySelector(containerId);
     angular.element(nestedDiv).append(newElement);
@@ -1911,9 +1911,9 @@ angular.module('carnival')
   this._addColumn = function(directive, formId, containerId, scope){
     if(!this.columns[formId])
         this.columns[formId] = {};
-
+    var self = this;
     $document.scrollTop(0, 1000).then(function(){
-      addNested(containerId, scope, directive);
+      self._addNested(containerId, scope, directive);
     });
   };
 
@@ -1932,18 +1932,18 @@ angular.module('carnival')
   this.openNested = function(state, containerId, scope){
     if(this.isNestedOpen(scope.entity.name)){
       var self = this;
-      this.closeNested(scope.field.entityName);
+      this.closeNested(scope.entity.name);
       $timeout(function(){
         self.openNested(state, containerId, scope);
       }, 200);
       return;
     }
-    if(!this.nesteds[scope.field.entityName])
-        this.nesteds[scope.field.entityName] = {};
+    if(!this.nesteds[scope.entity.name])
+        this.nesteds[scope.entity.name] = {};
 
-    var nestedForms = this.nesteds[scope.field.entityName];
+    var nestedForms = this.nesteds[scope.entity.name];
     var directive = '<carnival-nested-form state="'+state+'" type="nested" entity="entity"></carnival-nested-form></div>';
-    addNested(containerId, scope, directive);
+    this._addNested(containerId, scope, directive);
   };
 
   this.isNestedOpen = function(formId){

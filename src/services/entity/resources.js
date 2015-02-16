@@ -39,7 +39,7 @@ angular.module('carnival')
     if (!entityWrapper.model.checkFieldView(field.name, stateName))
       return;
 
-    if(field.entityName === self.entityName){
+    if(field.entityName && field.entityName === self.entityName){
       return;
     }
 

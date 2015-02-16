@@ -15,6 +15,14 @@ describe('On carnival-has-many component', function () {
       el.dispatchEvent(ev);
   }
 
+  function findById(elements, id){
+    for(var i = 0; i < elements.length; i++){
+      var element = angular.element(elements[i]);
+      if(element.attr('id') === id)
+        return elements[i];
+    }
+  }
+
   tagEntity = {
         name: 'tags',
         fields: [
@@ -24,14 +32,9 @@ describe('On carnival-has-many component', function () {
   tagEntity.getFieldByEntityName = function(){return tagEntity.fields[0];};
 
   var setScopeData = function (scope) {
-    scope.relatedResources = {
-      tags: [{ id: 1, name: 'one' }, { id: 2, name: 'two' }]
-    };
+    scope.relatedResources = [{ id: 1, name: 'one' }, { id: 2, name: 'two' }];
 
-    scope.datas = {
-      tags: [],
-      title: 'title'
-    };
+    scope.datas = [];
 
     scope.relationType = 'hasMany';
 
@@ -44,6 +47,7 @@ describe('On carnival-has-many component', function () {
       entityName: 'tags',
       views: {
         edit: {
+          nested: true,
           enableDelete: true
         }
       }
@@ -77,7 +81,7 @@ describe('On carnival-has-many component', function () {
     });
     setScopeData(scope);
 
-    element = angular.element('<carnival-has-many-field relation-type="hasMany" entity="entity" field="field" datas="datas" action="entity.action" state="edit" related-resources="relatedResources" editable="true"></carnival-has-many-field>');
+    element = angular.element('<carnival-has-many-field relation-type="hasMany" parent-entity="entity" field="field" datas="datas" action="entity.action" state="edit" related-resources="relatedResources" editable="true"></carnival-has-many-field>');
     compiledElement = compile(element)(scope);
     scope.$digest();
   });
@@ -96,7 +100,7 @@ describe('On carnival-has-many component', function () {
 
   describe('post contains tags', function(){
     it('should render li element', function () {
-      scope.datas.tags = [{id: 1, name: 'one'}];
+      scope.datas = [{id: 1, name: 'one'}];
       scope.$digest();
       expect(element.html()).to.contain('<li');
     });
@@ -113,11 +117,12 @@ describe('On carnival-has-many component', function () {
   describe('user click on remove and the field has a enableDelete enable', function(){
     it('should call the delete function on entity field', function(done){
       scope.state = 'edit';
-      scope.datas.tags = [{id: 1, name: 'one'}];
+      scope.datas = [{id: 1, name: 'one'}];
       tagEntity.delete = function(id){done();};
 
       scope.$digest();
-      var removeButton = compiledElement.find('a')[1];
+      var links = compiledElement.find('a');
+      var removeButton = findById(links, 'removeHasManyOption');
       click(removeButton);
     });
   });
