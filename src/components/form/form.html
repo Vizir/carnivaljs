@@ -1,4 +1,9 @@
 <div>
+  <ul>
+    <li ng-repeat='error in errors'>
+      {{error}}
+    </li>
+  </ul>
   <form ng-init="nestedFormIndex = {value: 0}" novalidate>
     <div ng-if="field.fieldFormType != 'related'" ng-repeat="field in fields" ng-class="{ row: field.grid.newRow }">
       <div>
@@ -11,18 +16,16 @@
     </div>
   </form>
 
-  <div id='related-fields'>
-    <fieldset ng-show='showRelatedFields()'>
-      <legend>Relacionados</legend>
-      <div ng-if="field.fieldFormType == 'related'" class="row" ng-repeat="field in fields">
-        <label class="col-sm-2 control-label">
-          {{ field.label }}
-          <div class="col-sm-10" ng-switch="field.type">
-            <carnival-belongs-to-field ng-switch-when="belongsTo" parent-entity="entity" field="field" datas="entity.datas[field.name]" action="entity.action" related-resources="entity.relatedResources[field.name]" state="{{state}}"></carnival-belongs-to-field>
-            <carnival-has-many-field ng-switch-when="hasMany" parent-entity="entity" field="field" datas="entity.datas[field.name]" action="entity.action" related-resources="entity.relatedResources[field.name]" state="{{state}}"></carnival-has-many-field>
-          </div>
-        </label>
-      </div>
-    </fieldset>
+  <div id='related-fields' ng-show='showRelatedFields()'>
+    <h4>Relacionados</h4>
+    <div ng-if="field.fieldFormType == 'related'" class="row" ng-repeat="field in fields">
+      <label class="col-sm-2 control-label">
+        {{ field.label }}
+        <div class="col-sm-10" ng-switch="field.type">
+          <carnival-belongs-to-field ng-switch-when="belongsTo" parent-entity="entity" field="field" datas="entity.datas[field.name]" action="entity.action" related-resources="entity.relatedResources[field.name]" state="{{state}}"></carnival-belongs-to-field>
+          <carnival-has-many-field ng-switch-when="hasMany" parent-entity="entity" field="field" datas="entity.datas[field.name]" action="entity.action" related-resources="entity.relatedResources[field.name]" state="{{state}}"></carnival-has-many-field>
+        </div>
+      </label>
+    </div>
   </div>
 </div>

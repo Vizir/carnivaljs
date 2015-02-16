@@ -701,19 +701,13 @@ angular.module('carnival.components.form', [])
       };
 
       $scope.showRelatedFields = function(){
-        if($scope.type === 'normal')
-          return true;
-        return $scope.hasRelatedFields();
+        if(!$scope.hasRelatedFields())
+           return false;
+         return true;
       };
 
       var entityHasNesteds = function(){
         return ($scope.entity.nestedForms && Object.keys($scope.entity.nestedForms).length > 0);
-      };
-
-      var updateEntity = function(){
-        var parentEntity = $scope.entity.parentEntity;
-        $scope.entity = EntityResources.prepareForEditState($scope.entity.name, parentEntity);
-        $scope.entity.parentEntity = parentEntity;
       };
 
       var updateEntityData = function(data){
@@ -727,21 +721,37 @@ angular.module('carnival.components.form', [])
         EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
       };
 
+      var updateEntity = function(data){
+        var parentEntity = $scope.entity.parentEntity;
+        $scope.entity = EntityResources.prepareForEditState($scope.entity.name, parentEntity);
+        $scope.entity.parentEntity = parentEntity;
+        updateEntityData(data);
+      };
+
+      var successCallback = function(data){
+        $scope.errors = [];
+        updateEntity(data);
+        if($scope.hasRelatedFields() && $scope.state === 'create'){
+          $scope.state = 'edit';
+          alert('Agora você pode criar os campos relacionados');
+        }else{
+          if($scope.type === 'column')
+            FormService.closeColumn($scope.entity.name);
+          else if($scope.type === 'nested')
+            FormService.closeNested($scope.entity.name);
+          else
+            $state.go('main.list', { entity: $scope.entity.name});
+        }
+      };
+
       var saveCallback = function(error, data){
         if(!error){
-          updateEntity();
-          updateEntityData(data);
-          if($scope.hasRelatedFields() && $scope.state === 'create'){
-            $scope.state = 'edit';
-            alert('Agora você pode criar os campos relacionados');
-          }else{
-            if($scope.type === 'column')
-              FormService.closeColumn($scope.entity.name);
-            else if($scope.type === 'nested')
-              FormService.closeNested($scope.entity.name);
-            else
-              $state.go('main.list', { entity: $scope.entity.name});
-          }
+          successCallback(data);
+        }else{
+          if(angular.isArray(error))
+            $scope.errors = error;
+          else
+            $scope.errors = [error];
         }
       };
 
@@ -2701,6 +2711,11 @@ angular.module("components/form-fields/form-fields.html", []).run(["$templateCac
 angular.module("components/form/form.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/form/form.html",
     "<div>\n" +
+    "  <ul>\n" +
+    "    <li ng-repeat='error in errors'>\n" +
+    "      {{error}}\n" +
+    "    </li>\n" +
+    "  </ul>\n" +
     "  <form ng-init=\"nestedFormIndex = {value: 0}\" novalidate>\n" +
     "    <div ng-if=\"field.fieldFormType != 'related'\" ng-repeat=\"field in fields\" ng-class=\"{ row: field.grid.newRow }\">\n" +
     "      <div>\n" +
@@ -2713,19 +2728,17 @@ angular.module("components/form/form.html", []).run(["$templateCache", function(
     "    </div>\n" +
     "  </form>\n" +
     "\n" +
-    "  <div id='related-fields'>\n" +
-    "    <fieldset ng-show='showRelatedFields()'>\n" +
-    "      <legend>Relacionados</legend>\n" +
-    "      <div ng-if=\"field.fieldFormType == 'related'\" class=\"row\" ng-repeat=\"field in fields\">\n" +
-    "        <label class=\"col-sm-2 control-label\">\n" +
-    "          {{ field.label }}\n" +
-    "          <div class=\"col-sm-10\" ng-switch=\"field.type\">\n" +
-    "            <carnival-belongs-to-field ng-switch-when=\"belongsTo\" parent-entity=\"entity\" field=\"field\" datas=\"entity.datas[field.name]\" action=\"entity.action\" related-resources=\"entity.relatedResources[field.name]\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
-    "            <carnival-has-many-field ng-switch-when=\"hasMany\" parent-entity=\"entity\" field=\"field\" datas=\"entity.datas[field.name]\" action=\"entity.action\" related-resources=\"entity.relatedResources[field.name]\" state=\"{{state}}\"></carnival-has-many-field>\n" +
-    "          </div>\n" +
-    "        </label>\n" +
-    "      </div>\n" +
-    "    </fieldset>\n" +
+    "  <div id='related-fields' ng-show='showRelatedFields()'>\n" +
+    "    <h4>Relacionados</h4>\n" +
+    "    <div ng-if=\"field.fieldFormType == 'related'\" class=\"row\" ng-repeat=\"field in fields\">\n" +
+    "      <label class=\"col-sm-2 control-label\">\n" +
+    "        {{ field.label }}\n" +
+    "        <div class=\"col-sm-10\" ng-switch=\"field.type\">\n" +
+    "          <carnival-belongs-to-field ng-switch-when=\"belongsTo\" parent-entity=\"entity\" field=\"field\" datas=\"entity.datas[field.name]\" action=\"entity.action\" related-resources=\"entity.relatedResources[field.name]\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
+    "          <carnival-has-many-field ng-switch-when=\"hasMany\" parent-entity=\"entity\" field=\"field\" datas=\"entity.datas[field.name]\" action=\"entity.action\" related-resources=\"entity.relatedResources[field.name]\" state=\"{{state}}\"></carnival-has-many-field>\n" +
+    "        </div>\n" +
+    "      </label>\n" +
+    "    </div>\n" +
     "  </div>\n" +
     "</div>\n" +
     "");

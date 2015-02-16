@@ -27,19 +27,13 @@ angular.module('carnival.components.form', [])
       };
 
       $scope.showRelatedFields = function(){
-        if($scope.type === 'normal')
-          return true;
-        return $scope.hasRelatedFields();
+        if(!$scope.hasRelatedFields())
+           return false;
+         return true;
       };
 
       var entityHasNesteds = function(){
         return ($scope.entity.nestedForms && Object.keys($scope.entity.nestedForms).length > 0);
-      };
-
-      var updateEntity = function(){
-        var parentEntity = $scope.entity.parentEntity;
-        $scope.entity = EntityResources.prepareForEditState($scope.entity.name, parentEntity);
-        $scope.entity.parentEntity = parentEntity;
       };
 
       var updateEntityData = function(data){
@@ -53,21 +47,37 @@ angular.module('carnival.components.form', [])
         EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
       };
 
+      var updateEntity = function(data){
+        var parentEntity = $scope.entity.parentEntity;
+        $scope.entity = EntityResources.prepareForEditState($scope.entity.name, parentEntity);
+        $scope.entity.parentEntity = parentEntity;
+        updateEntityData(data);
+      };
+
+      var successCallback = function(data){
+        $scope.errors = [];
+        updateEntity(data);
+        if($scope.hasRelatedFields() && $scope.state === 'create'){
+          $scope.state = 'edit';
+          alert('Agora você pode criar os campos relacionados');
+        }else{
+          if($scope.type === 'column')
+            FormService.closeColumn($scope.entity.name);
+          else if($scope.type === 'nested')
+            FormService.closeNested($scope.entity.name);
+          else
+            $state.go('main.list', { entity: $scope.entity.name});
+        }
+      };
+
       var saveCallback = function(error, data){
         if(!error){
-          updateEntity();
-          updateEntityData(data);
-          if($scope.hasRelatedFields() && $scope.state === 'create'){
-            $scope.state = 'edit';
-            alert('Agora você pode criar os campos relacionados');
-          }else{
-            if($scope.type === 'column')
-              FormService.closeColumn($scope.entity.name);
-            else if($scope.type === 'nested')
-              FormService.closeNested($scope.entity.name);
-            else
-              $state.go('main.list', { entity: $scope.entity.name});
-          }
+          successCallback(data);
+        }else{
+          if(angular.isArray(error))
+            $scope.errors = error;
+          else
+            $scope.errors = [error];
         }
       };
 
