@@ -4,5 +4,19 @@
     </select>
     <a class="button default tiny" ng-click="addHasManyOption()">Add</a>
   </span>
-  <carnival-relation-field-area state="{{state}}" parent-entity="parentEntity" field="field" datas="datas" relation-type="hasMany"></carnival-relation-field-area>
+
+  <carnival-field-form-builder state='create' parent-entity='parentEntity' field='field'></carnival-field-form-builder>
+  <div ng-switch='showAs()'>
+    <div ng-switch-when='summarized'>
+      <carnival-summarized-items parent-entity='parentEntity' field='field' datas='datas' state='state' editable='editable'></carnival-summarized-items>
+    </div>
+    <ul ng-switch-default class='has-many-field-list'>
+      <li ng-repeat='data in datas'>
+        {{data[field.field]}}
+        <a id='removeHasManyOption' ng-click='remove(data.id);' class="button default tiny">Delete</a>
+        <carnival-field-form-builder data="data" state='edit' parent-entity='parentEntity' field='field'></carnival-field-form-builder>
+      </li>
+    </ul>
+  </div>
+
 </div>

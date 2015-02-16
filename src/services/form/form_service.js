@@ -17,28 +17,25 @@ angular.module('carnival')
     angular.element(nestedDiv).append(newElement);
   };
 
-  this.openColumn = function(state, containerId, scope){
-    var formId = scope.entity.name;
+  this._addColumn = function(directive, formId, containerId, scope){
     if(!this.columns[formId])
         this.columns[formId] = {};
 
-    var nestedForms = this.columns[formId];
     $document.scrollTop(0, 1000).then(function(){
-      var directive = '<carnival-column-form  entity="entity" state="'+state+'"></carnival-column-form>';
       addNested(containerId, scope, directive);
     });
   };
 
-  this.openColumnListing = function(state, containerId, scope){
-    var formId = 'listing-' +  scope.entity.name;
-    if(!this.columns[formId])
-        this.columns[formId] = {};
+  this.openColumn = function(state, containerId, scope){
+    var formId = 'form-' +  scope.entity.name;
+    var directive = '<carnival-form-column type="form" entity="entity" state="'+state+'"></carnival-form-column>';
+    this._addColumn(directive, formId, containerId, scope);
+  };
 
-    var nestedForms = this.columns[formId];
-    $document.scrollTop(0, 1000).then(function(){
-      var directive = '<carnival-column-listing entity="entity" field="field" datas="datas"></carnival-column-listing>';
-      addNested(containerId, scope, directive);
-    });
+  this.openColumnListing = function(state, containerId, scope){
+    var formId = 'table-' +  scope.entity.name;
+    var directive = '<carnival-form-column type="table" field="field" entity="entity" datas="datas"></carnival-form-column>';
+    this._addColumn(directive, formId, containerId, scope);
   };
 
   this.openNested = function(state, containerId, scope){

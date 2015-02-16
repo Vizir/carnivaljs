@@ -8,7 +8,7 @@ angular.module('carnival.components.nested-form', [])
       state: '@',
       editable: '='
     },
-    templateUrl: 'components/relation-field-area/nested-form.html',
+    templateUrl: 'components/nested-form/nested-form.html',
     controller: function ($rootScope, $scope, utils, $element, FormService) {
 
       $scope.isClosed = function(){

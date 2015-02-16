@@ -15,9 +15,11 @@ angular.module('carnival.components.form-area', [])
     },
     templateUrl: 'components/form-area/form-area.html',
     controller: function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $state) {
-      $scope.show = function(){
-        return FormService.columnsCount() > 1;
 
+      FormService.init();
+
+      $scope.showDisableDiv = function(){
+        return FormService.columnsCount() > 1;
       };
       var getZIndex = function(){
         return ((FormService.columnsCount() - 1) * 10) + 3;

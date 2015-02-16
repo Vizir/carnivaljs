@@ -1,5 +1,6 @@
 angular.module('carnival.components', [
   'carnival.components.button',
+  'carnival.components.form-column',
   'carnival.components.column-form',
   'carnival.components.column-listing',
   'carnival.components.form-area',
@@ -9,7 +10,6 @@ angular.module('carnival.components', [
   'carnival.components.form-fields-next',
   'carnival.components.nested-form',
   'carnival.components.summarized-items',
-  'carnival.components.relation-field-area',
   'carnival.components.delete-button',
   'carnival.components.listing',
   'carnival.components.listingfieldbelongsto',

@@ -23,6 +23,10 @@ angular.module('carnival.components.fields.hasMany', [])
         return true;
       };
 
+      $scope.showAs = function(){
+        return $scope.field.views[$scope.state].nested.showItemsAs;
+      };
+
       var getItemIndex = function(id, items){
         for(var i = 0; i < items.length; i++){
           if(items[i].id === id)
@@ -44,6 +48,29 @@ angular.module('carnival.components.fields.hasMany', [])
           $scope.datas = [];
         if(selectedItem)
           $scope.datas.push(selectedItem);
+      };
+
+      var deleteIfNeeded = function(id){
+        if($scope.field.views[$scope.state].enableDelete){
+          var fieldEntity = Configuration.getEntity($scope.field.entityName);
+          fieldEntity.delete(id)
+          .success(function () {
+            new Notification('Item deleted with success!', 'warning');
+          })
+          .error(function (data) {
+            new Notification(data, 'danger');
+          });
+        }
+      };
+
+      $scope.remove = function(id){
+        var items = $scope.datas;
+        var index = getItemIndex(id, items);
+        if(index < 0)
+          return;
+        items.splice(index, 1);
+
+        deleteIfNeeded(id);
       };
     }
   };

@@ -74,39 +74,9 @@ angular.module('carnival.components.column-form', [])
       type: '@'
     },
     templateUrl: 'components/column-form/column-form.html',
-    controller: ["$rootScope", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", "$timeout", function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $timeout) {
+    controller: ["$scope", function ($scope) {
 
-      $scope.cssClass = 'fadeInRight';
-      $scope.style = {
-        zIndex: (FormService.columnsCount() * 10) + 2,
-        left: (FormService.columnsCount() * 20) + 'px',
-        top: (FormService.columnsCount() * 30) + 'px',
-        padding: '10px'
-      };
 
-      $scope.remove = function(){
-        $scope.cssClass = 'fadeOutRight';
-
-        $timeout(function(){
-          $element.remove();
-        }, 1000);
-      };
-
-      $scope.isClosed = function(){
-        return !FormService.columns[$scope.entity.name];
-      };
-
-      $scope.close = function(){
-        FormService.closeColumn($scope.entity.name);
-      };
-
-      $scope.$watch('isClosed()', function(newValue, oldValue){
-        if(newValue === oldValue)
-            return;
-        if(newValue){
-          $scope.remove();
-        }
-      });
     }]
   };
 });
@@ -150,6 +120,7 @@ angular.module('carnival.components.column-listing', [])
 
 angular.module('carnival.components', [
   'carnival.components.button',
+  'carnival.components.form-column',
   'carnival.components.column-form',
   'carnival.components.column-listing',
   'carnival.components.form-area',
@@ -159,7 +130,6 @@ angular.module('carnival.components', [
   'carnival.components.form-fields-next',
   'carnival.components.nested-form',
   'carnival.components.summarized-items',
-  'carnival.components.relation-field-area',
   'carnival.components.delete-button',
   'carnival.components.listing',
   'carnival.components.listingfieldbelongsto',
@@ -464,6 +434,10 @@ angular.module('carnival.components.fields.hasMany', [])
         return true;
       };
 
+      $scope.showAs = function(){
+        return $scope.field.views[$scope.state].nested.showItemsAs;
+      };
+
       var getItemIndex = function(id, items){
         for(var i = 0; i < items.length; i++){
           if(items[i].id === id)
@@ -485,6 +459,29 @@ angular.module('carnival.components.fields.hasMany', [])
           $scope.datas = [];
         if(selectedItem)
           $scope.datas.push(selectedItem);
+      };
+
+      var deleteIfNeeded = function(id){
+        if($scope.field.views[$scope.state].enableDelete){
+          var fieldEntity = Configuration.getEntity($scope.field.entityName);
+          fieldEntity.delete(id)
+          .success(function () {
+            new Notification('Item deleted with success!', 'warning');
+          })
+          .error(function (data) {
+            new Notification(data, 'danger');
+          });
+        }
+      };
+
+      $scope.remove = function(id){
+        var items = $scope.datas;
+        var index = getItemIndex(id, items);
+        if(index < 0)
+          return;
+        items.splice(index, 1);
+
+        deleteIfNeeded(id);
       };
     }]
   };
@@ -577,9 +574,11 @@ angular.module('carnival.components.form-area', [])
     },
     templateUrl: 'components/form-area/form-area.html',
     controller: ["$rootScope", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", "$state", function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $state) {
-      $scope.show = function(){
-        return FormService.columnsCount() > 1;
 
+      FormService.init();
+
+      $scope.showDisableDiv = function(){
+        return FormService.columnsCount() > 1;
       };
       var getZIndex = function(){
         return ((FormService.columnsCount() - 1) * 10) + 3;
@@ -595,6 +594,61 @@ angular.module('carnival.components.form-area', [])
           height: getHeight() + 'px'
         };
       };
+
+    }]
+  };
+});
+
+angular.module('carnival.components.form-column', [])
+.directive('carnivalFormColumn', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      entity: '=',
+      field: '=',
+      datas: '=',
+      state: '@state',
+      type: '@'
+    },
+    templateUrl: 'components/form-column/form-column.html',
+    controller: ["$rootScope", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", "$timeout", function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $timeout) {
+
+      var getName = function(){
+        return $scope.type + '-' + $scope.entity.name;
+      };
+
+      $scope.cssClass = 'fadeInRight';
+      $scope.style = {
+        zIndex: (FormService.columnsCount() * 10) + 2,
+        left: (FormService.columnsCount() * 20) + 'px',
+        top: (FormService.columnsCount() * 30) + 'px',
+        padding: '10px'
+      };
+
+      $scope.remove = function(){
+        $scope.cssClass = 'fadeOutRight';
+
+        $timeout(function(){
+          $element.remove();
+        }, 1000);
+      };
+
+      $scope.isClosed = function(){
+        return !FormService.columns[getName()];
+      };
+
+      $scope.close = function(){
+        FormService.closeColumn(getName());
+      };
+
+      $scope.$watch('isClosed()', function(newValue, oldValue){
+        if(newValue === oldValue)
+            return;
+        if(newValue){
+          $scope.remove();
+        }
+      });
 
     }]
   };
@@ -635,10 +689,6 @@ angular.module('carnival.components.form', [])
     templateUrl: 'components/form/form.html',
     controller: ["$rootScope", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", "$state", function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $state) {
       $scope.utils = utils;
-
-      if($scope.type === 'normal'){
-        FormService.init();
-      }
 
       $scope.hasRelatedFields = function(){
         for(var i = 0; i < $scope.fields.length; i++){
@@ -978,6 +1028,38 @@ angular.module('carnival.components.navbar', [])
   };
 });
 
+angular.module('carnival.components.nested-form', [])
+.directive('carnivalNestedForm', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      entity: '=',
+      state: '@',
+      editable: '='
+    },
+    templateUrl: 'components/nested-form/nested-form.html',
+    controller: ["$rootScope", "$scope", "utils", "$element", "FormService", function ($rootScope, $scope, utils, $element, FormService) {
+
+      $scope.isClosed = function(){
+        return !FormService.nesteds[$scope.entity.name];
+      };
+
+      $scope.close = function(){
+        FormService.closeNested($scope.entity.name);
+      };
+
+      $scope.$watch('isClosed()', function(newValue, oldValue){
+        if(newValue === oldValue)
+            return;
+        if(newValue){
+          $element.remove();
+        }
+      });
+    }]
+  };
+});
+
 angular.module('carnival.components.notification', [])
 .directive('carnivalNotification', function () {
   return {
@@ -1064,108 +1146,6 @@ angular.module('carnival.components.quickfilter-controller', [])
         urlParams.setParam('search.' + field, value, true);
       };
 
-    }]
-  };
-});
-
-angular.module('carnival.components.nested-form', [])
-.directive('carnivalNestedForm', function () {
-  return {
-    restrict: 'E',
-    replace: true,
-    scope: {
-      entity: '=',
-      state: '@',
-      editable: '='
-    },
-    templateUrl: 'components/relation-field-area/nested-form.html',
-    controller: ["$rootScope", "$scope", "utils", "$element", "FormService", function ($rootScope, $scope, utils, $element, FormService) {
-
-      $scope.isClosed = function(){
-        return !FormService.nesteds[$scope.entity.name];
-      };
-
-      $scope.close = function(){
-        FormService.closeNested($scope.entity.name);
-      };
-
-      $scope.$watch('isClosed()', function(newValue, oldValue){
-        if(newValue === oldValue)
-            return;
-        if(newValue){
-          $element.remove();
-        }
-      });
-    }]
-  };
-});
-
-angular.module('carnival.components.relation-field-area', [])
-.directive('carnivalRelationFieldArea', function () {
-  return {
-    restrict: 'E',
-    replace: true,
-    scope: {
-      parentEntity: '=',
-      field: '=',
-      state: '@',
-      datas: '=',
-      relationType: '@',
-      editable: '='
-    },
-    templateUrl: 'components/relation-field-area/relation-field-area.html',
-    controller: ["$rootScope", "$scope", "$timeout", "utils", "$element", "$compile", "FormService", "Configuration", "EntityResources", "Notification", function ($rootScope, $scope, $timeout, utils, $element,  $compile, FormService, Configuration, EntityResources, Notification) {
-
-      var getContainerId = function(state, data){
-        var nestedType = $scope.field.views[state].nested;
-        if(nestedType.type === 'column'){
-          return '#form-columns';
-        }else{
-          var prefix = '';
-          if(state === 'edit' )
-            prefix = '_' + data[$scope.field.identifier];
-          return '#'+state+'_nested_'+ $scope.field.entityName +  prefix;
-        }
-      };
-
-      $scope.showAs = function(){
-        return $scope.field.views[$scope.state].nested.showItemsAs;
-      };
-
-      $scope.isHasMany = function(){
-        return $scope.relationType === 'hasMany';
-      };
-
-      var getItemIndex = function(id, items){
-        for(var i = 0; i < items.length; i++){
-          if(items[i].id === id)
-            return i;
-        }
-        return -1;
-      };
-
-      var deleteIfNeeded = function(id){
-        if($scope.field.views[$scope.state].enableDelete){
-          var fieldEntity = Configuration.getEntity($scope.field.entityName);
-          fieldEntity.delete(id)
-          .success(function () {
-            new Notification('Item deleted with success!', 'warning');
-          })
-          .error(function (data) {
-            new Notification(data, 'danger');
-          });
-        }
-      };
-
-      $scope.remove = function(id){
-        var items = $scope.datas;
-        var index = getItemIndex(id, items);
-        if(index < 0)
-          return;
-        items.splice(index, 1);
-
-        deleteIfNeeded(id);
-      };
     }]
   };
 });
@@ -1918,28 +1898,25 @@ angular.module('carnival')
     angular.element(nestedDiv).append(newElement);
   };
 
-  this.openColumn = function(state, containerId, scope){
-    var formId = scope.entity.name;
+  this._addColumn = function(directive, formId, containerId, scope){
     if(!this.columns[formId])
         this.columns[formId] = {};
 
-    var nestedForms = this.columns[formId];
     $document.scrollTop(0, 1000).then(function(){
-      var directive = '<carnival-column-form  entity="entity" state="'+state+'"></carnival-column-form>';
       addNested(containerId, scope, directive);
     });
   };
 
-  this.openColumnListing = function(state, containerId, scope){
-    var formId = 'listing-' +  scope.entity.name;
-    if(!this.columns[formId])
-        this.columns[formId] = {};
+  this.openColumn = function(state, containerId, scope){
+    var formId = 'form-' +  scope.entity.name;
+    var directive = '<carnival-form-column type="form" entity="entity" state="'+state+'"></carnival-form-column>';
+    this._addColumn(directive, formId, containerId, scope);
+  };
 
-    var nestedForms = this.columns[formId];
-    $document.scrollTop(0, 1000).then(function(){
-      var directive = '<carnival-column-listing entity="entity" field="field" datas="datas"></carnival-column-listing>';
-      addNested(containerId, scope, directive);
-    });
+  this.openColumnListing = function(state, containerId, scope){
+    var formId = 'table-' +  scope.entity.name;
+    var directive = '<carnival-form-column type="table" field="field" entity="entity" datas="datas"></carnival-form-column>';
+    this._addColumn(directive, formId, containerId, scope);
   };
 
   this.openNested = function(state, containerId, scope){
@@ -2460,7 +2437,7 @@ angular.module('carnival')
 
 }]);
 
-angular.module('carnival.templates', ['components/button/button.html', 'components/column-form/column-form.html', 'components/column-listing/column-listing.html', 'components/delete-button/delete-button.html', 'components/field-form-builder/field-form-builder.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/currency/currency.html', 'components/fields/date/date.html', 'components/fields/enum/enum.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form-area/form-area.html', 'components/form-fields-next/form-fields-next.html', 'components/form-fields/form-fields.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/listing-extra-action/listing-extra-action.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-currency/listing-field-currency.html', 'components/listing-field-enum/listing-field-enum.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/relation-field-area/nested-form.html', 'components/relation-field-area/relation-field-area.html', 'components/search-controller/search-controller.html', 'components/summarized-items/summarized-items.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
+angular.module('carnival.templates', ['components/button/button.html', 'components/column-form/column-form.html', 'components/column-listing/column-listing.html', 'components/delete-button/delete-button.html', 'components/field-form-builder/field-form-builder.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/currency/currency.html', 'components/fields/date/date.html', 'components/fields/enum/enum.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form-area/form-area.html', 'components/form-column/form-column.html', 'components/form-fields-next/form-fields-next.html', 'components/form-fields/form-fields.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/listing-extra-action/listing-extra-action.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-currency/listing-field-currency.html', 'components/listing-field-enum/listing-field-enum.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/nested-form/nested-form.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/summarized-items/summarized-items.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
 
 angular.module("components/button/button.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/button/button.html",
@@ -2470,7 +2447,7 @@ angular.module("components/button/button.html", []).run(["$templateCache", funct
 
 angular.module("components/column-form/column-form.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/column-form/column-form.html",
-    "<div ng-style=\"style\" class='children-form form-column animated {{cssClass}} '>\n" +
+    "<div>\n" +
     "  <h3>{{ 'EDIT_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
     "  <carnival-form type='column' entity=\"entity\" fields=\"entity.fields\" datas=\"entity.datas\" action=\"entity.action\" state=\"{{state}}\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form>\n" +
     "</div>\n" +
@@ -2479,7 +2456,7 @@ angular.module("components/column-form/column-form.html", []).run(["$templateCac
 
 angular.module("components/column-listing/column-listing.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/column-listing/column-listing.html",
-    "<div class=\"listing form-column {{cssClass}}\" ng-style=\"style\">\n" +
+    "<div class=\"listing\">\n" +
     "  <carnival-field-form-builder state='create' parent-entity='entity.parentEntity' field='field'></carnival-field-form-builder>\n" +
     "  <table class=\"table table-hover\">\n" +
     "    <thead>\n" +
@@ -2519,13 +2496,13 @@ angular.module("components/delete-button/delete-button.html", []).run(["$templat
 
 angular.module("components/field-form-builder/field-form-builder.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/field-form-builder/field-form-builder.html",
-    "<div ng-switch='state'>\n" +
+    "<span ng-switch='state'>\n" +
     "  <a ng-switch-when='create' class=\"button default tiny\" ng-click=\"open()\">{{ 'NESTED_FORM_BUTTON_CREATE' | translate }}</a>\n" +
     "  <div ng-switch-when='create' id=\"create_nested_{{field.entityName}}\"></div>\n" +
     "\n" +
     "  <a ng-switch-when='edit' id='editHasManyOption' ng-click='openWithData();' class=\"button warning tiny\">Edit</a>\n" +
     "  <div ng-switch-when='edit' id=\"edit_nested_{{field.name}}_{{data[field.identifier]}}\"></div>\n" +
-    "</div>\n" +
+    "</span>\n" +
     "");
 }]);
 
@@ -2534,7 +2511,7 @@ angular.module("components/fields/belongs-to/belongs-to.html", []).run(["$templa
     "<div>\n" +
     "  <carnival-select-field data=\"datas\" field=\"field.field\" identifier=\"field.identifier\" items=\"relatedResources\">\n" +
     "  </carnival-select-field>\n" +
-    "  <carnival-relation-field-area state=\"{{state}}\" parent-entity=\"parentEntity\" field=\"field\" datas=\"datas\" relation-type=\"belongsTo\"></carnival-relation-field-area>\n" +
+    "  <carnival-field-form-builder state='create' parent-entity='parentEntity' field='field'></carnival-field-form-builder>\n" +
     "</div>\n" +
     "");
 }]);
@@ -2594,7 +2571,21 @@ angular.module("components/fields/has-many/has-many.html", []).run(["$templateCa
     "    </select>\n" +
     "    <a class=\"button default tiny\" ng-click=\"addHasManyOption()\">Add</a>\n" +
     "  </span>\n" +
-    "  <carnival-relation-field-area state=\"{{state}}\" parent-entity=\"parentEntity\" field=\"field\" datas=\"datas\" relation-type=\"hasMany\"></carnival-relation-field-area>\n" +
+    "\n" +
+    "  <carnival-field-form-builder state='create' parent-entity='parentEntity' field='field'></carnival-field-form-builder>\n" +
+    "  <div ng-switch='showAs()'>\n" +
+    "    <div ng-switch-when='summarized'>\n" +
+    "      <carnival-summarized-items parent-entity='parentEntity' field='field' datas='datas' state='state' editable='editable'></carnival-summarized-items>\n" +
+    "    </div>\n" +
+    "    <ul ng-switch-default class='has-many-field-list'>\n" +
+    "      <li ng-repeat='data in datas'>\n" +
+    "        {{data[field.field]}}\n" +
+    "        <a id='removeHasManyOption' ng-click='remove(data.id);' class=\"button default tiny\">Delete</a>\n" +
+    "        <carnival-field-form-builder data=\"data\" state='edit' parent-entity='parentEntity' field='field'></carnival-field-form-builder>\n" +
+    "      </li>\n" +
+    "    </ul>\n" +
+    "  </div>\n" +
+    "\n" +
     "</div>\n" +
     "");
 }]);
@@ -2637,12 +2628,22 @@ angular.module("components/fields/wysiwyg/wysiwyg.html", []).run(["$templateCach
 angular.module("components/form-area/form-area.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/form-area/form-area.html",
     "<div id='form-columns'>\n" +
-    "  <div ng-show='show()' ng-style='getStyle()' class='disable-form'></div>\n" +
+    "  <div ng-show='showDisableDiv()' ng-style='getStyle()' class='disable-form'></div>\n" +
     "  <div id='master-form'  class='form-column'>\n" +
     "    <h3 ng-if=\"state == 'edit' \">{{ 'EDIT_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
     "    <h3 ng-if=\"state == 'create' \">{{ 'CREATE_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
     "    <carnival-form type='normal' entity=\"entity\" fields=\"fields\" datas=\"datas\" action=\"entity.action\" state=\"{{state}}\" related-resources=\"relatedResources\" editable=\"true\"></carnival-form>\n" +
     "  </div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("components/form-column/form-column.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/form-column/form-column.html",
+    "<div ng-switch='type' ng-style=\"style\" class='children-form form-column animated {{cssClass}} '>\n" +
+    "<span class='button' ng-click='close()'>Close</span>\n" +
+    "  <carnival-column-form ng-switch-when='form' entity=\"entity\" state=\"{{state}}\"></carnival-column-form>\n" +
+    "  <carnival-column-listing ng-switch-when='table' entity=\"entity\" field=\"field\" datas=\"datas\"></carnival-column-listing>\n" +
     "</div>\n" +
     "");
 }]);
@@ -2700,31 +2701,32 @@ angular.module("components/form-fields/form-fields.html", []).run(["$templateCac
 angular.module("components/form/form.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/form/form.html",
     "<div>\n" +
-    "<form ng-init=\"nestedFormIndex = {value: 0}\" novalidate>\n" +
-    "  <div ng-if=\"field.fieldFormType != 'related'\" ng-repeat=\"field in fields\" ng-class=\"{ row: field.grid.newRow }\">\n" +
+    "  <form ng-init=\"nestedFormIndex = {value: 0}\" novalidate>\n" +
+    "    <div ng-if=\"field.fieldFormType != 'related'\" ng-repeat=\"field in fields\" ng-class=\"{ row: field.grid.newRow }\">\n" +
+    "      <div>\n" +
+    "        <carnival-form-fields class=\"column small-{{ field.grid.columnSize }}\" ng-show=\"field.grid.newRow\"></carnival-form-fields>\n" +
+    "        <carnival-form-fields-next class=\"column small-{{ fields[$index + 1].grid.columnSize }}\" ng-show=\"!fields[$index + 1].grid.newRow && $index + 1 !== fields.length\"></carnival-form-fields-next>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
     "    <div>\n" +
-    "      <carnival-form-fields class=\"column small-{{ field.grid.columnSize }}\" ng-show=\"field.grid.newRow\"></carnival-form-fields>\n" +
-    "      <carnival-form-fields-next class=\"column small-{{ fields[$index + 1].grid.columnSize }}\" ng-show=\"!fields[$index + 1].grid.newRow && $index + 1 !== fields.length\"></carnival-form-fields-next>\n" +
+    "      <carnival-button label=\"{{ 'FORM_BUTTON_SAVE' | translate }}\" style=\"success\" size=\"small\" ng-click=\"buttonAction()\"></carnival-button>\n" +
     "    </div>\n" +
-    "  </div>\n" +
-    "  <div>\n" +
-    "    <carnival-button label=\"{{ 'FORM_BUTTON_SAVE' | translate }}\" style=\"success\" size=\"small\" ng-click=\"buttonAction()\"></carnival-button>\n" +
-    "  </div>\n" +
-    "</form>\n" +
+    "  </form>\n" +
     "\n" +
-    "  <fieldset ng-show='showRelatedFields()'>\n" +
-    "    <legend>Relacionados</legend>\n" +
-    "    <div ng-if=\"field.fieldFormType == 'related'\" class=\"row\" ng-repeat=\"field in fields\">\n" +
-    "      <label class=\"col-sm-2 control-label\">\n" +
-    "        {{ field.label }}\n" +
-    "        <div class=\"col-sm-10\" ng-switch=\"field.type\">\n" +
-    "          <!-- Fields -->\n" +
-    "          <carnival-belongs-to-field ng-switch-when=\"belongsTo\" parent-entity=\"entity\" field=\"field\" datas=\"entity.datas[field.name]\" action=\"entity.action\" related-resources=\"entity.relatedResources[field.name]\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
-    "          <carnival-has-many-field ng-switch-when=\"hasMany\" parent-entity=\"entity\" field=\"field\" datas=\"entity.datas[field.name]\" action=\"entity.action\" related-resources=\"entity.relatedResources[field.name]\" state=\"{{state}}\"></carnival-has-many-field>\n" +
-    "        </div>\n" +
-    "      </label>\n" +
-    "    </div>\n" +
-    "  </fieldset>\n" +
+    "  <div id='related-fields'>\n" +
+    "    <fieldset ng-show='showRelatedFields()'>\n" +
+    "      <legend>Relacionados</legend>\n" +
+    "      <div ng-if=\"field.fieldFormType == 'related'\" class=\"row\" ng-repeat=\"field in fields\">\n" +
+    "        <label class=\"col-sm-2 control-label\">\n" +
+    "          {{ field.label }}\n" +
+    "          <div class=\"col-sm-10\" ng-switch=\"field.type\">\n" +
+    "            <carnival-belongs-to-field ng-switch-when=\"belongsTo\" parent-entity=\"entity\" field=\"field\" datas=\"entity.datas[field.name]\" action=\"entity.action\" related-resources=\"entity.relatedResources[field.name]\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
+    "            <carnival-has-many-field ng-switch-when=\"hasMany\" parent-entity=\"entity\" field=\"field\" datas=\"entity.datas[field.name]\" action=\"entity.action\" related-resources=\"entity.relatedResources[field.name]\" state=\"{{state}}\"></carnival-has-many-field>\n" +
+    "          </div>\n" +
+    "        </label>\n" +
+    "      </div>\n" +
+    "    </fieldset>\n" +
+    "  </div>\n" +
     "</div>\n" +
     "");
 }]);
@@ -2859,6 +2861,18 @@ angular.module("components/navbar/navbar.html", []).run(["$templateCache", funct
     "");
 }]);
 
+angular.module("components/nested-form/nested-form.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/nested-form/nested-form.html",
+    "<div class=\"nested-container animated fadeIn\">\n" +
+    "<a class='close-nested btn btn-default btn-xs' ng-click='close()'>Close</a>\n" +
+    "  <fieldset>\n" +
+    "  <legend>{{ 'NESTED_FORM_TITLE_CREATE' | translate }} {{ entity.label }}</legend>\n" +
+    "  <carnival-form type='nested' entity='entity' fields=\"entity.fields\" action=\"entity.action\" datas=\"entity.datas\" state=\"{{state}}\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form>\n" +
+    "  </fieldset>\n" +
+    "</div>\n" +
+    "");
+}]);
+
 angular.module("components/notification/notification.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/notification/notification.html",
     "<div>\n" +
@@ -2917,42 +2931,6 @@ angular.module("components/quickfilter-controller/quickfilter-controller.html", 
     "<span>\n" +
     "  <carnival-button ng-class=\"{ disabled: isSelected(filter.field, filter.value()) }\" ng-repeat=\"filter in filters\" label=\"{{ filter.label }}\" style=\"info\" size=\"small\" ng-click=\"setFilter(filter.field, filter.value())\"></carnival-button>\n" +
     "</span>\n" +
-    "");
-}]);
-
-angular.module("components/relation-field-area/nested-form.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("components/relation-field-area/nested-form.html",
-    "<div class=\"nested-container animated fadeIn\">\n" +
-    "<a class='close-nested btn btn-default btn-xs' ng-click='close()'>Close</a>\n" +
-    "  <fieldset>\n" +
-    "  <legend>{{ 'NESTED_FORM_TITLE_CREATE' | translate }} {{ entity.label }}</legend>\n" +
-    "  <carnival-form type='nested' entity='entity' fields=\"entity.fields\" action=\"entity.action\" datas=\"entity.datas\" state=\"{{state}}\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form>\n" +
-    "  </fieldset>\n" +
-    "</div>\n" +
-    "");
-}]);
-
-angular.module("components/relation-field-area/relation-field-area.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("components/relation-field-area/relation-field-area.html",
-    "<div>\n" +
-    "  <carnival-field-form-builder state='create' parent-entity='parentEntity' field='field'></carnival-field-form-builder>\n" +
-    "  <div ng-switch='relationType'>\n" +
-    "    <div ng-switch-when='hasMany'>\n" +
-    "      <div ng-switch='showAs()'>\n" +
-    "        <div ng-switch-when='summarized'>\n" +
-    "          <carnival-summarized-items parent-entity='parentEntity' field='field' datas='datas' state='state' editable='editable'></carnival-summarized-items>\n" +
-    "        </div>\n" +
-    "        <ul ng-switch-default ng-if=\"isHasMany()\" class='has-many-field-list'>\n" +
-    "          <li ng-repeat='data in datas'>\n" +
-    "            {{data[field.field]}}\n" +
-    "            <a id='removeHasManyOption' ng-click='remove(data.id);' class=\"button default tiny\">Delete</a>\n" +
-    "            <carnival-field-form-builder data=\"data\" state='edit' parent-entity='parentEntity' field='field'></carnival-field-form-builder>\n" +
-    "          </li>\n" +
-    "        </ul>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
-    "  </div>\n" +
-    "</div>\n" +
     "");
 }]);
 

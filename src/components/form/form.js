@@ -16,10 +16,6 @@ angular.module('carnival.components.form', [])
     controller: function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $state) {
       $scope.utils = utils;
 
-      if($scope.type === 'normal'){
-        FormService.init();
-      }
-
       $scope.hasRelatedFields = function(){
         for(var i = 0; i < $scope.fields.length; i++){
           var field = $scope.fields[i];
