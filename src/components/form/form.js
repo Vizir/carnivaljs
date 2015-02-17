@@ -74,10 +74,10 @@ angular.module('carnival.components.form', [])
         if(!error){
           successCallback(data);
         }else{
-          if(angular.isArray(error))
-            $scope.errors = error;
+          if(angular.isArray(data))
+            $scope.errors = data;
           else
-            $scope.errors = [error];
+            $scope.errors = [data];
         }
       };
 

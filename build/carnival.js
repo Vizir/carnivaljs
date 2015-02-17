@@ -207,7 +207,7 @@ angular.module('carnival.components.field-form-builder', [])
 
       $scope._openForm = function(entity, state){
         var containerId = getContainerId(state);
-        entity.datas = $scope.data;
+        entity.datas = $scope.data || {};
 
         var formScope = $scope.$new();
         formScope.entity = entity;
@@ -748,10 +748,10 @@ angular.module('carnival.components.form', [])
         if(!error){
           successCallback(data);
         }else{
-          if(angular.isArray(error))
-            $scope.errors = error;
+          if(angular.isArray(data))
+            $scope.errors = data;
           else
-            $scope.errors = [error];
+            $scope.errors = [data];
         }
       };
 
@@ -2582,7 +2582,7 @@ angular.module("components/fields/has-many/has-many.html", []).run(["$templateCa
     "    <a class=\"button default tiny\" ng-click=\"addHasManyOption()\">Add</a>\n" +
     "  </span>\n" +
     "\n" +
-    "  <carnival-field-form-builder state='create' parent-entity='parentEntity' field='field'></carnival-field-form-builder>\n" +
+    "  <carnival-field-form-builder state='create' parent-entity='parentEntity' field='field' datas='datas'></carnival-field-form-builder>\n" +
     "  <div ng-switch='showAs()'>\n" +
     "    <div ng-switch-when='summarized'>\n" +
     "      <carnival-summarized-items parent-entity='parentEntity' field='field' datas='datas' state='state' editable='editable'></carnival-summarized-items>\n" +

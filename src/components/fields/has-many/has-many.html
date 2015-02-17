@@ -5,7 +5,7 @@
     <a class="button default tiny" ng-click="addHasManyOption()">Add</a>
   </span>
 
-  <carnival-field-form-builder state='create' parent-entity='parentEntity' field='field'></carnival-field-form-builder>
+  <carnival-field-form-builder state='create' parent-entity='parentEntity' field='field' datas='datas'></carnival-field-form-builder>
   <div ng-switch='showAs()'>
     <div ng-switch-when='summarized'>
       <carnival-summarized-items parent-entity='parentEntity' field='field' datas='datas' state='state' editable='editable'></carnival-summarized-items>

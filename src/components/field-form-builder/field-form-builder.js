@@ -26,7 +26,7 @@ angular.module('carnival.components.field-form-builder', [])
 
       $scope._openForm = function(entity, state){
         var containerId = getContainerId(state);
-        entity.datas = $scope.data;
+        entity.datas = $scope.data || {};
 
         var formScope = $scope.$new();
         formScope.entity = entity;
