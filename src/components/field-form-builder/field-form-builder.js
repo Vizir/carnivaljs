@@ -24,9 +24,23 @@ angular.module('carnival.components.field-form-builder', [])
         }
       };
 
+      var resolveForeignKey = function(entity){
+        if(!$scope.parentEntity) return;
+
+        var f = entity.model.getFieldByEntityName($scope.parentEntity.name);
+
+        if(!f) return;
+
+        if(f.type === 'hasMany' || f.type === 'belongsTo'){
+          entity.datas[f.foreignKey] = $scope.parentEntity.datas[$scope.parentEntity.identifier];
+        }
+      };
+
       $scope._openForm = function(entity, state){
         var containerId = getContainerId(state);
         entity.datas = $scope.data || {};
+
+        resolveForeignKey(entity);
 
         var formScope = $scope.$new();
         formScope.entity = entity;

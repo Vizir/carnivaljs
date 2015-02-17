@@ -205,9 +205,23 @@ angular.module('carnival.components.field-form-builder', [])
         }
       };
 
+      var resolveForeignKey = function(entity){
+        if(!$scope.parentEntity) return;
+
+        var f = entity.model.getFieldByEntityName($scope.parentEntity.name);
+
+        if(!f) return;
+
+        if(f.type === 'hasMany' || f.type === 'belongsTo'){
+          entity.datas[f.foreignKey] = $scope.parentEntity.datas[$scope.parentEntity.identifier];
+        }
+      };
+
       $scope._openForm = function(entity, state){
         var containerId = getContainerId(state);
         entity.datas = $scope.data || {};
+
+        resolveForeignKey(entity);
 
         var formScope = $scope.$new();
         formScope.entity = entity;
@@ -2717,6 +2731,7 @@ angular.module("components/form/form.html", []).run(["$templateCache", function(
     "    </li>\n" +
     "  </ul>\n" +
     "  <form ng-init=\"nestedFormIndex = {value: 0}\" novalidate>\n" +
+    "    {{datas}}\n" +
     "    <div ng-if=\"field.fieldFormType != 'related'\" ng-repeat=\"field in fields\" ng-class=\"{ row: field.grid.newRow }\">\n" +
     "      <div>\n" +
     "        <carnival-form-fields class=\"column small-{{ field.grid.columnSize }}\" ng-show=\"field.grid.newRow\"></carnival-form-fields>\n" +
