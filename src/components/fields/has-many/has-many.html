@@ -1,7 +1,7 @@
 <div>
 
   <div ng-switch='showAs()'>
-    <carnival-summarized-items ng-switch-when='summarized' parent-entity='parentEntity' field='field' datas='datas' state='state' editable='editable'></carnival-summarized-items>
+    <carnival-has-many-table ng-switch-when='summarized' parent-entity='parentEntity' field='field' datas='datas' state='state' editable='editable'></carnival-has-many-table>
     <ul class='carnival-tags' ng-switch-default class='has-many-field-list'>
       <li class='carnival-tag' ng-repeat='data in datas'>
         <carnival-field-form-builder label='{{data[field.field]}}' data="data" state='edit' parent-entity='parentEntity' field='field'></carnival-field-form-builder>

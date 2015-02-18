@@ -121,6 +121,7 @@ angular.module('carnival.components.column-listing', [])
 angular.module('carnival.components', [
   'carnival.components.button',
   'carnival.components.form-column',
+  'carnival.components.has-many-table',
   'carnival.components.column-form',
   'carnival.components.column-listing',
   'carnival.components.form-area',
@@ -812,6 +813,37 @@ angular.module('carnival.components.gallery', [])
       };
     }],
     templateUrl: 'components/gallery/gallery.html'
+  };
+});
+
+angular.module('carnival.components.has-many-table', [])
+.directive('carnivalHasManyTable', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      parentEntity: '=',
+      field: '=',
+      datas: '=',
+      state: '@',
+      editable: '='
+    },
+    templateUrl: 'components/has-many-table/has-many-table.html',
+    controller: ["$rootScope", "$scope", "$compile", "utils", "$element", "FormService", "Configuration", "EntityResources", function ($rootScope, $scope, $compile, utils, $element, FormService, Configuration, EntityResources) {
+      $scope.entity = EntityResources.prepareForListState($scope.field.name, $scope.parentEntity);
+
+      $scope.getListFields = function(){
+        var fields = [];
+
+        for(var i = 0; i < $scope.entity.fields.length; i++){
+          var f = $scope.entity.fields[i];
+          if(f.type !== 'belongsTo' && f.type !== 'hasMany')
+            fields.push(f);
+        }
+
+        return fields;
+      };
+    }]
   };
 });
 
@@ -2477,7 +2509,7 @@ angular.module('carnival')
 
 }]);
 
-angular.module('carnival.templates', ['components/button/button.html', 'components/column-form/column-form.html', 'components/column-listing/column-listing.html', 'components/delete-button/delete-button.html', 'components/field-form-builder/field-form-builder.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/currency/currency.html', 'components/fields/date/date.html', 'components/fields/enum/enum.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form-area/form-area.html', 'components/form-column/form-column.html', 'components/form-fields-next/form-fields-next.html', 'components/form-fields/form-fields.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/listing-extra-action/listing-extra-action.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-currency/listing-field-currency.html', 'components/listing-field-enum/listing-field-enum.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/nested-form/nested-form.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/summarized-items/summarized-items.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
+angular.module('carnival.templates', ['components/button/button.html', 'components/column-form/column-form.html', 'components/column-listing/column-listing.html', 'components/delete-button/delete-button.html', 'components/field-form-builder/field-form-builder.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/currency/currency.html', 'components/fields/date/date.html', 'components/fields/enum/enum.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form-area/form-area.html', 'components/form-column/form-column.html', 'components/form-fields-next/form-fields-next.html', 'components/form-fields/form-fields.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/has-many-table/has-many-table.html', 'components/listing-extra-action/listing-extra-action.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-currency/listing-field-currency.html', 'components/listing-field-enum/listing-field-enum.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/nested-form/nested-form.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/summarized-items/summarized-items.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
 
 angular.module("components/button/button.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/button/button.html",
@@ -2610,7 +2642,7 @@ angular.module("components/fields/has-many/has-many.html", []).run(["$templateCa
     "<div>\n" +
     "\n" +
     "  <div ng-switch='showAs()'>\n" +
-    "    <carnival-summarized-items ng-switch-when='summarized' parent-entity='parentEntity' field='field' datas='datas' state='state' editable='editable'></carnival-summarized-items>\n" +
+    "    <carnival-has-many-table ng-switch-when='summarized' parent-entity='parentEntity' field='field' datas='datas' state='state' editable='editable'></carnival-has-many-table>\n" +
     "    <ul class='carnival-tags' ng-switch-default class='has-many-field-list'>\n" +
     "      <li class='carnival-tag' ng-repeat='data in datas'>\n" +
     "        <carnival-field-form-builder label='{{data[field.field]}}' data=\"data\" state='edit' parent-entity='parentEntity' field='field'></carnival-field-form-builder>\n" +
@@ -2788,6 +2820,35 @@ angular.module("components/gallery/gallery.html", []).run(["$templateCache", fun
   $templateCache.put("components/gallery/gallery.html",
     "<div>\n" +
     "  <carnival-button label=\"{{ 'GALLERY_BUTTON_OPEN' | translate }}\" style=\"default\" size=\"small\" ng-click=\"open()\"></carnival-button>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("components/has-many-table/has-many-table.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/has-many-table/has-many-table.html",
+    "<div class=\"has-many-table\">\n" +
+    "  <table class=\"table table-hover\">\n" +
+    "    <thead>\n" +
+    "      <tr>\n" +
+    "        <th ng-repeat=\"field in getListFields()\">\n" +
+    "          {{ field.label }}\n" +
+    "          <carnival-order-ctrl field=\"field.name\"></carnival-order-ctrl>\n" +
+    "        </th>\n" +
+    "        <th>\n" +
+    "        </th>\n" +
+    "      </tr>\n" +
+    "    </thead>\n" +
+    "    <tbody>\n" +
+    "      <tr ng-repeat=\"data in datas\">\n" +
+    "        <td ng-repeat=\"field in getListFields()\">\n" +
+    "          <carnival-listing-field item=\"data\" field=\"field\"></carnival-listing-field>\n" +
+    "        </td>\n" +
+    "        <td>\n" +
+    "          <carnival-field-form-builder data=\"data\" state='edit' parent-entity='entity.parentEntity' field='field'></carnival-field-form-builder>\n" +
+    "        </td>\n" +
+    "      </tr>\n" +
+    "    </tbody>\n" +
+    "  </table>\n" +
     "</div>\n" +
     "");
 }]);

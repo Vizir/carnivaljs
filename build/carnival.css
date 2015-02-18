@@ -142,6 +142,10 @@ button.tiny, .button.tiny {
   max-width: 100% !important;
 }
 
+.has-many-table table{
+  width: 100%;
+}
+
 
 /*=========Carnival Tags=========Start*/
 .carnival-tags {
