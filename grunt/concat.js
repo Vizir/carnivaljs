@@ -9,6 +9,7 @@ module.exports = {
       '!src/**/*.spec.js',
       '!src/karma.conf.js',
       'build/tmp/*.js',
+      'bower_components/sweetalert/lib/sweet-alert.js',
       'bower_components/angular-ui-router/release/angular-ui-router.js',
       'bower_components/ng-wig/dist/ng-wig.js',
       'bower_components/angular-scroll/angular-scroll.js',
@@ -22,6 +23,7 @@ module.exports = {
   css: {
     src: [
       'src/styles/*.css',
+      'bower_components/sweetalert/lib/sweet-alert.css',
       'bower_components/ng-wig/dist/css/ng-wig.css',
       'bower_components/angular-datepicker/dist/index.css'
     ],
