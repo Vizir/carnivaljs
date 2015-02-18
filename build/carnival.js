@@ -2731,7 +2731,6 @@ angular.module("components/form/form.html", []).run(["$templateCache", function(
     "    </li>\n" +
     "  </ul>\n" +
     "  <form ng-init=\"nestedFormIndex = {value: 0}\" novalidate>\n" +
-    "    {{datas}}\n" +
     "    <div ng-if=\"field.fieldFormType != 'related'\" ng-repeat=\"field in fields\" ng-class=\"{ row: field.grid.newRow }\">\n" +
     "      <div>\n" +
     "        <carnival-form-fields class=\"column small-{{ field.grid.columnSize }}\" ng-show=\"field.grid.newRow\"></carnival-form-fields>\n" +

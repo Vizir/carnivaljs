@@ -5,7 +5,6 @@
     </li>
   </ul>
   <form ng-init="nestedFormIndex = {value: 0}" novalidate>
-    {{datas}}
     <div ng-if="field.fieldFormType != 'related'" ng-repeat="field in fields" ng-class="{ row: field.grid.newRow }">
       <div>
         <carnival-form-fields class="column small-{{ field.grid.columnSize }}" ng-show="field.grid.newRow"></carnival-form-fields>
