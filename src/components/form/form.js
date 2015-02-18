@@ -34,6 +34,15 @@ angular.module('carnival.components.form', [])
          return true;
       };
 
+      $scope.initSelectedTab = function(index){
+        if(!$scope.selectedTab)
+          $scope.selectedTab = index;
+      }
+
+      $scope.selectTab = function(index){
+        $scope.selectedTab = index;
+      }
+
       var entityHasNesteds = function(){
         return ($scope.entity.nestedForms && Object.keys($scope.entity.nestedForms).length > 0);
       };
