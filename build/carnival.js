@@ -2539,10 +2539,10 @@ angular.module("components/delete-button/delete-button.html", []).run(["$templat
 angular.module("components/field-form-builder/field-form-builder.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/field-form-builder/field-form-builder.html",
     "<span ng-switch='state'>\n" +
-    "  <a ng-switch-when='create' class=\"button default tiny\" ng-click=\"open()\">{{ 'NESTED_FORM_BUTTON_CREATE' | translate }}</a>\n" +
+    "  <a ng-switch-when='create' class=\"button default tiny form-builder\" ng-click=\"open()\">{{ 'NESTED_FORM_BUTTON_CREATE' | translate }}</a>\n" +
     "  <div ng-switch-when='create' id=\"create_nested_{{field.entityName}}\"></div>\n" +
     "\n" +
-    "  <a ng-switch-when='edit' id='editHasManyOption' ng-click='openWithData();' class=\"button warning tiny\">{{getButtonLabel()}}</a>\n" +
+    "  <a ng-switch-when='edit' id='editHasManyOption' ng-click='openWithData();' class=\"button warning tiny form-builder\">{{getButtonLabel()}}</a>\n" +
     "  <div ng-switch-when='edit' id=\"edit_nested_{{field.name}}_{{data[field.identifier]}}\"></div>\n" +
     "</span>\n" +
     "");
