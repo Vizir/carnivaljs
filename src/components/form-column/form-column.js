@@ -8,7 +8,8 @@ angular.module('carnival.components.form-column', [])
       field: '=',
       datas: '=',
       state: '@state',
-      type: '@'
+      type: '@',
+      index: '@'
     },
     templateUrl: 'components/form-column/form-column.html',
     controller: function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $timeout) {
@@ -17,13 +18,18 @@ angular.module('carnival.components.form-column', [])
         return $scope.type + '-' + $scope.entity.name;
       };
 
-      $scope.cssClass = 'fadeInRight';
+      $timeout(function(){
+        $scope.cssClass = 'fadeInRight';
+      }, 100);
       $scope.style = {
-        zIndex: (FormService.columnsCount() * 10) + 2,
-        left: (FormService.columnsCount() * 20) + 'px',
-        top: (FormService.columnsCount() * 30) + 'px',
-        padding: '10px'
       };
+
+      $scope.getDisableClass = function(){
+        if(FormService.columnsCount() > parseInt($scope.index) + 1){
+          return 'disable-form';
+        }
+        return '';
+      }
 
       $scope.remove = function(){
         $scope.cssClass = 'fadeOutRight';

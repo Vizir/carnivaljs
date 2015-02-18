@@ -1,3 +1,15 @@
+/*=========Foundation Override=========Start*/
+.top-bar{
+  position: fixed !important;
+  width: 100%;
+  z-index: 9999;
+}
+
+button.tiny, .button.tiny {
+  padding: 6px 10px !important;
+}
+/*=========Foundation Override=========End*/
+
 #loading-bar {
   pointer-events: none;
   -webkit-pointer-events: none;
@@ -64,21 +76,107 @@
   height: 230px !important;
 }
 
+#master-form{
+  position: relative;
+  left: 0;
+  right: 0;
+  width: 100%;
+}
+
+#form-columns .form-column:nth-child(3){
+  width: 92%;
+}
+
+#form-columns .form-column:nth-child(4){
+  width: 86%;
+}
+
+#form-columns .form-column:nth-child(5){
+  width: 80%;
+}
+
+#form-columns .form-column:nth-child(6){
+  width: 74%;
+}
+
 .form-column{
   position: absolute;
+  right: -96%;
   top: 0px;
-  width: 94%;
+  width: 96%;
   background: white;
   z-index: 10;
-  top: 50px;
+  top: 45px;
+  transition: all 0.3s ease;
+  min-height: 95%;
+}
+
+.form-column.fadeInRight{
+  right: 0;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-top: none;
+  box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.2);
 }
 
 .disable-form{
-  position: absolute;
-  top: 50px;
-  left: 0px;
-  height: 100%;
-  width: 100%;
-  background: black;
-  opacity: 0.5;
+  background: #eee;
+  filter: blur(2px) grayscale(1);
+  -webkit-filter: blur(2px) grayscale(1);
+  -moz-filter: blur(2px) grayscale(1);
+  position: fixed !important;
+  max-height: 100%;
+  overflow: hidden;
 }
+
+.row {
+  width: 100%;
+  margin: 0px auto;
+  max-width: 100% !important;
+}
+
+
+/*=========Carnival Tags=========Start*/
+.carnival-tags{
+  padding: 0;
+  margin: 0;
+}
+
+.carnival-tag{
+  list-style: none;
+  float: left;
+  position: relative;
+  margin-right: 18px;
+}
+
+.carnival-tag:hover a{
+  background: #cf6e0e !important;
+}
+
+.carnival-tag:hover .remove-tag{
+  display: block;
+  position: absolute;
+  top: 2px;
+  right: -15px;
+}
+
+.carnival-tag:after {
+	left: 100%;
+	top: 14px;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(136, 183, 213, 0);
+	border-left-color: #f08a24;
+	border-width: 12px;
+	margin-top: -12px;
+}
+
+.carnival-tag .remove-tag{
+  display: none;
+	background: #f08a24 !important;
+  z-index: 20;
+}
+/*=========Carnival Tags=========End*/

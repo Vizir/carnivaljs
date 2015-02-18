@@ -8,7 +8,7 @@ angular.module('carnival')
   };
 
   this.columnsCount = function(){
-    return Object.keys(this.columns).length + 1;
+    return Object.keys(this.columns).length;
   };
 
   this._addNested = function(containerId, scope, directive){
@@ -28,13 +28,15 @@ angular.module('carnival')
 
   this.openColumn = function(state, containerId, scope){
     var formId = 'form-' +  scope.entity.name;
-    var directive = '<carnival-form-column type="form" entity="entity" state="'+state+'"></carnival-form-column>';
+    var index = this.columnsCount() || 0;
+    var directive = '<carnival-form-column index="'+index+'" type="form" entity="entity" state="'+state+'"></carnival-form-column>';
     this._addColumn(directive, formId, containerId, scope);
   };
 
   this.openColumnListing = function(state, containerId, scope){
     var formId = 'table-' +  scope.entity.name;
-    var directive = '<carnival-form-column type="table" field="field" entity="entity" datas="datas"></carnival-form-column>';
+    var index = this.columnsCount() || 0;
+    var directive = '<carnival-form-column index="'+index+'" type="table" field="field" entity="entity" datas="datas"></carnival-form-column>';
     this._addColumn(directive, formId, containerId, scope);
   };
 

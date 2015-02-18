@@ -7,7 +7,8 @@ angular.module('carnival.components.field-form-builder', [])
       parentEntity: '=',
       field: '=',
       data: '=',
-      state: '@'
+      state: '@',
+      label: '@'
     },
     templateUrl: 'components/field-form-builder/field-form-builder.html',
     controller: function ($rootScope, $scope, $timeout, utils, $element,  $compile, FormService, Configuration, EntityResources, Notification) {
@@ -53,6 +54,16 @@ angular.module('carnival.components.field-form-builder', [])
           FormService.openNested(state, containerId, formScope);
         }
       };
+
+      $scope.getButtonLabel = function(){
+        if($scope.label)
+          return $scope.label;
+
+        if($scope.state === 'edit')
+          return 'Edit';
+      };
+
+
 
       $scope.openWithData = function(){
         var state = 'edit';

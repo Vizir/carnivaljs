@@ -188,7 +188,8 @@ angular.module('carnival.components.field-form-builder', [])
       parentEntity: '=',
       field: '=',
       data: '=',
-      state: '@'
+      state: '@',
+      label: '@'
     },
     templateUrl: 'components/field-form-builder/field-form-builder.html',
     controller: ["$rootScope", "$scope", "$timeout", "utils", "$element", "$compile", "FormService", "Configuration", "EntityResources", "Notification", function ($rootScope, $scope, $timeout, utils, $element,  $compile, FormService, Configuration, EntityResources, Notification) {
@@ -234,6 +235,16 @@ angular.module('carnival.components.field-form-builder', [])
           FormService.openNested(state, containerId, formScope);
         }
       };
+
+      $scope.getButtonLabel = function(){
+        if($scope.label)
+          return $scope.label;
+
+        if($scope.state === 'edit')
+          return 'Edit';
+      };
+
+
 
       $scope.openWithData = function(){
         var state = 'edit';
@@ -588,27 +599,13 @@ angular.module('carnival.components.form-area', [])
     },
     templateUrl: 'components/form-area/form-area.html',
     controller: ["$rootScope", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", "$state", function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $state) {
-
       FormService.init();
 
-      $scope.showDisableDiv = function(){
-        return FormService.columnsCount() > 1;
-      };
-      var getZIndex = function(){
-        return ((FormService.columnsCount() - 1) * 10) + 3;
-      };
-
-      var getHeight = function(){
-        return (document.querySelector('#master-form').offsetHeight);
-      };
-
-      $scope.getStyle = function(){
-        return {
-          zIndex:  getZIndex(),
-          height: getHeight() + 'px'
-        };
-      };
-
+      $scope.getDisableClass = function(){
+        if(FormService.columnsCount() > 0)
+          return 'disable-form'
+        return '';
+      }
     }]
   };
 });
@@ -623,7 +620,8 @@ angular.module('carnival.components.form-column', [])
       field: '=',
       datas: '=',
       state: '@state',
-      type: '@'
+      type: '@',
+      index: '@'
     },
     templateUrl: 'components/form-column/form-column.html',
     controller: ["$rootScope", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", "$timeout", function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $timeout) {
@@ -632,13 +630,18 @@ angular.module('carnival.components.form-column', [])
         return $scope.type + '-' + $scope.entity.name;
       };
 
-      $scope.cssClass = 'fadeInRight';
+      $timeout(function(){
+        $scope.cssClass = 'fadeInRight';
+      }, 100);
       $scope.style = {
-        zIndex: (FormService.columnsCount() * 10) + 2,
-        left: (FormService.columnsCount() * 20) + 'px',
-        top: (FormService.columnsCount() * 30) + 'px',
-        padding: '10px'
       };
+
+      $scope.getDisableClass = function(){
+        if(FormService.columnsCount() > parseInt($scope.index) + 1){
+          return 'disable-form';
+        }
+        return '';
+      }
 
       $scope.remove = function(){
         $scope.cssClass = 'fadeOutRight';
@@ -717,6 +720,8 @@ angular.module('carnival.components.form', [])
       $scope.showRelatedFields = function(){
         if(!$scope.hasRelatedFields())
            return false;
+         if($scope.state === 'create')
+           return false;
          return true;
       };
 
@@ -750,7 +755,7 @@ angular.module('carnival.components.form', [])
           alert('Agora você pode criar os campos relacionados');
         }else{
           if($scope.type === 'column')
-            FormService.closeColumn($scope.entity.name);
+            FormService.closeColumn($scope.type + '-' + $scope.entity.name);
           else if($scope.type === 'nested')
             FormService.closeNested($scope.entity.name);
           else
@@ -1913,7 +1918,7 @@ angular.module('carnival')
   };
 
   this.columnsCount = function(){
-    return Object.keys(this.columns).length + 1;
+    return Object.keys(this.columns).length;
   };
 
   this._addNested = function(containerId, scope, directive){
@@ -1933,13 +1938,15 @@ angular.module('carnival')
 
   this.openColumn = function(state, containerId, scope){
     var formId = 'form-' +  scope.entity.name;
-    var directive = '<carnival-form-column type="form" entity="entity" state="'+state+'"></carnival-form-column>';
+    var index = this.columnsCount() || 0;
+    var directive = '<carnival-form-column index="'+index+'" type="form" entity="entity" state="'+state+'"></carnival-form-column>';
     this._addColumn(directive, formId, containerId, scope);
   };
 
   this.openColumnListing = function(state, containerId, scope){
     var formId = 'table-' +  scope.entity.name;
-    var directive = '<carnival-form-column type="table" field="field" entity="entity" datas="datas"></carnival-form-column>';
+    var index = this.columnsCount() || 0;
+    var directive = '<carnival-form-column index="'+index+'" type="table" field="field" entity="entity" datas="datas"></carnival-form-column>';
     this._addColumn(directive, formId, containerId, scope);
   };
 
@@ -2472,7 +2479,9 @@ angular.module("components/button/button.html", []).run(["$templateCache", funct
 angular.module("components/column-form/column-form.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/column-form/column-form.html",
     "<div>\n" +
-    "  <h3>{{ 'EDIT_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
+    "  <div class='column small-12'>\n" +
+    "    <h3>{{ 'EDIT_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
+    "  </div>\n" +
     "  <carnival-form type='column' entity=\"entity\" fields=\"entity.fields\" datas=\"entity.datas\" action=\"entity.action\" state=\"{{state}}\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form>\n" +
     "</div>\n" +
     "");
@@ -2524,7 +2533,7 @@ angular.module("components/field-form-builder/field-form-builder.html", []).run(
     "  <a ng-switch-when='create' class=\"button default tiny\" ng-click=\"open()\">{{ 'NESTED_FORM_BUTTON_CREATE' | translate }}</a>\n" +
     "  <div ng-switch-when='create' id=\"create_nested_{{field.entityName}}\"></div>\n" +
     "\n" +
-    "  <a ng-switch-when='edit' id='editHasManyOption' ng-click='openWithData();' class=\"button warning tiny\">Edit</a>\n" +
+    "  <a ng-switch-when='edit' id='editHasManyOption' ng-click='openWithData();' class=\"button warning tiny\">{{getButtonLabel()}}</a>\n" +
     "  <div ng-switch-when='edit' id=\"edit_nested_{{field.name}}_{{data[field.identifier]}}\"></div>\n" +
     "</span>\n" +
     "");
@@ -2590,24 +2599,23 @@ angular.module("components/fields/file/file.html", []).run(["$templateCache", fu
 angular.module("components/fields/has-many/has-many.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/fields/has-many/has-many.html",
     "<div>\n" +
-    "  <span ng-show='showOptions()' >\n" +
-    "    <select ng-model=\"selectedHasMany\" ng-options=\"item[field.identifier] as utils.cutString(item[field.field], 25) for item in relatedResources\">\n" +
-    "    </select>\n" +
-    "    <a class=\"button default tiny\" ng-click=\"addHasManyOption()\">Add</a>\n" +
-    "  </span>\n" +
     "\n" +
-    "  <carnival-field-form-builder state='create' parent-entity='parentEntity' field='field' datas='datas'></carnival-field-form-builder>\n" +
     "  <div ng-switch='showAs()'>\n" +
-    "    <div ng-switch-when='summarized'>\n" +
-    "      <carnival-summarized-items parent-entity='parentEntity' field='field' datas='datas' state='state' editable='editable'></carnival-summarized-items>\n" +
-    "    </div>\n" +
-    "    <ul ng-switch-default class='has-many-field-list'>\n" +
-    "      <li ng-repeat='data in datas'>\n" +
-    "        {{data[field.field]}}\n" +
-    "        <a id='removeHasManyOption' ng-click='remove(data.id);' class=\"button default tiny\">Delete</a>\n" +
-    "        <carnival-field-form-builder data=\"data\" state='edit' parent-entity='parentEntity' field='field'></carnival-field-form-builder>\n" +
+    "    <carnival-summarized-items ng-switch-when='summarized' parent-entity='parentEntity' field='field' datas='datas' state='state' editable='editable'></carnival-summarized-items>\n" +
+    "    <ul class='carnival-tags' ng-switch-default class='has-many-field-list'>\n" +
+    "      <li class='carnival-tag' ng-repeat='data in datas'>\n" +
+    "        <carnival-field-form-builder label='{{data[field.field]}}' data=\"data\" state='edit' parent-entity='parentEntity' field='field'></carnival-field-form-builder>\n" +
+    "        <a id='removeHasManyOption' ng-click='remove(data.id);' class=\"button default tiny remove-tag\">x</a>\n" +
     "      </li>\n" +
     "    </ul>\n" +
+    "  </div>\n" +
+    "\n" +
+    "  <div>\n" +
+    "    <select ng-show='showOptions()' ng-model=\"selectedHasMany\" ng-options=\"item[field.identifier] as utils.cutString(item[field.field], 25) for item in relatedResources\">\n" +
+    "    </select>\n" +
+    "\n" +
+    "    <a ng-show='showOptions()' class=\"button default tiny\" ng-click=\"addHasManyOption()\">Add</a>\n" +
+    "    <carnival-field-form-builder state='create' parent-entity='parentEntity' field='field' datas='datas'></carnival-field-form-builder>\n" +
     "  </div>\n" +
     "\n" +
     "</div>\n" +
@@ -2652,10 +2660,11 @@ angular.module("components/fields/wysiwyg/wysiwyg.html", []).run(["$templateCach
 angular.module("components/form-area/form-area.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/form-area/form-area.html",
     "<div id='form-columns'>\n" +
-    "  <div ng-show='showDisableDiv()' ng-style='getStyle()' class='disable-form'></div>\n" +
-    "  <div id='master-form'  class='form-column'>\n" +
-    "    <h3 ng-if=\"state == 'edit' \">{{ 'EDIT_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
-    "    <h3 ng-if=\"state == 'create' \">{{ 'CREATE_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
+    "  <div id='master-form' class='form-column {{getDisableClass()}}'>\n" +
+    "    <div class='column small-12'>\n" +
+    "      <h3 ng-if=\"state == 'edit' \">{{ 'EDIT_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
+    "      <h3 ng-if=\"state == 'create' \">{{ 'CREATE_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
+    "    </div>\n" +
     "    <carnival-form type='normal' entity=\"entity\" fields=\"fields\" datas=\"datas\" action=\"entity.action\" state=\"{{state}}\" related-resources=\"relatedResources\" editable=\"true\"></carnival-form>\n" +
     "  </div>\n" +
     "</div>\n" +
@@ -2664,7 +2673,7 @@ angular.module("components/form-area/form-area.html", []).run(["$templateCache",
 
 angular.module("components/form-column/form-column.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/form-column/form-column.html",
-    "<div ng-switch='type' ng-style=\"style\" class='children-form form-column animated {{cssClass}} '>\n" +
+    "<div ng-switch='type' ng-style=\"style\" class='children-form form-column {{cssClass}} {{getDisableClass()}}'>\n" +
     "<span class='button' ng-click='close()'>Close</span>\n" +
     "  <carnival-column-form ng-switch-when='form' entity=\"entity\" state=\"{{state}}\"></carnival-column-form>\n" +
     "  <carnival-column-listing ng-switch-when='table' entity=\"entity\" field=\"field\" datas=\"datas\"></carnival-column-listing>\n" +
@@ -2737,23 +2746,25 @@ angular.module("components/form/form.html", []).run(["$templateCache", function(
     "        <carnival-form-fields-next class=\"column small-{{ fields[$index + 1].grid.columnSize }}\" ng-show=\"!fields[$index + 1].grid.newRow && $index + 1 !== fields.length\"></carnival-form-fields-next>\n" +
     "      </div>\n" +
     "    </div>\n" +
-    "    <div>\n" +
+    "\n" +
+    "    <div class='column small-12' id='related-fields' ng-show='showRelatedFields()'>\n" +
+    "      <h4>Relacionamentos</h4>\n" +
+    "      <div ng-if=\"field.fieldFormType == 'related'\" class=\"row\" ng-repeat=\"field in fields\">\n" +
+    "        <label class=\"control-label\">\n" +
+    "          {{ field.label }}\n" +
+    "          <div ng-switch=\"field.type\">\n" +
+    "            <carnival-belongs-to-field ng-switch-when=\"belongsTo\" parent-entity=\"entity\" field=\"field\" datas=\"entity.datas[field.name]\" action=\"entity.action\" related-resources=\"entity.relatedResources[field.name]\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
+    "            <carnival-has-many-field ng-switch-when=\"hasMany\" parent-entity=\"entity\" field=\"field\" datas=\"entity.datas[field.name]\" action=\"entity.action\" related-resources=\"entity.relatedResources[field.name]\" state=\"{{state}}\"></carnival-has-many-field>\n" +
+    "          </div>\n" +
+    "        </label>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class='column small-12'>\n" +
     "      <carnival-button label=\"{{ 'FORM_BUTTON_SAVE' | translate }}\" style=\"success\" size=\"small\" ng-click=\"buttonAction()\"></carnival-button>\n" +
     "    </div>\n" +
     "  </form>\n" +
     "\n" +
-    "  <div id='related-fields' ng-show='showRelatedFields()'>\n" +
-    "    <h4>Relacionados</h4>\n" +
-    "    <div ng-if=\"field.fieldFormType == 'related'\" class=\"row\" ng-repeat=\"field in fields\">\n" +
-    "      <label class=\"col-sm-2 control-label\">\n" +
-    "        {{ field.label }}\n" +
-    "        <div class=\"col-sm-10\" ng-switch=\"field.type\">\n" +
-    "          <carnival-belongs-to-field ng-switch-when=\"belongsTo\" parent-entity=\"entity\" field=\"field\" datas=\"entity.datas[field.name]\" action=\"entity.action\" related-resources=\"entity.relatedResources[field.name]\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
-    "          <carnival-has-many-field ng-switch-when=\"hasMany\" parent-entity=\"entity\" field=\"field\" datas=\"entity.datas[field.name]\" action=\"entity.action\" related-resources=\"entity.relatedResources[field.name]\" state=\"{{state}}\"></carnival-has-many-field>\n" +
-    "        </div>\n" +
-    "      </label>\n" +
-    "    </div>\n" +
-    "  </div>\n" +
     "</div>\n" +
     "");
 }]);

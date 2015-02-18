@@ -1,22 +1,21 @@
 <div>
-  <span ng-show='showOptions()' >
-    <select ng-model="selectedHasMany" ng-options="item[field.identifier] as utils.cutString(item[field.field], 25) for item in relatedResources">
-    </select>
-    <a class="button default tiny" ng-click="addHasManyOption()">Add</a>
-  </span>
 
-  <carnival-field-form-builder state='create' parent-entity='parentEntity' field='field' datas='datas'></carnival-field-form-builder>
   <div ng-switch='showAs()'>
-    <div ng-switch-when='summarized'>
-      <carnival-summarized-items parent-entity='parentEntity' field='field' datas='datas' state='state' editable='editable'></carnival-summarized-items>
-    </div>
-    <ul ng-switch-default class='has-many-field-list'>
-      <li ng-repeat='data in datas'>
-        {{data[field.field]}}
-        <a id='removeHasManyOption' ng-click='remove(data.id);' class="button default tiny">Delete</a>
-        <carnival-field-form-builder data="data" state='edit' parent-entity='parentEntity' field='field'></carnival-field-form-builder>
+    <carnival-summarized-items ng-switch-when='summarized' parent-entity='parentEntity' field='field' datas='datas' state='state' editable='editable'></carnival-summarized-items>
+    <ul class='carnival-tags' ng-switch-default class='has-many-field-list'>
+      <li class='carnival-tag' ng-repeat='data in datas'>
+        <carnival-field-form-builder label='{{data[field.field]}}' data="data" state='edit' parent-entity='parentEntity' field='field'></carnival-field-form-builder>
+        <a id='removeHasManyOption' ng-click='remove(data.id);' class="button default tiny remove-tag">x</a>
       </li>
     </ul>
+  </div>
+
+  <div>
+    <select ng-show='showOptions()' ng-model="selectedHasMany" ng-options="item[field.identifier] as utils.cutString(item[field.field], 25) for item in relatedResources">
+    </select>
+
+    <a ng-show='showOptions()' class="button default tiny" ng-click="addHasManyOption()">Add</a>
+    <carnival-field-form-builder state='create' parent-entity='parentEntity' field='field' datas='datas'></carnival-field-form-builder>
   </div>
 
 </div>

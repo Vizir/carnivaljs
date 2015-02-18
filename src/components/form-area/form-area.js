@@ -15,27 +15,13 @@ angular.module('carnival.components.form-area', [])
     },
     templateUrl: 'components/form-area/form-area.html',
     controller: function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $state) {
-
       FormService.init();
 
-      $scope.showDisableDiv = function(){
-        return FormService.columnsCount() > 1;
-      };
-      var getZIndex = function(){
-        return ((FormService.columnsCount() - 1) * 10) + 3;
-      };
-
-      var getHeight = function(){
-        return (document.querySelector('#master-form').offsetHeight);
-      };
-
-      $scope.getStyle = function(){
-        return {
-          zIndex:  getZIndex(),
-          height: getHeight() + 'px'
-        };
-      };
-
+      $scope.getDisableClass = function(){
+        if(FormService.columnsCount() > 0)
+          return 'disable-form'
+        return '';
+      }
     }
   };
 });

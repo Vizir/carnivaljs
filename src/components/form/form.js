@@ -29,6 +29,8 @@ angular.module('carnival.components.form', [])
       $scope.showRelatedFields = function(){
         if(!$scope.hasRelatedFields())
            return false;
+         if($scope.state === 'create')
+           return false;
          return true;
       };
 
@@ -62,7 +64,7 @@ angular.module('carnival.components.form', [])
           alert('Agora você pode criar os campos relacionados');
         }else{
           if($scope.type === 'column')
-            FormService.closeColumn($scope.entity.name);
+            FormService.closeColumn($scope.type + '-' + $scope.entity.name);
           else if($scope.type === 'nested')
             FormService.closeNested($scope.entity.name);
           else
