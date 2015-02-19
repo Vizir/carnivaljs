@@ -1,12 +1,39 @@
-<form ng-init="nestedFormIndex = {value: 0}" novalidate>
-  <div ng-repeat="field in fields" ng-class="{ row: field.grid.newRow }">
-    <div>
-      <carnival-form-fields class="column small-{{ field.grid.columnSize }}" ng-show="field.grid.newRow"></carnival-form-fields>
-      <carnival-form-fields-next class="column small-{{ fields[$index + 1].grid.columnSize }}" ng-show="!fields[$index + 1].grid.newRow && $index + 1 !== fields.length"></carnival-form-fields-next>
+<div>
+  <ul>
+    <li ng-repeat='error in errors'>
+      {{error}}
+    </li>
+  </ul>
+  <form ng-init="nestedFormIndex = {value: 0}" novalidate>
+    <div ng-if="field.fieldFormType != 'related'" ng-repeat="field in fields" ng-class="{ row: field.grid.newRow }">
+      <div>
+        <carnival-form-fields class="column small-{{ field.grid.columnSize }}" ng-show="field.grid.newRow"></carnival-form-fields>
+        <carnival-form-fields-next class="column small-{{ fields[$index + 1].grid.columnSize }}" ng-show="!fields[$index + 1].grid.newRow && $index + 1 !== fields.length"></carnival-form-fields-next>
+      </div>
     </div>
-  </div>
-  <div>
-    <carnival-button label="{{ 'FORM_BUTTON_SAVE' | translate }}" style="success" size="small" ng-click="buttonAction()"></carnival-button>
-  </div>
-</form>
 
+    <div class='column small-12' id='related-fields' ng-show='showRelatedFields()'>
+      <h4>Relacionamentos</h4>
+
+      <ul class='tabs'>
+        <li class='tab-title' ng-if="field.fieldFormType == 'related'" class="row" ng-repeat="field in fields">
+          <a ng-init='initSelectedTab($index)' ng-click='selectTab($index)'>
+            {{ field.label }}
+          </a>
+        </li>
+      </ul>
+      <div ng-if="field.fieldFormType == 'related'" class="row" ng-repeat="field in fields">
+        <div ng-show='selectedTab == $index' id="panel{{$index}}" ng-switch="field.type">
+          <h4>{{field.label}}</h4>
+          <carnival-belongs-to-field ng-switch-when="belongsTo" parent-entity="entity" field="field" datas="entity.datas[field.name]" action="entity.action" related-resources="entity.relatedResources[field.name]" state="{{state}}"></carnival-belongs-to-field>
+          <carnival-has-many-field ng-switch-when="hasMany" parent-entity="entity" field="field" datas="entity.datas[field.name]" action="entity.action" related-resources="entity.relatedResources[field.name]" state="{{state}}"></carnival-has-many-field>
+        </div>
+      </div>
+    </div>
+
+    <div class='column small-12'>
+      <carnival-button label="{{ 'FORM_BUTTON_SAVE' | translate }}" style="success" size="small" ng-click="buttonAction()"></carnival-button>
+    </div>
+  </form>
+
+</div>

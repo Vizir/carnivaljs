@@ -32,6 +32,9 @@ SpecHelper.catConfiguration = {
           endpoint: 'owners',
           entityName: 'owners',
           views: {
+            index: {
+              enable: false
+            },
             edit: {
               enable: true,
               nested: true

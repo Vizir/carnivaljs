@@ -1,0 +1,25 @@
+<div class="listing">
+  <carnival-field-form-builder state='create' parent-entity='entity.parentEntity' field='field'></carnival-field-form-builder>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th ng-repeat="field in getListFields()">
+          {{ field.label }}
+          <carnival-order-ctrl field="field.name"></carnival-order-ctrl>
+        </th>
+        <th>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="data in datas">
+        <td ng-repeat="field in getListFields()">
+          <carnival-listing-field item="data" field="field"></carnival-listing-field>
+        </td>
+        <td>
+          <carnival-field-form-builder data="data" state='edit' parent-entity='entity.parentEntity' field='field'></carnival-field-form-builder>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

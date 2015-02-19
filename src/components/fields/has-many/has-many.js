@@ -7,16 +7,24 @@ angular.module('carnival.components.fields.hasMany', [])
       datas: '=',
       field: '=',
       state: '@',
-      entity: '=',
-      nestedFormIndex: '=',
+      parentEntity: '=',
       relatedResources: '='
     },
     templateUrl: 'components/fields/has-many/has-many.html',
-    controller: function ($rootScope, $scope, utils, Configuration, $compile, $element, $document, FormService) {
+    controller: function ($rootScope, $scope, utils, Configuration, $compile, $element, $document, $filter) {
       $scope.utils = utils;
 
-      $scope.canShow = function(){
-        return FormService.canShowThisHasManyField($scope.entity, $scope.state, $scope.field);
+      $scope.showOptions = function(){
+        var fieldEntity = Configuration.getEntity($scope.field.entityName);
+        var relationField = fieldEntity.getFieldByEntityName($scope.parentEntity.name);
+        if(relationField.type === 'belongsTo' && !$scope.field.views[$scope.state].showOptions)
+          return false;
+
+        return true;
+      };
+
+      $scope.showAs = function(){
+        return $scope.field.views[$scope.state].nested.showItemsAs;
       };
 
       var getItemIndex = function(id, items){
@@ -28,7 +36,7 @@ angular.module('carnival.components.fields.hasMany', [])
       };
 
       var getSelectedItem = function(){
-        var items = $scope.relatedResources[$scope.field.name];
+        var items = $scope.relatedResources;
         var index = getItemIndex($scope.selectedHasMany, items);
         if(index >= 0)
           return items[index];
@@ -36,13 +44,35 @@ angular.module('carnival.components.fields.hasMany', [])
 
       $scope.addHasManyOption = function(){
         var selectedItem = getSelectedItem();
-        if(!$scope.datas[$scope.field.name])
-          $scope.datas[$scope.field.name] = [];
-        if(selectedItem){
-          $scope.datas[$scope.field.name].push(selectedItem);
+        if(!$scope.datas)
+          $scope.datas = [];
+        if(selectedItem)
+          $scope.datas.push(selectedItem);
+      };
+
+      var deleteIfNeeded = function(id){
+        if($scope.field.views[$scope.state].enableDelete){
+          var fieldEntity = Configuration.getEntity($scope.field.entityName);
+          fieldEntity.delete(id)
+          .success(function () {
+            var message = $filter('translate')('DELETED_SUCCESS_MESSAGE');
+            new Notification(message, 'warning');
+          })
+          .error(function (data) {
+            new Notification(data, 'danger');
+          });
         }
       };
 
+      $scope.remove = function(id){
+        var items = $scope.datas;
+        var index = getItemIndex(id, items);
+        if(index < 0)
+          return;
+        items.splice(index, 1);
+
+        deleteIfNeeded(id);
+      };
     }
   };
 });

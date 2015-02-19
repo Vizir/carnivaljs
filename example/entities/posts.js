@@ -79,7 +79,9 @@ app.config(function (ConfigurationProvider) {
         label: 'Content',
         views: {
           index: {
-            enable: false
+            enable: true,
+            searchable: false,
+            sortable: false
           },
           create: {
             enable: true
@@ -97,7 +99,8 @@ app.config(function (ConfigurationProvider) {
         label: 'Published',
         views: {
           index: {
-            enable: false
+            enable: true,
+            searchable: true
           },
           create: {
             enable: true
@@ -209,12 +212,18 @@ app.config(function (ConfigurationProvider) {
           create: {
             enable: true,
             enableDelete: true,
-            nested: true
+            nested: {
+              type: 'column',
+              showItemsAs: 'summarized'
+            }
           },
           edit: {
             enable: true,
             enableDelete: true,
-            nested: true
+            nested: {
+              type: 'column',
+              showItemsAs: 'summarized'
+            }
           },
           show: {
             enable: true

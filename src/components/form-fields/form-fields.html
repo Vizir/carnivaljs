@@ -1,5 +1,5 @@
 <div>
-  <label ng-if='canShow(field)'>
+  <label>
     {{ field.label }}
   </label>
   <div ng-switch="field.type">
@@ -12,8 +12,7 @@
     <carnival-file-field ng-switch-when="file" data="datas[field.name]" field="field"></carnival-file-field>
     <carnival-enum-field ng-switch-when="enum" data="datas[field.name]" field="field"></carnival-enum-field>
     <carnival-currency-field ng-switch-when="currency" data="datas[field.name]" field="field"></carnival-currency-field>
-    <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when="belongsTo" nested-form-index="nestedFormIndex" entity="entity" field="field" datas="entity.datas" action="entity.action" related-resources="entity.relatedResources" state="{{state}}"></carnival-belongs-to-field>
-    <carnival-has-many-field ng-if='canShow(field)' ng-switch-when="hasMany" entity="entity" nested-form-index="nestedFormIndex" field="field" datas="entity.datas" action="entity.action" related-resources="entity.relatedResources" state="{{state}}"></carnival-has-many-field>
+    <carnival-belongs-to-field ng-switch-when="belongsTo" parent-entity="entity" field="field" datas="entity.datas[field.foreignKey]" action="entity.action" related-resources="entity.relatedResources[field.endpoint]" state="{{state}}"></carnival-belongs-to-field>
     <carnival-text-field ng-switch-default data="datas[field.name]" label="field.label"></carnival-text-field>
   </div>
 </div>

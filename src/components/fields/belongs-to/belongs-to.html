@@ -1,5 +1,5 @@
 <div>
-  <carnival-select-field data="datas[field.foreignKey]" field="field.field" identifier="field.identifier" items="relatedResources[field.endpoint]"> 
+  <carnival-select-field data="datas" field="field.field" identifier="field.identifier" items="relatedResources">
   </carnival-select-field>
-  <carnival-nested-form-area state="{{state}}" entity="entity" field="field" datas="datas" relation-type="belongsTo"></carnival-nested-form-area>
+  <carnival-field-form-builder state='create' parent-entity='parentEntity' field='field'></carnival-field-form-builder>
 </div>

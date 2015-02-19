@@ -31,9 +31,11 @@ describe('FormService', function(){
   });
 
   describe('#openNested', function(){
-    it('should create a nestedForm with saved == false', function(){
-      FormService.openNested('newFormId');
-      expect(FormService.nesteds.newFormId.saved).to.be.equal(false);
+    it('should create a nestedForm', function(done){
+      sinon.stub(FormService, '_addNested', function(containerId, scope, directive){
+        done();
+      });
+      FormService.openNested('edit', 'containerId', {entity: {name: 'Teste'}});
     });
   });
 
@@ -47,92 +49,16 @@ describe('FormService', function(){
     });
 
     describe('when is open', function(){
-      it('should return true', function(){
+      it('should return true', function(done){
         FormService.init('entityName');
-        FormService.openNested('nestedName');
-        var result = FormService.isNestedOpen('nestedName');
-        expect(result).to.be.equal(true);
-      });
-    });
-  });
-
-  describe('#saveNested', function(){
-    it('should update a nestedForm with saved == true', function(){
-      FormService.openNested('newFormId');
-      FormService.saveNested('newFormId');
-      expect(FormService.nesteds.newFormId.saved).to.be.equal(true);
-    });
-  });
-
-  describe('#hasUnsavedNested', function(){
-
-    describe('has Unsaved Nested', function(){
-      it('should respond true', function(){
-        FormService.openNested('newFormId');
-        var result = FormService.hasUnsavedNested();
-        expect(result).to.be.equal(true);
-      });
-    });
-
-    describe('not has Unsaved Nested', function(){
-      it('should respond false', function(){
-        FormService.openNested('newFormId');
-        FormService.saveNested('newFormId');
-        var result = FormService.hasUnsavedNested();
-        expect(result).to.be.equal(false);
-      });
-    });
-  });
-
-  describe('#canShowThisField', function(){
-    describe('when field is not a relation', function(){
-      var formEntity = {};
-      var state = 'create';
-      var field = {type: 'string'};
-
-      it('should return true', function(){
-        var result = FormService.canShowThisField(formEntity, state, field);
-        expect(result).to.be.equal(true);
-      });
-    });
-
-    describe('when is a nested Form', function(){
-      describe('when field entity is the same as the parentEntity', function(){
-        var formEntity = {parentEntity:{name: 'nameOfEntity'}};
-        var state = 'create';
-        var field = {type: 'hasMany', entityName: 'nameOfEntity'};
-        it('should respond false', function(){
-          var result = FormService.canShowThisField(formEntity, state, field);
-          expect(result).to.be.equal(false);
+        sinon.stub(FormService, '_addNested', function(containerId, scope, directive){
+          var result = FormService.isNestedOpen('Teste');
+          expect(result).to.be.equal(true);
+          done();
         });
+        FormService.openNested('edit', 'containerId', {entity: {name: 'Teste'}});
       });
     });
-
-    describe('when is a create', function(){
-      describe('when the relation are hasMany <=> belongsTo', function(){
-        var formEntity = {};
-        var state = 'create';
-        var field = {type: 'hasMany', views: {create: {showOptions: false}}, entityName: 'nameOfEntity'};
-
-        var relationField = {
-            getFieldByEntityName: function(){
-              return {
-                type: 'belongsTo'
-              };
-            }
-          };
-          beforeEach(function(){
-            sinon.stub(Configuration, 'getEntity', function(){
-              return relationField;
-            });
-          });
-
-        it('should return false', function(){
-          var result = FormService.canShowThisField(formEntity, state, field);
-          expect(result).to.be.equal(false);
-        });
-      });
-    });
-
   });
+
 });

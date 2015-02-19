@@ -6,6 +6,7 @@ angular.module('carnival', [
   'ui.router',
   'carnival.components',
   'datePicker',
+  'duScroll',
   'ngWig',
   'angular-loading-bar'
 ])
@@ -62,13 +63,74 @@ angular.module('carnival.components.button', [])
   };
 });
 
+angular.module('carnival.components.column-form', [])
+.directive('carnivalColumnForm', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      entity: '=',
+      state: '@state',
+      type: '@'
+    },
+    templateUrl: 'components/column-form/column-form.html',
+    controller: ["$scope", function ($scope) {
+
+
+    }]
+  };
+});
+
+angular.module('carnival.components.column-listing', [])
+.directive('carnivalColumnListing', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      datas: '=',
+      entity: '=',
+      field: '=',
+      identifier: '='
+    },
+    templateUrl: 'components/column-listing/column-listing.html',
+    controller: ["$scope", "FormService", "Configuration", "EntityResources", function($scope, FormService, Configuration, EntityResources){
+
+      $scope.cssClass = 'fadeInRight';
+      $scope.style = {
+        zIndex: (FormService.columnsCount() * 10) + 2,
+        left: (FormService.columnsCount() * 20) + 'px',
+        top: (FormService.columnsCount() * 30) + 'px',
+        padding: '10px'
+      };
+
+      $scope.getListFields = function(){
+        var fields = [];
+
+        for(var i = 0; i < $scope.entity.fields.length; i++){
+          var f = $scope.entity.fields[i];
+          if(f.type !== 'belongsTo' && f.type !== 'hasMany')
+            fields.push(f);
+        }
+
+        return fields;
+      };
+    }]
+  };
+});
+
 angular.module('carnival.components', [
   'carnival.components.button',
+  'carnival.components.form-column',
+  'carnival.components.has-many-table',
+  'carnival.components.column-form',
+  'carnival.components.column-listing',
+  'carnival.components.form-area',
   'carnival.components.form',
   'carnival.components.form-fields',
+  'carnival.components.field-form-builder',
   'carnival.components.form-fields-next',
   'carnival.components.nested-form',
-  'carnival.components.nested-form-area',
+  'carnival.components.summarized-items',
   'carnival.components.delete-button',
   'carnival.components.listing',
   'carnival.components.listingfieldbelongsto',
@@ -99,20 +161,107 @@ angular.module('carnival.components.delete-button', [])
       itemId: '='
     },
     templateUrl: 'components/delete-button/delete-button.html',
-    controller: ["$scope", function ($scope) {
+    controller: ["$scope", "$filter", function ($scope, $filter) {
 
-      $scope.isDeleting = false;
-
-      $scope.start = function () {
+      $scope.delete = function () {
+        var translate = $filter('translate');
+        swal({
+              title: translate('ARE_YOU_SURE_DELETE'),
+              showCancelButton: true,
+              confirmButtonText: translate('YES'),
+              cancelButtonText: translate('NO'),
+              closeOnConfirm: true
+          },
+          function(){
+            $scope.action($scope.itemId);
+          }
+        );
         $scope.isDeleting = true;
       };
 
-      $scope.cancel = function () {
-        $scope.isDeleting = false;
+    }]
+  };
+});
+
+angular.module('carnival.components.field-form-builder', [])
+.directive('carnivalFieldFormBuilder', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      parentEntity: '=',
+      field: '=',
+      data: '=',
+      state: '@',
+      label: '@'
+    },
+    templateUrl: 'components/field-form-builder/field-form-builder.html',
+    controller: ["$rootScope", "$scope", "$timeout", "utils", "$element", "$compile", "FormService", "Configuration", "EntityResources", "Notification", function ($rootScope, $scope, $timeout, utils, $element,  $compile, FormService, Configuration, EntityResources, Notification) {
+
+      var getContainerId = function(state){
+        var nestedType = $scope.field.views[state].nested;
+        if(nestedType.type === 'column'){
+          return '#form-columns';
+        }else{
+          var prefix = '';
+          if(state === 'edit' )
+            prefix = '_' + $scope.data[$scope.field.identifier];
+          return '#'+state+'_nested_'+ $scope.field.entityName +  prefix;
+        }
       };
 
-      $scope.confirm = function () {
-        $scope.action($scope.itemId);
+      var resolveForeignKey = function(entity){
+        if(!$scope.parentEntity) return;
+
+        var f = entity.model.getFieldByEntityName($scope.parentEntity.name);
+
+        if(!f) return;
+
+        if(f.type === 'hasMany' || f.type === 'belongsTo'){
+          entity.datas[f.foreignKey] = $scope.parentEntity.datas[$scope.parentEntity.identifier];
+        }
+      };
+
+      $scope._openForm = function(entity, state){
+        var containerId = getContainerId(state);
+        entity.datas = $scope.data || {};
+
+        resolveForeignKey(entity);
+
+        var formScope = $scope.$new();
+        formScope.entity = entity;
+        formScope.state = state;
+
+        var nestedType = $scope.field.views[state].nested;
+        if(nestedType.type === 'column'){
+          FormService.openColumn(state, containerId, formScope);
+        }else{
+          FormService.openNested(state, containerId, formScope);
+        }
+      };
+
+      $scope.getButtonLabel = function(){
+        if($scope.label)
+          return $scope.label;
+
+        if($scope.state === 'edit')
+          return 'Edit';
+      };
+
+
+
+      $scope.openWithData = function(){
+        var state = 'edit';
+        var entity = EntityResources.prepareForEditState($scope.field.entityName, $scope.parentEntity);
+        var identifier = entity.identifier;
+        entity[identifier] = $scope.data[identifier];
+        $scope._openForm(entity, 'edit');
+      };
+
+      $scope.open = function(){
+        var state = 'create';
+        var entity = EntityResources.prepareForCreateState($scope.field.entityName, $scope.parentEntity);
+        $scope._openForm(entity, 'create');
       };
     }]
   };
@@ -126,9 +275,8 @@ angular.module('carnival.components.fields.belongsTo', [])
     scope: {
       datas: '=',
       field: '=',
-      entity: '=',
+      parentEntity: '=',
       state: '@',
-      nestedFormIndex: '=',
       relatedResources: '='
     },
     templateUrl: 'components/fields/belongs-to/belongs-to.html'
@@ -299,16 +447,24 @@ angular.module('carnival.components.fields.hasMany', [])
       datas: '=',
       field: '=',
       state: '@',
-      entity: '=',
-      nestedFormIndex: '=',
+      parentEntity: '=',
       relatedResources: '='
     },
     templateUrl: 'components/fields/has-many/has-many.html',
-    controller: ["$rootScope", "$scope", "utils", "Configuration", "$compile", "$element", "$document", "FormService", function ($rootScope, $scope, utils, Configuration, $compile, $element, $document, FormService) {
+    controller: ["$rootScope", "$scope", "utils", "Configuration", "$compile", "$element", "$document", "$filter", function ($rootScope, $scope, utils, Configuration, $compile, $element, $document, $filter) {
       $scope.utils = utils;
 
-      $scope.canShow = function(){
-        return FormService.canShowThisHasManyField($scope.entity, $scope.state, $scope.field);
+      $scope.showOptions = function(){
+        var fieldEntity = Configuration.getEntity($scope.field.entityName);
+        var relationField = fieldEntity.getFieldByEntityName($scope.parentEntity.name);
+        if(relationField.type === 'belongsTo' && !$scope.field.views[$scope.state].showOptions)
+          return false;
+
+        return true;
+      };
+
+      $scope.showAs = function(){
+        return $scope.field.views[$scope.state].nested.showItemsAs;
       };
 
       var getItemIndex = function(id, items){
@@ -320,7 +476,7 @@ angular.module('carnival.components.fields.hasMany', [])
       };
 
       var getSelectedItem = function(){
-        var items = $scope.relatedResources[$scope.field.name];
+        var items = $scope.relatedResources;
         var index = getItemIndex($scope.selectedHasMany, items);
         if(index >= 0)
           return items[index];
@@ -328,13 +484,35 @@ angular.module('carnival.components.fields.hasMany', [])
 
       $scope.addHasManyOption = function(){
         var selectedItem = getSelectedItem();
-        if(!$scope.datas[$scope.field.name])
-          $scope.datas[$scope.field.name] = [];
-        if(selectedItem){
-          $scope.datas[$scope.field.name].push(selectedItem);
+        if(!$scope.datas)
+          $scope.datas = [];
+        if(selectedItem)
+          $scope.datas.push(selectedItem);
+      };
+
+      var deleteIfNeeded = function(id){
+        if($scope.field.views[$scope.state].enableDelete){
+          var fieldEntity = Configuration.getEntity($scope.field.entityName);
+          fieldEntity.delete(id)
+          .success(function () {
+            var message = $filter('translate')('DELETED_SUCCESS_MESSAGE');
+            new Notification(message, 'warning');
+          })
+          .error(function (data) {
+            new Notification(data, 'danger');
+          });
         }
       };
 
+      $scope.remove = function(id){
+        var items = $scope.datas;
+        var index = getItemIndex(id, items);
+        if(index < 0)
+          return;
+        items.splice(index, 1);
+
+        deleteIfNeeded(id);
+      };
     }]
   };
 });
@@ -409,6 +587,94 @@ angular.module('carnival.components.fields.wysiwyg', [])
   };
 });
 
+angular.module('carnival.components.form-area', [])
+.directive('carnivalFormArea', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      entity: '=',
+      fields: '=',
+      action: '=',
+      state: '@state',
+      type: '@',
+      datas: '=',
+      relatedResources: '=',
+      editable: '='
+    },
+    templateUrl: 'components/form-area/form-area.html',
+    controller: ["$rootScope", "$scope", "FormService", function ($rootScope, $scope, FormService) {
+      FormService.init();
+      $scope.getDisableClass = function(){
+        if(FormService.columnsCount() > 0)
+          return 'disable-form';
+        return '';
+      };
+    }]
+  };
+});
+
+angular.module('carnival.components.form-column', [])
+.directive('carnivalFormColumn', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      entity: '=',
+      field: '=',
+      datas: '=',
+      state: '@state',
+      type: '@',
+      index: '@'
+    },
+    templateUrl: 'components/form-column/form-column.html',
+    controller: ["$rootScope", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", "$timeout", function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $timeout) {
+
+      var getName = function(){
+        return $scope.type + '-' + $scope.entity.name;
+      };
+
+      $timeout(function(){
+        $scope.cssClass = 'fadeInRight';
+      }, 100);
+      $scope.style = {
+      };
+
+      $scope.getDisableClass = function(){
+        if(FormService.columnsCount() > parseInt($scope.index) + 1){
+          return 'disable-form';
+        }
+        return '';
+      };
+
+      $scope.remove = function(){
+        $scope.cssClass = 'fadeOutRight';
+
+        $timeout(function(){
+          $element.remove();
+        }, 1000);
+      };
+
+      $scope.isClosed = function(){
+        return !FormService.columns[getName()];
+      };
+
+      $scope.close = function(){
+        FormService.closeColumn(getName());
+      };
+
+      $scope.$watch('isClosed()', function(newValue, oldValue){
+        if(newValue === oldValue)
+            return;
+        if(newValue){
+          $scope.remove();
+        }
+      });
+
+    }]
+  };
+});
+
 angular.module('carnival.components.form-fields-next', [])
 .directive('carnivalFormFieldsNext', function () {
   return {
@@ -442,59 +708,87 @@ angular.module('carnival.components.form', [])
       relatedResources: '='
     },
     templateUrl: 'components/form/form.html',
-    controller: ["$rootScope", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater) {
-
+    controller: ["Notification", "$document", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", "$state", "$filter", function (Notification, $document, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $state, $filter) {
       $scope.utils = utils;
 
-      if($scope.type !== 'nested'){
-        FormService.init();
-      }
-
-      $scope.canShow = function(field){
-       return FormService.canShowThisField($scope.entity, $scope.state, field);
+      $scope.hasRelatedFields = function(){
+        for(var i = 0; i < $scope.fields.length; i++){
+          var field = $scope.fields[i];
+          if(field.fieldFormType !== 'related')
+            continue;
+          return true;
+        }
+        return false;
       };
 
-      var entityHasNesteds = function(){
-        return ($scope.entity.nestedForms && Object.keys($scope.entity.nestedForms).length > 0);
+      $scope.showRelatedFields = function(){
+        if(!$scope.hasRelatedFields())
+           return false;
+         if($scope.state === 'create')
+           return false;
+         return true;
       };
 
-      var updateEntity = function(){
-        var parentEntity = $scope.entity.parentEntity;
-        $scope.entity = EntityResources.prepareForEditState($scope.entity.name);
-        $scope.entity.parentEntity = parentEntity;
+      $scope.initSelectedTab = function(index){
+        if(!$scope.selectedTab)
+          $scope.selectedTab = index;
+      };
+
+      $scope.selectTab = function(index){
+        $scope.selectedTab = index;
       };
 
       var updateEntityData = function(data){
         var parentEntity = $scope.entity.parentEntity;
-        var fieldToUpdate = parentEntity.model.getFieldByEntityName($scope.entity.name);
-        EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
         var identifier = $scope.entity.identifier;
         $scope.entity[identifier] = data[identifier];
-        $scope.state = 'edit';
         $scope.entity.datas = data;
+        if(!parentEntity)
+          return;
+        var fieldToUpdate = parentEntity.model.getFieldByEntityName($scope.entity.name);
+        EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
       };
 
-      var saveCallbackForNested = function(error, data){
-        if(!error){
-          if($scope.state === 'edit' || !entityHasNesteds())
+      var updateEntity = function(data){
+        var parentEntity = $scope.entity.parentEntity;
+        $scope.entity = EntityResources.prepareForEditState($scope.entity.name, parentEntity);
+        $scope.entity.parentEntity = parentEntity;
+        updateEntityData(data);
+      };
+
+      var successCallback = function(data){
+        $scope.errors = [];
+        updateEntity(data);
+        if($scope.hasRelatedFields() && $scope.state === 'create'){
+          $scope.state = 'edit';
+          var message = $filter('translate')('CREATE_RELATIONS_MESSAGE');
+          message = $scope.entity.label + message;
+          $document.scrollTop(window.innerHeight, 1000).then(function(){
+          });
+          new Notification(message, 'success');
+        }else{
+          if($scope.type === 'column')
+            FormService.closeColumn($scope.type + '-' + $scope.entity.name);
+          else if($scope.type === 'nested')
             FormService.closeNested($scope.entity.name);
-          updateEntity();
-          updateEntityData(data);
+          else
+            $state.go('main.list', { entity: $scope.entity.name});
+        }
+      };
+
+      var saveCallback = function(error, data){
+        if(!error){
+          successCallback(data);
+        }else{
+          if(angular.isArray(data))
+            $scope.errors = data;
+          else
+            $scope.errors = [data];
         }
       };
 
       $scope.buttonAction = function(){
-        var callbackFunction = null;
-        if($scope.type === 'nested'){
-          FormService.saveNested($scope.entity.name);
-          callbackFunction = saveCallbackForNested;
-        }else{
-          if(FormService.hasUnsavedNested()){
-            console.log('Não é possivel salvar o form pois existem nested não salvos');
-            return;
-          }
-        }
-
+        var callbackFunction = saveCallback;
         $scope.action.click(callbackFunction);
       };
     }]
@@ -522,6 +816,37 @@ angular.module('carnival.components.gallery', [])
       };
     }],
     templateUrl: 'components/gallery/gallery.html'
+  };
+});
+
+angular.module('carnival.components.has-many-table', [])
+.directive('carnivalHasManyTable', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      parentEntity: '=',
+      field: '=',
+      datas: '=',
+      state: '@',
+      editable: '='
+    },
+    templateUrl: 'components/has-many-table/has-many-table.html',
+    controller: ["$rootScope", "$scope", "$compile", "utils", "$element", "FormService", "Configuration", "EntityResources", function ($rootScope, $scope, $compile, utils, $element, FormService, Configuration, EntityResources) {
+      $scope.entity = EntityResources.prepareForListState($scope.field.name, $scope.parentEntity);
+
+      $scope.getListFields = function(){
+        var fields = [];
+
+        for(var i = 0; i < $scope.entity.fields.length; i++){
+          var f = $scope.entity.fields[i];
+          if(f.type !== 'belongsTo' && f.type !== 'hasMany')
+            fields.push(f);
+        }
+
+        return fields;
+      };
+    }]
   };
 });
 
@@ -780,104 +1105,6 @@ angular.module('carnival.components.navbar', [])
   };
 });
 
-angular.module('carnival.components.nested-form-area', [])
-.directive('carnivalNestedFormArea', function () {
-  return {
-    restrict: 'E',
-    replace: true,
-    scope: {
-      entity: '=',
-      field: '=',
-      state: '@',
-      datas: '=',
-      relationType: '@',
-      editable: '='
-    },
-    templateUrl: 'components/nested-form/nested-form-area.html',
-    controller: ["$rootScope", "$scope", "$timeout", "utils", "$element", "$compile", "FormService", "Configuration", "EntityResources", "Notification", function ($rootScope, $scope, $timeout, utils, $element,  $compile, FormService, Configuration, EntityResources, Notification) {
-
-      $scope.canOpenNestedForm = function(){
-        if(!$scope.entity.nestedForms[$scope.field.endpoint])
-          return false;
-
-        if($scope.state === 'create')
-          return false;
-
-        return true;
-      };
-
-      $scope.openNestedForm = function(nestedEntity, data, state, containerId){
-        if(FormService.isNestedOpen($scope.field.entityName)){
-          FormService.closeNested($scope.field.entityName);
-          $timeout(function(){
-            $scope.openNestedForm(nestedEntity, data, state, containerId);
-          }, 200);
-          return;
-        }
-        FormService.openNested($scope.field.entityName);
-        nestedEntity.parentEntity = $scope.entity;
-        $scope.nestedEntity = nestedEntity;
-        nestedEntity.datas = data;
-        var directive = '<carnival-nested-form state="'+state+'" type="nested" entity="nestedEntity"></carnival-nested-form></div>';
-        var newElement = $compile(directive)($scope);
-        var nestedDiv = document.querySelector(containerId);
-        angular.element(nestedDiv).append(newElement);
-      };
-
-      $scope.openWithData = function(data){
-        var containerId = '#edit_nested_'+ $scope.field.entityName + '_' + data[$scope.field.identifier];
-        var state = 'edit';
-        var nestedEntity = EntityResources.prepareForEditState($scope.field.entityName);
-        var identifier = nestedEntity.identifier;
-        nestedEntity[identifier] = data[identifier];
-        $scope.openNestedForm(nestedEntity, data, state, containerId);
-      };
-
-      $scope.open = function(){
-        var containerId = '#create_nested_'+ $scope.field.entityName;
-        var state = 'create';
-        var nestedEntity = $scope.entity.nestedForms[$scope.field.endpoint];
-        $scope.openNestedForm(nestedEntity, {}, 'create', containerId);
-      };
-
-      $scope.isHasMany = function(){
-        return $scope.relationType === 'hasMany';
-      };
-
-      var getItemIndex = function(id, items){
-        for(var i = 0; i < items.length; i++){
-          if(items[i].id === id)
-            return i;
-        }
-        return -1;
-      };
-
-      var deleteIfNeeded = function(id){
-        if($scope.field.views[$scope.state].enableDelete){
-          var fieldEntity = Configuration.getEntity($scope.field.entityName);
-          fieldEntity.delete(id)
-          .success(function () {
-            new Notification('Item deleted with success!', 'warning');
-          })
-          .error(function (data) {
-            new Notification(data, 'danger');
-          });
-        }
-      };
-
-      $scope.remove = function(id){
-        var items = $scope.datas[$scope.field.name];
-        var index = getItemIndex(id, items);
-        if(index < 0)
-          return;
-        items.splice(index, 1);
-
-        deleteIfNeeded(id);
-      };
-    }]
-  };
-});
-
 angular.module('carnival.components.nested-form', [])
 .directive('carnivalNestedForm', function () {
   return {
@@ -1036,6 +1263,30 @@ angular.module('carnival.components.search-controller', [])
   };
 });
 
+angular.module('carnival.components.summarized-items', [])
+.directive('carnivalSummarizedItems', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      parentEntity: '=',
+      field: '=',
+      datas: '=',
+      state: '@',
+      editable: '='
+    },
+    templateUrl: 'components/summarized-items/summarized-items.html',
+    controller: ["$rootScope", "$scope", "$compile", "utils", "$element", "FormService", "Configuration", "EntityResources", function ($rootScope, $scope, $compile, utils, $element, FormService, Configuration, EntityResources) {
+      $scope.openItems = function(){
+        var nestedEntity = EntityResources.prepareForListState($scope.field.name, $scope.parentEntity);
+        var listScope = $scope.$new();
+        listScope.entity = nestedEntity;
+        FormService.openColumnListing('list', '#form-columns', listScope);
+      };
+    }]
+  };
+});
+
 angular.module('carnival.components.uploader', [])
 .directive('carnivalUploader', function () {
   return {
@@ -1046,7 +1297,7 @@ angular.module('carnival.components.uploader', [])
       fileUrl: '='
     },
     templateUrl: 'components/uploader/uploader.html',
-    controller: ["$scope", "$http", "Uploader", "Notification", "Configuration", function ($scope, $http, Uploader, Notification, Configuration) {
+    controller: ["$scope", "$http", "Uploader", "Notification", "Configuration", "$filter", function ($scope, $http, Uploader, Notification, Configuration, $filter) {
 
       var getRequestUrl = function () {
         if ($scope.uploader.endpoint && $scope.uploader.endpointUrl) {
@@ -1062,7 +1313,8 @@ angular.module('carnival.components.uploader', [])
 
         Uploader.upload(getRequestUrl(), $scope.files[0])
         .success(function (data) {
-          new Notification('File uploaded with success', 'success');
+          var message = $filter('translate')('UPLOADED_SUCCESS_MESSAGE');
+          new Notification(message, 'warning');
           $scope.fileUrl = $scope.uploader.getUrl(data);
         })
         .error(function (error) {
@@ -1126,7 +1378,7 @@ angular.module('carnival')
     addState: function (state){
       extraStates.push(state);
     },
-   
+
     $get: function () {
       return {
 
@@ -1338,27 +1590,16 @@ angular.module('carnival')
 });
 
 angular.module('carnival')
-.service('ActionFactory', ["Notification", "$state", "ParametersParser", "EntityUpdater", function (Notification, $state, ParametersParser, EntityUpdater) {
+.service('ActionFactory', ["Notification", "$state", "ParametersParser", "EntityUpdater", "$filter", function (Notification, $state, ParametersParser, EntityUpdater, $filter) {
 
   this.buildCreateFunction = function(entity, hasNestedForm, isToNestedForm){
     return function (callback) {
       entity.model.create(ParametersParser.parse(entity.datas, entity))
       .success(function (data, status, headers, config) {
-        if(callback){
+        if(callback)
           callback(false, data);
-        }else{
-          if(isToNestedForm){
-
-          }
-          else{
-            new Notification('Item created with success!', 'success');
-            if(hasNestedForm)
-              $state.go('main.edit', { entity: entity.model.name, id: data.id });
-            else
-              $state.go('main.list', { entity: entity.model.name });
-          }
-        }
-
+        else
+          $state.go('main.list', { entity: entity.model.name });
       })
       .error(function (data) {
         new Notification(data, 'danger');
@@ -1375,7 +1616,8 @@ angular.module('carnival')
         if(callback){
           callback(false, entity.datas);
         }else{
-          new Notification('Modifications saved with success!', 'success');
+          var message = $filter('translate')('UPDATED_SUCCESS_MESSAGE');
+          new Notification(message, 'warning');
           $state.go('main.show', { entity: entity.model.name, id: entity.id });
         }
       })
@@ -1409,7 +1651,8 @@ angular.module('carnival')
     var onDelete = function (id) {
       entity.model.delete(id)
       .success(function () {
-        new Notification('Item deleted with success!', 'warning');
+        var message = $filter('translate')('DELETED_SUCCESS_MESSAGE');
+        new Notification(message, 'warning');
         $state.reload();
       })
       .error(function (data) {
@@ -1478,6 +1721,7 @@ angular.module('carnival')
         showOptions: view_options.showOptions || false,
         enableDelete: view_options.enableDelete || false,
         nested: view_options.nested || false,
+        showAs: view_options.showAs,
         sortable: typeof view_options.sortable === 'boolean' ? view_options.sortable : true
       };
     });
@@ -1492,6 +1736,7 @@ angular.module('carnival')
   var resolveForeignKey = function(field){
     if(field.type !== 'belongsTo' && field.type !== 'hasMany')
       return;
+
     if(field.foreignKey)
       return field.foreignKey;
     if(!field.identifier)//TODO Is impossible to discover tthe foreignKey name without identifier
@@ -1509,6 +1754,19 @@ angular.module('carnival')
       newRow: newRow,
       columnSize: columnSize
     };
+  };
+  var hasNested = function(field, viewName){
+    if(!field.views) return false;
+    if(!field.views[viewName]) return false;
+    if(!field.views[viewName].nested) return false;
+    return true;
+  };
+
+  var resolveFieldFormType = function(field){
+    if(field.type === 'hasMany')
+      return 'related';
+
+    return 'simple';
   };
 
   this.build = function(field_name, fieldParams){
@@ -1529,7 +1787,8 @@ angular.module('carnival')
       views:      buildViews(fieldParams.views)
     };
 
-     field.foreignKey = resolveForeignKey(field);
+    field.fieldFormType = resolveFieldFormType(field);
+    field.foreignKey = resolveForeignKey(field);
 
     return field;
   };
@@ -1562,18 +1821,34 @@ angular.module('carnival')
     return (type === 'belongsTo' || type === 'hasMany');
   };
 
+  var checkIfFieldAreParent = function(parentEntity, field){
+    if(!parentEntity)
+      return false;
+
+    if(field.entityName === parentEntity.name)
+        return true;
+
+    return checkIfFieldAreParent(parentEntity.parentEntity, field);
+  };
+
   var prepareField = function(entityWrapper, stateName, field, parentEntity){
     if (!entityWrapper.model.checkFieldView(field.name, stateName))
       return;
 
+    if(field.entityName && field.entityName === self.entityName){
+      return;
+    }
+
+    if(checkIfFieldAreParent(parentEntity, field)){
+      return;
+    }
 
     entityWrapper.fields.unshift(field);
     if(!hasRelatedResources(stateName, field.type))
       return;
 
     getRelatedResources(entityWrapper, field.endpoint);
-    if(!parentEntity || (field.entityName !== self.entityName && self.entityName === parentEntity.name))
-      getNestedForm(entityWrapper, stateName, field);
+    getNestedForm(entityWrapper, stateName, field);
   };
 
   var prepareFields = function(entityWrapper, stateName, parentEntity){
@@ -1592,6 +1867,7 @@ angular.module('carnival')
   var prepareEntityForState = function(entityName, stateName, parentEntity){
     var entityWrapper = {};
     entityWrapper.nestedForms = {};
+    entityWrapper.parentEntity = parentEntity;
     entityWrapper.model = Configuration.getEntity(entityName);
     entityWrapper.name = entityWrapper.model.name;
     entityWrapper.label = entityWrapper.model.label;
@@ -1604,25 +1880,25 @@ angular.module('carnival')
     return entityWrapper;
   };
 
-  this.prepareForState = function(entityName, stateName){
+  this.prepareForState = function(entityName, stateName, parentEntity){
     this.entityName = entityName;
-    return prepareEntityForState(entityName, stateName);
+    return prepareEntityForState(entityName, stateName, parentEntity);
   };
 
-  this.prepareForCreateState = function(entityName){
-    return this.prepareForState(entityName, 'create');
+  this.prepareForCreateState = function(entityName, parentEntity){
+    return this.prepareForState(entityName, 'create', parentEntity);
   };
 
-  this.prepareForEditState = function(entityName){
-    return this.prepareForState(entityName, 'edit');
+  this.prepareForEditState = function(entityName, parentEntity){
+    return this.prepareForState(entityName, 'edit', parentEntity);
   };
 
   this.prepareForShowState = function(entityName){
     return this.prepareForState(entityName, 'show');
   };
 
-  this.prepareForListState = function(entityName){
-    return this.prepareForState(entityName, 'index');
+  this.prepareForListState = function(entityName, parentEntity){
+    return this.prepareForState(entityName, 'index', parentEntity);
   };
 }]);
 
@@ -1685,33 +1961,62 @@ angular.module('carnival')
 });
 
 angular.module('carnival')
-.service('FormService', ["Configuration", "ActionFactory", function (Configuration, ActionFactory) {
+.service('FormService', ["Configuration", "ActionFactory", "$document", "$compile", "$timeout", function (Configuration, ActionFactory, $document, $compile, $timeout) {
   this.nesteds = {};
   this.init = function(entity){
     this.entity = entity;
     this.nesteds = {};
+    this.columns = {};
   };
 
-  this.openNested = function(formId){
-    if(!this.nesteds[formId])
-        this.nesteds[formId] = {};
-
-    var nestedForms = this.nesteds[formId];
-    nestedForms.saved = false;
+  this.columnsCount = function(){
+    return Object.keys(this.columns).length;
   };
 
-  this.saveNested = function(formId){
-    var nestedForms = this.nesteds[formId];
-    nestedForms.saved = true;
+  this._addNested = function(containerId, scope, directive){
+    var newElement = $compile(directive)(scope);
+    var nestedDiv = document.querySelector(containerId);
+    angular.element(nestedDiv).append(newElement);
   };
 
-  this.hasUnsavedNested = function(){
-    for(var key in this.nesteds){
-      var nestedForm = this.nesteds[key];
-      if(!nestedForm.saved)
-        return true;
+  this._addColumn = function(directive, formId, containerId, scope){
+    if(!this.columns[formId])
+        this.columns[formId] = {};
+    var self = this;
+    $document.scrollTop(0, 1000).then(function(){
+      self._addNested(containerId, scope, directive);
+    });
+  };
+
+  this.openColumn = function(state, containerId, scope){
+    var formId = 'form-' +  scope.entity.name;
+    var index = this.columnsCount() || 0;
+    var directive = '<carnival-form-column index="'+index+'" type="form" entity="entity" state="'+state+'"></carnival-form-column>';
+    this._addColumn(directive, formId, containerId, scope);
+  };
+
+  this.openColumnListing = function(state, containerId, scope){
+    var formId = 'table-' +  scope.entity.name;
+    var index = this.columnsCount() || 0;
+    var directive = '<carnival-form-column index="'+index+'" type="table" field="field" entity="entity" datas="datas"></carnival-form-column>';
+    this._addColumn(directive, formId, containerId, scope);
+  };
+
+  this.openNested = function(state, containerId, scope){
+    if(this.isNestedOpen(scope.entity.name)){
+      var self = this;
+      this.closeNested(scope.entity.name);
+      $timeout(function(){
+        self.openNested(state, containerId, scope);
+      }, 200);
+      return;
     }
-    return false;
+    if(!this.nesteds[scope.entity.name])
+        this.nesteds[scope.entity.name] = {};
+
+    var nestedForms = this.nesteds[scope.entity.name];
+    var directive = '<carnival-nested-form state="'+state+'" type="nested" entity="entity"></carnival-nested-form></div>';
+    this._addNested(containerId, scope, directive);
   };
 
   this.isNestedOpen = function(formId){
@@ -1720,38 +2025,12 @@ angular.module('carnival')
     return true;
   };
 
+  this.closeColumn = function(formId){
+    delete this.columns[formId];
+  };
+
   this.closeNested = function(formId){
     delete this.nesteds[formId];
-  };
-
-  var isARelation = function(field){
-    if(field.type != 'hasMany' && field.type != 'belongsTo')
-      return false;
-    return true;
-  };
-
-  this.canShowThisField = function(formEntity, state, field){
-    if(!isARelation(field))
-      return true;
-
-    if(formEntity.parentEntity){
-      if(formEntity.parentEntity.name === field.entityName)
-          return false;
-    }
-
-    if(state === 'create' && field.type === 'hasMany'){
-      return this.canShowThisHasManyField(formEntity, state, field);
-    }
-    return true;
-  };
-
-  this.canShowThisHasManyField = function(formEntity, state, field){
-    var fieldEntity = Configuration.getEntity(field.entityName);
-    var relationField = fieldEntity.getFieldByEntityName(formEntity.name);
-    if(relationField.type === 'belongsTo' && !field.views[state].showOptions)
-      return false;
-
-    return true;
   };
 }]);
 
@@ -1798,11 +2077,19 @@ angular.module('carnival')
     notificationFactory.splice(notificationFactory.length - 1, 1);
   };
 
-  function Notification (message, type) {
+  function Notification (message, type, opts) {
+    if(!opts)
+      opts = {};
     this.message = message;
     this.type = type;
+    var timeout = opts.timeout || 3000;
+    var callback = opts.callback;
     notificationFactory.unshift(this);
-    $timeout(notificationKiller, 3000);
+    $timeout(function(){
+      notificationKiller();
+      if(callback)
+        callback();
+    }, timeout);
   }
 
   return Notification;
@@ -1811,7 +2098,7 @@ angular.module('carnival')
 
 angular.module('carnival')
 .service('RequestBuilder', ["HttpAdapter", function (HttpAdapter) {
-  
+
   var prebuildRequest = function(method, params){
     var request = {};
     request.params = {};
@@ -1831,8 +2118,10 @@ angular.module('carnival')
   this.buildForGetList = function(params){
     var request = prebuildRequest('GET', params);
     request.url    = params.baseUrl + '/' + params.endpoint;
-    request.params.offset = params.offset;
-    request.params.limit  = params.limit;
+    if(params.offset)
+      request.params.offset = params.offset;
+    if(params.limit)
+      request.params.limit  = params.limit;
     if (params.order && params.orderDir) {
       request.params.order    = params.order;
       request.params.orderDir = params.orderDir;
@@ -1941,9 +2230,13 @@ angular.module('carnival')
 
 angular.module('carnival')
 .constant('defaultTranslations', {
+  'YES': 'Yes',
+  'NO': 'No',
   'CREATE_STATE_TITLE': 'Create',
   'EDIT_STATE_TITLE': 'Edit',
   'LIST_STATE_TITLE': 'List',
+  'ARE_YOU_SURE': 'Are you Sure?',
+  'ARE_YOU_SURE_DELETE': 'Are you sure you want to delete?',
   'SHOW_STATE_TITLE': 'Show',
   'LIST_STATE_BUTTON_CREATE': 'Create',
   'DELETE_BUTTON_DELETE': 'Delete',
@@ -1960,16 +2253,21 @@ angular.module('carnival')
   'NESTED_FORM_TITLE_CREATE': 'Create',
   'SEARCH_FORM_TITLE': 'Search',
   'SEARCH_FORM_SUBMIT': 'Submit',
-  'UPLOAD_BUTTON': 'Upload'
+  'UPLOAD_BUTTON': 'Upload',
+  'DELETED_SUCCESS_MESSAGE': 'Item deleted with success!',
+  'UPDATED_SUCCESS_MESSAGE': 'Item updated with success!',
+  'UPLOADED_SUCCESS_MESSAGE': 'Item uploaded with success!',
+  'CREATE_RELATIONS_MESSAGE': ' created. Now you can create the relation(s)'
+
 });
 
 angular.module('carnival')
 .filter('translate', ["Translation", function (Translation) {
   return function (value) {
-    if (!Translation.table) { 
-      return Translation.defaults[value] || value;
+    if (Translation.table && Translation.table[value]) {
+      return Translation.table[value];
     }
-    return  Translation.table[value] || value;
+    return Translation.defaults[value] || value;
   };
 }]);
 
@@ -2078,6 +2376,7 @@ angular.module('carnival')
     entity = $scope.entity;
   };
 
+
   init();
 
 }]);
@@ -2097,12 +2396,32 @@ angular.module('carnival')
     });
   };
 
+  $scope.show = function(){
+    return document.getElementsByClassName('form-column').length > 1;
+
+  };
+  var getZIndex = function(){
+      return ((document.getElementsByClassName('form-column').length - 1) * 10) + 3;
+  };
+
+  var getHeight = function(){
+    return (document.querySelector('#master-form').offsetHeight);
+  };
+
+  $scope.getStyle = function(){
+    return {
+      zIndex:  getZIndex(),
+      height: getHeight() + 'px'
+    };
+  };
+
+
   init();
 
 }]);
 
 angular.module('carnival')
-.controller('ListController', ["$rootScope", "$scope", "$stateParams", "$state", "Configuration", "Notification", "urlParams", "EntityResources", function ($rootScope, $scope, $stateParams, $state, Configuration, Notification, urlParams, EntityResources) {
+.controller('ListController', ["$rootScope", "$scope", "$stateParams", "$state", "Configuration", "Notification", "urlParams", "EntityResources", "$filter", function ($rootScope, $scope, $stateParams, $state, Configuration, Notification, urlParams, EntityResources, $filter) {
 
   var entity = $scope.entity = {},
 
@@ -2125,7 +2444,8 @@ angular.module('carnival')
   var onDelete = function (id) {
     entity.model.delete(id)
     .success(function () {
-      new Notification('Item deleted with success!', 'warning');
+      var message = $filter('translate')('DELETED_SUCCESS_MESSAGE');
+      new Notification(message, 'warning');
       $state.reload();
     })
     .error(function (data) {
@@ -2218,7 +2538,7 @@ angular.module('carnival')
 
 }]);
 
-angular.module('carnival.templates', ['components/button/button.html', 'components/delete-button/delete-button.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/currency/currency.html', 'components/fields/date/date.html', 'components/fields/enum/enum.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form-fields-next/form-fields-next.html', 'components/form-fields/form-fields.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/listing-extra-action/listing-extra-action.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-currency/listing-field-currency.html', 'components/listing-field-enum/listing-field-enum.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/nested-form/nested-form-area.html', 'components/nested-form/nested-form.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
+angular.module('carnival.templates', ['components/button/button.html', 'components/column-form/column-form.html', 'components/column-listing/column-listing.html', 'components/delete-button/delete-button.html', 'components/field-form-builder/field-form-builder.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/currency/currency.html', 'components/fields/date/date.html', 'components/fields/enum/enum.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form-area/form-area.html', 'components/form-column/form-column.html', 'components/form-fields-next/form-fields-next.html', 'components/form-fields/form-fields.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/has-many-table/has-many-table.html', 'components/listing-extra-action/listing-extra-action.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-currency/listing-field-currency.html', 'components/listing-field-enum/listing-field-enum.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/nested-form/nested-form.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/summarized-items/summarized-items.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
 
 angular.module("components/button/button.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/button/button.html",
@@ -2226,12 +2546,63 @@ angular.module("components/button/button.html", []).run(["$templateCache", funct
     "");
 }]);
 
+angular.module("components/column-form/column-form.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/column-form/column-form.html",
+    "<div>\n" +
+    "  <div class='column small-12'>\n" +
+    "    <h3>{{ 'EDIT_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
+    "  </div>\n" +
+    "  <carnival-form type='column' entity=\"entity\" fields=\"entity.fields\" datas=\"entity.datas\" action=\"entity.action\" state=\"{{state}}\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("components/column-listing/column-listing.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/column-listing/column-listing.html",
+    "<div class=\"listing\">\n" +
+    "  <carnival-field-form-builder state='create' parent-entity='entity.parentEntity' field='field'></carnival-field-form-builder>\n" +
+    "  <table class=\"table table-hover\">\n" +
+    "    <thead>\n" +
+    "      <tr>\n" +
+    "        <th ng-repeat=\"field in getListFields()\">\n" +
+    "          {{ field.label }}\n" +
+    "          <carnival-order-ctrl field=\"field.name\"></carnival-order-ctrl>\n" +
+    "        </th>\n" +
+    "        <th>\n" +
+    "        </th>\n" +
+    "      </tr>\n" +
+    "    </thead>\n" +
+    "    <tbody>\n" +
+    "      <tr ng-repeat=\"data in datas\">\n" +
+    "        <td ng-repeat=\"field in getListFields()\">\n" +
+    "          <carnival-listing-field item=\"data\" field=\"field\"></carnival-listing-field>\n" +
+    "        </td>\n" +
+    "        <td>\n" +
+    "          <carnival-field-form-builder data=\"data\" state='edit' parent-entity='entity.parentEntity' field='field'></carnival-field-form-builder>\n" +
+    "        </td>\n" +
+    "      </tr>\n" +
+    "    </tbody>\n" +
+    "  </table>\n" +
+    "</div>\n" +
+    "");
+}]);
+
 angular.module("components/delete-button/delete-button.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/delete-button/delete-button.html",
-    "<span>\n" +
-    "  <a ng-hide=\"isDeleting\" class=\"button alert tiny\" ng-click=\"start()\">{{ 'DELETE_BUTTON_DELETE' | translate }}</a>\n" +
-    "  <a ng-show=\"isDeleting\" class=\"button default tiny\" ng-click=\"cancel()\">{{ 'DELETE_BUTTON_CANCEL' | translate }}</a>\n" +
-    "  <a ng-show=\"isDeleting\" class=\"button alert tiny\" ng-click=\"confirm()\">{{ 'DELETE_BUTTON_CONFIRM' | translate }}</a>\n" +
+    "<span class=\"btn-delete\">\n" +
+    "  <a  class=\"button alert tiny\" ng-click=\"delete()\">{{ 'DELETE_BUTTON_DELETE' | translate }}</a>\n" +
+    "</span>\n" +
+    "");
+}]);
+
+angular.module("components/field-form-builder/field-form-builder.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/field-form-builder/field-form-builder.html",
+    "<span ng-switch='state'>\n" +
+    "  <a ng-switch-when='create' class=\"button default tiny form-builder\" ng-click=\"open()\">{{ 'NESTED_FORM_BUTTON_CREATE' | translate }}</a>\n" +
+    "  <div ng-switch-when='create' id=\"create_nested_{{field.entityName}}\"></div>\n" +
+    "\n" +
+    "  <a ng-switch-when='edit' id='editHasManyOption' ng-click='openWithData();' class=\"button warning tiny form-builder\">{{getButtonLabel()}}</a>\n" +
+    "  <div ng-switch-when='edit' id=\"edit_nested_{{field.name}}_{{data[field.identifier]}}\"></div>\n" +
     "</span>\n" +
     "");
 }]);
@@ -2239,9 +2610,9 @@ angular.module("components/delete-button/delete-button.html", []).run(["$templat
 angular.module("components/fields/belongs-to/belongs-to.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/fields/belongs-to/belongs-to.html",
     "<div>\n" +
-    "  <carnival-select-field data=\"datas[field.foreignKey]\" field=\"field.field\" identifier=\"field.identifier\" items=\"relatedResources[field.endpoint]\"> \n" +
+    "  <carnival-select-field data=\"datas\" field=\"field.field\" identifier=\"field.identifier\" items=\"relatedResources\">\n" +
     "  </carnival-select-field>\n" +
-    "  <carnival-nested-form-area state=\"{{state}}\" entity=\"entity\" field=\"field\" datas=\"datas\" relation-type=\"belongsTo\"></carnival-nested-form-area>\n" +
+    "  <carnival-field-form-builder state='create' parent-entity='parentEntity' field='field'></carnival-field-form-builder>\n" +
     "</div>\n" +
     "");
 }]);
@@ -2296,13 +2667,25 @@ angular.module("components/fields/file/file.html", []).run(["$templateCache", fu
 angular.module("components/fields/has-many/has-many.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/fields/has-many/has-many.html",
     "<div>\n" +
-    "  <span ng-show='canShow()' >\n" +
-    "    <select ng-model=\"selectedHasMany\" ng-options=\"item[field.identifier] as utils.cutString(item[field.field], 25) for item in relatedResources[field.endpoint]\">\n" +
-    "    </select>\n" +
-    "    <a class=\"button default tiny\" ng-click=\"addHasManyOption()\">Add</a>\n" +
-    "  </span>\n" +
     "\n" +
-    "  <carnival-nested-form-area state=\"{{state}}\" entity=\"entity\" field=\"field\" datas=\"datas\" relation-type=\"hasMany\"></carnival-nested-form-area>\n" +
+    "  <div ng-switch='showAs()'>\n" +
+    "    <carnival-has-many-table ng-switch-when='summarized' parent-entity='parentEntity' field='field' datas='datas' state='state' editable='editable'></carnival-has-many-table>\n" +
+    "    <ul class='carnival-tags' ng-switch-default class='has-many-field-list'>\n" +
+    "      <li class='carnival-tag' ng-repeat='data in datas'>\n" +
+    "        <carnival-field-form-builder label='{{data[field.field]}}' data=\"data\" state='edit' parent-entity='parentEntity' field='field'></carnival-field-form-builder>\n" +
+    "        <a id='removeHasManyOption' ng-click='remove(data.id);' class=\"button default tiny remove-tag\">x</a>\n" +
+    "      </li>\n" +
+    "    </ul>\n" +
+    "  </div>\n" +
+    "\n" +
+    "  <div>\n" +
+    "    <select ng-show='showOptions()' ng-model=\"selectedHasMany\" ng-options=\"item[field.identifier] as utils.cutString(item[field.field], 25) for item in relatedResources\">\n" +
+    "    </select>\n" +
+    "\n" +
+    "    <a ng-show='showOptions()' class=\"button default tiny\" ng-click=\"addHasManyOption()\">Add</a>\n" +
+    "    <carnival-field-form-builder state='create' parent-entity='parentEntity' field='field' datas='datas'></carnival-field-form-builder>\n" +
+    "  </div>\n" +
+    "\n" +
     "</div>\n" +
     "");
 }]);
@@ -2315,8 +2698,10 @@ angular.module("components/fields/number/number.html", []).run(["$templateCache"
 
 angular.module("components/fields/select/select.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/fields/select/select.html",
+    "<div>\n" +
     "<select ng-model=\"data\" ng-options=\"item[identifier] as utils.cutString(item[field], 25) for item in items\">\n" +
     "</select>\n" +
+    "</div>\n" +
     "");
 }]);
 
@@ -2336,6 +2721,32 @@ angular.module("components/fields/wysiwyg/wysiwyg.html", []).run(["$templateCach
   $templateCache.put("components/fields/wysiwyg/wysiwyg.html",
     "<div>\n" +
     "  <textarea ng-wig=\"data\"></textarea>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("components/form-area/form-area.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/form-area/form-area.html",
+    "<div id='form-columns'>\n" +
+    "  <div id='master-form' class='form-column {{getDisableClass()}}'>\n" +
+    "    <div class='column small-12'>\n" +
+    "      <h3 ng-if=\"state == 'edit' \">{{ 'EDIT_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
+    "      <h3 ng-if=\"state == 'create' \">{{ 'CREATE_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
+    "    </div>\n" +
+    "    <carnival-form type='normal' entity=\"entity\" fields=\"fields\" datas=\"datas\" action=\"entity.action\" state=\"{{state}}\" related-resources=\"relatedResources\" editable=\"true\"></carnival-form>\n" +
+    "  </div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("components/form-column/form-column.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/form-column/form-column.html",
+    "<div ng-switch='type' ng-style=\"style\" class='children-form form-column {{cssClass}} {{getDisableClass()}}'>\n" +
+    "  <div class='disable-column-form'>\n" +
+    "  </div>\n" +
+    "  <span class='button' ng-click='close()'>Close</span>\n" +
+    "  <carnival-column-form ng-switch-when='form' entity=\"entity\" state=\"{{state}}\"></carnival-column-form>\n" +
+    "  <carnival-column-listing ng-switch-when='table' entity=\"entity\" field=\"field\" datas=\"datas\"></carnival-column-listing>\n" +
     "</div>\n" +
     "");
 }]);
@@ -2369,7 +2780,7 @@ angular.module("components/form-fields-next/form-fields-next.html", []).run(["$t
 angular.module("components/form-fields/form-fields.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/form-fields/form-fields.html",
     "<div>\n" +
-    "  <label ng-if='canShow(field)'>\n" +
+    "  <label>\n" +
     "    {{ field.label }}\n" +
     "  </label>\n" +
     "  <div ng-switch=\"field.type\">\n" +
@@ -2382,8 +2793,7 @@ angular.module("components/form-fields/form-fields.html", []).run(["$templateCac
     "    <carnival-file-field ng-switch-when=\"file\" data=\"datas[field.name]\" field=\"field\"></carnival-file-field>\n" +
     "    <carnival-enum-field ng-switch-when=\"enum\" data=\"datas[field.name]\" field=\"field\"></carnival-enum-field>\n" +
     "    <carnival-currency-field ng-switch-when=\"currency\" data=\"datas[field.name]\" field=\"field\"></carnival-currency-field>\n" +
-    "    <carnival-belongs-to-field ng-if='canShow(field)' ng-switch-when=\"belongsTo\" nested-form-index=\"nestedFormIndex\" entity=\"entity\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
-    "    <carnival-has-many-field ng-if='canShow(field)' ng-switch-when=\"hasMany\" entity=\"entity\" nested-form-index=\"nestedFormIndex\" field=\"field\" datas=\"entity.datas\" action=\"entity.action\" related-resources=\"entity.relatedResources\" state=\"{{state}}\"></carnival-has-many-field>\n" +
+    "    <carnival-belongs-to-field ng-switch-when=\"belongsTo\" parent-entity=\"entity\" field=\"field\" datas=\"entity.datas[field.foreignKey]\" action=\"entity.action\" related-resources=\"entity.relatedResources[field.endpoint]\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
     "    <carnival-text-field ng-switch-default data=\"datas[field.name]\" label=\"field.label\"></carnival-text-field>\n" +
     "  </div>\n" +
     "</div>\n" +
@@ -2393,18 +2803,45 @@ angular.module("components/form-fields/form-fields.html", []).run(["$templateCac
 
 angular.module("components/form/form.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/form/form.html",
-    "<form ng-init=\"nestedFormIndex = {value: 0}\" novalidate>\n" +
-    "  <div ng-repeat=\"field in fields\" ng-class=\"{ row: field.grid.newRow }\">\n" +
-    "    <div>\n" +
-    "      <carnival-form-fields class=\"column small-{{ field.grid.columnSize }}\" ng-show=\"field.grid.newRow\"></carnival-form-fields>\n" +
-    "      <carnival-form-fields-next class=\"column small-{{ fields[$index + 1].grid.columnSize }}\" ng-show=\"!fields[$index + 1].grid.newRow && $index + 1 !== fields.length\"></carnival-form-fields-next>\n" +
+    "<div>\n" +
+    "  <ul>\n" +
+    "    <li ng-repeat='error in errors'>\n" +
+    "      {{error}}\n" +
+    "    </li>\n" +
+    "  </ul>\n" +
+    "  <form ng-init=\"nestedFormIndex = {value: 0}\" novalidate>\n" +
+    "    <div ng-if=\"field.fieldFormType != 'related'\" ng-repeat=\"field in fields\" ng-class=\"{ row: field.grid.newRow }\">\n" +
+    "      <div>\n" +
+    "        <carnival-form-fields class=\"column small-{{ field.grid.columnSize }}\" ng-show=\"field.grid.newRow\"></carnival-form-fields>\n" +
+    "        <carnival-form-fields-next class=\"column small-{{ fields[$index + 1].grid.columnSize }}\" ng-show=\"!fields[$index + 1].grid.newRow && $index + 1 !== fields.length\"></carnival-form-fields-next>\n" +
+    "      </div>\n" +
     "    </div>\n" +
-    "  </div>\n" +
-    "  <div>\n" +
-    "    <carnival-button label=\"{{ 'FORM_BUTTON_SAVE' | translate }}\" style=\"success\" size=\"small\" ng-click=\"buttonAction()\"></carnival-button>\n" +
-    "  </div>\n" +
-    "</form>\n" +
     "\n" +
+    "    <div class='column small-12' id='related-fields' ng-show='showRelatedFields()'>\n" +
+    "      <h4>Relacionamentos</h4>\n" +
+    "\n" +
+    "      <ul class='tabs'>\n" +
+    "        <li class='tab-title' ng-if=\"field.fieldFormType == 'related'\" class=\"row\" ng-repeat=\"field in fields\">\n" +
+    "          <a ng-init='initSelectedTab($index)' ng-click='selectTab($index)'>\n" +
+    "            {{ field.label }}\n" +
+    "          </a>\n" +
+    "        </li>\n" +
+    "      </ul>\n" +
+    "      <div ng-if=\"field.fieldFormType == 'related'\" class=\"row\" ng-repeat=\"field in fields\">\n" +
+    "        <div ng-show='selectedTab == $index' id=\"panel{{$index}}\" ng-switch=\"field.type\">\n" +
+    "          <h4>{{field.label}}</h4>\n" +
+    "          <carnival-belongs-to-field ng-switch-when=\"belongsTo\" parent-entity=\"entity\" field=\"field\" datas=\"entity.datas[field.name]\" action=\"entity.action\" related-resources=\"entity.relatedResources[field.name]\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
+    "          <carnival-has-many-field ng-switch-when=\"hasMany\" parent-entity=\"entity\" field=\"field\" datas=\"entity.datas[field.name]\" action=\"entity.action\" related-resources=\"entity.relatedResources[field.name]\" state=\"{{state}}\"></carnival-has-many-field>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class='column small-12'>\n" +
+    "      <carnival-button label=\"{{ 'FORM_BUTTON_SAVE' | translate }}\" style=\"success\" size=\"small\" ng-click=\"buttonAction()\"></carnival-button>\n" +
+    "    </div>\n" +
+    "  </form>\n" +
+    "\n" +
+    "</div>\n" +
     "");
 }]);
 
@@ -2412,6 +2849,35 @@ angular.module("components/gallery/gallery.html", []).run(["$templateCache", fun
   $templateCache.put("components/gallery/gallery.html",
     "<div>\n" +
     "  <carnival-button label=\"{{ 'GALLERY_BUTTON_OPEN' | translate }}\" style=\"default\" size=\"small\" ng-click=\"open()\"></carnival-button>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("components/has-many-table/has-many-table.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/has-many-table/has-many-table.html",
+    "<div class=\"has-many-table\">\n" +
+    "  <table class=\"table table-hover\">\n" +
+    "    <thead>\n" +
+    "      <tr>\n" +
+    "        <th ng-repeat=\"field in getListFields()\">\n" +
+    "          {{ field.label }}\n" +
+    "          <carnival-order-ctrl field=\"field.name\"></carnival-order-ctrl>\n" +
+    "        </th>\n" +
+    "        <th>\n" +
+    "        </th>\n" +
+    "      </tr>\n" +
+    "    </thead>\n" +
+    "    <tbody>\n" +
+    "      <tr ng-repeat=\"data in datas\">\n" +
+    "        <td ng-repeat=\"field in getListFields()\">\n" +
+    "          <carnival-listing-field item=\"data\" field=\"field\"></carnival-listing-field>\n" +
+    "        </td>\n" +
+    "        <td>\n" +
+    "          <carnival-field-form-builder data=\"data\" state='edit' parent-entity='entity.parentEntity' field='field'></carnival-field-form-builder>\n" +
+    "        </td>\n" +
+    "      </tr>\n" +
+    "    </tbody>\n" +
+    "  </table>\n" +
     "</div>\n" +
     "");
 }]);
@@ -2483,37 +2949,39 @@ angular.module("components/listing-field/listing-field.html", []).run(["$templat
 
 angular.module("components/listing/listing.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/listing/listing.html",
-    "<table class=\"table table-hover\">\n" +
-    "  <thead>\n" +
-    "    <tr>\n" +
-    "      <th ng-repeat=\"field in fields\">\n" +
-    "        {{ field.label }}\n" +
-    "        <carnival-order-ctrl field=\"field.name\"></carnival-order-ctrl>\n" +
-    "      </th>\n" +
-    "      <th ng-show=\"extraActions[0]\">\n" +
-    "        {{ 'LISTING_EXTRA_ACTIONS' | translate }}\n" +
-    "      </th>\n" +
-    "      <th ng-if=\"actions\">\n" +
-    "        {{ 'LISTING_ACTIONS' | translate }}\n" +
-    "      </th>\n" +
-    "    </tr>\n" +
-    "  </thead>\n" +
-    "  <tbody>\n" +
-    "    <tr ng-repeat=\"data in datas\">\n" +
-    "      <td ng-repeat=\"field in fields\">\n" +
-    "        <carnival-listing-field item=\"data\" field=\"field\"></carnival-listing-field>\n" +
-    "      </td>\n" +
-    "      <td ng-show=\"extraActions[0]\">\n" +
-    "        <carnival-listing-extra-action ng-repeat=\"extraAction in extraActions\" item=\"data\" extra-action='extraAction'></carnival-listing-extra-action>\n" +
-    "      </td>\n" +
-    "      <td>\n" +
-    "        <carnival-button label=\"{{ 'LISTING_BUTTON_SHOW' | translate }}\" style=\"primary\" size=\"tiny\" ng-click=\"actions.show(data[identifier])\"></carnival-button>\n" +
-    "        <carnival-button label=\"{{ 'LISTING_BUTTON_EDIT' | translate }}\" style=\"warning\" size=\"tiny\" ng-click=\"actions.edit(data[identifier])\"></carnival-button>\n" +
-    "        <carnival-delete-button item-id=\"data[identifier]\" action=\"actions.delete\"></carnival-button>\n" +
-    "      </td>\n" +
-    "    </tr>\n" +
-    "  </tbody>\n" +
-    "</table>\n" +
+    "<div class=\"listing\">\n" +
+    "  <table class=\"table table-hover\">\n" +
+    "    <thead>\n" +
+    "      <tr>\n" +
+    "        <th ng-repeat=\"field in fields\">\n" +
+    "          {{ field.label }}\n" +
+    "          <carnival-order-ctrl field=\"field.name\"></carnival-order-ctrl>\n" +
+    "        </th>\n" +
+    "        <th ng-show=\"extraActions[0]\">\n" +
+    "          {{ 'LISTING_EXTRA_ACTIONS' | translate }}\n" +
+    "        </th>\n" +
+    "        <th ng-if=\"actions\">\n" +
+    "          {{ 'LISTING_ACTIONS' | translate }}\n" +
+    "        </th>\n" +
+    "      </tr>\n" +
+    "    </thead>\n" +
+    "    <tbody>\n" +
+    "      <tr ng-repeat=\"data in datas\">\n" +
+    "        <td ng-repeat=\"field in fields\">\n" +
+    "          <carnival-listing-field item=\"data\" field=\"field\"></carnival-listing-field>\n" +
+    "        </td>\n" +
+    "        <td ng-show=\"extraActions[0]\">\n" +
+    "          <carnival-listing-extra-action ng-repeat=\"extraAction in extraActions\" item=\"data\" extra-action='extraAction'></carnival-listing-extra-action>\n" +
+    "        </td>\n" +
+    "        <td>\n" +
+    "          <carnival-button label=\"{{ 'LISTING_BUTTON_SHOW' | translate }}\" style=\"primary btn-details\" size=\"tiny\" ng-click=\"actions.show(data[identifier])\"></carnival-button>\n" +
+    "          <carnival-button label=\"{{ 'LISTING_BUTTON_EDIT' | translate }}\" style=\"warning btn-edit\" size=\"tiny\" ng-click=\"actions.edit(data[identifier])\"></carnival-button>\n" +
+    "          <carnival-delete-button item-id=\"data[identifier]\" action=\"actions.delete\"></carnival-button>\n" +
+    "        </td>\n" +
+    "      </tr>\n" +
+    "    </tbody>\n" +
+    "  </table>\n" +
+    "</div>\n" +
     "");
 }]);
 
@@ -2537,28 +3005,9 @@ angular.module("components/navbar/navbar.html", []).run(["$templateCache", funct
     "");
 }]);
 
-angular.module("components/nested-form/nested-form-area.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("components/nested-form/nested-form-area.html",
-    "<div>\n" +
-    "  <a ng-if='canOpenNestedForm()' class=\"button default tiny\"  ng-click=\"open()\">{{ 'NESTED_FORM_BUTTON_CREATE' | translate }}</a>\n" +
-    "\n" +
-    "  <ul ng-if=\"isHasMany()\" class='has-many-field-list'>\n" +
-    "    <li ng-repeat='data in datas[field.name]'>\n" +
-    "      {{data[field.field]}}\n" +
-    "      <a id='removeHasManyOption' ng-click='remove(data.id);' class=\"button default tiny\">Delete</a>\n" +
-    "      <a id='editHasManyOption' ng-click='openWithData(data);' class=\"button warning tiny\">Edit</a>\n" +
-    "      <div id=\"edit_nested_{{field.name}}_{{data[field.identifier]}}\"></div>\n" +
-    "    </li>\n" +
-    "  </ul>\n" +
-    "  <div id=\"create_nested_{{field.entityName}}\">\n" +
-    "  </div>\n" +
-    "</div>\n" +
-    "");
-}]);
-
 angular.module("components/nested-form/nested-form.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/nested-form/nested-form.html",
-    "<div class=\"nested-container\">\n" +
+    "<div class=\"nested-container animated fadeIn\">\n" +
     "<a class='close-nested btn btn-default btn-xs' ng-click='close()'>Close</a>\n" +
     "  <fieldset>\n" +
     "  <legend>{{ 'NESTED_FORM_TITLE_CREATE' | translate }} {{ entity.label }}</legend>\n" +
@@ -2571,7 +3020,7 @@ angular.module("components/nested-form/nested-form.html", []).run(["$templateCac
 angular.module("components/notification/notification.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/notification/notification.html",
     "<div>\n" +
-    "  <div ng-repeat=\"notification in notifications\" class=\"alert alert-{{ notification.type }}\">{{ notification.message }}</div>\n" +
+    "  <div ng-repeat=\"notification in notifications\" class=\"alert-box {{ notification.type }} radius\">{{ notification.message }}</div>\n" +
     "</div>\n" +
     "");
 }]);
@@ -2631,7 +3080,7 @@ angular.module("components/quickfilter-controller/quickfilter-controller.html", 
 
 angular.module("components/search-controller/search-controller.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/search-controller/search-controller.html",
-    "<div>\n" +
+    "<div class=\"advanced-search\">\n" +
     "  <h4>{{ 'SEARCH_FORM_TITLE' | translate }}</h4>\n" +
     "  <hr/>\n" +
     "    <p ng-repeat=\"field in fields\" ng-if=\"field.views.index.searchable\" ng-switch=\"field.type\">\n" +
@@ -2651,6 +3100,14 @@ angular.module("components/search-controller/search-controller.html", []).run(["
     "");
 }]);
 
+angular.module("components/summarized-items/summarized-items.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/summarized-items/summarized-items.html",
+    "<div ng-click='openItems()'>\n" +
+    "{{datas.length}} {{field.name}}\n" +
+    "</div>\n" +
+    "");
+}]);
+
 angular.module("components/uploader/uploader.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/uploader/uploader.html",
     "<div>\n" +
@@ -2662,45 +3119,37 @@ angular.module("components/uploader/uploader.html", []).run(["$templateCache", f
 
 angular.module("states/main.create/create.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("states/main.create/create.html",
-    "<div class=\"row\">\n" +
-    "\n" +
-    "  <h3>{{ 'CREATE_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
-    "  <carnival-form entity='entity' fields=\"entity.fields\" action=\"entity.action\" datas=\"entity.datas\" state=\"create\" related-resources=\"entity.relatedResources\"></carnival-form>\n" +
-    "\n" +
-    "</div>\n" +
+    "<carnival-form-area type=\"normal\" entity=\"entity\" fields=\"entity.fields\" datas=\"entity.datas\" action=\"entity.action\" state=\"create\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form-area>\n" +
     "");
 }]);
 
 angular.module("states/main.edit/edit.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("states/main.edit/edit.html",
-    "<div class=\"row\">\n" +
-    "\n" +
-    "  <h3>{{ 'EDIT_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
-    "  <carnival-form type='normal' entity=\"entity\" fields=\"entity.fields\" datas=\"entity.datas\" action=\"entity.action\" state=\"edit\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form>\n" +
-    "\n" +
-    "</div>\n" +
+    "<carnival-form-area type='normal' entity=\"entity\" fields=\"entity.fields\" datas=\"entity.datas\" action=\"entity.action\" state=\"edit\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form-area>\n" +
     "");
 }]);
 
 angular.module("states/main.list/list.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("states/main.list/list.html",
-    "<div class=\"row\">\n" +
+    "<div class=\"row carnival-list\">\n" +
+    "\n" +
     "  <div class=\"column large-10\" style=\"text-align:left\">\n" +
     "    <h3>{{ 'LIST_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
     "  </div>\n" +
+    "\n" +
     "  <div class=\"column large-2\" style=\"text-align:right\">\n" +
     "    <carnival-button label=\"{{ 'LIST_STATE_BUTTON_CREATE' | translate }}\" style=\"success\" size=\"small\" ng-click=\"entity.actions.create()\"></carnival-button>\n" +
     "  </div>\n" +
+    "\n" +
     "  <div class=\"column large-12\">\n" +
     "    <carnival-quick-filter filters=\"entity.model.quickFilters\"></carnival-quick-filter>\n" +
     "  </div>\n" +
-    "  <div class=\"column large-3\">\n" +
-    "    <carnival-search-ctrl fields=\"entity.fields\" related-resources=\"entity.relatedResources\"></carnival-search-ctrl>\n" +
-    "  </div>\n" +
-    "  <div class=\"column large-9\">\n" +
-    "    <carnival-listing entity=\"entity\" entity-name=\"entity.name\" actions=\"entity.actions\" extra-actions=\"entity.extraActions\" identifier=\"entity.identifier\" datas=\"entity.datas\" fields=\"entity.fields\"></carnival-listing>\n" +
-    "    <carnival-pagination-ctrl current-page=\"pages.current\" total-pages=\"pages.total\"></carnival-pagination-ctrl>\n" +
-    "  </div>\n" +
+    "\n" +
+    "  <carnival-search-ctrl fields=\"entity.fields\" related-resources=\"entity.relatedResources\"></carnival-search-ctrl>\n" +
+    "\n" +
+    "  <carnival-listing entity=\"entity\" entity-name=\"entity.name\" actions=\"entity.actions\" extra-actions=\"entity.extraActions\" identifier=\"entity.identifier\" datas=\"entity.datas\" fields=\"entity.fields\"></carnival-listing>\n" +
+    "  <carnival-pagination-ctrl current-page=\"pages.current\" total-pages=\"pages.total\"></carnival-pagination-ctrl>\n" +
+    "\n" +
     "</div>\n" +
     "");
 }]);
@@ -2741,13 +3190,835 @@ angular.module("states/main.show/show.html", []).run(["$templateCache", function
 
 angular.module("states/main/main.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("states/main/main.html",
-    "<carnival-navbar app-name=\"app_name\" menu-items=\"menu_items\"></carnival-navbar>\n" +
-    "<div class=\"row\">\n" +
-    "  <carnival-notification></carnival-notification>\n" +
+    "<div class='carnival-header'>\n" +
+    "  <carnival-navbar app-name=\"app_name\" menu-items=\"menu_items\"></carnival-navbar>\n" +
+    "  <div class=\"row carnival-notification\">\n" +
+    "    <carnival-notification></carnival-notification>\n" +
+    "  </div>\n" +
     "</div>\n" +
     "<div ui-view></div>\n" +
     "");
 }]);
+
+// SweetAlert
+// 2014 (c) - Tristan Edwards
+// github.com/t4t5/sweetalert
+;(function(window, document, undefined) {
+
+  var modalClass   = '.sweet-alert',
+      overlayClass = '.sweet-overlay',
+      alertTypes   = ['error', 'warning', 'info', 'success'],
+      defaultParams = {
+        title: '',
+        text: '',
+        type: null,
+        allowOutsideClick: false,
+        showConfirmButton: true,
+        showCancelButton: false,
+        closeOnConfirm: true,
+        closeOnCancel: true,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#AEDEF4',
+        cancelButtonText: 'Cancel',
+        imageUrl: null,
+        imageSize: null,
+        timer: null,
+        customClass: '',
+        html: false,
+        animation: true,
+        allowEscapeKey: true
+      };
+
+
+  /*
+   * Manipulate DOM
+   */
+
+  var getModal = function() {
+      var $modal = document.querySelector(modalClass);
+
+      if (!$modal) {
+        sweetAlertInitialize();
+        $modal = getModal();
+      }
+
+      return $modal;
+    },
+    getOverlay = function() {
+      return document.querySelector(overlayClass);
+    },
+    hasClass = function(elem, className) {
+      return new RegExp(' ' + className + ' ').test(' ' + elem.className + ' ');
+    },
+    addClass = function(elem, className) {
+      if (!hasClass(elem, className)) {
+        elem.className += ' ' + className;
+      }
+    },
+    removeClass = function(elem, className) {
+      var newClass = ' ' + elem.className.replace(/[\t\r\n]/g, ' ') + ' ';
+      if (hasClass(elem, className)) {
+        while (newClass.indexOf(' ' + className + ' ') >= 0) {
+          newClass = newClass.replace(' ' + className + ' ', ' ');
+        }
+        elem.className = newClass.replace(/^\s+|\s+$/g, '');
+      }
+    },
+    escapeHtml = function(str) {
+      var div = document.createElement('div');
+      div.appendChild(document.createTextNode(str));
+      return div.innerHTML;
+    },
+    _show = function(elem) {
+      elem.style.opacity = '';
+      elem.style.display = 'block';
+    },
+    show = function(elems) {
+      if (elems && !elems.length) {
+        return _show(elems);
+      }
+      for (var i = 0; i < elems.length; ++i) {
+        _show(elems[i]);
+      }
+    },
+    _hide = function(elem) {
+      elem.style.opacity = '';
+      elem.style.display = 'none';
+    },
+    hide = function(elems) {
+      if (elems && !elems.length) {
+        return _hide(elems);
+      }
+      for (var i = 0; i < elems.length; ++i) {
+        _hide(elems[i]);
+      }
+    },
+    isDescendant = function(parent, child) {
+      var node = child.parentNode;
+      while (node !== null) {
+        if (node === parent) {
+          return true;
+        }
+        node = node.parentNode;
+      }
+      return false;
+    },
+    getTopMargin = function(elem) {
+      elem.style.left = '-9999px';
+      elem.style.display = 'block';
+
+      var height = elem.clientHeight,
+          padding;
+      if (typeof getComputedStyle !== "undefined") { /* IE 8 */
+        padding = parseInt(getComputedStyle(elem).getPropertyValue('padding'), 10);
+      } else {
+        padding = parseInt(elem.currentStyle.padding);
+      }
+
+      elem.style.left = '';
+      elem.style.display = 'none';
+      return ('-' + parseInt(height / 2 + padding) + 'px');
+    },
+    fadeIn = function(elem, interval) {
+      if (+elem.style.opacity < 1) {
+        interval = interval || 16;
+        elem.style.opacity = 0;
+        elem.style.display = 'block';
+        var last = +new Date();
+        var tick = function() {
+          elem.style.opacity = +elem.style.opacity + (new Date() - last) / 100;
+          last = +new Date();
+
+          if (+elem.style.opacity < 1) {
+            setTimeout(tick, interval);
+          }
+        };
+        tick();
+      }
+      elem.style.display = 'block'; //fallback IE8
+    },
+    fadeOut = function(elem, interval) {
+      interval = interval || 16;
+      elem.style.opacity = 1;
+      var last = +new Date();
+      var tick = function() {
+        elem.style.opacity = +elem.style.opacity - (new Date() - last) / 100;
+        last = +new Date();
+
+        if (+elem.style.opacity > 0) {
+          setTimeout(tick, interval);
+        } else {
+          elem.style.display = 'none';
+        }
+      };
+      tick();
+    },
+    fireClick = function(node) {
+      // Taken from http://www.nonobtrusive.com/2011/11/29/programatically-fire-crossbrowser-click-event-with-javascript/
+      // Then fixed for today's Chrome browser.
+      if (typeof MouseEvent === 'function') {
+        // Up-to-date approach
+        var mevt = new MouseEvent('click', {
+          view: window,
+          bubbles: false,
+          cancelable: true
+        });
+        node.dispatchEvent(mevt);
+      } else if ( document.createEvent ) {
+        // Fallback
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('click', false, false);
+        node.dispatchEvent(evt);
+      } else if( document.createEventObject ) {
+        node.fireEvent('onclick') ;
+      } else if (typeof node.onclick === 'function' ) {
+        node.onclick();
+      }
+    },
+    stopEventPropagation = function(e) {
+      // In particular, make sure the space bar doesn't scroll the main window.
+      if (typeof e.stopPropagation === 'function') {
+        e.stopPropagation();
+        e.preventDefault();
+      } else if (window.event && window.event.hasOwnProperty('cancelBubble')) {
+        window.event.cancelBubble = true;
+      }
+    };
+
+  // Remember state in cases where opening and handling a modal will fiddle with it.
+  var previousActiveElement,
+      previousDocumentClick,
+      previousWindowKeyDown,
+      lastFocusedButton;
+
+
+  /*
+   * Add modal + overlay to DOM
+   */
+
+  var sweetAlertInitialize = function() {
+    var sweetHTML = '<div class="sweet-overlay" tabIndex="-1"></div><div class="sweet-alert" tabIndex="-1"><div class="sa-icon sa-error"><span class="sa-x-mark"><span class="sa-line sa-left"></span><span class="sa-line sa-right"></span></span></div><div class="sa-icon sa-warning"> <span class="sa-body"></span> <span class="sa-dot"></span> </div> <div class="sa-icon sa-info"></div> <div class="sa-icon sa-success"> <span class="sa-line sa-tip"></span> <span class="sa-line sa-long"></span> <div class="sa-placeholder"></div> <div class="sa-fix"></div> </div> <div class="sa-icon sa-custom"></div> <h2>Title</h2><p>Text</p><button class="cancel" tabIndex="2">Cancel</button><button class="confirm" tabIndex="1">OK</button></div>',
+        sweetWrap = document.createElement('div');
+
+    sweetWrap.innerHTML = sweetHTML;
+
+    // Append elements to body
+    while (sweetWrap.firstChild) {
+      document.body.appendChild(sweetWrap.firstChild);
+    }
+  };
+
+
+  /*
+   * Global sweetAlert function
+   */
+  var sweetAlert, swal;
+  
+  sweetAlert = swal = function() {
+    var customizations = arguments[0];
+
+    /*
+     * Use argument if defined or default value from params object otherwise.
+     * Supports the case where a default value is boolean true and should be
+     * overridden by a corresponding explicit argument which is boolean false.
+     */
+    function argumentOrDefault(key) {
+      var args = customizations;
+
+      if (typeof args[key] !== 'undefined') {
+        return args[key];
+      } else {
+        return defaultParams[key];
+      }
+    }
+
+    if (arguments[0] === undefined) {
+      logStr('SweetAlert expects at least 1 attribute!');
+      return false;
+    }
+
+    var params = extend({}, defaultParams);
+
+    switch (typeof arguments[0]) {
+
+      // Ex: swal("Hello", "Just testing", "info");
+      case 'string':
+        params.title = arguments[0];
+        params.text  = arguments[1] || '';
+        params.type  = arguments[2] || '';
+
+        break;
+
+      // Ex: swal({title:"Hello", text: "Just testing", type: "info"});
+      case 'object':
+        if (arguments[0].title === undefined) {
+          logStr('Missing "title" argument!');
+          return false;
+        }
+
+        params.title = arguments[0].title;
+
+        var availableCustoms = [
+          'text',
+          'type',
+          'customClass',
+          'allowOutsideClick',
+          'showConfirmButton',
+          'showCancelButton',
+          'closeOnConfirm',
+          'closeOnCancel',
+          'timer',
+          'confirmButtonColor',
+          'cancelButtonText',
+          'imageUrl',
+          'imageSize',
+          'html',
+          'animation',
+          'allowEscapeKey'];
+
+        // It would be nice to just use .forEach here, but IE8... :(
+        var numCustoms = availableCustoms.length;
+        for (var customIndex = 0; customIndex < numCustoms; customIndex++) {
+          var customName = availableCustoms[customIndex];
+          params[customName] = argumentOrDefault(customName);
+        }
+
+        // Show "Confirm" instead of "OK" if cancel button is visible
+        params.confirmButtonText  = (params.showCancelButton) ? 'Confirm' : defaultParams.confirmButtonText;
+        params.confirmButtonText  = argumentOrDefault('confirmButtonText');
+
+        // Function to call when clicking on cancel/OK
+        params.doneFunction       = arguments[1] || null;
+
+        break;
+
+      default:
+        logStr('Unexpected type of argument! Expected "string" or "object", got ' + typeof arguments[0]);
+        return false;
+
+    }
+
+    setParameters(params);
+    fixVerticalPosition();
+    openModal();
+
+
+    // Modal interactions
+    var modal = getModal();
+
+    // Mouse interactions
+    var onButtonEvent = function(event) {
+      var e = event || window.event;
+      var target = e.target || e.srcElement,
+          targetedConfirm    = (target.className.indexOf("confirm") !== -1),
+          modalIsVisible     = hasClass(modal, 'visible'),
+          doneFunctionExists = (params.doneFunction && modal.getAttribute('data-has-done-function') === 'true');
+
+      switch (e.type) {
+        case ("mouseover"):
+          if (targetedConfirm) {
+            target.style.backgroundColor = colorLuminance(params.confirmButtonColor, -0.04);
+          }
+          break;
+        case ("mouseout"):
+          if (targetedConfirm) {
+            target.style.backgroundColor = params.confirmButtonColor;
+          }
+          break;
+        case ("mousedown"):
+          if (targetedConfirm) {
+            target.style.backgroundColor = colorLuminance(params.confirmButtonColor, -0.14);
+          }
+          break;
+        case ("mouseup"):
+          if (targetedConfirm) {
+            target.style.backgroundColor = colorLuminance(params.confirmButtonColor, -0.04);
+          }
+          break;
+        case ("focus"):
+          var $confirmButton = modal.querySelector('button.confirm'),
+              $cancelButton  = modal.querySelector('button.cancel');
+
+          if (targetedConfirm) {
+            $cancelButton.style.boxShadow = 'none';
+          } else {
+            $confirmButton.style.boxShadow = 'none';
+          }
+          break;
+        case ("click"):
+          if (targetedConfirm && doneFunctionExists && modalIsVisible) { // Clicked "confirm"
+
+            params.doneFunction(true);
+
+            if (params.closeOnConfirm) {
+              sweetAlert.close();
+            }
+          } else if (doneFunctionExists && modalIsVisible) { // Clicked "cancel"
+
+            // Check if callback function expects a parameter (to track cancel actions)
+            var functionAsStr          = String(params.doneFunction).replace(/\s/g, '');
+            var functionHandlesCancel  = functionAsStr.substring(0, 9) === "function(" && functionAsStr.substring(9, 10) !== ")";
+
+            if (functionHandlesCancel) {
+              params.doneFunction(false);
+            }
+
+            if (params.closeOnCancel) {
+              sweetAlert.close();
+            }
+          } else {
+            sweetAlert.close();
+          }
+
+          break;
+      }
+    };
+
+    var $buttons = modal.querySelectorAll('button');
+    for (var i = 0; i < $buttons.length; i++) {
+      $buttons[i].onclick     = onButtonEvent;
+      $buttons[i].onmouseover = onButtonEvent;
+      $buttons[i].onmouseout  = onButtonEvent;
+      $buttons[i].onmousedown = onButtonEvent;
+      //$buttons[i].onmouseup   = onButtonEvent;
+      $buttons[i].onfocus     = onButtonEvent;
+    }
+
+    // Remember the current document.onclick event.
+    previousDocumentClick = document.onclick;
+    document.onclick = function(event) {
+      var e = event || window.event;
+      var target = e.target || e.srcElement;
+
+      var clickedOnModal = (modal === target),
+          clickedOnModalChild = isDescendant(modal, target),
+          modalIsVisible = hasClass(modal, 'visible'),
+          outsideClickIsAllowed = modal.getAttribute('data-allow-ouside-click') === 'true';
+
+      if (!clickedOnModal && !clickedOnModalChild && modalIsVisible && outsideClickIsAllowed) {
+        sweetAlert.close();
+      }
+    };
+
+
+    // Keyboard interactions
+    var $okButton = modal.querySelector('button.confirm'),
+        $cancelButton = modal.querySelector('button.cancel'),
+        $modalButtons = modal.querySelectorAll('button[tabindex]');
+
+
+    function handleKeyDown(event) {
+      var e = event || window.event;
+      var keyCode = e.keyCode || e.which;
+
+      if ([9,13,32,27].indexOf(keyCode) === -1) {
+        // Don't do work on keys we don't care about.
+        return;
+      }
+
+      var $targetElement = e.target || e.srcElement;
+
+      var btnIndex = -1; // Find the button - note, this is a nodelist, not an array.
+      for (var i = 0; i < $modalButtons.length; i++) {
+        if ($targetElement === $modalButtons[i]) {
+          btnIndex = i;
+          break;
+        }
+      }
+
+      if (keyCode === 9) {
+        // TAB
+        if (btnIndex === -1) {
+          // No button focused. Jump to the confirm button.
+          $targetElement = $okButton;
+        } else {
+          // Cycle to the next button
+          if (btnIndex === $modalButtons.length - 1) {
+            $targetElement = $modalButtons[0];
+          } else {
+            $targetElement = $modalButtons[btnIndex + 1];
+          }
+        }
+
+        stopEventPropagation(e);
+        $targetElement.focus();
+        setFocusStyle($targetElement, params.confirmButtonColor); // TODO
+
+      } else {
+        if (keyCode === 13 || keyCode === 32) {
+            if (btnIndex === -1) {
+              // ENTER/SPACE clicked outside of a button.
+              $targetElement = $okButton;
+            } else {
+              // Do nothing - let the browser handle it.
+              $targetElement = undefined;
+            }
+        } else if (keyCode === 27 && params.allowEscapeKey === true) {
+          $targetElement = $cancelButton;
+        } else {
+          // Fallback - let the browser handle it.
+          $targetElement = undefined;
+        }
+
+        if ($targetElement !== undefined) {
+          fireClick($targetElement, e);
+        }
+      }
+    }
+
+    previousWindowKeyDown = window.onkeydown;
+
+    window.onkeydown = handleKeyDown;
+
+    function handleOnBlur(event) {
+      var e = event || window.event;
+      var $targetElement = e.target || e.srcElement,
+          $focusElement = e.relatedTarget,
+          modalIsVisible = hasClass(modal, 'visible');
+
+      if (modalIsVisible) {
+        var btnIndex = -1; // Find the button - note, this is a nodelist, not an array.
+
+        if ($focusElement !== null) {
+          // If we picked something in the DOM to focus to, let's see if it was a button.
+          for (var i = 0; i < $modalButtons.length; i++) {
+            if ($focusElement === $modalButtons[i]) {
+              btnIndex = i;
+              break;
+            }
+          }
+
+          if (btnIndex === -1) {
+            // Something in the dom, but not a visible button. Focus back on the button.
+            $targetElement.focus();
+          }
+        } else {
+          // Exiting the DOM (e.g. clicked in the URL bar);
+          lastFocusedButton = $targetElement;
+        }
+      }
+    }
+
+    $okButton.onblur = handleOnBlur;
+    $cancelButton.onblur = handleOnBlur;
+
+    window.onfocus = function() {
+      // When the user has focused away and focused back from the whole window.
+      window.setTimeout(function() {
+        // Put in a timeout to jump out of the event sequence. Calling focus() in the event
+        // sequence confuses things.
+        if (lastFocusedButton !== undefined) {
+          lastFocusedButton.focus();
+          lastFocusedButton = undefined;
+        }
+      }, 0);
+    };
+  };
+
+
+  /*
+   * Set default params for each popup
+   * @param {Object} userParams
+   */
+  sweetAlert.setDefaults = swal.setDefaults = function(userParams) {
+    if (!userParams) {
+      throw new Error('userParams is required');
+    }
+    if (typeof userParams !== 'object') {
+      throw new Error('userParams has to be a object');
+    }
+
+    extend(defaultParams, userParams);
+  };
+
+
+  /*
+   * Set type, text and actions on modal
+   */
+
+  function setParameters(params) {
+    var modal = getModal();
+
+    var $title = modal.querySelector('h2'),
+        $text = modal.querySelector('p'),
+        $cancelBtn = modal.querySelector('button.cancel'),
+        $confirmBtn = modal.querySelector('button.confirm');
+
+    // Title
+    $title.innerHTML = (params.html) ? params.title : escapeHtml(params.title).split("\n").join("<br>");
+
+    // Text
+    $text.innerHTML = (params.html) ? params.text : escapeHtml(params.text || '').split("\n").join("<br>");
+
+    if (params.text) {
+      show($text);
+    }
+
+    //Custom Class
+    if (params.customClass) {
+      addClass(modal, params.customClass);
+      modal.setAttribute('data-custom-class', params.customClass);
+    } else {
+      // Find previously set classes and remove them
+      var customClass = modal.getAttribute('data-custom-class');
+      removeClass(modal, customClass);
+      modal.setAttribute('data-custom-class', "");
+    }
+
+    // Icon
+    hide(modal.querySelectorAll('.sa-icon'));
+    if (params.type && !isIE8()) {
+      var validType = false;
+      for (var i = 0; i < alertTypes.length; i++) {
+        if (params.type === alertTypes[i]) {
+          validType = true;
+          break;
+        }
+      }
+      if (!validType) {
+        logStr('Unknown alert type: ' + params.type);
+        return false;
+      }
+      var $icon = modal.querySelector('.sa-icon.' + 'sa-' + params.type);
+      show($icon);
+
+      // Animate icon
+      switch (params.type) {
+        case "success":
+          addClass($icon, 'animate');
+          addClass($icon.querySelector('.sa-tip'), 'animateSuccessTip');
+          addClass($icon.querySelector('.sa-long'), 'animateSuccessLong');
+          break;
+        case "error":
+          addClass($icon, 'animateErrorIcon');
+          addClass($icon.querySelector('.sa-x-mark'), 'animateXMark');
+          break;
+        case "warning":
+          addClass($icon, 'pulseWarning');
+          addClass($icon.querySelector('.sa-body'), 'pulseWarningIns');
+          addClass($icon.querySelector('.sa-dot'), 'pulseWarningIns');
+          break;
+      }
+    }
+
+    // Custom image
+    if (params.imageUrl) {
+      var $customIcon = modal.querySelector('.sa-icon.sa-custom');
+
+      $customIcon.style.backgroundImage = 'url(' + params.imageUrl + ')';
+      show($customIcon);
+
+      var _imgWidth  = 80,
+          _imgHeight = 80;
+
+      if (params.imageSize) {
+        var dimensions = params.imageSize.toString().split('x');
+        var imgWidth  = dimensions[0];
+        var imgHeight = dimensions[1];
+
+        if (!imgWidth || !imgHeight) {
+          logStr("Parameter imageSize expects value with format WIDTHxHEIGHT, got " + params.imageSize);
+        } else {
+          _imgWidth  = imgWidth;
+          _imgHeight = imgHeight;
+        }
+      }
+      $customIcon.setAttribute('style', $customIcon.getAttribute('style') + 'width:' + _imgWidth + 'px; height:' + _imgHeight + 'px');
+    }
+
+    // Show cancel button?
+    modal.setAttribute('data-has-cancel-button', params.showCancelButton);
+    if (params.showCancelButton) {
+      $cancelBtn.style.display = 'inline-block';
+    } else {
+      hide($cancelBtn);
+    }
+
+    // Show confirm button?
+    modal.setAttribute('data-has-confirm-button', params.showConfirmButton);
+    if (params.showConfirmButton) {
+      $confirmBtn.style.display = 'inline-block';
+    } else {
+      hide($confirmBtn);
+    }
+
+    // Edit text on cancel and confirm buttons
+    if (params.cancelButtonText) {
+      $cancelBtn.innerHTML = escapeHtml(params.cancelButtonText);
+    }
+    if (params.confirmButtonText) {
+      $confirmBtn.innerHTML = escapeHtml(params.confirmButtonText);
+    }
+
+    // Set confirm button to selected background color
+    $confirmBtn.style.backgroundColor = params.confirmButtonColor;
+
+    // Set box-shadow to default focused button
+    setFocusStyle($confirmBtn, params.confirmButtonColor);
+
+    // Allow outside click?
+    modal.setAttribute('data-allow-ouside-click', params.allowOutsideClick);
+
+    // Done-function
+    var hasDoneFunction = (params.doneFunction) ? true : false;
+    modal.setAttribute('data-has-done-function', hasDoneFunction);
+
+    // Prevent modal from animating
+    if (!params.animation){
+      modal.setAttribute('data-animation', 'none');
+    } else{
+      modal.setAttribute('data-animation', 'pop');
+    }
+
+    // Close timer
+    modal.setAttribute('data-timer', params.timer);
+  }
+
+
+  /*
+   * Set hover, active and focus-states for buttons (source: http://www.sitepoint.com/javascript-generate-lighter-darker-color)
+   */
+
+  function colorLuminance(hex, lum) {
+    // Validate hex string
+    hex = String(hex).replace(/[^0-9a-f]/gi, '');
+    if (hex.length < 6) {
+      hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+    }
+    lum = lum || 0;
+
+    // Convert to decimal and change luminosity
+    var rgb = "#", c, i;
+    for (i = 0; i < 3; i++) {
+      c = parseInt(hex.substr(i*2,2), 16);
+      c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
+      rgb += ("00"+c).substr(c.length);
+    }
+
+    return rgb;
+  }
+
+  function extend(a, b){
+    for (var key in b) {
+      if (b.hasOwnProperty(key)) {
+        a[key] = b[key];
+      }
+    }
+
+    return a;
+  }
+
+  function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? parseInt(result[1], 16) + ', ' + parseInt(result[2], 16) + ', ' + parseInt(result[3], 16) : null;
+  }
+
+  // Add box-shadow style to button (depending on its chosen bg-color)
+  function setFocusStyle($button, bgColor) {
+    var rgbColor = hexToRgb(bgColor);
+    $button.style.boxShadow = '0 0 2px rgba(' + rgbColor +', 0.8), inset 0 0 0 1px rgba(0, 0, 0, 0.05)';
+  }
+
+
+  // Animation when opening modal
+  function openModal() {
+    var modal = getModal();
+    fadeIn(getOverlay(), 10);
+    show(modal);
+    addClass(modal, 'showSweetAlert');
+    removeClass(modal, 'hideSweetAlert');
+
+    previousActiveElement = document.activeElement;
+    var $okButton = modal.querySelector('button.confirm');
+    $okButton.focus();
+
+    setTimeout(function() {
+      addClass(modal, 'visible');
+    }, 500);
+
+    var timer = modal.getAttribute('data-timer');
+
+    if (timer !== "null" && timer !== "") {
+      modal.timeout = setTimeout(function() {
+        sweetAlert.close();
+      }, timer);
+    }
+  }
+
+
+  // Aninmation when closing modal
+  sweetAlert.close = swal.close = function() {
+    var modal = getModal();
+    fadeOut(getOverlay(), 5);
+    fadeOut(modal, 5);
+    removeClass(modal, 'showSweetAlert');
+    addClass(modal, 'hideSweetAlert');
+    removeClass(modal, 'visible');
+
+
+    // Reset icon animations
+
+    var $successIcon = modal.querySelector('.sa-icon.sa-success');
+    removeClass($successIcon, 'animate');
+    removeClass($successIcon.querySelector('.sa-tip'), 'animateSuccessTip');
+    removeClass($successIcon.querySelector('.sa-long'), 'animateSuccessLong');
+
+    var $errorIcon = modal.querySelector('.sa-icon.sa-error');
+    removeClass($errorIcon, 'animateErrorIcon');
+    removeClass($errorIcon.querySelector('.sa-x-mark'), 'animateXMark');
+
+    var $warningIcon = modal.querySelector('.sa-icon.sa-warning');
+    removeClass($warningIcon, 'pulseWarning');
+    removeClass($warningIcon.querySelector('.sa-body'), 'pulseWarningIns');
+    removeClass($warningIcon.querySelector('.sa-dot'), 'pulseWarningIns');
+
+
+    // Reset the page to its previous state
+    window.onkeydown = previousWindowKeyDown;
+    document.onclick = previousDocumentClick;
+    if (previousActiveElement) {
+      previousActiveElement.focus();
+    }
+    lastFocusedButton = undefined;
+    clearTimeout(modal.timeout);
+  };
+
+
+  /*
+   * Set "margin-top"-property on modal based on its computed height
+   */
+
+  function fixVerticalPosition() {
+    var modal = getModal();
+
+    modal.style.marginTop = getTopMargin(getModal());
+  }
+
+  // If browser is Internet Explorer 8
+  function isIE8() {
+    if (window.attachEvent && !window.addEventListener) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // Error messages for developers
+  function logStr(string) {
+    if (window.console) { // IE...
+      window.console.log("SweetAlert: " + string);
+    }
+  }
+
+    if (typeof define === 'function' && define.amd) {
+      define(function() { return sweetAlert; });
+    } else if (typeof module !== 'undefined' && module.exports) {
+      module.exports = sweetAlert;
+    } else if (typeof window !== 'undefined') {
+      window.sweetAlert = window.swal = sweetAlert;
+    }
+
+})(window, document);
 
 /**
  * State-based routing for AngularJS
@@ -7201,6 +8472,603 @@ angular.module("ng-wig/views/ng-wig.html", []).run(["$templateCache", function($
     "  </div>\n" +
     "</div>\n" +
     "");
+}]);
+
+/**
+  * x is a value between 0 and 1, indicating where in the animation you are.
+  */
+var duScrollDefaultEasing = function (x) {
+  'use strict';
+
+  if(x < 0.5) {
+    return Math.pow(x*2, 2)/2;
+  }
+  return 1-Math.pow((1-x)*2, 2)/2;
+};
+
+angular.module('duScroll', [
+  'duScroll.scrollspy',
+  'duScroll.smoothScroll',
+  'duScroll.scrollContainer',
+  'duScroll.spyContext',
+  'duScroll.scrollHelpers'
+])
+  //Default animation duration for smoothScroll directive
+  .value('duScrollDuration', 350)
+  //Scrollspy debounce interval, set to 0 to disable
+  .value('duScrollSpyWait', 100)
+  //Wether or not multiple scrollspies can be active at once
+  .value('duScrollGreedy', false)
+  //Default offset for smoothScroll directive
+  .value('duScrollOffset', 0)
+  //Default easing function for scroll animation
+  .value('duScrollEasing', duScrollDefaultEasing);
+
+
+angular.module('duScroll.scrollHelpers', ['duScroll.requestAnimation'])
+.run(["$window", "$q", "cancelAnimation", "requestAnimation", "duScrollEasing", "duScrollDuration", "duScrollOffset", function($window, $q, cancelAnimation, requestAnimation, duScrollEasing, duScrollDuration, duScrollOffset) {
+  'use strict';
+
+  var proto = {};
+
+  var isDocument = function(el) {
+    return (typeof HTMLDocument !== 'undefined' && el instanceof HTMLDocument) || (el.nodeType && el.nodeType === el.DOCUMENT_NODE);
+  };
+
+  var isElement = function(el) {
+    return (typeof HTMLElement !== 'undefined' && el instanceof HTMLElement) || (el.nodeType && el.nodeType === el.ELEMENT_NODE);
+  };
+
+  var unwrap = function(el) {
+    return isElement(el) || isDocument(el) ? el : el[0];
+  };
+
+  proto.duScrollTo = function(left, top, duration, easing) {
+    var aliasFn;
+    if(angular.isElement(left)) {
+      aliasFn = this.duScrollToElement;
+    } else if(angular.isDefined(duration)) {
+      aliasFn = this.duScrollToAnimated;
+    }
+    if(aliasFn) {
+      return aliasFn.apply(this, arguments);
+    }
+    var el = unwrap(this);
+    if(isDocument(el)) {
+      return $window.scrollTo(left, top);
+    }
+    el.scrollLeft = left;
+    el.scrollTop = top;
+  };
+
+  var scrollAnimation, deferred;
+  proto.duScrollToAnimated = function(left, top, duration, easing) {
+    if(duration && !easing) {
+      easing = duScrollEasing;
+    }
+    var startLeft = this.duScrollLeft(),
+        startTop = this.duScrollTop(),
+        deltaLeft = Math.round(left - startLeft),
+        deltaTop = Math.round(top - startTop);
+
+    var startTime = null;
+    var el = this;
+
+    var cancelOnEvents = 'scroll mousedown mousewheel touchmove keydown';
+    var cancelScrollAnimation = function($event) {
+      if (!$event || $event.which > 0) {
+        el.unbind(cancelOnEvents, cancelScrollAnimation);
+        cancelAnimation(scrollAnimation);
+        deferred.reject();
+        scrollAnimation = null;
+      }
+    };
+
+    if(scrollAnimation) {
+      cancelScrollAnimation();
+    }
+    deferred = $q.defer();
+
+    if(duration === 0 || (!deltaLeft && !deltaTop)) {
+      if(duration === 0) {
+        el.duScrollTo(left, top);
+      }
+      deferred.resolve();
+      return deferred.promise;
+    }
+
+    var animationStep = function(timestamp) {
+      if (startTime === null) {
+        startTime = timestamp;
+      }
+
+      var progress = timestamp - startTime;
+      var percent = (progress >= duration ? 1 : easing(progress/duration));
+
+      el.scrollTo(
+        startLeft + Math.ceil(deltaLeft * percent),
+        startTop + Math.ceil(deltaTop * percent)
+      );
+      if(percent < 1) {
+        scrollAnimation = requestAnimation(animationStep);
+      } else {
+        el.unbind(cancelOnEvents, cancelScrollAnimation);
+        scrollAnimation = null;
+        deferred.resolve();
+      }
+    };
+
+    //Fix random mobile safari bug when scrolling to top by hitting status bar
+    el.duScrollTo(startLeft, startTop);
+
+    el.bind(cancelOnEvents, cancelScrollAnimation);
+
+    scrollAnimation = requestAnimation(animationStep);
+    return deferred.promise;
+  };
+
+  proto.duScrollToElement = function(target, offset, duration, easing) {
+    var el = unwrap(this);
+    if(!angular.isNumber(offset) || isNaN(offset)) {
+      offset = duScrollOffset;
+    }
+    var top = this.duScrollTop() + unwrap(target).getBoundingClientRect().top - offset;
+    if(isElement(el)) {
+      top -= el.getBoundingClientRect().top;
+    }
+    return this.duScrollTo(0, top, duration, easing);
+  };
+
+  proto.duScrollLeft = function(value, duration, easing) {
+    if(angular.isNumber(value)) {
+      return this.duScrollTo(value, this.duScrollTop(), duration, easing);
+    }
+    var el = unwrap(this);
+    if(isDocument(el)) {
+      return $window.scrollX || document.documentElement.scrollLeft || document.body.scrollLeft;
+    }
+    return el.scrollLeft;
+  };
+  proto.duScrollTop = function(value, duration, easing) {
+    if(angular.isNumber(value)) {
+      return this.duScrollTo(this.duScrollLeft(), value, duration, easing);
+    }
+    var el = unwrap(this);
+    if(isDocument(el)) {
+      return $window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
+    }
+    return el.scrollTop;
+  };
+
+  proto.duScrollToElementAnimated = function(target, offset, duration, easing) {
+    return this.duScrollToElement(target, offset, duration || duScrollDuration, easing);
+  };
+
+  proto.duScrollTopAnimated = function(top, duration, easing) {
+    return this.duScrollTop(top, duration || duScrollDuration, easing);
+  };
+
+  proto.duScrollLeftAnimated = function(left, duration, easing) {
+    return this.duScrollLeft(left, duration || duScrollDuration, easing);
+  };
+
+  angular.forEach(proto, function(fn, key) {
+    angular.element.prototype[key] = fn;
+
+    //Remove prefix if not already claimed by jQuery / ui.utils
+    var unprefixed = key.replace(/^duScroll/, 'scroll');
+    if(angular.isUndefined(angular.element.prototype[unprefixed])) {
+      angular.element.prototype[unprefixed] = fn;
+    }
+  });
+
+}]);
+
+
+//Adapted from https://gist.github.com/paulirish/1579671
+angular.module('duScroll.polyfill', [])
+.factory('polyfill', ["$window", function($window) {
+  'use strict';
+
+  var vendors = ['webkit', 'moz', 'o', 'ms'];
+
+  return function(fnName, fallback) {
+    if($window[fnName]) {
+      return $window[fnName];
+    }
+    var suffix = fnName.substr(0, 1).toUpperCase() + fnName.substr(1);
+    for(var key, i = 0; i < vendors.length; i++) {
+      key = vendors[i]+suffix;
+      if($window[key]) {
+        return $window[key];
+      }
+    }
+    return fallback;
+  };
+}]);
+
+angular.module('duScroll.requestAnimation', ['duScroll.polyfill'])
+.factory('requestAnimation', ["polyfill", "$timeout", function(polyfill, $timeout) {
+  'use strict';
+
+  var lastTime = 0;
+  var fallback = function(callback, element) {
+    var currTime = new Date().getTime();
+    var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+    var id = $timeout(function() { callback(currTime + timeToCall); },
+      timeToCall);
+    lastTime = currTime + timeToCall;
+    return id;
+  };
+
+  return polyfill('requestAnimationFrame', fallback);
+}])
+.factory('cancelAnimation', ["polyfill", "$timeout", function(polyfill, $timeout) {
+  'use strict';
+
+  var fallback = function(promise) {
+    $timeout.cancel(promise);
+  };
+
+  return polyfill('cancelAnimationFrame', fallback);
+}]);
+
+
+angular.module('duScroll.spyAPI', ['duScroll.scrollContainerAPI'])
+.factory('spyAPI', ["$rootScope", "$timeout", "$window", "$document", "scrollContainerAPI", "duScrollGreedy", "duScrollSpyWait", function($rootScope, $timeout, $window, $document, scrollContainerAPI, duScrollGreedy, duScrollSpyWait) {
+  'use strict';
+
+  var createScrollHandler = function(context) {
+    var timer = false, queued = false;
+    var handler = function() {
+      queued = false;
+      var container = context.container,
+          containerEl = container[0],
+          containerOffset = 0,
+          bottomReached;
+
+      if (typeof HTMLElement !== 'undefined' && containerEl instanceof HTMLElement || containerEl.nodeType && containerEl.nodeType === containerEl.ELEMENT_NODE) {
+        containerOffset = containerEl.getBoundingClientRect().top;
+        bottomReached = Math.round(containerEl.scrollTop + containerEl.clientHeight) >= containerEl.scrollHeight;
+      } else {
+        bottomReached = Math.round($window.pageYOffset + $window.innerHeight) >= $document[0].body.scrollHeight;
+      }
+      var compareProperty = (bottomReached ? 'bottom' : 'top');
+
+      var i, currentlyActive, toBeActive, spies, spy, pos;
+      spies = context.spies;
+      currentlyActive = context.currentlyActive;
+      toBeActive = undefined;
+
+      for(i = 0; i < spies.length; i++) {
+        spy = spies[i];
+        pos = spy.getTargetPosition();
+        if (!pos) continue;
+
+        if(bottomReached || (pos.top + spy.offset - containerOffset < 20 && (duScrollGreedy || pos.top*-1 + containerOffset) < pos.height)) {
+          //Find the one closest the viewport top or the page bottom if it's reached
+          if(!toBeActive || toBeActive[compareProperty] < pos[compareProperty]) {
+            toBeActive = {
+              spy: spy
+            };
+            toBeActive[compareProperty] = pos[compareProperty];
+          }
+        }
+      }
+
+      if(toBeActive) {
+        toBeActive = toBeActive.spy;
+      }
+      if(currentlyActive === toBeActive || (duScrollGreedy && !toBeActive)) return;
+      if(currentlyActive) {
+        currentlyActive.$element.removeClass('active');
+        $rootScope.$broadcast('duScrollspy:becameInactive', currentlyActive.$element);
+      }
+      if(toBeActive) {
+        toBeActive.$element.addClass('active');
+        $rootScope.$broadcast('duScrollspy:becameActive', toBeActive.$element);
+      }
+      context.currentlyActive = toBeActive;
+    };
+
+    if(!duScrollSpyWait) {
+      return handler;
+    }
+
+    //Debounce for potential performance savings
+    return function() {
+      if(!timer) {
+        handler();
+        timer = $timeout(function() {
+          timer = false;
+          if(queued) {
+            handler();
+          }
+        }, duScrollSpyWait, false);
+      } else {
+        queued = true;
+      }
+    };
+  };
+
+  var contexts = {};
+
+  var createContext = function($scope) {
+    var id = $scope.$id;
+    var context = {
+      spies: []
+    };
+
+    context.handler = createScrollHandler(context);
+    contexts[id] = context;
+
+    $scope.$on('$destroy', function() {
+      destroyContext($scope);
+    });
+
+    return id;
+  };
+
+  var destroyContext = function($scope) {
+    var id = $scope.$id;
+    var context = contexts[id], container = context.container;
+    if(container) {
+      container.off('scroll', context.handler);
+    }
+    delete contexts[id];
+  };
+
+  var defaultContextId = createContext($rootScope);
+
+  var getContextForScope = function(scope) {
+    if(contexts[scope.$id]) {
+      return contexts[scope.$id];
+    }
+    if(scope.$parent) {
+      return getContextForScope(scope.$parent);
+    }
+    return contexts[defaultContextId];
+  };
+
+  var getContextForSpy = function(spy) {
+    var context, contextId, scope = spy.$scope;
+    if(scope) {
+      return getContextForScope(scope);
+    }
+    //No scope, most likely destroyed
+    for(contextId in contexts) {
+      context = contexts[contextId];
+      if(context.spies.indexOf(spy) !== -1) {
+        return context;
+      }
+    }
+  };
+
+  var isElementInDocument = function(element) {
+    while (element.parentNode) {
+      element = element.parentNode;
+      if (element === document) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  var addSpy = function(spy) {
+    var context = getContextForSpy(spy);
+    if (!context) return;
+    context.spies.push(spy);
+    if (!context.container || !isElementInDocument(context.container)) {
+      if(context.container) {
+        context.container.off('scroll', context.handler);
+      }
+      context.container = scrollContainerAPI.getContainer(spy.$scope);
+      context.container.on('scroll', context.handler).triggerHandler('scroll');
+    }
+  };
+
+  var removeSpy = function(spy) {
+    var context = getContextForSpy(spy);
+    if(spy === context.currentlyActive) {
+      context.currentlyActive = null;
+    }
+    var i = context.spies.indexOf(spy);
+    if(i !== -1) {
+      context.spies.splice(i, 1);
+    }
+		spy.$element = null;
+  };
+
+  return {
+    addSpy: addSpy,
+    removeSpy: removeSpy,
+    createContext: createContext,
+    destroyContext: destroyContext,
+    getContextForScope: getContextForScope
+  };
+}]);
+
+
+angular.module('duScroll.scrollContainerAPI', [])
+.factory('scrollContainerAPI', ["$document", function($document) {
+  'use strict';
+
+  var containers = {};
+
+  var setContainer = function(scope, element) {
+    var id = scope.$id;
+    containers[id] = element;
+    return id;
+  };
+
+  var getContainerId = function(scope) {
+    if(containers[scope.$id]) {
+      return scope.$id;
+    }
+    if(scope.$parent) {
+      return getContainerId(scope.$parent);
+    }
+    return;
+  };
+
+  var getContainer = function(scope) {
+    var id = getContainerId(scope);
+    return id ? containers[id] : $document;
+  };
+
+  var removeContainer = function(scope) {
+    var id = getContainerId(scope);
+    if(id) {
+      delete containers[id];
+    }
+  };
+
+  return {
+    getContainerId:   getContainerId,
+    getContainer:     getContainer,
+    setContainer:     setContainer,
+    removeContainer:  removeContainer
+  };
+}]);
+
+
+angular.module('duScroll.smoothScroll', ['duScroll.scrollHelpers', 'duScroll.scrollContainerAPI'])
+.directive('duSmoothScroll', ["duScrollDuration", "duScrollOffset", "scrollContainerAPI", function(duScrollDuration, duScrollOffset, scrollContainerAPI) {
+  'use strict';
+
+  return {
+    link : function($scope, $element, $attr) {
+      $element.on('click', function(e) {
+        if(!$attr.href || $attr.href.indexOf('#') === -1) return;
+
+        var target = document.getElementById($attr.href.replace(/.*(?=#[^\s]+$)/, '').substring(1));
+        if(!target || !target.getBoundingClientRect) return;
+
+        if (e.stopPropagation) e.stopPropagation();
+        if (e.preventDefault) e.preventDefault();
+
+        var offset    = $attr.offset ? parseInt($attr.offset, 10) : duScrollOffset;
+        var duration  = $attr.duration ? parseInt($attr.duration, 10) : duScrollDuration;
+        var container = scrollContainerAPI.getContainer($scope);
+
+        container.duScrollToElement(
+          angular.element(target),
+          isNaN(offset) ? 0 : offset,
+          isNaN(duration) ? 0 : duration
+        );
+      });
+    }
+  };
+}]);
+
+
+angular.module('duScroll.spyContext', ['duScroll.spyAPI'])
+.directive('duSpyContext', ["spyAPI", function(spyAPI) {
+  'use strict';
+
+  return {
+    restrict: 'A',
+    scope: true,
+    compile: function compile(tElement, tAttrs, transclude) {
+      return {
+        pre: function preLink($scope, iElement, iAttrs, controller) {
+          spyAPI.createContext($scope);
+        }
+      };
+    }
+  };
+}]);
+
+
+angular.module('duScroll.scrollContainer', ['duScroll.scrollContainerAPI'])
+.directive('duScrollContainer', ["scrollContainerAPI", function(scrollContainerAPI){
+  'use strict';
+
+  return {
+    restrict: 'A',
+    scope: true,
+    compile: function compile(tElement, tAttrs, transclude) {
+      return {
+        pre: function preLink($scope, iElement, iAttrs, controller) {
+          iAttrs.$observe('duScrollContainer', function(element) {
+            if(angular.isString(element)) {
+              element = document.getElementById(element);
+            }
+
+            element = (angular.isElement(element) ? angular.element(element) : iElement);
+            scrollContainerAPI.setContainer($scope, element);
+            $scope.$on('$destroy', function() {
+              scrollContainerAPI.removeContainer($scope);
+            });
+          });
+        }
+      };
+    }
+  };
+}]);
+
+
+angular.module('duScroll.scrollspy', ['duScroll.spyAPI'])
+.directive('duScrollspy', ["spyAPI", "duScrollOffset", "$timeout", "$rootScope", function(spyAPI, duScrollOffset, $timeout, $rootScope) {
+  'use strict';
+
+  var Spy = function(targetElementOrId, $scope, $element, offset) {
+    if(angular.isElement(targetElementOrId)) {
+      this.target = targetElementOrId;
+    } else if(angular.isString(targetElementOrId)) {
+      this.targetId = targetElementOrId;
+    }
+    this.$scope = $scope;
+    this.$element = $element;
+    this.offset = offset;
+  };
+
+  Spy.prototype.getTargetElement = function() {
+    if (!this.target && this.targetId) {
+      this.target = document.getElementById(this.targetId);
+    }
+    return this.target;
+  };
+
+  Spy.prototype.getTargetPosition = function() {
+    var target = this.getTargetElement();
+    if(target) {
+      return target.getBoundingClientRect();
+    }
+  };
+
+  Spy.prototype.flushTargetCache = function() {
+    if(this.targetId) {
+      this.target = undefined;
+    }
+  };
+
+  return {
+    link: function ($scope, $element, $attr) {
+      var href = $attr.ngHref || $attr.href;
+      var targetId;
+
+      if (href && href.indexOf('#') !== -1) {
+        targetId = href.replace(/.*(?=#[^\s]+$)/, '').substring(1);
+      } else if($attr.duScrollspy) {
+        targetId = $attr.duScrollspy;
+      }
+      if(!targetId) return;
+
+      // Run this in the next execution loop so that the scroll context has a chance
+      // to initialize
+      $timeout(function() {
+        var spy = new Spy(targetId, $scope, $element, -($attr.offset ? parseInt($attr.offset, 10) : duScrollOffset));
+        spyAPI.addSpy(spy);
+
+        $scope.$on('$destroy', function() {
+          spyAPI.removeSpy(spy);
+        });
+        $scope.$on('$locationChangeSuccess', spy.flushTargetCache.bind(spy));
+        $rootScope.$on('$stateChangeSuccess', spy.flushTargetCache.bind(spy));
+      }, 0, false);
+    }
+  };
 }]);
 
 /*! 
