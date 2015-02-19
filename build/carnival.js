@@ -2756,10 +2756,10 @@ angular.module("components/form-column/form-column.html", []).run(["$templateCac
 angular.module("components/form-fields-next/form-fields-next.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/form-fields-next/form-fields-next.html",
     "<div>\n" +
-    "  <label ng-if='canShow(field)'>\n" +
+    "<label class='carnival-form-label'>\n" +
     "    {{ fields[$index + 1].label }}\n" +
     "  </label>\n" +
-    "  <div ng-switch=\"fields[$index + 1].type\">\n" +
+    "  <div ng-switch=\"fields[$index + 1].type\" class='carnival-form-field'>\n" +
     "    <carnival-text-field ng-switch-when=\"text\" data=\"datas[fields[$index + 1].name]\" label=\"fields[$index + 1].label\"></carnival-text-field>\n" +
     "    <carnival-wysiwyg-field ng-switch-when=\"wysiwyg\" data=\"datas[fields[$index + 1].name]\" label=\"fields[$index + 1].label\"></carnival-wysiwyg-field>\n" +
     "    <carnival-boolean-field ng-switch-when=\"boolean\" data=\"datas[fields[$index + 1].name]\"></carnival-boolean-field>\n" +
@@ -2782,10 +2782,10 @@ angular.module("components/form-fields-next/form-fields-next.html", []).run(["$t
 angular.module("components/form-fields/form-fields.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/form-fields/form-fields.html",
     "<div>\n" +
-    "  <label>\n" +
+    "  <label class='carnival-form-label'>\n" +
     "    {{ field.label }}\n" +
     "  </label>\n" +
-    "  <div ng-switch=\"field.type\">\n" +
+    "  <div ng-switch=\"field.type\" class='carnival-form-field'>\n" +
     "    <carnival-text-field ng-switch-when=\"text\" data=\"datas[field.name]\" label=\"field.label\"></carnival-text-field>\n" +
     "    <carnival-wysiwyg-field ng-switch-when=\"wysiwyg\" data=\"datas[field.name]\" label=\"field.label\"></carnival-wysiwyg-field>\n" +
     "    <carnival-boolean-field ng-switch-when=\"boolean\" data=\"datas[field.name]\"></carnival-boolean-field>\n" +

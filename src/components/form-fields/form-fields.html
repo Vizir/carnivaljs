@@ -1,8 +1,8 @@
 <div>
-  <label>
+  <label class='carnival-form-label'>
     {{ field.label }}
   </label>
-  <div ng-switch="field.type">
+  <div ng-switch="field.type" class='carnival-form-field'>
     <carnival-text-field ng-switch-when="text" data="datas[field.name]" label="field.label"></carnival-text-field>
     <carnival-wysiwyg-field ng-switch-when="wysiwyg" data="datas[field.name]" label="field.label"></carnival-wysiwyg-field>
     <carnival-boolean-field ng-switch-when="boolean" data="datas[field.name]"></carnival-boolean-field>

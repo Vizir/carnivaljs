@@ -1,8 +1,8 @@
 <div>
-  <label ng-if='canShow(field)'>
+<label class='carnival-form-label'>
     {{ fields[$index + 1].label }}
   </label>
-  <div ng-switch="fields[$index + 1].type">
+  <div ng-switch="fields[$index + 1].type" class='carnival-form-field'>
     <carnival-text-field ng-switch-when="text" data="datas[fields[$index + 1].name]" label="fields[$index + 1].label"></carnival-text-field>
     <carnival-wysiwyg-field ng-switch-when="wysiwyg" data="datas[fields[$index + 1].name]" label="fields[$index + 1].label"></carnival-wysiwyg-field>
     <carnival-boolean-field ng-switch-when="boolean" data="datas[fields[$index + 1].name]"></carnival-boolean-field>
