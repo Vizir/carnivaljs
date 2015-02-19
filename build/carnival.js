@@ -787,6 +787,8 @@ angular.module('carnival.components.form', [])
         }
       };
 
+      $scope.saveButtonClass = $scope.type === 'nested' ? 'tiny' : 'small';
+
       $scope.buttonAction = function(){
         var callbackFunction = saveCallback;
         $scope.action.click(callbackFunction);
@@ -2597,13 +2599,13 @@ angular.module("components/delete-button/delete-button.html", []).run(["$templat
 
 angular.module("components/field-form-builder/field-form-builder.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/field-form-builder/field-form-builder.html",
-    "<span ng-switch='state'>\n" +
-    "  <a ng-switch-when='create' class=\"button default tiny form-builder\" ng-click=\"open()\">{{ 'NESTED_FORM_BUTTON_CREATE' | translate }}</a>\n" +
+    "<div ng-switch='state'>\n" +
     "  <div ng-switch-when='create' id=\"create_nested_{{field.entityName}}\"></div>\n" +
+    "  <a ng-switch-when='create' class=\"button default tiny form-builder\" ng-click=\"open()\">{{ 'NESTED_FORM_BUTTON_CREATE' | translate }}</a>\n" +
     "\n" +
     "  <a ng-switch-when='edit' id='editHasManyOption' ng-click='openWithData();' class=\"button warning tiny form-builder\">{{getButtonLabel()}}</a>\n" +
     "  <div ng-switch-when='edit' id=\"edit_nested_{{field.name}}_{{data[field.identifier]}}\"></div>\n" +
-    "</span>\n" +
+    "</div>\n" +
     "");
 }]);
 
@@ -2837,7 +2839,7 @@ angular.module("components/form/form.html", []).run(["$templateCache", function(
     "    </div>\n" +
     "\n" +
     "    <div class='column small-12'>\n" +
-    "      <carnival-button label=\"{{ 'FORM_BUTTON_SAVE' | translate }}\" style=\"success\" size=\"small\" ng-click=\"buttonAction()\"></carnival-button>\n" +
+    "      <carnival-button label=\"{{ 'FORM_BUTTON_SAVE' | translate }}\" style=\"success\" size=\"{{saveButtonClass}}\" ng-click=\"buttonAction()\"></carnival-button>\n" +
     "    </div>\n" +
     "  </form>\n" +
     "\n" +
@@ -3007,13 +3009,10 @@ angular.module("components/navbar/navbar.html", []).run(["$templateCache", funct
 
 angular.module("components/nested-form/nested-form.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/nested-form/nested-form.html",
-    "<div class=\"nested-container animated fadeIn\">\n" +
-    "<a class='close-nested btn btn-default btn-xs' ng-click='close()'>Close</a>\n" +
-    "  <fieldset>\n" +
-    "  <legend>{{ 'NESTED_FORM_TITLE_CREATE' | translate }} {{ entity.label }}</legend>\n" +
+    "<fieldset class=\"nested-container animated fadeIn\">\n" +
+    "  <legend>{{ 'NESTED_FORM_TITLE_CREATE' | translate }}</legend>\n" +
     "  <carnival-form type='nested' entity='entity' fields=\"entity.fields\" action=\"entity.action\" datas=\"entity.datas\" state=\"{{state}}\" related-resources=\"entity.relatedResources\" editable=\"true\"></carnival-form>\n" +
-    "  </fieldset>\n" +
-    "</div>\n" +
+    "</fieldset>\n" +
     "");
 }]);
 
