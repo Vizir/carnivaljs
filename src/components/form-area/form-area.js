@@ -14,9 +14,8 @@ angular.module('carnival.components.form-area', [])
       editable: '='
     },
     templateUrl: 'components/form-area/form-area.html',
-    controller: function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $state) {
+    controller: function ($rootScope, $scope, FormService) {
       FormService.init();
-
       $scope.getDisableClass = function(){
         if(FormService.columnsCount() > 0)
           return 'disable-form';
