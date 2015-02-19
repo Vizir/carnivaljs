@@ -73,7 +73,7 @@ angular.module('carnival.components.form', [])
           new Notification(message, 'success');
         }else{
           if($scope.type === 'column')
-            FormService.closeColumn($scope.type + '-' + $scope.entity.name);
+            FormService.closeColumn('form' + '-' + $scope.entity.name);
           else if($scope.type === 'nested')
             FormService.closeNested($scope.entity.name);
           else

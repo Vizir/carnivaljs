@@ -768,7 +768,7 @@ angular.module('carnival.components.form', [])
           new Notification(message, 'success');
         }else{
           if($scope.type === 'column')
-            FormService.closeColumn($scope.type + '-' + $scope.entity.name);
+            FormService.closeColumn('form' + '-' + $scope.entity.name);
           else if($scope.type === 'nested')
             FormService.closeNested($scope.entity.name);
           else
@@ -1991,7 +1991,7 @@ angular.module('carnival')
   };
 
   this.openColumn = function(state, containerId, scope){
-    var formId = 'column-' + scope.entity.name;
+    var formId = 'form-' +  scope.entity.name;
     var index = this.columnsCount() || 0;
     var directive = '<carnival-form-column index="'+index+'" type="form" entity="entity" state="'+state+'"></carnival-form-column>';
     this._addColumn(directive, formId, containerId, scope);

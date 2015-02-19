@@ -27,7 +27,7 @@ angular.module('carnival')
   };
 
   this.openColumn = function(state, containerId, scope){
-    var formId = 'column-' + scope.entity.name;
+    var formId = 'form-' +  scope.entity.name;
     var index = this.columnsCount() || 0;
     var directive = '<carnival-form-column index="'+index+'" type="form" entity="entity" state="'+state+'"></carnival-form-column>';
     this._addColumn(directive, formId, containerId, scope);
