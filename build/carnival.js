@@ -2906,7 +2906,7 @@ angular.module("components/has-many-table/has-many-table.html", []).run(["$templ
 
 angular.module("components/listing-extra-action/listing-extra-action.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/listing-extra-action/listing-extra-action.html",
-    "<span>\n" +
+    "<span class='carnival-listing-extra-action-{{extraAction.name}}'>\n" +
     "  <a ng-if=\"extraAction.action\" class=\"button default tiny\" ng-click=\"executeAction()\">{{ getLabel() }}</a>\n" +
     "  <a ng-if=\"extraAction.url\" class=\"button default tiny\" ng-href='{{ getUrl() }}'>{{ getLabel() }}</a>\n" +
     "</span>\n" +
