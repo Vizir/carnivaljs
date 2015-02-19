@@ -55,10 +55,22 @@ angular.module('carnival')
 
   };
 
+var parseGrid = function (grid) {
+    var rowSplitted = grid.split(' ');
+    var newRow = rowSplitted[0] === 'row' ? true : false;
+    if (rowSplitted[0] === 'row') rowSplitted.splice(0, 1);
+    var columnSplitted = rowSplitted[0].split('-');
+    var columnSize = columnSplitted[0] === 'column' ? columnSplitted[1] : '12';
+    return {
+      newRow: newRow,
+      columnSize: columnSize
+    };
+  };
+
   this.build = function(field_name, fieldParams){
     var field = {
       name:       field_name,
-      label:      fieldParams.label,
+      label:      fieldParams.label || field_name,
       foreignKey: fieldParams.foreignKey,
       endpoint:   fieldParams.endpoint || field_name,
       field:      fieldParams.field,
@@ -68,7 +80,8 @@ angular.module('carnival')
       uploader:   fieldParams.uploader,
       gallery:    fieldParams.gallery,
       values:     fieldParams.values,
-      currencyOptions: fieldParams.currencyOptions,
+      grid:       parseGrid(fieldParams.grid || 'row column-12'),
+      options:    fieldParams.options,
       views:      buildViews(fieldParams.views)
     };
 
