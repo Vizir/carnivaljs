@@ -475,7 +475,7 @@ angular.module('carnival.components.fields.hasMany', [])
       };
 
       $scope.showAs = function(){
-        return $scope.field.views[$scope.state].nested.showItemsAs;
+        return $scope.field.showAs;
       };
 
       var getItemIndex = function(id, items){
@@ -800,7 +800,7 @@ angular.module('carnival.components.form', [])
         }
       };
 
-      $scope.saveButtonClass = $scope.type === 'nested' ? 'tiny' : 'small';
+      $scope.saveButtonClass = $scope.type === 'nested' ? 'tiny button-submit' : 'small button-submit';
 
       $scope.buttonAction = function(){
         var callbackFunction = saveCallback;
@@ -843,12 +843,12 @@ angular.module('carnival.components.has-many-table', [])
       parentEntity: '=',
       field: '=',
       datas: '=',
+      hasNested: '=',
       state: '@',
       editable: '='
     },
     templateUrl: 'components/has-many-table/has-many-table.html',
     controller: ["$rootScope", "$scope", "$compile", "utils", "$element", "FormService", "Configuration", "EntityResources", function ($rootScope, $scope, $compile, utils, $element, FormService, Configuration, EntityResources) {
-      $scope.entity = EntityResources.prepareForListState($scope.field.name, $scope.parentEntity);
 
       $scope.getListFields = function(){
         var fields = [];
@@ -861,6 +861,12 @@ angular.module('carnival.components.has-many-table', [])
 
         return fields;
       };
+
+      var init = function(){
+        $scope.entity = EntityResources.prepareForListState($scope.field.name, $scope.parentEntity);
+      };
+
+      init();
     }]
   };
 });
@@ -1796,6 +1802,7 @@ angular.module('carnival')
       type:       fieldParams.type,
       uploader:   fieldParams.uploader,
       gallery:    fieldParams.gallery,
+      showAs:    fieldParams.showAs || 'table',
       values:     fieldParams.values,
       grid:       parseGrid(fieldParams.grid || 'row column-12'),
       options:    fieldParams.options,
@@ -2683,8 +2690,8 @@ angular.module("components/fields/has-many/has-many.html", []).run(["$templateCa
     "<div>\n" +
     "\n" +
     "  <div ng-switch='showAs()'>\n" +
-    "    <carnival-has-many-table ng-switch-when='summarized' parent-entity='parentEntity' field='field' datas='datas' state='state' editable='editable'></carnival-has-many-table>\n" +
-    "    <ul class='carnival-tags' ng-switch-default class='has-many-field-list'>\n" +
+    "    <carnival-has-many-table ng-switch-when='table' has-nested='hasNested()'  parent-entity='parentEntity' field='field' datas='datas' state='state' editable='editable'></carnival-has-many-table>\n" +
+    "    <ul class='carnival-tags' ng-switch-when='tag' class='has-many-field-list'>\n" +
     "      <li class='carnival-tag' ng-repeat='data in datas'>\n" +
     "        <carnival-field-form-builder ng-if='hasNested()' label='{{data[field.field]}}' data=\"data\" state='edit' parent-entity='parentEntity' field='field'></carnival-field-form-builder>\n" +
     "        <a id='removeHasManyOption' ng-click='remove(data.id);' class=\"button default tiny remove-tag\">x</a>\n" +
@@ -2887,7 +2894,8 @@ angular.module("components/has-many-table/has-many-table.html", []).run(["$templ
     "          <carnival-listing-field item=\"data\" field=\"field\"></carnival-listing-field>\n" +
     "        </td>\n" +
     "        <td>\n" +
-    "          <carnival-field-form-builder data=\"data\" state='edit' parent-entity='entity.parentEntity' field='field'></carnival-field-form-builder>\n" +
+    "          <carnival-field-form-builder ng-if=\"hasNested\" data=\"data\" state='edit' parent-entity='entity.parentEntity' field='field'></carnival-field-form-builder>\n" +
+    "          <a ng-if=\"!hasNested\" class='button warning tiny' href=\"#/edit/{{field.name}}/{{data[field.identifier]}}\">Edit</a>\n" +
     "        </td>\n" +
     "      </tr>\n" +
     "    </tbody>\n" +
