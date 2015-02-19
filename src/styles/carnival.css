@@ -71,7 +71,6 @@ button.tiny, .button.tiny {
   top: 25%;
   padding: 25px;
   border: 2px solid black;
-  background-color: #ffffff;
   width: 50%;
   height: 50%;
   z-index: 100;
@@ -83,7 +82,6 @@ button.tiny, .button.tiny {
 
 .nested-container{
   padding: 10px;
-  background: #fff;
 }
 .close-nested{
   float: right;
@@ -281,3 +279,5 @@ button.tiny, .button.tiny {
   position: relative;
   float: left;
 }
+
+
