@@ -249,3 +249,35 @@ button.tiny, .button.tiny {
 /*=========Carnival Tags=========End*/
 
 
+.advanced-search {
+  background: #3FBAA3;
+  background-image: url(search.png);
+  background-position: -7px -6px;
+  background-repeat: no-repeat;
+  position: fixed;
+  width: 20%;
+  right: -17.4%;
+  top: 61px;
+  padding: 2% 3%;
+  z-index: 9;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: none;
+  height: 95%;
+  box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.11);
+  transition: all 0.3s ease;
+}
+
+.advanced-search:hover{
+  background-color: #fff;
+  background-image: none;
+  right: 0;
+}
+
+.carnival-list{
+  width: 97% !important;
+}
+
+.listing{
+  position: relative;
+  float: left;
+}

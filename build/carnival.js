@@ -3131,25 +3131,27 @@ angular.module("states/main.edit/edit.html", []).run(["$templateCache", function
 
 angular.module("states/main.list/list.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("states/main.list/list.html",
-    "<div class=\"row carnival-list\">\n" +
-    "\n" +
-    "  <div class=\"column large-10\" style=\"text-align:left\">\n" +
-    "    <h3>{{ 'LIST_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
-    "  </div>\n" +
-    "\n" +
-    "  <div class=\"column large-2\" style=\"text-align:right\">\n" +
-    "    <carnival-button label=\"{{ 'LIST_STATE_BUTTON_CREATE' | translate }}\" style=\"success\" size=\"small\" ng-click=\"entity.actions.create()\"></carnival-button>\n" +
-    "  </div>\n" +
-    "\n" +
-    "  <div class=\"column large-12\">\n" +
-    "    <carnival-quick-filter filters=\"entity.model.quickFilters\"></carnival-quick-filter>\n" +
-    "  </div>\n" +
-    "\n" +
+    "<div class='row'>\n" +
     "  <carnival-search-ctrl fields=\"entity.fields\" related-resources=\"entity.relatedResources\"></carnival-search-ctrl>\n" +
+    "  <div class=\"carnival-list column\">\n" +
     "\n" +
-    "  <carnival-listing entity=\"entity\" entity-name=\"entity.name\" actions=\"entity.actions\" extra-actions=\"entity.extraActions\" identifier=\"entity.identifier\" datas=\"entity.datas\" fields=\"entity.fields\"></carnival-listing>\n" +
-    "  <carnival-pagination-ctrl current-page=\"pages.current\" total-pages=\"pages.total\"></carnival-pagination-ctrl>\n" +
+    "    <div class=\"column large-10\" style=\"text-align:left\">\n" +
+    "      <h3>{{ 'LIST_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
+    "    </div>\n" +
     "\n" +
+    "    <div class=\"column large-2\" style=\"text-align:right\">\n" +
+    "      <carnival-button label=\"{{ 'LIST_STATE_BUTTON_CREATE' | translate }}\" style=\"success\" size=\"small\" ng-click=\"entity.actions.create()\"></carnival-button>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"column large-12\">\n" +
+    "      <carnival-quick-filter filters=\"entity.model.quickFilters\"></carnival-quick-filter>\n" +
+    "    </div>\n" +
+    "\n" +
+    "\n" +
+    "    <carnival-listing entity=\"entity\" entity-name=\"entity.name\" actions=\"entity.actions\" extra-actions=\"entity.extraActions\" identifier=\"entity.identifier\" datas=\"entity.datas\" fields=\"entity.fields\"></carnival-listing>\n" +
+    "    <carnival-pagination-ctrl current-page=\"pages.current\" total-pages=\"pages.total\"></carnival-pagination-ctrl>\n" +
+    "\n" +
+    "  </div>\n" +
     "</div>\n" +
     "");
 }]);
