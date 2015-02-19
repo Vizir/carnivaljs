@@ -148,6 +148,7 @@ app.config(function (ConfigurationProvider) {
         identifier: 'id',
         field: 'name',
         grid: 'column-9',
+        showAs: 'tag',
         views: {
           index: {
             enable: false
@@ -212,17 +213,17 @@ app.config(function (ConfigurationProvider) {
           create: {
             enable: true,
             enableDelete: true,
+            showAs: 'table',
             nested: {
-              type: 'column',
-              showItemsAs: 'summarized'
+              type: 'column'
             }
           },
           edit: {
             enable: true,
             enableDelete: true,
+            showAs: 'table',
             nested: {
-              type: 'column',
-              showItemsAs: 'summarized'
+              type: 'column'
             }
           },
           show: {

@@ -44,6 +44,7 @@ describe('On carnival-has-many component', function () {
       field: 'name',
       endpoint: 'tags',
       type: 'hasMany',
+      showAs: 'tag',
       entityName: 'tags',
       views: {
         edit: {

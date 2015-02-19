@@ -94,7 +94,7 @@ angular.module('carnival.components.form', [])
         }
       };
 
-      $scope.saveButtonClass = $scope.type === 'nested' ? 'tiny' : 'small';
+      $scope.saveButtonClass = $scope.type === 'nested' ? 'tiny button-submit' : 'small button-submit';
 
       $scope.buttonAction = function(){
         var callbackFunction = saveCallback;

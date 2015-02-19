@@ -71,6 +71,7 @@ angular.module('carnival')
       type:       fieldParams.type,
       uploader:   fieldParams.uploader,
       gallery:    fieldParams.gallery,
+      showAs:    fieldParams.showAs || 'table',
       values:     fieldParams.values,
       grid:       parseGrid(fieldParams.grid || 'row column-12'),
       options:    fieldParams.options,

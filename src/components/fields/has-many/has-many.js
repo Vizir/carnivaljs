@@ -29,7 +29,7 @@ angular.module('carnival.components.fields.hasMany', [])
       };
 
       $scope.showAs = function(){
-        return $scope.field.views[$scope.state].nested.showItemsAs;
+        return $scope.field.showAs;
       };
 
       var getItemIndex = function(id, items){

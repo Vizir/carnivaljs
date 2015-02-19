@@ -7,12 +7,12 @@ angular.module('carnival.components.has-many-table', [])
       parentEntity: '=',
       field: '=',
       datas: '=',
+      hasNested: '=',
       state: '@',
       editable: '='
     },
     templateUrl: 'components/has-many-table/has-many-table.html',
     controller: function ($rootScope, $scope, $compile, utils, $element, FormService, Configuration, EntityResources) {
-      $scope.entity = EntityResources.prepareForListState($scope.field.name, $scope.parentEntity);
 
       $scope.getListFields = function(){
         var fields = [];
@@ -25,6 +25,12 @@ angular.module('carnival.components.has-many-table', [])
 
         return fields;
       };
+
+      var init = function(){
+        $scope.entity = EntityResources.prepareForListState($scope.field.name, $scope.parentEntity);
+      };
+
+      init();
     }
   };
 });
