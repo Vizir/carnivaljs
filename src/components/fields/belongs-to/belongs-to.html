@@ -1,5 +1,5 @@
 <div>
   <carnival-select-field data="datas" field="field.field" identifier="field.identifier" items="relatedResources">
   </carnival-select-field>
-  <carnival-field-form-builder state='create' parent-entity='parentEntity' field='field'></carnival-field-form-builder>
+  <carnival-field-form-builder ng-if='hasNested()' state='create' parent-entity='parentEntity' field='field'></carnival-field-form-builder>
 </div>

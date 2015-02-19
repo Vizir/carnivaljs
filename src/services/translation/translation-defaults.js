@@ -24,6 +24,7 @@ angular.module('carnival')
   'SEARCH_FORM_TITLE': 'Search',
   'SEARCH_FORM_SUBMIT': 'Submit',
   'UPLOAD_BUTTON': 'Upload',
+  'CREATED_SUCCESS_MESSAGE': 'Item created with success!',
   'DELETED_SUCCESS_MESSAGE': 'Item deleted with success!',
   'UPDATED_SUCCESS_MESSAGE': 'Item updated with success!',
   'UPLOADED_SUCCESS_MESSAGE': 'Item uploaded with success!',

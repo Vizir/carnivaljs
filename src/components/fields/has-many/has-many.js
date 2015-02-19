@@ -14,6 +14,11 @@ angular.module('carnival.components.fields.hasMany', [])
     controller: function ($rootScope, $scope, utils, Configuration, $compile, $element, $document, $filter) {
       $scope.utils = utils;
 
+      $scope.hasNested = function(){
+        var viewProp = $scope.field.views[$scope.state];
+        return (viewProp && viewProp.nested);
+      };
+
       $scope.showOptions = function(){
         var fieldEntity = Configuration.getEntity($scope.field.entityName);
         var relationField = fieldEntity.getFieldByEntityName($scope.parentEntity.name);

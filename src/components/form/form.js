@@ -68,10 +68,12 @@ angular.module('carnival.components.form', [])
           $scope.state = 'edit';
           var message = $filter('translate')('CREATE_RELATIONS_MESSAGE');
           message = $scope.entity.label + message;
+          new Notification(message, 'success');
           $document.scrollTop(window.innerHeight, 1000).then(function(){
           });
-          new Notification(message, 'success');
         }else{
+          var successMessage = $filter('translate')('CREATED_SUCCESS_MESSAGE');
+          new Notification(successMessage, 'success');
           if($scope.type === 'column')
             FormService.closeColumn('form' + '-' + $scope.entity.name);
           else if($scope.type === 'nested')

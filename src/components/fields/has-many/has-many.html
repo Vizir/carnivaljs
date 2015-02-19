@@ -4,7 +4,7 @@
     <carnival-has-many-table ng-switch-when='summarized' parent-entity='parentEntity' field='field' datas='datas' state='state' editable='editable'></carnival-has-many-table>
     <ul class='carnival-tags' ng-switch-default class='has-many-field-list'>
       <li class='carnival-tag' ng-repeat='data in datas'>
-        <carnival-field-form-builder label='{{data[field.field]}}' data="data" state='edit' parent-entity='parentEntity' field='field'></carnival-field-form-builder>
+        <carnival-field-form-builder ng-if='hasNested()' label='{{data[field.field]}}' data="data" state='edit' parent-entity='parentEntity' field='field'></carnival-field-form-builder>
         <a id='removeHasManyOption' ng-click='remove(data.id);' class="button default tiny remove-tag">x</a>
       </li>
     </ul>
@@ -15,7 +15,7 @@
     </select>
 
     <a ng-show='showOptions()' class="button default tiny" ng-click="addHasManyOption()">Add</a>
-    <carnival-field-form-builder state='create' parent-entity='parentEntity' field='field' datas='datas'></carnival-field-form-builder>
+    <carnival-field-form-builder ng-if='hasNested()' state='create' parent-entity='parentEntity' field='field' datas='datas'></carnival-field-form-builder>
   </div>
 
 </div>

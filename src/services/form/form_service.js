@@ -21,9 +21,7 @@ angular.module('carnival')
     if(!this.columns[formId])
         this.columns[formId] = {};
     var self = this;
-    $document.scrollTop(0, 1000).then(function(){
-      self._addNested(containerId, scope, directive);
-    });
+    self._addNested(containerId, scope, directive);
   };
 
   this.openColumn = function(state, containerId, scope){
