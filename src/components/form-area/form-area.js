@@ -19,9 +19,9 @@ angular.module('carnival.components.form-area', [])
 
       $scope.getDisableClass = function(){
         if(FormService.columnsCount() > 0)
-          return 'disable-form'
+          return 'disable-form';
         return '';
-      }
+      };
     }
   };
 });

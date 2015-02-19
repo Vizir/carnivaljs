@@ -37,14 +37,10 @@ angular.module('carnival.components.form', [])
       $scope.initSelectedTab = function(index){
         if(!$scope.selectedTab)
           $scope.selectedTab = index;
-      }
+      };
 
       $scope.selectTab = function(index){
         $scope.selectedTab = index;
-      }
-
-      var entityHasNesteds = function(){
-        return ($scope.entity.nestedForms && Object.keys($scope.entity.nestedForms).length > 0);
       };
 
       var updateEntityData = function(data){
@@ -70,7 +66,7 @@ angular.module('carnival.components.form', [])
         updateEntity(data);
         if($scope.hasRelatedFields() && $scope.state === 'create'){
           $scope.state = 'edit';
-          var message = $scope.entity.label + " criado com sucesso. Agora você pode adicionar os relacionamentos"
+          var message = $scope.entity.label + " criado com sucesso. Agora você pode adicionar os relacionamentos";
           $document.scrollTop(window.innerHeight, 1000).then(function(){
           });
           new Notification(message, 'success');

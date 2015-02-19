@@ -29,7 +29,7 @@ angular.module('carnival.components.form-column', [])
           return 'disable-form';
         }
         return '';
-      }
+      };
 
       $scope.remove = function(){
         $scope.cssClass = 'fadeOutRight';
