@@ -21,6 +21,7 @@ angular.module('carnival')
       var action = {
         name: actionName,
         url: extraActions[actionName].url,
+        action: extraActions[actionName].action,
         label: extraActions[actionName].label
       };
 
