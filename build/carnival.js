@@ -599,9 +599,8 @@ angular.module('carnival.components.form-area', [])
       editable: '='
     },
     templateUrl: 'components/form-area/form-area.html',
-    controller: ["$rootScope", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", "$state", function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $state) {
+    controller: ["$rootScope", "$scope", "FormService", function ($rootScope, $scope, FormService) {
       FormService.init();
-
       $scope.getDisableClass = function(){
         if(FormService.columnsCount() > 0)
           return 'disable-form';
@@ -2722,7 +2721,9 @@ angular.module("components/form-area/form-area.html", []).run(["$templateCache",
 angular.module("components/form-column/form-column.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/form-column/form-column.html",
     "<div ng-switch='type' ng-style=\"style\" class='children-form form-column {{cssClass}} {{getDisableClass()}}'>\n" +
-    "<span class='button' ng-click='close()'>Close</span>\n" +
+    "  <div class='disable-column-form'>\n" +
+    "  </div>\n" +
+    "  <span class='button' ng-click='close()'>Close</span>\n" +
     "  <carnival-column-form ng-switch-when='form' entity=\"entity\" state=\"{{state}}\"></carnival-column-form>\n" +
     "  <carnival-column-listing ng-switch-when='table' entity=\"entity\" field=\"field\" datas=\"datas\"></carnival-column-listing>\n" +
     "</div>\n" +

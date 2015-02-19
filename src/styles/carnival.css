@@ -154,6 +154,13 @@ button.tiny, .button.tiny {
   width: 100%;
 }
 
+.disable-column-form{
+  width: 100%;
+  position: fixed;
+  height: 100%;
+  left: 0px;
+  opacity: 0;
+}
 
 /*=========Carnival Tags=========Start*/
 .carnival-tags {
@@ -240,3 +247,5 @@ button.tiny, .button.tiny {
 }
 
 /*=========Carnival Tags=========End*/
+
+
