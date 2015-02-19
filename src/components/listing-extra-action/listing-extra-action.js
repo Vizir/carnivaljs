@@ -8,7 +8,7 @@ angular.module('carnival.components.listingextraaction', [])
       item: '='
     },
     templateUrl: 'components/listing-extra-action/listing-extra-action.html',
-    controller: function($scope, $stateParams, Configuration){
+    controller: function($scope, $stateParams, Configuration, $injector){
 
       var replaceWithParams = function(url){
         var regex =  /\/:([a-z]*)($ || \/)/;
@@ -19,7 +19,7 @@ angular.module('carnival.components.listingextraaction', [])
 
         var paramName = regexResult[1];
         var paramValue = $scope.item[paramName];
-        return url.replace(regex, '/'+paramValue);
+        return url.replace(regex, '/' + paramValue);
       };
 
       var parseUrl = function(){
@@ -37,6 +37,10 @@ angular.module('carnival.components.listingextraaction', [])
 
       $scope.getLabel = function(){
         return $scope.extraAction.label;
+      };
+
+      $scope.executeAction = function () {
+        $scope.extraAction.action($scope.item, $injector);
       };
     }
   };

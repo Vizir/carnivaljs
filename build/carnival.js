@@ -535,7 +535,7 @@ angular.module('carnival.components.listingextraaction', [])
       item: '='
     },
     templateUrl: 'components/listing-extra-action/listing-extra-action.html',
-    controller: ["$scope", "$stateParams", "Configuration", function($scope, $stateParams, Configuration){
+    controller: ["$scope", "$stateParams", "Configuration", "$injector", function($scope, $stateParams, Configuration, $injector){
 
       var replaceWithParams = function(url){
         var regex =  /\/:([a-z]*)($ || \/)/;
@@ -546,7 +546,7 @@ angular.module('carnival.components.listingextraaction', [])
 
         var paramName = regexResult[1];
         var paramValue = $scope.item[paramName];
-        return url.replace(regex, '/'+paramValue);
+        return url.replace(regex, '/' + paramValue);
       };
 
       var parseUrl = function(){
@@ -564,6 +564,10 @@ angular.module('carnival.components.listingextraaction', [])
 
       $scope.getLabel = function(){
         return $scope.extraAction.label;
+      };
+
+      $scope.executeAction = function () {
+        $scope.extraAction.action($scope.item, $injector);
       };
     }]
   };
@@ -1202,6 +1206,7 @@ angular.module('carnival')
       var action = {
         name: actionName,
         url: extraActions[actionName].url,
+        action: extraActions[actionName].action,
         label: extraActions[actionName].label
       };
 
@@ -2414,7 +2419,8 @@ angular.module("components/gallery/gallery.html", []).run(["$templateCache", fun
 angular.module("components/listing-extra-action/listing-extra-action.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/listing-extra-action/listing-extra-action.html",
     "<span>\n" +
-    "  <a class=\"button default tiny\" ng-href='{{getUrl()}}'>{{ getLabel() }}</a>\n" +
+    "  <a ng-if=\"extraAction.action\" class=\"button default tiny\" ng-click=\"executeAction()\">{{ getLabel() }}</a>\n" +
+    "  <a ng-if=\"extraAction.url\" class=\"button default tiny\" ng-href='{{ getUrl() }}'>{{ getLabel() }}</a>\n" +
     "</span>\n" +
     "");
 }]);
