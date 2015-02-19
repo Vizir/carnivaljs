@@ -11,6 +11,7 @@ module.exports = function(config) {
       'bower_components/angular-scroll/angular-scroll.js',
       'bower_components/angular-datepicker/dist/index.js',
       'bower_components/string-mask/src/string-mask.js',
+      'bower_components/sweetalert/lib/sweet-alert.js',
       'build/tmp/*.js',
       'src/carnival.js',
       'src/**/!(*spec).js',
