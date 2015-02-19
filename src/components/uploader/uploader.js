@@ -8,7 +8,7 @@ angular.module('carnival.components.uploader', [])
       fileUrl: '='
     },
     templateUrl: 'components/uploader/uploader.html',
-    controller: function ($scope, $http, Uploader, Notification, Configuration) {
+    controller: function ($scope, $http, Uploader, Notification, Configuration, $filter) {
 
       var getRequestUrl = function () {
         if ($scope.uploader.endpoint && $scope.uploader.endpointUrl) {
@@ -24,7 +24,8 @@ angular.module('carnival.components.uploader', [])
 
         Uploader.upload(getRequestUrl(), $scope.files[0])
         .success(function (data) {
-          new Notification('File uploaded with success', 'success');
+          var message = $filter('translate')('UPLOADED_SUCCESS_MESSAGE');
+          new Notification(message, 'warning');
           $scope.fileUrl = $scope.uploader.getUrl(data);
         })
         .error(function (error) {

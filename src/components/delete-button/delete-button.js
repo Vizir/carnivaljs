@@ -8,21 +8,24 @@ angular.module('carnival.components.delete-button', [])
       itemId: '='
     },
     templateUrl: 'components/delete-button/delete-button.html',
-    controller: function ($scope) {
+    controller: function ($scope, $filter) {
 
-      $scope.isDeleting = false;
-
-      $scope.start = function () {
+      $scope.delete = function () {
+        var translate = $filter('translate');
+        swal({
+              title: translate('ARE_YOU_SURE_DELETE'),
+              showCancelButton: true,
+              confirmButtonText: translate('YES'),
+              cancelButtonText: translate('NO'),
+              closeOnConfirm: true
+          },
+          function(){
+            $scope.action($scope.itemId);
+          }
+        );
         $scope.isDeleting = true;
       };
 
-      $scope.cancel = function () {
-        $scope.isDeleting = false;
-      };
-
-      $scope.confirm = function () {
-        $scope.action($scope.itemId);
-      };
     }
   };
 });

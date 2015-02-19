@@ -161,21 +161,24 @@ angular.module('carnival.components.delete-button', [])
       itemId: '='
     },
     templateUrl: 'components/delete-button/delete-button.html',
-    controller: ["$scope", function ($scope) {
+    controller: ["$scope", "$filter", function ($scope, $filter) {
 
-      $scope.isDeleting = false;
-
-      $scope.start = function () {
+      $scope.delete = function () {
+        var translate = $filter('translate');
+        swal({
+              title: translate('ARE_YOU_SURE_DELETE'),
+              showCancelButton: true,
+              confirmButtonText: translate('YES'),
+              cancelButtonText: translate('NO'),
+              closeOnConfirm: true
+          },
+          function(){
+            $scope.action($scope.itemId);
+          }
+        );
         $scope.isDeleting = true;
       };
 
-      $scope.cancel = function () {
-        $scope.isDeleting = false;
-      };
-
-      $scope.confirm = function () {
-        $scope.action($scope.itemId);
-      };
     }]
   };
 });
@@ -448,7 +451,7 @@ angular.module('carnival.components.fields.hasMany', [])
       relatedResources: '='
     },
     templateUrl: 'components/fields/has-many/has-many.html',
-    controller: ["$rootScope", "$scope", "utils", "Configuration", "$compile", "$element", "$document", "FormService", function ($rootScope, $scope, utils, Configuration, $compile, $element, $document, FormService) {
+    controller: ["$rootScope", "$scope", "utils", "Configuration", "$compile", "$element", "$document", "$filter", function ($rootScope, $scope, utils, Configuration, $compile, $element, $document, $filter) {
       $scope.utils = utils;
 
       $scope.showOptions = function(){
@@ -492,7 +495,8 @@ angular.module('carnival.components.fields.hasMany', [])
           var fieldEntity = Configuration.getEntity($scope.field.entityName);
           fieldEntity.delete(id)
           .success(function () {
-            new Notification('Item deleted with success!', 'warning');
+            var message = $filter('translate')('DELETED_SUCCESS_MESSAGE');
+            new Notification(message, 'warning');
           })
           .error(function (data) {
             new Notification(data, 'danger');
@@ -704,7 +708,7 @@ angular.module('carnival.components.form', [])
       relatedResources: '='
     },
     templateUrl: 'components/form/form.html',
-    controller: ["Notification", "$document", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", "$state", function (Notification, $document, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $state) {
+    controller: ["Notification", "$document", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", "$state", "$filter", function (Notification, $document, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $state, $filter) {
       $scope.utils = utils;
 
       $scope.hasRelatedFields = function(){
@@ -757,7 +761,8 @@ angular.module('carnival.components.form', [])
         updateEntity(data);
         if($scope.hasRelatedFields() && $scope.state === 'create'){
           $scope.state = 'edit';
-          var message = $scope.entity.label + " criado com sucesso. Agora você pode adicionar os relacionamentos";
+          var message = $filter('translate')('CREATE_RELATIONS_MESSAGE');
+          message = $scope.entity.label + message;
           $document.scrollTop(window.innerHeight, 1000).then(function(){
           });
           new Notification(message, 'success');
@@ -1288,7 +1293,7 @@ angular.module('carnival.components.uploader', [])
       fileUrl: '='
     },
     templateUrl: 'components/uploader/uploader.html',
-    controller: ["$scope", "$http", "Uploader", "Notification", "Configuration", function ($scope, $http, Uploader, Notification, Configuration) {
+    controller: ["$scope", "$http", "Uploader", "Notification", "Configuration", "$filter", function ($scope, $http, Uploader, Notification, Configuration, $filter) {
 
       var getRequestUrl = function () {
         if ($scope.uploader.endpoint && $scope.uploader.endpointUrl) {
@@ -1304,7 +1309,8 @@ angular.module('carnival.components.uploader', [])
 
         Uploader.upload(getRequestUrl(), $scope.files[0])
         .success(function (data) {
-          new Notification('File uploaded with success', 'success');
+          var message = $filter('translate')('UPLOADED_SUCCESS_MESSAGE');
+          new Notification(message, 'warning');
           $scope.fileUrl = $scope.uploader.getUrl(data);
         })
         .error(function (error) {
@@ -1579,7 +1585,7 @@ angular.module('carnival')
 });
 
 angular.module('carnival')
-.service('ActionFactory', ["Notification", "$state", "ParametersParser", "EntityUpdater", function (Notification, $state, ParametersParser, EntityUpdater) {
+.service('ActionFactory', ["Notification", "$state", "ParametersParser", "EntityUpdater", "$filter", function (Notification, $state, ParametersParser, EntityUpdater, $filter) {
 
   this.buildCreateFunction = function(entity, hasNestedForm, isToNestedForm){
     return function (callback) {
@@ -1605,7 +1611,8 @@ angular.module('carnival')
         if(callback){
           callback(false, entity.datas);
         }else{
-          new Notification('Modifications saved with success!', 'success');
+          var message = $filter('translate')('UPDATED_SUCCESS_MESSAGE');
+          new Notification(message, 'warning');
           $state.go('main.show', { entity: entity.model.name, id: entity.id });
         }
       })
@@ -1639,7 +1646,8 @@ angular.module('carnival')
     var onDelete = function (id) {
       entity.model.delete(id)
       .success(function () {
-        new Notification('Item deleted with success!', 'warning');
+        var message = $filter('translate')('DELETED_SUCCESS_MESSAGE');
+        new Notification(message, 'warning');
         $state.reload();
       })
       .error(function (data) {
@@ -2217,9 +2225,13 @@ angular.module('carnival')
 
 angular.module('carnival')
 .constant('defaultTranslations', {
+  'YES': 'Yes',
+  'NO': 'No',
   'CREATE_STATE_TITLE': 'Create',
   'EDIT_STATE_TITLE': 'Edit',
   'LIST_STATE_TITLE': 'List',
+  'ARE_YOU_SURE': 'Are you Sure?',
+  'ARE_YOU_SURE_DELETE': 'Are you sure you want to delete?',
   'SHOW_STATE_TITLE': 'Show',
   'LIST_STATE_BUTTON_CREATE': 'Create',
   'DELETE_BUTTON_DELETE': 'Delete',
@@ -2236,16 +2248,21 @@ angular.module('carnival')
   'NESTED_FORM_TITLE_CREATE': 'Create',
   'SEARCH_FORM_TITLE': 'Search',
   'SEARCH_FORM_SUBMIT': 'Submit',
-  'UPLOAD_BUTTON': 'Upload'
+  'UPLOAD_BUTTON': 'Upload',
+  'DELETED_SUCCESS_MESSAGE': 'Item deleted with success!',
+  'UPDATED_SUCCESS_MESSAGE': 'Item updated with success!',
+  'UPLOADED_SUCCESS_MESSAGE': 'Item uploaded with success!',
+  'CREATE_RELATIONS_MESSAGE': ' created. Now you can create the relation(s)'
+
 });
 
 angular.module('carnival')
 .filter('translate', ["Translation", function (Translation) {
   return function (value) {
-    if (!Translation.table) { 
-      return Translation.defaults[value] || value;
+    if (Translation.table && Translation.table[value]) {
+      return Translation.table[value];
     }
-    return  Translation.table[value] || value;
+    return Translation.defaults[value] || value;
   };
 }]);
 
@@ -2399,7 +2416,7 @@ angular.module('carnival')
 }]);
 
 angular.module('carnival')
-.controller('ListController', ["$rootScope", "$scope", "$stateParams", "$state", "Configuration", "Notification", "urlParams", "EntityResources", function ($rootScope, $scope, $stateParams, $state, Configuration, Notification, urlParams, EntityResources) {
+.controller('ListController', ["$rootScope", "$scope", "$stateParams", "$state", "Configuration", "Notification", "urlParams", "EntityResources", "$filter", function ($rootScope, $scope, $stateParams, $state, Configuration, Notification, urlParams, EntityResources, $filter) {
 
   var entity = $scope.entity = {},
 
@@ -2422,7 +2439,8 @@ angular.module('carnival')
   var onDelete = function (id) {
     entity.model.delete(id)
     .success(function () {
-      new Notification('Item deleted with success!', 'warning');
+      var message = $filter('translate')('DELETED_SUCCESS_MESSAGE');
+      new Notification(message, 'warning');
       $state.reload();
     })
     .error(function (data) {
@@ -2567,9 +2585,7 @@ angular.module("components/column-listing/column-listing.html", []).run(["$templ
 angular.module("components/delete-button/delete-button.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/delete-button/delete-button.html",
     "<span class=\"btn-delete\">\n" +
-    "  <a ng-hide=\"isDeleting\" class=\"button alert tiny\" ng-click=\"start()\">{{ 'DELETE_BUTTON_DELETE' | translate }}</a>\n" +
-    "  <a ng-show=\"isDeleting\" class=\"button default tiny\" ng-click=\"cancel()\">{{ 'DELETE_BUTTON_CANCEL' | translate }}</a>\n" +
-    "  <a ng-show=\"isDeleting\" class=\"button alert tiny\" ng-click=\"confirm()\">{{ 'DELETE_BUTTON_CONFIRM' | translate }}</a>\n" +
+    "  <a  class=\"button alert tiny\" ng-click=\"delete()\">{{ 'DELETE_BUTTON_DELETE' | translate }}</a>\n" +
     "</span>\n" +
     "");
 }]);

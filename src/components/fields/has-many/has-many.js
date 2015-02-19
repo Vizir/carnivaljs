@@ -11,7 +11,7 @@ angular.module('carnival.components.fields.hasMany', [])
       relatedResources: '='
     },
     templateUrl: 'components/fields/has-many/has-many.html',
-    controller: function ($rootScope, $scope, utils, Configuration, $compile, $element, $document, FormService) {
+    controller: function ($rootScope, $scope, utils, Configuration, $compile, $element, $document, $filter) {
       $scope.utils = utils;
 
       $scope.showOptions = function(){
@@ -55,7 +55,8 @@ angular.module('carnival.components.fields.hasMany', [])
           var fieldEntity = Configuration.getEntity($scope.field.entityName);
           fieldEntity.delete(id)
           .success(function () {
-            new Notification('Item deleted with success!', 'warning');
+            var message = $filter('translate')('DELETED_SUCCESS_MESSAGE');
+            new Notification(message, 'warning');
           })
           .error(function (data) {
             new Notification(data, 'danger');

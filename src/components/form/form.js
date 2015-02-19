@@ -13,7 +13,7 @@ angular.module('carnival.components.form', [])
       relatedResources: '='
     },
     templateUrl: 'components/form/form.html',
-    controller: function (Notification, $document, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $state) {
+    controller: function (Notification, $document, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $state, $filter) {
       $scope.utils = utils;
 
       $scope.hasRelatedFields = function(){
@@ -66,7 +66,8 @@ angular.module('carnival.components.form', [])
         updateEntity(data);
         if($scope.hasRelatedFields() && $scope.state === 'create'){
           $scope.state = 'edit';
-          var message = $scope.entity.label + " criado com sucesso. Agora você pode adicionar os relacionamentos";
+          var message = $filter('translate')('CREATE_RELATIONS_MESSAGE');
+          message = $scope.entity.label + message;
           $document.scrollTop(window.innerHeight, 1000).then(function(){
           });
           new Notification(message, 'success');
