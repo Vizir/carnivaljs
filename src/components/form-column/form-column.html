@@ -1,0 +1,7 @@
+<div ng-switch='type' ng-style="style" class='children-form form-column {{cssClass}} {{getDisableClass()}}'>
+  <div class='disable-column-form'>
+  </div>
+  <span class='button' ng-click='close()'>Close</span>
+  <carnival-column-form ng-switch-when='form' entity="entity" state="{{state}}"></carnival-column-form>
+  <carnival-column-listing ng-switch-when='table' entity="entity" field="field" datas="datas"></carnival-column-listing>
+</div>

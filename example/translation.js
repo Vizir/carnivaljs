@@ -19,6 +19,7 @@ app.config(function (TranslationProvider) {
     'NESTED_FORM_BUTTON_CREATE': 'Create',
     'NESTED_FORM_TITLE_CREATE': 'Create',
     'SEARCH_FORM_TITLE': 'Search',
+    'ARE_YOU_SURE': 'Are you Sure',
     'SEARCH_FORM_SUBMIT': 'Submit',
     'UPLOAD_BUTTON': 'Upload'
   });

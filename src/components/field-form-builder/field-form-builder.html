@@ -1,0 +1,7 @@
+<span ng-switch='state'>
+  <a ng-switch-when='create' class="button default tiny form-builder" ng-click="open()">{{ 'NESTED_FORM_BUTTON_CREATE' | translate }}</a>
+  <div ng-switch-when='create' id="create_nested_{{field.entityName}}"></div>
+
+  <a ng-switch-when='edit' id='editHasManyOption' ng-click='openWithData();' class="button warning tiny form-builder">{{getButtonLabel()}}</a>
+  <div ng-switch-when='edit' id="edit_nested_{{field.name}}_{{data[field.identifier]}}"></div>
+</span>

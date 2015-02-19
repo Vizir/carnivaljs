@@ -1,0 +1,9 @@
+<div id='form-columns'>
+  <div id='master-form' class='form-column {{getDisableClass()}}'>
+    <div class='column small-12'>
+      <h3 ng-if="state == 'edit' ">{{ 'EDIT_STATE_TITLE' | translate }} {{ entity.label }}</h3>
+      <h3 ng-if="state == 'create' ">{{ 'CREATE_STATE_TITLE' | translate }} {{ entity.label }}</h3>
+    </div>
+    <carnival-form type='normal' entity="entity" fields="fields" datas="datas" action="entity.action" state="{{state}}" related-resources="relatedResources" editable="true"></carnival-form>
+  </div>
+</div>

@@ -13,59 +13,87 @@ angular.module('carnival.components.form', [])
       relatedResources: '='
     },
     templateUrl: 'components/form/form.html',
-    controller: function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater) {
-
+    controller: function (Notification, $document, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $state, $filter) {
       $scope.utils = utils;
 
-      if($scope.type !== 'nested'){
-        FormService.init();
-      }
-
-      $scope.canShow = function(field){
-       return FormService.canShowThisField($scope.entity, $scope.state, field);
+      $scope.hasRelatedFields = function(){
+        for(var i = 0; i < $scope.fields.length; i++){
+          var field = $scope.fields[i];
+          if(field.fieldFormType !== 'related')
+            continue;
+          return true;
+        }
+        return false;
       };
 
-      var entityHasNesteds = function(){
-        return ($scope.entity.nestedForms && Object.keys($scope.entity.nestedForms).length > 0);
+      $scope.showRelatedFields = function(){
+        if(!$scope.hasRelatedFields())
+           return false;
+         if($scope.state === 'create')
+           return false;
+         return true;
       };
 
-      var updateEntity = function(){
-        var parentEntity = $scope.entity.parentEntity;
-        $scope.entity = EntityResources.prepareForEditState($scope.entity.name);
-        $scope.entity.parentEntity = parentEntity;
+      $scope.initSelectedTab = function(index){
+        if(!$scope.selectedTab)
+          $scope.selectedTab = index;
+      };
+
+      $scope.selectTab = function(index){
+        $scope.selectedTab = index;
       };
 
       var updateEntityData = function(data){
         var parentEntity = $scope.entity.parentEntity;
-        var fieldToUpdate = parentEntity.model.getFieldByEntityName($scope.entity.name);
-        EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
         var identifier = $scope.entity.identifier;
         $scope.entity[identifier] = data[identifier];
-        $scope.state = 'edit';
         $scope.entity.datas = data;
+        if(!parentEntity)
+          return;
+        var fieldToUpdate = parentEntity.model.getFieldByEntityName($scope.entity.name);
+        EntityUpdater.updateEntity(parentEntity, fieldToUpdate, data);
       };
 
-      var saveCallbackForNested = function(error, data){
-        if(!error){
-          if($scope.state === 'edit' || !entityHasNesteds())
+      var updateEntity = function(data){
+        var parentEntity = $scope.entity.parentEntity;
+        $scope.entity = EntityResources.prepareForEditState($scope.entity.name, parentEntity);
+        $scope.entity.parentEntity = parentEntity;
+        updateEntityData(data);
+      };
+
+      var successCallback = function(data){
+        $scope.errors = [];
+        updateEntity(data);
+        if($scope.hasRelatedFields() && $scope.state === 'create'){
+          $scope.state = 'edit';
+          var message = $filter('translate')('CREATE_RELATIONS_MESSAGE');
+          message = $scope.entity.label + message;
+          $document.scrollTop(window.innerHeight, 1000).then(function(){
+          });
+          new Notification(message, 'success');
+        }else{
+          if($scope.type === 'column')
+            FormService.closeColumn($scope.type + '-' + $scope.entity.name);
+          else if($scope.type === 'nested')
             FormService.closeNested($scope.entity.name);
-          updateEntity();
-          updateEntityData(data);
+          else
+            $state.go('main.list', { entity: $scope.entity.name});
+        }
+      };
+
+      var saveCallback = function(error, data){
+        if(!error){
+          successCallback(data);
+        }else{
+          if(angular.isArray(data))
+            $scope.errors = data;
+          else
+            $scope.errors = [data];
         }
       };
 
       $scope.buttonAction = function(){
-        var callbackFunction = null;
-        if($scope.type === 'nested'){
-          FormService.saveNested($scope.entity.name);
-          callbackFunction = saveCallbackForNested;
-        }else{
-          if(FormService.hasUnsavedNested()){
-            console.log('Não é possivel salvar o form pois existem nested não salvos');
-            return;
-          }
-        }
-
+        var callbackFunction = saveCallback;
         $scope.action.click(callbackFunction);
       };
     }

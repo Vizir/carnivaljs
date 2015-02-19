@@ -45,6 +45,29 @@ app.config(function (ConfigurationProvider) {
           }
         }
       },
+      'comments': {
+        type: 'hasMany',
+        label: 'comments',
+        endpoint: 'comments',
+        foreignKey: 'commentId',
+        identifier: 'id',
+        entityName: 'comments',
+        field: 'email',
+        views: {
+          index: {
+            enable: true
+          },
+          create: {
+            enable: true
+          },
+          edit: {
+            enable: true
+          },
+          show: {
+            enable: true
+          }
+        }
+      },
       'posts': {
         type: 'hasMany',
         label: 'Posts',

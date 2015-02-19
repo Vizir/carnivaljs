@@ -37,7 +37,7 @@ angular.module('carnival')
     addState: function (state){
       extraStates.push(state);
     },
-   
+
     $get: function () {
       return {
 

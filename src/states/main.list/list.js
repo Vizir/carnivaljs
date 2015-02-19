@@ -1,5 +1,5 @@
 angular.module('carnival')
-.controller('ListController', function ($rootScope, $scope, $stateParams, $state, Configuration, Notification, urlParams, EntityResources) {
+.controller('ListController', function ($rootScope, $scope, $stateParams, $state, Configuration, Notification, urlParams, EntityResources, $filter) {
 
   var entity = $scope.entity = {},
 
@@ -22,7 +22,8 @@ angular.module('carnival')
   var onDelete = function (id) {
     entity.model.delete(id)
     .success(function () {
-      new Notification('Item deleted with success!', 'warning');
+      var message = $filter('translate')('DELETED_SUCCESS_MESSAGE');
+      new Notification(message, 'warning');
       $state.reload();
     })
     .error(function (data) {

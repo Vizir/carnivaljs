@@ -3,6 +3,7 @@ angular.module('carnival', [
   'ui.router',
   'carnival.components',
   'datePicker',
+  'duScroll',
   'ngWig',
   'angular-loading-bar'
 ])

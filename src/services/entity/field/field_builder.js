@@ -11,6 +11,7 @@ angular.module('carnival')
         showOptions: view_options.showOptions || false,
         enableDelete: view_options.enableDelete || false,
         nested: view_options.nested || false,
+        showAs: view_options.showAs,
         sortable: typeof view_options.sortable === 'boolean' ? view_options.sortable : true
       };
     });
@@ -25,6 +26,7 @@ angular.module('carnival')
   var resolveForeignKey = function(field){
     if(field.type !== 'belongsTo' && field.type !== 'hasMany')
       return;
+
     if(field.foreignKey)
       return field.foreignKey;
     if(!field.identifier)//TODO Is impossible to discover tthe foreignKey name without identifier
@@ -42,6 +44,19 @@ angular.module('carnival')
       newRow: newRow,
       columnSize: columnSize
     };
+  };
+  var hasNested = function(field, viewName){
+    if(!field.views) return false;
+    if(!field.views[viewName]) return false;
+    if(!field.views[viewName].nested) return false;
+    return true;
+  };
+
+  var resolveFieldFormType = function(field){
+    if(field.type === 'hasMany')
+      return 'related';
+
+    return 'simple';
   };
 
   this.build = function(field_name, fieldParams){
@@ -62,7 +77,8 @@ angular.module('carnival')
       views:      buildViews(fieldParams.views)
     };
 
-     field.foreignKey = resolveForeignKey(field);
+    field.fieldFormType = resolveFieldFormType(field);
+    field.foreignKey = resolveForeignKey(field);
 
     return field;
   };

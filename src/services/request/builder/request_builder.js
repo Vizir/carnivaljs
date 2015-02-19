@@ -1,6 +1,6 @@
 angular.module('carnival')
 .service('RequestBuilder', function (HttpAdapter) {
-  
+
   var prebuildRequest = function(method, params){
     var request = {};
     request.params = {};
@@ -20,8 +20,10 @@ angular.module('carnival')
   this.buildForGetList = function(params){
     var request = prebuildRequest('GET', params);
     request.url    = params.baseUrl + '/' + params.endpoint;
-    request.params.offset = params.offset;
-    request.params.limit  = params.limit;
+    if(params.offset)
+      request.params.offset = params.offset;
+    if(params.limit)
+      request.params.limit  = params.limit;
     if (params.order && params.orderDir) {
       request.params.order    = params.order;
       request.params.orderDir = params.orderDir;

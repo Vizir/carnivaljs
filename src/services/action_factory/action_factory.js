@@ -1,25 +1,14 @@
 angular.module('carnival')
-.service('ActionFactory', function (Notification, $state, ParametersParser, EntityUpdater) {
+.service('ActionFactory', function (Notification, $state, ParametersParser, EntityUpdater, $filter) {
 
   this.buildCreateFunction = function(entity, hasNestedForm, isToNestedForm){
     return function (callback) {
       entity.model.create(ParametersParser.parse(entity.datas, entity))
       .success(function (data, status, headers, config) {
-        if(callback){
+        if(callback)
           callback(false, data);
-        }else{
-          if(isToNestedForm){
-
-          }
-          else{
-            new Notification('Item created with success!', 'success');
-            if(hasNestedForm)
-              $state.go('main.edit', { entity: entity.model.name, id: data.id });
-            else
-              $state.go('main.list', { entity: entity.model.name });
-          }
-        }
-
+        else
+          $state.go('main.list', { entity: entity.model.name });
       })
       .error(function (data) {
         new Notification(data, 'danger');
@@ -36,7 +25,8 @@ angular.module('carnival')
         if(callback){
           callback(false, entity.datas);
         }else{
-          new Notification('Modifications saved with success!', 'success');
+          var message = $filter('translate')('UPDATED_SUCCESS_MESSAGE');
+          new Notification(message, 'warning');
           $state.go('main.show', { entity: entity.model.name, id: entity.id });
         }
       })
@@ -70,7 +60,8 @@ angular.module('carnival')
     var onDelete = function (id) {
       entity.model.delete(id)
       .success(function () {
-        new Notification('Item deleted with success!', 'warning');
+        var message = $filter('translate')('DELETED_SUCCESS_MESSAGE');
+        new Notification(message, 'warning');
         $state.reload();
       })
       .error(function (data) {

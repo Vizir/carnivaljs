@@ -1,8 +1,12 @@
 angular.module('carnival')
 .constant('defaultTranslations', {
+  'YES': 'Yes',
+  'NO': 'No',
   'CREATE_STATE_TITLE': 'Create',
   'EDIT_STATE_TITLE': 'Edit',
   'LIST_STATE_TITLE': 'List',
+  'ARE_YOU_SURE': 'Are you Sure?',
+  'ARE_YOU_SURE_DELETE': 'Are you sure you want to delete?',
   'SHOW_STATE_TITLE': 'Show',
   'LIST_STATE_BUTTON_CREATE': 'Create',
   'DELETE_BUTTON_DELETE': 'Delete',
@@ -19,5 +23,10 @@ angular.module('carnival')
   'NESTED_FORM_TITLE_CREATE': 'Create',
   'SEARCH_FORM_TITLE': 'Search',
   'SEARCH_FORM_SUBMIT': 'Submit',
-  'UPLOAD_BUTTON': 'Upload'
+  'UPLOAD_BUTTON': 'Upload',
+  'DELETED_SUCCESS_MESSAGE': 'Item deleted with success!',
+  'UPDATED_SUCCESS_MESSAGE': 'Item updated with success!',
+  'UPLOADED_SUCCESS_MESSAGE': 'Item uploaded with success!',
+  'CREATE_RELATIONS_MESSAGE': ' created. Now you can create the relation(s)'
+
 });
