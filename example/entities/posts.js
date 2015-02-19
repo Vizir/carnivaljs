@@ -21,6 +21,13 @@ app.config(function (ConfigurationProvider) {
       'createComment':{
         label: 'New Comment',
         url: '/createComment/:id'
+      },
+      'alert':{
+        label: 'Warn me this item!',
+        action: function (item, injector) {
+          var $log = injector.get('$log');
+          $log.warn('This is item: ' + item.title);
+        }
       }
     },
 
