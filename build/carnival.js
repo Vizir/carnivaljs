@@ -458,7 +458,31 @@ angular.module('carnival.components.fields.hasMany', [])
     },
     templateUrl: 'components/fields/has-many/has-many.html',
     controller: ["$rootScope", "$scope", "utils", "Configuration", "$compile", "$element", "$document", "$filter", function ($rootScope, $scope, utils, Configuration, $compile, $element, $document, $filter) {
-      $scope.utils = utils;
+
+      var init = function(){
+        $scope.utils = utils;
+
+        if(!$scope.datas)
+          $scope.datas = [];
+        updateOptionsList();
+      };
+
+      var removeFromResources = function(item){
+        var fieldEntity = Configuration.getEntity($scope.field.entityName);
+        var identifier = fieldEntity.identifier;
+
+        for(var i = 0; i < $scope.relatedResources.length; i++){
+          var resource = $scope.relatedResources[i];
+          if(item[identifier] === resource[identifier])
+            $scope.relatedResources.splice(i, 1);
+        }
+      };
+
+      var updateOptionsList = function(){
+        angular.forEach($scope.datas, function(i){
+          removeFromResources($scope.datas[i]);
+        });
+      };
 
       $scope.hasNested = function(){
         var viewProp = $scope.field.views[$scope.state];
@@ -495,10 +519,11 @@ angular.module('carnival.components.fields.hasMany', [])
 
       $scope.addHasManyOption = function(){
         var selectedItem = getSelectedItem();
-        if(!$scope.datas)
-          $scope.datas = [];
-        if(selectedItem)
+
+        if(selectedItem){
           $scope.datas.push(selectedItem);
+          removeFromResources(selectedItem);
+        }
       };
 
       var deleteIfNeeded = function(id){
@@ -524,6 +549,8 @@ angular.module('carnival.components.fields.hasMany', [])
 
         deleteIfNeeded(id);
       };
+
+      init();
     }]
   };
 });
@@ -639,17 +666,16 @@ angular.module('carnival.components.form-column', [])
       index: '@'
     },
     templateUrl: 'components/form-column/form-column.html',
-    controller: ["$rootScope", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", "$timeout", function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $timeout) {
+    controller: ["$rootScope", "$scope", "utils", "FormService", "$element", "EntityResources", "EntityUpdater", "$timeout", "$document", function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $timeout, $document) {
 
       var getName = function(){
         return $scope.type + '-' + $scope.entity.name;
       };
 
       $timeout(function(){
+        $document.scrollTop(0);
         $scope.cssClass = 'fadeInRight';
-      }, 100);
-      $scope.style = {
-      };
+      }, 10);
 
       $scope.getDisableClass = function(){
         if(FormService.columnsCount() > parseInt($scope.index) + 1){
@@ -8578,12 +8604,12 @@ angular.module('duScroll.scrollHelpers', ['duScroll.requestAnimation'])
         deltaLeft = Math.round(left - startLeft),
         deltaTop = Math.round(top - startTop);
 
-    var startTime = null, progress = 0;
+    var startTime = null;
     var el = this;
 
     var cancelOnEvents = 'scroll mousedown mousewheel touchmove keydown';
     var cancelScrollAnimation = function($event) {
-      if (!$event || (progress && $event.which > 0)) {
+      if (!$event || $event.which > 0) {
         el.unbind(cancelOnEvents, cancelScrollAnimation);
         cancelAnimation(scrollAnimation);
         deferred.reject();
@@ -8609,7 +8635,7 @@ angular.module('duScroll.scrollHelpers', ['duScroll.requestAnimation'])
         startTime = timestamp;
       }
 
-      progress = timestamp - startTime;
+      var progress = timestamp - startTime;
       var percent = (progress >= duration ? 1 : easing(progress/duration));
 
       el.scrollTo(
