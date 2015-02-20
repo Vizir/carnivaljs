@@ -36,6 +36,11 @@ button.tiny, .button.tiny {
   z-index: 99999;
 }
 
+.alert-box{
+  font-weight: bold !important;
+  font-size: 14px;
+}
+
 #loading-bar {
   pointer-events: none;
   -webkit-pointer-events: none;

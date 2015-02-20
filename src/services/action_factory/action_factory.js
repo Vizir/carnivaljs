@@ -4,14 +4,13 @@ angular.module('carnival')
   this.buildCreateFunction = function(entity, hasNestedForm, isToNestedForm){
     return function (callback) {
       entity.model.create(ParametersParser.parse(entity.datas, entity))
-      .success(function (data, status, headers, config) {
+      .success(function (data, status) {
         if(callback)
           callback(false, data);
         else
           $state.go('main.list', { entity: entity.model.name });
       })
       .error(function (data) {
-        new Notification(data, 'danger');
         if(callback)
           callback(true, data);
       });
@@ -25,13 +24,10 @@ angular.module('carnival')
         if(callback){
           callback(false, entity.datas);
         }else{
-          var message = $filter('translate')('UPDATED_SUCCESS_MESSAGE');
-          new Notification(message, 'warning');
           $state.go('main.show', { entity: entity.model.name, id: entity.id });
         }
       })
       .error(function (data) {
-        new Notification(data, 'danger');
         callback(true, data);
       });
     };
@@ -39,7 +35,7 @@ angular.module('carnival')
 
   this.buildShowFunction = function(entity){
     return function () {
-      $state.go('main.edit', { entity: entity.model.name, id:entity.id });
+      $state.go('main.edit', { entity: entity.model.name, id: entity.id });
     };
   };
 

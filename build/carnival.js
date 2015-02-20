@@ -788,10 +788,11 @@ angular.module('carnival.components.form', [])
         if(!error){
           successCallback(data);
         }else{
-          if(angular.isArray(data))
-            $scope.errors = data;
-          else
-            $scope.errors = [data];
+          if(!angular.isArray(data))
+            data = [data];
+          for(var i = 0; i < data.length; i++){
+            new Notification(data[i], 'alert');
+          }
         }
       };
 
@@ -1682,14 +1683,13 @@ angular.module('carnival')
   this.buildCreateFunction = function(entity, hasNestedForm, isToNestedForm){
     return function (callback) {
       entity.model.create(ParametersParser.parse(entity.datas, entity))
-      .success(function (data, status, headers, config) {
+      .success(function (data, status) {
         if(callback)
           callback(false, data);
         else
           $state.go('main.list', { entity: entity.model.name });
       })
       .error(function (data) {
-        new Notification(data, 'danger');
         if(callback)
           callback(true, data);
       });
@@ -1703,13 +1703,10 @@ angular.module('carnival')
         if(callback){
           callback(false, entity.datas);
         }else{
-          var message = $filter('translate')('UPDATED_SUCCESS_MESSAGE');
-          new Notification(message, 'warning');
           $state.go('main.show', { entity: entity.model.name, id: entity.id });
         }
       })
       .error(function (data) {
-        new Notification(data, 'danger');
         callback(true, data);
       });
     };
@@ -1717,7 +1714,7 @@ angular.module('carnival')
 
   this.buildShowFunction = function(entity){
     return function () {
-      $state.go('main.edit', { entity: entity.model.name, id:entity.id });
+      $state.go('main.edit', { entity: entity.model.name, id: entity.id });
     };
   };
 
@@ -2888,11 +2885,7 @@ angular.module("components/form-fields/form-fields.html", []).run(["$templateCac
 angular.module("components/form/form.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/form/form.html",
     "<div>\n" +
-    "  <ul>\n" +
-    "    <li ng-repeat='error in errors'>\n" +
-    "      {{error}}\n" +
-    "    </li>\n" +
-    "  </ul>\n" +
+    "\n" +
     "  <form ng-init=\"nestedFormIndex = {value: 0}\" novalidate>\n" +
     "    <div ng-if=\"field.fieldFormType != 'related'\" ng-repeat=\"field in fields\" ng-class=\"{ row: field.grid.newRow }\">\n" +
     "      <div>\n" +

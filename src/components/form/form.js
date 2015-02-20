@@ -92,10 +92,11 @@ angular.module('carnival.components.form', [])
         if(!error){
           successCallback(data);
         }else{
-          if(angular.isArray(data))
-            $scope.errors = data;
-          else
-            $scope.errors = [data];
+          if(!angular.isArray(data))
+            data = [data];
+          for(var i = 0; i < data.length; i++){
+            new Notification(data[i], 'alert');
+          }
         }
       };
 
