@@ -1,5 +1,5 @@
 angular.module('carnival')
-.service('FormService', function (Configuration, ActionFactory, $document, $compile, $timeout) {
+.service('FormService', function (Configuration, ActionFactory, $document, $compile, $timeout, $state) {
   this.nesteds = {};
   this.init = function(entity){
     this.entity = entity;
@@ -24,15 +24,24 @@ angular.module('carnival')
     self._addNested(containerId, scope, directive);
   };
 
+  this.goToNextStep = function(entityName, type){
+    if(type === 'column')
+      this.closeColumn('form' + '-' + entityName);
+    else if(type === 'nested')
+      this.closeNested(entityName);
+    else
+      $state.go('main.list', { entity: entityName});
+  };
+
   this.openColumn = function(state, containerId, scope){
-    var formId = 'form-' +  scope.entity.name;
+    var formId = 'form-' + scope.entity.name;
     var index = this.columnsCount() || 0;
     var directive = '<carnival-form-column index="'+index+'" type="form" entity="entity" state="'+state+'"></carnival-form-column>';
     this._addColumn(directive, formId, containerId, scope);
   };
 
   this.openColumnListing = function(state, containerId, scope){
-    var formId = 'table-' +  scope.entity.name;
+    var formId = 'table-' + scope.entity.name;
     var index = this.columnsCount() || 0;
     var directive = '<carnival-form-column index="'+index+'" type="table" field="field" entity="entity" datas="datas"></carnival-form-column>';
     this._addColumn(directive, formId, containerId, scope);

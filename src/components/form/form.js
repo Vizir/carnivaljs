@@ -13,8 +13,7 @@ angular.module('carnival.components.form', [])
       relatedResources: '='
     },
     templateUrl: 'components/form/form.html',
-    controller: function (Notification, $document, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $state, $filter) {
-      $scope.utils = utils;
+    controller: function (Notification, $document, $scope, utils, FormService, EntityResources, EntityUpdater, $state, $filter) {
 
       $scope.hasRelatedFields = function(){
         for(var i = 0; i < $scope.fields.length; i++){
@@ -66,25 +65,23 @@ angular.module('carnival.components.form', [])
         updateEntityData(data);
       };
 
+      var goToEdit = function(data){
+        var message = $filter('translate')('CREATE_RELATIONS_MESSAGE');
+        message = $scope.entity.label + message;
+        new Notification(message, 'success');
+        $state.go('main.edit', { entity: $scope.entity.name, id: data.id});
+        $document.scrollTop(window.innerHeight, 1000);
+      };
+
       var successCallback = function(data){
         $scope.errors = [];
-        updateEntity(data);
         if($scope.hasRelatedFields() && $scope.state === 'create'){
-          $scope.state = 'edit';
-          var message = $filter('translate')('CREATE_RELATIONS_MESSAGE');
-          message = $scope.entity.label + message;
-          new Notification(message, 'success');
-          $document.scrollTop(window.innerHeight, 1000).then(function(){
-          });
+          goToEdit(data);
         }else{
-          var successMessage = $filter('translate')('CREATED_SUCCESS_MESSAGE');
+          updateEntity(data);
+          FormService.goToNextStep($scope.entity.name, $scope.type);
+          var successMessage = $filter('translate')('UPDATED_SUCCESS_MESSAGE');
           new Notification(successMessage, 'success');
-          if($scope.type === 'column')
-            FormService.closeColumn('form' + '-' + $scope.entity.name);
-          else if($scope.type === 'nested')
-            FormService.closeNested($scope.entity.name);
-          else
-            $state.go('main.list', { entity: $scope.entity.name});
         }
       };
 

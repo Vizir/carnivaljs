@@ -17,6 +17,8 @@ angular.module('carnival.components.has-many-select', [])
       };
 
       var isInDatas = function(item){
+        if(!$scope.datas)
+          $scope.datas = [];
         var fieldEntity = Configuration.getEntity($scope.field.entityName);
         var identifier = fieldEntity.identifier;
         for(var i = 0; i < $scope.datas.length; i++){
