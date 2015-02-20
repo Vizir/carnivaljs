@@ -819,7 +819,7 @@ angular.module('carnival.components.gallery', [])
       gallery: '=',
       fileUrl: '='
     },
-    controller: ["$scope", function ($scope) {
+    controller: ["$scope", "$injector", function ($scope, $injector) {
       if (!window.CARNIVAL) window.CARNIVAL = {};
       if (!window.CARNIVAL.gallery) window.CARNIVAL.gallery = {};
       window.CARNIVAL.gallery.sendUrl = function (url) {
@@ -827,7 +827,13 @@ angular.module('carnival.components.gallery', [])
         $scope.$parent.$parent.$apply();
       };
       $scope.open = function () {
-        window.open($scope.gallery.url, 'WINDOW_GALLERY', 'dialog');
+        var url;
+        if (typeof $scope.gallery.url === 'function') {
+          url = $scope.gallery.url($injector);
+        } else {
+          url = $scope.gallery.url;
+        }
+        window.open(url, 'WINDOW_GALLERY', 'dialog');
       };
     }],
     templateUrl: 'components/gallery/gallery.html'
@@ -8572,12 +8578,12 @@ angular.module('duScroll.scrollHelpers', ['duScroll.requestAnimation'])
         deltaLeft = Math.round(left - startLeft),
         deltaTop = Math.round(top - startTop);
 
-    var startTime = null;
+    var startTime = null, progress = 0;
     var el = this;
 
     var cancelOnEvents = 'scroll mousedown mousewheel touchmove keydown';
     var cancelScrollAnimation = function($event) {
-      if (!$event || $event.which > 0) {
+      if (!$event || (progress && $event.which > 0)) {
         el.unbind(cancelOnEvents, cancelScrollAnimation);
         cancelAnimation(scrollAnimation);
         deferred.reject();
@@ -8603,7 +8609,7 @@ angular.module('duScroll.scrollHelpers', ['duScroll.requestAnimation'])
         startTime = timestamp;
       }
 
-      var progress = timestamp - startTime;
+      progress = timestamp - startTime;
       var percent = (progress >= duration ? 1 : easing(progress/duration));
 
       el.scrollTo(
