@@ -2913,7 +2913,6 @@ angular.module("components/form/form.html", []).run(["$templateCache", function(
     "      </ul>\n" +
     "      <div ng-if=\"field.fieldFormType == 'related'\" class=\"row\" ng-repeat=\"field in fields\">\n" +
     "        <div class='carnival-tab' ng-show='selectedTab == $index' id=\"panel{{$index}}\" ng-switch=\"field.type\">\n" +
-    "          <h4>{{field.label}}</h4>\n" +
     "          <carnival-belongs-to-field ng-switch-when=\"belongsTo\" parent-entity=\"entity\" field=\"field\" datas=\"entity.datas[field.name]\" action=\"entity.action\" related-resources=\"entity.relatedResources[field.name]\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
     "          <carnival-has-many-field ng-switch-when=\"hasMany\" parent-entity=\"entity\" field=\"field\" datas=\"entity.datas[field.name]\" action=\"entity.action\" related-resources=\"entity.relatedResources[field.name]\" state=\"{{state}}\"></carnival-has-many-field>\n" +
     "        </div>\n" +
