@@ -12,7 +12,31 @@ angular.module('carnival.components.fields.hasMany', [])
     },
     templateUrl: 'components/fields/has-many/has-many.html',
     controller: function ($rootScope, $scope, utils, Configuration, $compile, $element, $document, $filter) {
-      $scope.utils = utils;
+
+      var init = function(){
+        $scope.utils = utils;
+
+        if(!$scope.datas)
+          $scope.datas = [];
+        updateOptionsList();
+      };
+
+      var removeFromResources = function(item){
+        var fieldEntity = Configuration.getEntity($scope.field.entityName);
+        var identifier = fieldEntity.identifier;
+
+        for(var i = 0; i < $scope.relatedResources.length; i++){
+          var resource = $scope.relatedResources[i];
+          if(item[identifier] === resource[identifier])
+            $scope.relatedResources.splice(i, 1);
+        }
+      };
+
+      var updateOptionsList = function(){
+        angular.forEach($scope.datas, function(i){
+          removeFromResources($scope.datas[i]);
+        });
+      };
 
       $scope.hasNested = function(){
         var viewProp = $scope.field.views[$scope.state];
@@ -49,10 +73,11 @@ angular.module('carnival.components.fields.hasMany', [])
 
       $scope.addHasManyOption = function(){
         var selectedItem = getSelectedItem();
-        if(!$scope.datas)
-          $scope.datas = [];
-        if(selectedItem)
+
+        if(selectedItem){
           $scope.datas.push(selectedItem);
+          removeFromResources(selectedItem);
+        }
       };
 
       var deleteIfNeeded = function(id){
@@ -78,6 +103,8 @@ angular.module('carnival.components.fields.hasMany', [])
 
         deleteIfNeeded(id);
       };
+
+      init();
     }
   };
 });
