@@ -21,8 +21,6 @@ angular.module('carnival.components.form-column', [])
       $timeout(function(){
         $scope.cssClass = 'fadeInRight';
       }, 100);
-      $scope.style = {
-      };
 
       $scope.getDisableClass = function(){
         if(FormService.columnsCount() > parseInt($scope.index) + 1){
