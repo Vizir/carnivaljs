@@ -12,15 +12,16 @@ angular.module('carnival.components.form-column', [])
       index: '@'
     },
     templateUrl: 'components/form-column/form-column.html',
-    controller: function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $timeout) {
+    controller: function ($rootScope, $scope, utils, FormService, $element, EntityResources, EntityUpdater, $timeout, $document) {
 
       var getName = function(){
         return $scope.type + '-' + $scope.entity.name;
       };
 
       $timeout(function(){
+        $document.scrollTop(0);
         $scope.cssClass = 'fadeInRight';
-      }, 100);
+      }, 10);
 
       $scope.getDisableClass = function(){
         if(FormService.columnsCount() > parseInt($scope.index) + 1){
