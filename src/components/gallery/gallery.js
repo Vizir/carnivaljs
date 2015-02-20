@@ -24,7 +24,7 @@ angular.module('carnival.components.gallery', [])
         var params = 'dialog';
         if ($scope.gallery.width) params += ',WIDTH=' + $scope.gallery.width;
         if ($scope.gallery.height) params += ',HEIGHT=' + $scope.gallery.height;
-        window.open(url, 'WINDOW_GALLERY', 'dialog');
+        window.open(url, 'WINDOW_GALLERY', params);
       };
     },
     templateUrl: 'components/gallery/gallery.html'
