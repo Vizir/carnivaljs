@@ -39,7 +39,6 @@ angular.module('carnival.components.field-form-builder', [])
 
       $scope._openForm = function(entity, state){
         var containerId = getContainerId(state);
-        entity.datas = $scope.data || {};
 
         resolveForeignKey(entity);
 
@@ -63,18 +62,19 @@ angular.module('carnival.components.field-form-builder', [])
           return 'Edit';
       };
 
-
-
       $scope.openWithData = function(){
-        var state = 'edit';
         var entity = EntityResources.prepareForEditState($scope.field.entityName, $scope.parentEntity);
         var identifier = entity.identifier;
-        entity[identifier] = $scope.data[identifier];
-        $scope._openForm(entity, 'edit');
+        var id = $scope.data[identifier];
+        entity.model.getOne(id)
+        .success(function (data) {
+          entity[identifier] = id;
+          entity.datas = data;
+          $scope._openForm(entity, 'edit');
+        });
       };
 
       $scope.open = function(){
-        var state = 'create';
         var entity = EntityResources.prepareForCreateState($scope.field.entityName, $scope.parentEntity);
         $scope._openForm(entity, 'create');
       };
