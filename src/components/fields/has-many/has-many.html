@@ -11,10 +11,7 @@
   </div>
 
   <div>
-    <select ng-show='showOptions()' ng-model="selectedHasMany" ng-options="item[field.identifier] as utils.cutString(item[field.field], 25) for item in relatedResources">
-    </select>
-
-    <a ng-show='showOptions()' class="button default tiny" ng-click="addHasManyOption()">Add</a>
+    <carnival-has-many-select ng-show='showOptions()' field='field' related-resources='relatedResources' datas='datas'></carnival-has-many-select>
     <carnival-field-form-builder ng-if='hasNested()' state='create' parent-entity='parentEntity' field='field' datas='datas'></carnival-field-form-builder>
   </div>
 

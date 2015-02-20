@@ -122,6 +122,7 @@ angular.module('carnival.components', [
   'carnival.components.button',
   'carnival.components.form-column',
   'carnival.components.has-many-table',
+  'carnival.components.has-many-select',
   'carnival.components.column-form',
   'carnival.components.column-listing',
   'carnival.components.form-area',
@@ -461,27 +462,6 @@ angular.module('carnival.components.fields.hasMany', [])
 
       var init = function(){
         $scope.utils = utils;
-
-        if(!$scope.datas)
-          $scope.datas = [];
-        updateOptionsList();
-      };
-
-      var removeFromResources = function(item){
-        var fieldEntity = Configuration.getEntity($scope.field.entityName);
-        var identifier = fieldEntity.identifier;
-
-        for(var i = 0; i < $scope.relatedResources.length; i++){
-          var resource = $scope.relatedResources[i];
-          if(item[identifier] === resource[identifier])
-            $scope.relatedResources.splice(i, 1);
-        }
-      };
-
-      var updateOptionsList = function(){
-        angular.forEach($scope.datas, function(i){
-          removeFromResources($scope.datas[i]);
-        });
       };
 
       $scope.hasNested = function(){
@@ -508,22 +488,6 @@ angular.module('carnival.components.fields.hasMany', [])
             return i;
         }
         return -1;
-      };
-
-      var getSelectedItem = function(){
-        var items = $scope.relatedResources;
-        var index = getItemIndex($scope.selectedHasMany, items);
-        if(index >= 0)
-          return items[index];
-      };
-
-      $scope.addHasManyOption = function(){
-        var selectedItem = getSelectedItem();
-
-        if(selectedItem){
-          $scope.datas.push(selectedItem);
-          removeFromResources(selectedItem);
-        }
       };
 
       var deleteIfNeeded = function(id){
@@ -863,6 +827,68 @@ angular.module('carnival.components.gallery', [])
       };
     }],
     templateUrl: 'components/gallery/gallery.html'
+  };
+});
+
+angular.module('carnival.components.has-many-select', [])
+.directive('carnivalHasManySelect', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      datas: '=',
+      field: '=',
+      parentEntity: '=',
+      relatedResources: '='
+    },
+    templateUrl: 'components/has-many-select/has-many-select.html',
+    controller: ["$rootScope", "$scope", "utils", "Configuration", function ($rootScope, $scope, utils, Configuration) {
+      var init = function(){
+        if(!$scope.datas)
+          $scope.datas = [];
+      };
+
+      var isInDatas = function(item){
+        var fieldEntity = Configuration.getEntity($scope.field.entityName);
+        var identifier = fieldEntity.identifier;
+        for(var i = 0; i < $scope.datas.length; i++){
+          var data = $scope.datas[i];
+          if(item[identifier] === data[identifier])
+            return true;
+        }
+        return false;
+      };
+
+      $scope.getAvailableResources = function(){
+        var resources = [];
+        if(!$scope.relatedResources)
+          return resources;
+        for(var i = 0; i < $scope.relatedResources.length; i++){
+          var resource = $scope.relatedResources[i];
+          if(!isInDatas(resource))
+            resources.push(resource);
+        }
+        return resources;
+      };
+
+      var getSelectedItem = function(){
+        var items = $scope.getAvailableResources();
+        var index = $scope.selectedHasMany;
+        if(index >= 0)
+          return items[index];
+      };
+
+      $scope.addHasManyOption = function(){
+        var selectedItem = getSelectedItem();
+
+        if(selectedItem){
+          $scope.datas.push(selectedItem);
+        }
+      };
+
+      init();
+
+    }]
   };
 });
 
@@ -2591,7 +2617,7 @@ angular.module('carnival')
 
 }]);
 
-angular.module('carnival.templates', ['components/button/button.html', 'components/column-form/column-form.html', 'components/column-listing/column-listing.html', 'components/delete-button/delete-button.html', 'components/field-form-builder/field-form-builder.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/currency/currency.html', 'components/fields/date/date.html', 'components/fields/enum/enum.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form-area/form-area.html', 'components/form-column/form-column.html', 'components/form-fields-next/form-fields-next.html', 'components/form-fields/form-fields.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/has-many-table/has-many-table.html', 'components/listing-extra-action/listing-extra-action.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-currency/listing-field-currency.html', 'components/listing-field-enum/listing-field-enum.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/nested-form/nested-form.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/summarized-items/summarized-items.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
+angular.module('carnival.templates', ['components/button/button.html', 'components/column-form/column-form.html', 'components/column-listing/column-listing.html', 'components/delete-button/delete-button.html', 'components/field-form-builder/field-form-builder.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/currency/currency.html', 'components/fields/date/date.html', 'components/fields/enum/enum.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form-area/form-area.html', 'components/form-column/form-column.html', 'components/form-fields-next/form-fields-next.html', 'components/form-fields/form-fields.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/has-many-select/has-many-select.html', 'components/has-many-table/has-many-table.html', 'components/listing-extra-action/listing-extra-action.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-currency/listing-field-currency.html', 'components/listing-field-enum/listing-field-enum.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/nested-form/nested-form.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/summarized-items/summarized-items.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
 
 angular.module("components/button/button.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/button/button.html",
@@ -2732,10 +2758,7 @@ angular.module("components/fields/has-many/has-many.html", []).run(["$templateCa
     "  </div>\n" +
     "\n" +
     "  <div>\n" +
-    "    <select ng-show='showOptions()' ng-model=\"selectedHasMany\" ng-options=\"item[field.identifier] as utils.cutString(item[field.field], 25) for item in relatedResources\">\n" +
-    "    </select>\n" +
-    "\n" +
-    "    <a ng-show='showOptions()' class=\"button default tiny\" ng-click=\"addHasManyOption()\">Add</a>\n" +
+    "    <carnival-has-many-select ng-show='showOptions()' field='field' related-resources='relatedResources' datas='datas'></carnival-has-many-select>\n" +
     "    <carnival-field-form-builder ng-if='hasNested()' state='create' parent-entity='parentEntity' field='field' datas='datas'></carnival-field-form-builder>\n" +
     "  </div>\n" +
     "\n" +
@@ -2902,6 +2925,21 @@ angular.module("components/gallery/gallery.html", []).run(["$templateCache", fun
   $templateCache.put("components/gallery/gallery.html",
     "<div>\n" +
     "  <carnival-button label=\"{{ 'GALLERY_BUTTON_OPEN' | translate }}\" style=\"default\" size=\"small\" ng-click=\"open()\"></carnival-button>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("components/has-many-select/has-many-select.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/has-many-select/has-many-select.html",
+    "<div class='carnival-has-many-select'>\n" +
+    "{{getAvailableResources()}}\n" +
+    "  <select ng-model=\"selectedHasMany\">\n" +
+    "    <option value={{$index}} ng-repeat='item in getAvailableResources()'>\n" +
+    "    {{item[field.field]}}\n" +
+    "    </option>\n" +
+    "  </select>\n" +
+    "\n" +
+    "  <a class=\"button default tiny\" ng-click=\"addHasManyOption()\">Add</a>\n" +
     "</div>\n" +
     "");
 }]);
