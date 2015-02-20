@@ -26,6 +26,7 @@ angular.module('carnival.components', [
   'carnival.components.quickfilter-controller',
   'carnival.components.listingFieldFile',
   'carnival.components.listingFieldCurrency',
+  'carnival.components.listingFieldDate',
   'carnival.components.uploader',
   'carnival.components.gallery',
   'carnival.components.listingFieldEnum'
