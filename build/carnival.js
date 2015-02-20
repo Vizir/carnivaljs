@@ -2935,7 +2935,6 @@ angular.module("components/gallery/gallery.html", []).run(["$templateCache", fun
 angular.module("components/has-many-select/has-many-select.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/has-many-select/has-many-select.html",
     "<div class='carnival-has-many-select'>\n" +
-    "{{getAvailableResources()}}\n" +
     "  <select ng-model=\"selectedHasMany\">\n" +
     "    <option value={{$index}} ng-repeat='item in getAvailableResources()'>\n" +
     "    {{item[field.field]}}\n" +

@@ -1,5 +1,4 @@
 <div class='carnival-has-many-select'>
-{{getAvailableResources()}}
   <select ng-model="selectedHasMany">
     <option value={{$index}} ng-repeat='item in getAvailableResources()'>
     {{item[field.field]}}
