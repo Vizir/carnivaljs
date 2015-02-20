@@ -739,6 +739,11 @@ angular.module('carnival.components.form', [])
         $scope.selectedTab = index;
       };
 
+      $scope.getTabClass = function(index){
+        if($scope.selectedTab === index)
+          return 'active';
+      };
+
       var updateEntityData = function(data){
         var parentEntity = $scope.entity.parentEntity;
         var identifier = $scope.entity.identifier;
@@ -2900,14 +2905,14 @@ angular.module("components/form/form.html", []).run(["$templateCache", function(
     "      <h4>Relacionamentos</h4>\n" +
     "\n" +
     "      <ul class='tabs'>\n" +
-    "        <li class='tab-title' ng-if=\"field.fieldFormType == 'related'\" class=\"row\" ng-repeat=\"field in fields\">\n" +
+    "        <li ng-if=\"field.fieldFormType == 'related'\" class=\"tab-title {{getTabClass($index)}}\" ng-repeat=\"field in fields\">\n" +
     "          <a ng-init='initSelectedTab($index)' ng-click='selectTab($index)'>\n" +
     "            {{ field.label }}\n" +
     "          </a>\n" +
     "        </li>\n" +
     "      </ul>\n" +
     "      <div ng-if=\"field.fieldFormType == 'related'\" class=\"row\" ng-repeat=\"field in fields\">\n" +
-    "        <div ng-show='selectedTab == $index' id=\"panel{{$index}}\" ng-switch=\"field.type\">\n" +
+    "        <div class='carnival-tab' ng-show='selectedTab == $index' id=\"panel{{$index}}\" ng-switch=\"field.type\">\n" +
     "          <h4>{{field.label}}</h4>\n" +
     "          <carnival-belongs-to-field ng-switch-when=\"belongsTo\" parent-entity=\"entity\" field=\"field\" datas=\"entity.datas[field.name]\" action=\"entity.action\" related-resources=\"entity.relatedResources[field.name]\" state=\"{{state}}\"></carnival-belongs-to-field>\n" +
     "          <carnival-has-many-field ng-switch-when=\"hasMany\" parent-entity=\"entity\" field=\"field\" datas=\"entity.datas[field.name]\" action=\"entity.action\" related-resources=\"entity.relatedResources[field.name]\" state=\"{{state}}\"></carnival-has-many-field>\n" +

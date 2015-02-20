@@ -43,6 +43,11 @@ angular.module('carnival.components.form', [])
         $scope.selectedTab = index;
       };
 
+      $scope.getTabClass = function(index){
+        if($scope.selectedTab === index)
+          return 'active';
+      };
+
       var updateEntityData = function(data){
         var parentEntity = $scope.entity.parentEntity;
         var identifier = $scope.entity.identifier;
