@@ -38,6 +38,7 @@ angular.module('carnival')
     this.extraReqParams = options.extraReqParams || {};
     this.quickFilters   = options.quickFilters   || null;
     this.pagination     = options.pagination     || null;
+    this.defaultSort    = options.defaultSort    || null;
     this.fields = [];
     buildFields(options.fields, this);
     buildExtraActions(options.extraActions, this);
