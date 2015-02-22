@@ -19,10 +19,26 @@ button.tiny, .button.tiny {
   top: 45px;
 }
 
+.carnival-tab{
+  border: 1px solid #DDD;
+  padding: 20px;
+}
+
+#related-fields{
+  border-top: 1px solid #DDD;
+  margin-top: 20px;
+  padding: 20px;
+}
+
 .carnival-notification{
   position: fixed;
   top:50px;
   z-index: 99999;
+}
+
+.alert-box{
+  font-weight: bold !important;
+  font-size: 14px;
 }
 
 #loading-bar {

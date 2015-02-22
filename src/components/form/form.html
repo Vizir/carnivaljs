@@ -1,9 +1,5 @@
 <div>
-  <ul>
-    <li ng-repeat='error in errors'>
-      {{error}}
-    </li>
-  </ul>
+
   <form ng-init="nestedFormIndex = {value: 0}" novalidate>
     <div ng-if="field.fieldFormType != 'related'" ng-repeat="field in fields" ng-class="{ row: field.grid.newRow }">
       <div>
@@ -16,15 +12,14 @@
       <h4>Relacionamentos</h4>
 
       <ul class='tabs'>
-        <li class='tab-title' ng-if="field.fieldFormType == 'related'" class="row" ng-repeat="field in fields">
+        <li ng-if="field.fieldFormType == 'related'" class="tab-title {{getTabClass($index)}}" ng-repeat="field in fields">
           <a ng-init='initSelectedTab($index)' ng-click='selectTab($index)'>
             {{ field.label }}
           </a>
         </li>
       </ul>
       <div ng-if="field.fieldFormType == 'related'" class="row" ng-repeat="field in fields">
-        <div ng-show='selectedTab == $index' id="panel{{$index}}" ng-switch="field.type">
-          <h4>{{field.label}}</h4>
+        <div class='carnival-tab' ng-show='selectedTab == $index' id="panel{{$index}}" ng-switch="field.type">
           <carnival-belongs-to-field ng-switch-when="belongsTo" parent-entity="entity" field="field" datas="entity.datas[field.name]" action="entity.action" related-resources="entity.relatedResources[field.name]" state="{{state}}"></carnival-belongs-to-field>
           <carnival-has-many-field ng-switch-when="hasMany" parent-entity="entity" field="field" datas="entity.datas[field.name]" action="entity.action" related-resources="entity.relatedResources[field.name]" state="{{state}}"></carnival-has-many-field>
         </div>
