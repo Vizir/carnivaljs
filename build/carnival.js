@@ -771,7 +771,7 @@ angular.module('carnival.components.form', [])
 
       var successCallback = function(data){
         $scope.errors = [];
-        if($scope.hasRelatedFields() && $scope.state === 'create'){
+        if($scope.type === 'normal' && $scope.hasRelatedFields() && $scope.state === 'create'){
           goToEdit(data);
         }else{
           updateEntity(data);
