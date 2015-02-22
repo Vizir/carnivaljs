@@ -12,7 +12,10 @@ angular.module('carnival.components.fields.hasMany', [])
     },
     templateUrl: 'components/fields/has-many/has-many.html',
     controller: function ($rootScope, $scope, utils, Configuration, $compile, $element, $document, $filter) {
-      $scope.utils = utils;
+
+      var init = function(){
+        $scope.utils = utils;
+      };
 
       $scope.hasNested = function(){
         var viewProp = $scope.field.views[$scope.state];
@@ -40,21 +43,6 @@ angular.module('carnival.components.fields.hasMany', [])
         return -1;
       };
 
-      var getSelectedItem = function(){
-        var items = $scope.relatedResources;
-        var index = getItemIndex($scope.selectedHasMany, items);
-        if(index >= 0)
-          return items[index];
-      };
-
-      $scope.addHasManyOption = function(){
-        var selectedItem = getSelectedItem();
-        if(!$scope.datas)
-          $scope.datas = [];
-        if(selectedItem)
-          $scope.datas.push(selectedItem);
-      };
-
       var deleteIfNeeded = function(id){
         if($scope.field.views[$scope.state].enableDelete){
           var fieldEntity = Configuration.getEntity($scope.field.entityName);
@@ -78,6 +66,8 @@ angular.module('carnival.components.fields.hasMany', [])
 
         deleteIfNeeded(id);
       };
+
+      init();
     }
   };
 });

@@ -2,6 +2,7 @@ angular.module('carnival.components', [
   'carnival.components.button',
   'carnival.components.form-column',
   'carnival.components.has-many-table',
+  'carnival.components.has-many-select',
   'carnival.components.column-form',
   'carnival.components.column-listing',
   'carnival.components.form-area',

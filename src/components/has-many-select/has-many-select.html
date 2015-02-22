@@ -1,0 +1,10 @@
+<div class='carnival-has-many-select'>
+{{getAvailableResources()}}
+  <select ng-model="selectedHasMany">
+    <option value={{$index}} ng-repeat='item in getAvailableResources()'>
+    {{item[field.field]}}
+    </option>
+  </select>
+
+  <a class="button default tiny" ng-click="addHasManyOption()">Add</a>
+</div>
