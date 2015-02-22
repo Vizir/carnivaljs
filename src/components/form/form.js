@@ -69,13 +69,14 @@ angular.module('carnival.components.form', [])
         var message = $filter('translate')('CREATE_RELATIONS_MESSAGE');
         message = $scope.entity.label + message;
         new Notification(message, 'success');
-        $state.go('main.edit', { entity: $scope.entity.name, id: data.id});
+        if($scope.type === 'normal')
+          $state.go('main.edit', { entity: $scope.entity.name, id: data.id});
         $document.scrollTop(window.innerHeight, 1000);
       };
 
       var successCallback = function(data){
         $scope.errors = [];
-        if($scope.type === 'normal' && $scope.hasRelatedFields() && $scope.state === 'create'){
+        if($scope.hasRelatedFields() && $scope.state === 'create'){
           goToEdit(data);
         }else{
           updateEntity(data);
