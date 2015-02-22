@@ -147,6 +147,7 @@ angular.module('carnival.components', [
   'carnival.components.quickfilter-controller',
   'carnival.components.listingFieldFile',
   'carnival.components.listingFieldCurrency',
+  'carnival.components.listingFieldDate',
   'carnival.components.uploader',
   'carnival.components.gallery',
   'carnival.components.listingFieldEnum'
@@ -1055,6 +1056,24 @@ angular.module('carnival.components.listingFieldCurrency', [])
   };
 });
 
+angular.module('carnival.components.listingFieldDate', [])
+.directive('carnivalListingFieldDate', ["$filter", function ($filter) {
+  return {
+    restrict: 'E',
+    scope: {
+      item: '=',
+      field: '='
+    },
+    templateUrl: 'components/listing-field-date/listing-field-date.html',
+    link: function (scope) {
+      scope.toDate = function (dateStr) {
+        var date = new Date(dateStr);
+        return $filter('date')(date, 'dd/MM/yyyy HH:mm:ss');
+      };
+    }
+  };
+}]);
+
 angular.module('carnival.components.listingFieldEnum', [])
 .directive('carnivalListingFieldEnum', function () {
   return {
@@ -1563,6 +1582,7 @@ angular.module('carnival')
     this.extraReqParams = options.extraReqParams || {};
     this.quickFilters   = options.quickFilters   || null;
     this.pagination     = options.pagination     || null;
+    this.defaultSort    = options.defaultSort    || null;
     this.fields = [];
     buildFields(options.fields, this);
     buildExtraActions(options.extraActions, this);
@@ -1959,6 +1979,7 @@ angular.module('carnival')
     entityWrapper.identifier = entityWrapper.model.identifier;
     entityWrapper.fields = [];
     entityWrapper.extraActions = entityWrapper.model.extraActions;
+    entityWrapper.defaultSort  = entityWrapper.model.defaultSort;
     entityWrapper.datas = {};
     prepareFields(entityWrapper, stateName, parentEntity);
     prepareActions(entityWrapper, stateName, parentEntity);
@@ -2564,7 +2585,9 @@ angular.module('carnival')
     entity.loadData = function () {
       var offset   = pages.perPage * (urlParams.getParam('page') - 1);
       var limit    = pages.perPage;
-      entity.model.getList(offset, limit, urlParams.getParam('order'), urlParams.getParam('orderDir'), getSearchParams())
+      var order    = urlParams.getParam('order') || entity.defaultSort ? entity.defaultSort.field : null;
+      var orderDir = urlParams.getParam('orderDir') || entity.defaultSort ? entity.defaultSort.dir : null;
+      entity.model.getList(offset, limit, order, orderDir, getSearchParams())
       .success(function (data, status, headers, config) {
         pages.total = Math.ceil(headers('X-Total-Count') / pages.perPage);
         entity.datas = data;
@@ -2631,7 +2654,7 @@ angular.module('carnival')
 
 }]);
 
-angular.module('carnival.templates', ['components/button/button.html', 'components/column-form/column-form.html', 'components/column-listing/column-listing.html', 'components/delete-button/delete-button.html', 'components/field-form-builder/field-form-builder.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/currency/currency.html', 'components/fields/date/date.html', 'components/fields/enum/enum.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form-area/form-area.html', 'components/form-column/form-column.html', 'components/form-fields-next/form-fields-next.html', 'components/form-fields/form-fields.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/has-many-select/has-many-select.html', 'components/has-many-table/has-many-table.html', 'components/listing-extra-action/listing-extra-action.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-currency/listing-field-currency.html', 'components/listing-field-enum/listing-field-enum.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/nested-form/nested-form.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/summarized-items/summarized-items.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
+angular.module('carnival.templates', ['components/button/button.html', 'components/column-form/column-form.html', 'components/column-listing/column-listing.html', 'components/delete-button/delete-button.html', 'components/field-form-builder/field-form-builder.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/currency/currency.html', 'components/fields/date/date.html', 'components/fields/enum/enum.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form-area/form-area.html', 'components/form-column/form-column.html', 'components/form-fields-next/form-fields-next.html', 'components/form-fields/form-fields.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/has-many-select/has-many-select.html', 'components/has-many-table/has-many-table.html', 'components/listing-extra-action/listing-extra-action.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-currency/listing-field-currency.html', 'components/listing-field-date/listing-field-date.html', 'components/listing-field-enum/listing-field-enum.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/nested-form/nested-form.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/summarized-items/summarized-items.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
 
 angular.module("components/button/button.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/button/button.html",
@@ -3007,6 +3030,14 @@ angular.module("components/listing-field-currency/listing-field-currency.html", 
     "");
 }]);
 
+angular.module("components/listing-field-date/listing-field-date.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/listing-field-date/listing-field-date.html",
+    "<div>\n" +
+    "  {{ toDate(item[field.name]) }}\n" +
+    "</div>\n" +
+    "");
+}]);
+
 angular.module("components/listing-field-enum/listing-field-enum.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/listing-field-enum/listing-field-enum.html",
     "<div>\n" +
@@ -3040,6 +3071,7 @@ angular.module("components/listing-field/listing-field.html", []).run(["$templat
     "  <carnival-listing-field-file ng-switch-when=\"file\" item=\"item\" field=\"field\"></carnival-listing-field-file>\n" +
     "  <carnival-listing-field-enum ng-switch-when=\"enum\" item=\"item\" field=\"field\"></carnival-listing-field-enum>\n" +
     "  <carnival-listing-field-currency ng-switch-when=\"currency\" item=\"item\" field=\"field\"></carnival-listing-field-currency>\n" +
+    "  <carnival-listing-field-date ng-switch-when=\"date\" item=\"item\" field=\"field\"></carnival-listing-field-date>\n" +
     "  <span ng-switch-default>\n" +
     "    {{item[field.name]}}\n" +
     "  </span>\n" +
@@ -8650,12 +8682,12 @@ angular.module('duScroll.scrollHelpers', ['duScroll.requestAnimation'])
         deltaLeft = Math.round(left - startLeft),
         deltaTop = Math.round(top - startTop);
 
-    var startTime = null;
+    var startTime = null, progress = 0;
     var el = this;
 
     var cancelOnEvents = 'scroll mousedown mousewheel touchmove keydown';
     var cancelScrollAnimation = function($event) {
-      if (!$event || $event.which > 0) {
+      if (!$event || (progress && $event.which > 0)) {
         el.unbind(cancelOnEvents, cancelScrollAnimation);
         cancelAnimation(scrollAnimation);
         deferred.reject();
@@ -8681,7 +8713,7 @@ angular.module('duScroll.scrollHelpers', ['duScroll.requestAnimation'])
         startTime = timestamp;
       }
 
-      var progress = timestamp - startTime;
+      progress = timestamp - startTime;
       var percent = (progress >= duration ? 1 : easing(progress/duration));
 
       el.scrollTo(
