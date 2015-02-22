@@ -7,6 +7,10 @@ app.config(function (ConfigurationProvider) {
     identifier: 'id',
     label: 'Comments',
     pagination: 10,
+    defaultSort: {
+      field: 'date',
+      dir: 'asc'
+    },
 
     fields: {
       'id': {
