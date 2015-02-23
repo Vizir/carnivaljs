@@ -2585,8 +2585,12 @@ angular.module('carnival')
     entity.loadData = function () {
       var offset   = pages.perPage * (urlParams.getParam('page') - 1);
       var limit    = pages.perPage;
-      var order    = urlParams.getParam('order') || entity.defaultSort ? entity.defaultSort.field : null;
-      var orderDir = urlParams.getParam('orderDir') || entity.defaultSort ? entity.defaultSort.dir : null;
+      var order    = urlParams.getParam('order');
+      var orderDir = urlParams.getParam('orderDir');
+      if (!order && !orderDir && entity.defaultSort) {
+        order = entity.defaultSort.field;
+        orderDir = entity.defaultSort.dir;
+      }
       entity.model.getList(offset, limit, order, orderDir, getSearchParams())
       .success(function (data, status, headers, config) {
         pages.total = Math.ceil(headers('X-Total-Count') / pages.perPage);
