@@ -8,6 +8,7 @@
       <carnival-string-field ng-switch-when="string" data="searchParams[field.name]" editable="true"></carnival-string-field>
       <carnival-boolean-field ng-switch-when="boolean" data="searchParams[field.name]" editable="true"></carnival-boolean-field>
       <carnival-currency-field ng-switch-when="currency" data="searchParams[field.name]" field="field"></carnival-currency-field>
+      <carnival-date-field ng-switch-when="date" data="searchParams[field.name]"></carnival-date-field>
       <carnival-enum-field ng-switch-when="enum" data="searchParams[field.name]" field="field"></carnival-enum-field>
       <carnival-select-field ng-switch-when="belongsTo" editable="true" field="field.field" identifier="field.identifier" items="relatedResources[field.endpoint]" data="searchParams[field.foreignKey]"></carnival-select-field>
       <carnival-number-field ng-switch-when="number" data="searchParams[field.name]" label="field.label" editable="true"></carnival-number-field>

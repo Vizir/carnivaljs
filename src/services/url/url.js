@@ -7,6 +7,7 @@ angular.module('carnival')
 
   this.setParam = function (name, value, reload) {
     if (value === '') value = null;
+    if (value instanceof Date) value = value.toISOString();
     $location.search(name, value);
     if (reload) this.emitLoadEvent();
   };
