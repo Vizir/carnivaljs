@@ -3159,8 +3159,8 @@ angular.module("components/notification/notification.html", []).run(["$templateC
 
 angular.module("components/order-controller/order-controller.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/order-controller/order-controller.html",
-    "<a ng-show=\"checkDirAsc()\" style=\"font-size: 0.75em; cursor: pointer\" class=\"glyphicon glyphicon-chevron-up\" ng-click=\"toggleOrder()\"></a>\n" +
-    "<a ng-show=\"!checkDirAsc()\" style=\"font-size: 0.75em; cursor: pointer\" class=\"glyphicon glyphicon-chevron-down\" ng-click=\"toggleOrder()\"></a>\n" +
+    "<a ng-show=\"checkDirAsc()\" style=\"font-size: 0.75em; cursor: pointer\" ng-click=\"toggleOrder()\">&#9650;</a>\n" +
+    "<a ng-show=\"!checkDirAsc()\" style=\"font-size: 0.75em; cursor: pointer\" ng-click=\"toggleOrder()\">&#9660;</a>\n" +
     "");
 }]);
 
