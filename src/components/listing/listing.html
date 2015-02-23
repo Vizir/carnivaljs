@@ -4,7 +4,7 @@
       <tr>
         <th ng-repeat="field in fields">
           {{ field.label }}
-          <carnival-order-ctrl field="field.name"></carnival-order-ctrl>
+          <carnival-order-ctrl ng-show="field.views.index.sortable" field="field.name"></carnival-order-ctrl>
         </th>
         <th ng-show="extraActions[0]">
           {{ 'LISTING_EXTRA_ACTIONS' | translate }}

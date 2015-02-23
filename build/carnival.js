@@ -3091,7 +3091,7 @@ angular.module("components/listing/listing.html", []).run(["$templateCache", fun
     "      <tr>\n" +
     "        <th ng-repeat=\"field in fields\">\n" +
     "          {{ field.label }}\n" +
-    "          <carnival-order-ctrl field=\"field.name\"></carnival-order-ctrl>\n" +
+    "          <carnival-order-ctrl ng-show=\"field.views.index.sortable\" field=\"field.name\"></carnival-order-ctrl>\n" +
     "        </th>\n" +
     "        <th ng-show=\"extraActions[0]\">\n" +
     "          {{ 'LISTING_EXTRA_ACTIONS' | translate }}\n" +
