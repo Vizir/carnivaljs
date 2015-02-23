@@ -2438,6 +2438,7 @@ angular.module('carnival')
 
   this.setParam = function (name, value, reload) {
     if (value === '') value = null;
+    if (value instanceof Date) value = value.toISOString();
     $location.search(name, value);
     if (reload) this.emitLoadEvent();
   };
@@ -3094,7 +3095,7 @@ angular.module("components/listing/listing.html", []).run(["$templateCache", fun
     "      <tr>\n" +
     "        <th ng-repeat=\"field in fields\">\n" +
     "          {{ field.label }}\n" +
-    "          <carnival-order-ctrl field=\"field.name\"></carnival-order-ctrl>\n" +
+    "          <carnival-order-ctrl ng-show=\"field.views.index.sortable\" field=\"field.name\"></carnival-order-ctrl>\n" +
     "        </th>\n" +
     "        <th ng-show=\"extraActions[0]\">\n" +
     "          {{ 'LISTING_EXTRA_ACTIONS' | translate }}\n" +
@@ -3226,6 +3227,7 @@ angular.module("components/search-controller/search-controller.html", []).run(["
     "      <carnival-string-field ng-switch-when=\"string\" data=\"searchParams[field.name]\" editable=\"true\"></carnival-string-field>\n" +
     "      <carnival-boolean-field ng-switch-when=\"boolean\" data=\"searchParams[field.name]\" editable=\"true\"></carnival-boolean-field>\n" +
     "      <carnival-currency-field ng-switch-when=\"currency\" data=\"searchParams[field.name]\" field=\"field\"></carnival-currency-field>\n" +
+    "      <carnival-date-field ng-switch-when=\"date\" data=\"searchParams[field.name]\"></carnival-date-field>\n" +
     "      <carnival-enum-field ng-switch-when=\"enum\" data=\"searchParams[field.name]\" field=\"field\"></carnival-enum-field>\n" +
     "      <carnival-select-field ng-switch-when=\"belongsTo\" editable=\"true\" field=\"field.field\" identifier=\"field.identifier\" items=\"relatedResources[field.endpoint]\" data=\"searchParams[field.foreignKey]\"></carnival-select-field>\n" +
     "      <carnival-number-field ng-switch-when=\"number\" data=\"searchParams[field.name]\" label=\"field.label\" editable=\"true\"></carnival-number-field>\n" +
