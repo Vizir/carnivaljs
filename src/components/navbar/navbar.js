@@ -17,6 +17,7 @@ angular.module('carnival.components.navbar', [])
 
       $scope.buildUrl = function (link) {
         if (link.type === 'entity') return urlPrefix + '/list/' + link.url;
+        if (link.type === 'state')  return urlPrefix + '/' + link.url;
         if (link.type === 'url')    return link.url;
         return '#';
       };

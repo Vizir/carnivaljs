@@ -26,6 +26,11 @@ angular.module('carnival')
     }
     if (initialPage.type === 'entity') {
       $state.go('main.list', { entity: initialPage.entity });
+      return;
+    }
+    if (initialPage.type === 'state') {
+      $state.go(initialPage.state.name, initialPage.state.options);
+      return;
     }
   };
 

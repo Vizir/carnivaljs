@@ -1199,6 +1199,7 @@ angular.module('carnival.components.navbar', [])
 
       $scope.buildUrl = function (link) {
         if (link.type === 'entity') return urlPrefix + '/list/' + link.url;
+        if (link.type === 'state')  return urlPrefix + '/' + link.url
         if (link.type === 'url')    return link.url;
         return '#';
       };
@@ -2691,6 +2692,11 @@ angular.module('carnival')
     }
     if (initialPage.type === 'entity') {
       $state.go('main.list', { entity: initialPage.entity });
+      return;
+    }
+    if (initialPage.type === 'state') {
+      $state.go(initialPage.state.name, initialPage.state.options);
+      return;
     }
   };
 
