@@ -8,7 +8,7 @@ angular.module('carnival.components.navbar', [])
       menuItems: '='
     },
     templateUrl: 'components/navbar/navbar.html',
-    controller: function ($scope, $stateParams, urlParams, $location) {
+    controller: function ($scope, $state, $stateParams, urlParams, $location) {
     
       var urlPrefix = "#";
       if($location.$$html5){
@@ -22,8 +22,8 @@ angular.module('carnival.components.navbar', [])
       };
 
       $scope.checkSelEntity = function (index) {
-        if ($scope.menuItems[index].link.type === 'entity' &&
-            $scope.menuItems[index].link.url === $stateParams.entity) {
+        var url = $state.current.url.replace(':entity', $stateParams.entity);
+        if (url.indexOf($scope.menuItems[index].link.url) > -1) {
           return true;
         } else {
           return false;
