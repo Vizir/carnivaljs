@@ -7,6 +7,7 @@ angular.module('carnival')
   var entities = [];
   var navbar = [];
   var extraStates = [];
+  var initialPage = {};
 
   return {
     setBaseApiUrl: function (url) {
@@ -36,6 +37,10 @@ angular.module('carnival')
 
     addState: function (state){
       extraStates.push(state);
+    },
+
+    initialPage: function (options) {
+      initialPage = options;
     },
 
     $get: function () {
@@ -79,6 +84,10 @@ angular.module('carnival')
 
         getNavbarItems: function () {
           return navbar;
+        },
+
+        getInitialPage: function () {
+          return initialPage;
         }
 
       };
