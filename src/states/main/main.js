@@ -29,7 +29,7 @@ angular.module('carnival')
       return;
     }
     if (initialPage.type === 'state') {
-      $state.go(initialPage.state.name, initialPage.state.options);
+      $state.go('main.' + initialPage.state.name, initialPage.state.options);
       return;
     }
   };
