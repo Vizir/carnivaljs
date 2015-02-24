@@ -71,15 +71,18 @@ angular.module('carnival.components.form', [])
         new Notification(message, 'success');
         if($scope.type === 'normal')
           $state.go('main.edit', { entity: $scope.entity.name, id: data.id});
+        else
+          $scope.state = 'edit';
+
         $document.scrollTop(window.innerHeight, 1000);
       };
 
       var successCallback = function(data){
         $scope.errors = [];
+        updateEntity(data);
         if($scope.hasRelatedFields() && $scope.state === 'create'){
           goToEdit(data);
         }else{
-          updateEntity(data);
           FormService.goToNextStep($scope.entity.name, $scope.type);
           var successMessage = $filter('translate')('UPDATED_SUCCESS_MESSAGE');
           new Notification(successMessage, 'success');

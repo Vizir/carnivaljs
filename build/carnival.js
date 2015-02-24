@@ -768,15 +768,18 @@ angular.module('carnival.components.form', [])
         new Notification(message, 'success');
         if($scope.type === 'normal')
           $state.go('main.edit', { entity: $scope.entity.name, id: data.id});
+        else
+          $scope.state = 'edit';
+
         $document.scrollTop(window.innerHeight, 1000);
       };
 
       var successCallback = function(data){
         $scope.errors = [];
+        updateEntity(data);
         if($scope.hasRelatedFields() && $scope.state === 'create'){
           goToEdit(data);
         }else{
-          updateEntity(data);
           FormService.goToNextStep($scope.entity.name, $scope.type);
           var successMessage = $filter('translate')('UPDATED_SUCCESS_MESSAGE');
           new Notification(successMessage, 'success');
@@ -8730,12 +8733,12 @@ angular.module('duScroll.scrollHelpers', ['duScroll.requestAnimation'])
         deltaLeft = Math.round(left - startLeft),
         deltaTop = Math.round(top - startTop);
 
-    var startTime = null, progress = 0;
+    var startTime = null;
     var el = this;
 
     var cancelOnEvents = 'scroll mousedown mousewheel touchmove keydown';
     var cancelScrollAnimation = function($event) {
-      if (!$event || (progress && $event.which > 0)) {
+      if (!$event || $event.which > 0) {
         el.unbind(cancelOnEvents, cancelScrollAnimation);
         cancelAnimation(scrollAnimation);
         deferred.reject();
@@ -8761,7 +8764,7 @@ angular.module('duScroll.scrollHelpers', ['duScroll.requestAnimation'])
         startTime = timestamp;
       }
 
-      progress = timestamp - startTime;
+      var progress = timestamp - startTime;
       var percent = (progress >= duration ? 1 : easing(progress/duration));
 
       el.scrollTo(
