@@ -14,7 +14,7 @@ angular.module('carnival.components.listingfieldbelongsto', [])
       $scope.getUrl = function(){
         var fieldUrl = $scope.item[$scope.field.name + 'Url'];
         if(!fieldUrl)
-          fieldUrl = '#/show/' + $scope.field.endpoint + '/' + $scope.item[$scope.field.name].id;
+          fieldUrl = '#/edit/' + $scope.field.endpoint + '/' + $scope.item[$scope.field.name].id;
         return fieldUrl;
       };
 
