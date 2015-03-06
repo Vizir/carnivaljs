@@ -3,5 +3,6 @@
   <a ng-switch-when='create' class="button default tiny form-builder" ng-click="open()">{{ 'NESTED_FORM_BUTTON_CREATE' | translate }}</a>
 
   <a ng-switch-when='edit' id='editHasManyOption' ng-click='openWithData();' class="button warning tiny form-builder">{{getButtonLabel()}}</a>
+  <carnival-delete-button ng-switch-when="delete" action="delete" item-id="data[field.identifier]"></carnival-delete-button>
   <div ng-switch-when='edit' id="edit_nested_{{field.name}}_{{data[field.identifier]}}"></div>
 </div>

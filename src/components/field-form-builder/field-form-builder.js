@@ -11,7 +11,7 @@ angular.module('carnival.components.field-form-builder', [])
       label: '@'
     },
     templateUrl: 'components/field-form-builder/field-form-builder.html',
-    controller: function ($rootScope, $scope, $timeout, utils, $element,  $compile, FormService, Configuration, EntityResources, Notification) {
+    controller: function ($rootScope, $scope, $timeout, utils, $element,  $compile, FormService, Configuration, EntityResources, Notification, $filter, $state) {
 
       var getContainerId = function(state){
         var nestedType = $scope.field.views[state].nested;
@@ -78,6 +78,20 @@ angular.module('carnival.components.field-form-builder', [])
         var entity = EntityResources.prepareForCreateState($scope.field.entityName, $scope.parentEntity);
         $scope._openForm(entity, 'create');
       };
+
+      $scope.delete = function (item) {
+        var entity = EntityResources.prepareForListState($scope.field.entityName);
+        entity.model.delete(item)
+        .success(function () {
+          var message = $filter('translate')('DELETED_SUCCESS_MESSAGE');
+          new Notification(message, 'warning');
+          $state.reload();
+        })
+        .error(function (data) {
+          new Notification(data, 'danger');
+        });
+      };
+
     }
   };
 });

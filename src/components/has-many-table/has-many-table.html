@@ -16,6 +16,7 @@
         </td>
         <td>
           <carnival-field-form-builder ng-if="hasNested" data="data" state='edit' parent-entity='entity.parentEntity' field='field'></carnival-field-form-builder>
+          <carnival-field-form-builder ng-if="hasNested" data="data" state='delete' parent-entity='entity.parentEntity' field='field'></carnival-field-form-builder>
           <a ng-if="!hasNested" class='button warning tiny' href="#/edit/{{field.name}}/{{data[field.identifier]}}">Edit</a>
         </td>
       </tr>
