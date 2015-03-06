@@ -208,7 +208,7 @@ angular.module('carnival.components.field-form-builder', [])
       label: '@'
     },
     templateUrl: 'components/field-form-builder/field-form-builder.html',
-    controller: ["$rootScope", "$scope", "$timeout", "utils", "$element", "$compile", "FormService", "Configuration", "EntityResources", "Notification", function ($rootScope, $scope, $timeout, utils, $element,  $compile, FormService, Configuration, EntityResources, Notification) {
+    controller: ["$rootScope", "$scope", "$timeout", "utils", "$element", "$compile", "FormService", "Configuration", "EntityResources", "Notification", "$filter", "$state", function ($rootScope, $scope, $timeout, utils, $element,  $compile, FormService, Configuration, EntityResources, Notification, $filter, $state) {
 
       var getContainerId = function(state){
         var nestedType = $scope.field.views[state].nested;
@@ -275,6 +275,20 @@ angular.module('carnival.components.field-form-builder', [])
         var entity = EntityResources.prepareForCreateState($scope.field.entityName, $scope.parentEntity);
         $scope._openForm(entity, 'create');
       };
+
+      $scope.delete = function (item) {
+        var entity = EntityResources.prepareForListState($scope.field.entityName);
+        entity.model.delete(item)
+        .success(function () {
+          var message = $filter('translate')('DELETED_SUCCESS_MESSAGE');
+          new Notification(message, 'warning');
+          $state.reload();
+        })
+        .error(function (data) {
+          new Notification(data, 'danger');
+        });
+      };
+
     }]
   };
 });
@@ -2940,7 +2954,6 @@ angular.module("components/column-listing/column-listing.html", []).run(["$templ
     "      <tr>\n" +
     "        <th ng-repeat=\"field in getListFields()\">\n" +
     "          {{ field.label }}\n" +
-    "          <carnival-order-ctrl field=\"field.name\"></carnival-order-ctrl>\n" +
     "        </th>\n" +
     "        <th>\n" +
     "        </th>\n" +
@@ -2976,6 +2989,7 @@ angular.module("components/field-form-builder/field-form-builder.html", []).run(
     "  <a ng-switch-when='create' class=\"button default tiny form-builder\" ng-click=\"open()\">{{ 'NESTED_FORM_BUTTON_CREATE' | translate }}</a>\n" +
     "\n" +
     "  <a ng-switch-when='edit' id='editHasManyOption' ng-click='openWithData();' class=\"button warning tiny form-builder\">{{getButtonLabel()}}</a>\n" +
+    "  <carnival-delete-button ng-switch-when=\"delete\" action=\"delete\" item-id=\"data[field.identifier]\"></carnival-delete-button>\n" +
     "  <div ng-switch-when='edit' id=\"edit_nested_{{field.name}}_{{data[field.identifier]}}\"></div>\n" +
     "</div>\n" +
     "");
@@ -3242,7 +3256,6 @@ angular.module("components/has-many-table/has-many-table.html", []).run(["$templ
     "      <tr>\n" +
     "        <th ng-repeat=\"field in getListFields()\">\n" +
     "          {{ field.label }}\n" +
-    "          <carnival-order-ctrl field=\"field.name\"></carnival-order-ctrl>\n" +
     "        </th>\n" +
     "        <th>\n" +
     "        </th>\n" +
@@ -3255,6 +3268,7 @@ angular.module("components/has-many-table/has-many-table.html", []).run(["$templ
     "        </td>\n" +
     "        <td>\n" +
     "          <carnival-field-form-builder ng-if=\"hasNested\" data=\"data\" state='edit' parent-entity='entity.parentEntity' field='field'></carnival-field-form-builder>\n" +
+    "          <carnival-field-form-builder ng-if=\"hasNested\" data=\"data\" state='delete' parent-entity='entity.parentEntity' field='field'></carnival-field-form-builder>\n" +
     "          <a ng-if=\"!hasNested\" class='button warning tiny' href=\"#/edit/{{field.name}}/{{data[field.identifier]}}\">Edit</a>\n" +
     "        </td>\n" +
     "      </tr>\n" +
