@@ -8,6 +8,7 @@ angular.module('carnival.components', [
   'carnival.components.form-area',
   'carnival.components.form',
   'carnival.components.form-fields',
+  'carnival.components.show-fields',
   'carnival.components.field-form-builder',
   'carnival.components.form-fields-next',
   'carnival.components.nested-form',
@@ -17,6 +18,7 @@ angular.module('carnival.components', [
   'carnival.components.listingfieldbelongsto',
   'carnival.components.listingextraaction',
   'carnival.components.listingfieldhasmany',
+  'carnival.components.listingfieldboolean',
   'carnival.components.listingfield',
   'carnival.components.navbar',
   'carnival.components.fields',
@@ -30,5 +32,13 @@ angular.module('carnival.components', [
   'carnival.components.listingFieldDate',
   'carnival.components.uploader',
   'carnival.components.gallery',
-  'carnival.components.listingFieldEnum'
+  'carnival.components.listingFieldEnum',
+  'carnival.components.showBoolean',
+  'carnival.components.showCurrency',
+  'carnival.components.showDate',
+  'carnival.components.showEnum',
+  'carnival.components.showFile',
+  'carnival.components.showHasMany',
+  'carnival.components.showString',
+  'carnival.components.showWysiwyg'
 ]);

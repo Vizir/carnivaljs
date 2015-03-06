@@ -21,6 +21,7 @@ app.config(function (TranslationProvider) {
     'SEARCH_FORM_TITLE': 'Search',
     'ARE_YOU_SURE': 'Are you Sure',
     'SEARCH_FORM_SUBMIT': 'Submit',
-    'UPLOAD_BUTTON': 'Upload'
+    'UPLOAD_BUTTON': 'Upload',
+    'FORM_BUTTON_EDIT': 'Edit'
   });
 });

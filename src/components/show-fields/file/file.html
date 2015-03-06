@@ -1,0 +1,4 @@
+<div class="carnival-show-fields field-file">
+  <img ng-if="checkIfIsImage(data)" ng-src="{{ data }}" width="200" height="120"/>
+  <a ng-if="!checkIfIsImage(data)" href="{{ data }}">{{ data }}</a>
+</div>
