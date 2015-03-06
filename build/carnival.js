@@ -3650,7 +3650,7 @@ angular.module("states/main.list/list.html", []).run(["$templateCache", function
 
 angular.module("states/main.show/show.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("states/main.show/show.html",
-    "<div class=\"carnial-show-state\">\n" +
+    "<div class=\"carnival-show-state\">\n" +
     "\n" +
     "  <h3>{{ 'SHOW_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
     "  \n" +
