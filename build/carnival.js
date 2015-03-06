@@ -3317,7 +3317,7 @@ angular.module("components/listing-field-enum/listing-field-enum.html", []).run(
 angular.module("components/listing-field-file/listing-field-file.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/listing-field-file/listing-field-file.html",
     "<div>\n" +
-    "  <img ng-if=\"checkIfIsImage(item[field.name])\" ng-src=\"{{ item[field.name] }}\" width=\"200\" height=\"120\"/>\n" +
+    "  <img ng-if=\"checkIfIsImage(item[field.name])\" ng-src=\"{{ item[field.name] }}\" style=\"max-width:200px;max-height:120px\"/>\n" +
     "  <a ng-if=\"!checkIfIsImage(item[field.name])\" href=\"{{ item[field.name] }}\">{{ item[field.name] }}</a>\n" +
     "</div>\n" +
     "");
