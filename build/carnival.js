@@ -1030,7 +1030,7 @@ angular.module('carnival.components.listingfieldbelongsto', [])
       $scope.getUrl = function(){
         var fieldUrl = $scope.item[$scope.field.name + 'Url'];
         if(!fieldUrl)
-          fieldUrl = '#/edit/' + $scope.field.endpoint + '/' + $scope.item[$scope.field.name].id;
+          fieldUrl = '#/show/' + $scope.field.endpoint + '/' + $scope.item[$scope.field.name].id;
         return fieldUrl;
       };
 
@@ -3667,7 +3667,7 @@ angular.module("states/main.show/show.html", []).run(["$templateCache", function
     "<div class=\"carnival-show-state\">\n" +
     "\n" +
     "  <h3>{{ 'SHOW_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
-    "  \n" +
+    "\n" +
     "  <div class=\"row\" ng-repeat=\"field in entity.fields\">\n" +
     "    <carnival-show-fields class=\"column small-12\"></carnival-show-fields>\n" +
     "  </div>\n" +
