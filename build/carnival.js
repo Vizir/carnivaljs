@@ -128,6 +128,7 @@ angular.module('carnival.components', [
   'carnival.components.form-area',
   'carnival.components.form',
   'carnival.components.form-fields',
+  'carnival.components.show-fields',
   'carnival.components.field-form-builder',
   'carnival.components.form-fields-next',
   'carnival.components.nested-form',
@@ -137,6 +138,7 @@ angular.module('carnival.components', [
   'carnival.components.listingfieldbelongsto',
   'carnival.components.listingextraaction',
   'carnival.components.listingfieldhasmany',
+  'carnival.components.listingfieldboolean',
   'carnival.components.listingfield',
   'carnival.components.navbar',
   'carnival.components.fields',
@@ -150,7 +152,15 @@ angular.module('carnival.components', [
   'carnival.components.listingFieldDate',
   'carnival.components.uploader',
   'carnival.components.gallery',
-  'carnival.components.listingFieldEnum'
+  'carnival.components.listingFieldEnum',
+  'carnival.components.showBoolean',
+  'carnival.components.showCurrency',
+  'carnival.components.showDate',
+  'carnival.components.showEnum',
+  'carnival.components.showFile',
+  'carnival.components.showHasMany',
+  'carnival.components.showString',
+  'carnival.components.showWysiwyg'
 ]);
 
 angular.module('carnival.components.delete-button', [])
@@ -1017,6 +1027,19 @@ angular.module('carnival.components.listingfieldbelongsto', [])
   };
 });
 
+angular.module('carnival.components.listingfieldboolean', [])
+.directive('carnivalListingFieldBoolean', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      item: '=',
+      field: '='
+    },
+    templateUrl: 'components/listing-field-boolean/listing-field-boolean.html'
+  };
+});
+
 angular.module('carnival.components.listingFieldCurrency', [])
 .directive('carnivalListingFieldCurrency', function () {
   return {
@@ -1374,6 +1397,165 @@ angular.module('carnival.components.search-controller', [])
   };
 });
 
+angular.module('carnival.components.showBoolean', [])
+.directive('carnivalShowBoolean', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      data: '='
+    },
+    templateUrl: 'components/show-fields/boolean/boolean.html'  
+  };
+});
+
+angular.module('carnival.components.showCurrency', [])
+.directive('carnivalShowCurrency', ["$filter", function ($filter) {
+  return {
+    restrict: 'E',
+    scope: {
+      data: '=',
+      field: '='
+    },
+    templateUrl: 'components/show-fields/currency/currency.html',
+    link: function (scope) {
+      scope.toCurrency = function (value) {
+        
+        function clearDelimitersAndLeadingZeros (value) {
+          var cleanValue = value.replace(/^-/,'').replace(/^0*/, '');
+          cleanValue = cleanValue.replace(/[^0-9]/g, '');
+          return cleanValue;
+        }
+
+        function prepareNumberToFormatter (value, decimals) {
+          return clearDelimitersAndLeadingZeros((parseFloat(value)).toFixed(decimals));
+        }
+
+        var decimalDelimiter   = scope.field.options.decimalDelimiter || '.',
+            thousandsDelimiter = scope.field.options.thousandsDelimiter || '',
+            currencySym        = scope.field.options.symbol || '$',
+            decimals           = parseInt(scope.field.options.decimals, 10);
+
+        if (isNaN(decimals)) {
+          decimals = 2;
+
+        }
+
+        var decimalsPattern = decimals > 0 ? decimalDelimiter + new Array(decimals + 1).join('0') : '';
+        var maskPattern     = currencySym + ' #' + thousandsDelimiter + '##0' + decimalsPattern;
+        var moneyMask       = new StringMask(maskPattern, {reverse: true});
+
+        var valueToFormat = prepareNumberToFormatter(value, decimals);
+        return moneyMask.apply(valueToFormat);
+      };
+    }
+  };
+}]);
+
+
+angular.module('carnival.components.showDate', [])
+.directive('carnivalShowDate', ["$filter", function ($filter) {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      data: '='
+    },
+    templateUrl: 'components/show-fields/date/date.html',
+    link: function (scope) {
+      scope.toDate = function (dateStr) {
+        var date = new Date(dateStr);
+        return $filter('date')(date, 'dd/MM/yyyy HH:mm:ss');
+      };
+    }
+  };
+}]);
+
+angular.module('carnival.components.showEnum', [])
+.directive('carnivalShowEnum', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      data: '=',
+      field: '='
+    },
+    templateUrl: 'components/show-fields/enum/enum.html',
+    link: function (scope) {
+      scope.getValue = function (item) {
+        for (var i = 0, x = scope.field.values.length; i < x; i += 1) {
+          if (scope.field.values[i].value === item) {
+            return scope.field.values[i].label;
+          }
+        }
+      };
+    }
+  };
+});
+
+angular.module('carnival.components.showFile', [])
+.directive('carnivalShowFile', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      data: '='
+    },
+    templateUrl: 'components/show-fields/file/file.html',
+    controller: ["$scope", "$http", "Configuration", function ($scope, $http, Configuration) {
+      $scope.checkIfIsImage = function (file) {
+        return (/\.(gif|jpg|jpeg|tiff|png)$/i).test(file);
+      };
+    }]
+  };
+});
+
+angular.module('carnival.components.showHasMany', [])
+.directive('carnivalShowHasMany', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      data: '=',
+      field: '='
+    },
+    templateUrl: 'components/show-fields/has-many/has-many.html'
+  };
+});
+
+angular.module('carnival.components.show-fields', [])
+.directive('carnivalShowFields', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    templateUrl: 'components/show-fields/show-fields.html'
+  };
+});
+
+angular.module('carnival.components.showString', [])
+.directive('carnivalShowString', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      data: '='
+    },
+    templateUrl: 'components/show-fields/string/string.html'
+  };
+});
+
+angular.module('carnival.components.showWysiwyg', [])
+.directive('carnivalShowWysiwyg', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      data: '='
+    },
+    templateUrl: 'components/show-fields/wysiwyg/wysiwyg.html'
+  };
+});
+
 angular.module('carnival.components.summarized-items', [])
 .directive('carnivalSummarizedItems', function () {
   return {
@@ -1552,7 +1734,27 @@ angular.module('carnival')
 angular.module('carnival')
 .constant('translation', {
   'CREATE_STATE_TITLE': 'Create',
-  'EDIT_STATE_TITLE': 'Edit'
+  'EDIT_STATE_TITLE': 'Edit',
+  'LIST_STATE_TITLE': 'List',
+  'SHOW_STATE_TITLE': 'Show',
+  'LIST_STATE_BUTTON_CREATE': 'Create',
+  'DELETE_BUTTON_DELETE': 'Delete',
+  'DELETE_BUTTON_CANCEL': 'Cancel',
+  'DELETE_BUTTON_CONFIRM': 'Confirm',
+  'FORM_BUTTON_SAVE': 'Save',
+  'GALLERY_BUTTON_OPEN': 'Open Gallery',
+  'LISTING_ACTIONS': 'Actions',
+  'LISTING_EXTRA_ACTIONS': 'Extra Actions',
+  'LISTING_BUTTON_SHOW': 'Show',
+  'LISTING_BUTTON_EDIT': 'Edit',
+  'LISTING_HAS_MANY_PREFIX': 'View',
+  'NESTED_FORM_BUTTON_CREATE': 'Create',
+  'NESTED_FORM_TITLE_CREATE': 'Create',
+  'SEARCH_FORM_TITLE': 'Search',
+  'ARE_YOU_SURE': 'Are you Sure',
+  'SEARCH_FORM_SUBMIT': 'Submit',
+  'UPLOAD_BUTTON': 'Upload',
+  'FORM_BUTTON_EDIT': 'Edit'
 });
 
 angular.module('carnival')
@@ -2710,7 +2912,7 @@ angular.module('carnival')
 
 }]);
 
-angular.module('carnival.templates', ['components/button/button.html', 'components/column-form/column-form.html', 'components/column-listing/column-listing.html', 'components/delete-button/delete-button.html', 'components/field-form-builder/field-form-builder.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/currency/currency.html', 'components/fields/date/date.html', 'components/fields/enum/enum.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form-area/form-area.html', 'components/form-column/form-column.html', 'components/form-fields-next/form-fields-next.html', 'components/form-fields/form-fields.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/has-many-select/has-many-select.html', 'components/has-many-table/has-many-table.html', 'components/listing-extra-action/listing-extra-action.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-currency/listing-field-currency.html', 'components/listing-field-date/listing-field-date.html', 'components/listing-field-enum/listing-field-enum.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/nested-form/nested-form.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/summarized-items/summarized-items.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
+angular.module('carnival.templates', ['components/button/button.html', 'components/column-form/column-form.html', 'components/column-listing/column-listing.html', 'components/delete-button/delete-button.html', 'components/field-form-builder/field-form-builder.html', 'components/fields/belongs-to/belongs-to.html', 'components/fields/boolean/boolean.html', 'components/fields/currency/currency.html', 'components/fields/date/date.html', 'components/fields/enum/enum.html', 'components/fields/file/file.html', 'components/fields/has-many/has-many.html', 'components/fields/number/number.html', 'components/fields/select/select.html', 'components/fields/string/string.html', 'components/fields/text/text.html', 'components/fields/wysiwyg/wysiwyg.html', 'components/form-area/form-area.html', 'components/form-column/form-column.html', 'components/form-fields-next/form-fields-next.html', 'components/form-fields/form-fields.html', 'components/form/form.html', 'components/gallery/gallery.html', 'components/has-many-select/has-many-select.html', 'components/has-many-table/has-many-table.html', 'components/listing-extra-action/listing-extra-action.html', 'components/listing-field-belongs-to/listing-field-belongs-to.html', 'components/listing-field-boolean/listing-field-boolean.html', 'components/listing-field-currency/listing-field-currency.html', 'components/listing-field-date/listing-field-date.html', 'components/listing-field-enum/listing-field-enum.html', 'components/listing-field-file/listing-field-file.html', 'components/listing-field-has-many/listing-field-has-many.html', 'components/listing-field/listing-field.html', 'components/listing/listing.html', 'components/navbar/navbar.html', 'components/nested-form/nested-form.html', 'components/notification/notification.html', 'components/order-controller/order-controller.html', 'components/pagination-controller/pagination-controller.html', 'components/quickfilter-controller/quickfilter-controller.html', 'components/search-controller/search-controller.html', 'components/show-fields/boolean/boolean.html', 'components/show-fields/currency/currency.html', 'components/show-fields/date/date.html', 'components/show-fields/enum/enum.html', 'components/show-fields/file/file.html', 'components/show-fields/has-many/has-many.html', 'components/show-fields/show-fields.html', 'components/show-fields/string/string.html', 'components/show-fields/wysiwyg/wysiwyg.html', 'components/summarized-items/summarized-items.html', 'components/uploader/uploader.html', 'states/main.create/create.html', 'states/main.edit/edit.html', 'states/main.list/list.html', 'states/main.show/show.html', 'states/main/main.html']);
 
 angular.module("components/button/button.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/button/button.html",
@@ -2832,6 +3034,7 @@ angular.module("components/fields/file/file.html", []).run(["$templateCache", fu
     "  </div>\n" +
     "  <div ng-if=\"checkIfHasGallery()\">\n" +
     "    <carnival-gallery gallery=\"field.gallery\" file-url=\"$parent.data\"></carnival-gallery>\n" +
+    "  </div>\n" +
     "</div>\n" +
     "");
 }]);
@@ -3078,6 +3281,15 @@ angular.module("components/listing-field-belongs-to/listing-field-belongs-to.htm
     "");
 }]);
 
+angular.module("components/listing-field-boolean/listing-field-boolean.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/listing-field-boolean/listing-field-boolean.html",
+    "<div>\n" +
+    "  <span ng-show=\"item[field.name]\">&#10003;</span>\n" +
+    "  <span ng-show=\"!item[field.name]\">&#10007;</span>\n" +
+    "</div>\n" +
+    "");
+}]);
+
 angular.module("components/listing-field-currency/listing-field-currency.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/listing-field-currency/listing-field-currency.html",
     "<div>\n" +
@@ -3286,6 +3498,100 @@ angular.module("components/search-controller/search-controller.html", []).run(["
     "");
 }]);
 
+angular.module("components/show-fields/boolean/boolean.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/show-fields/boolean/boolean.html",
+    "<div class=\"carnival-show-fields field-boolean\">\n" +
+    "  <span ng-show=\"data\">&#10003;</span>\n" +
+    "  <span ng-show=\"!data\">&#10007;</span>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("components/show-fields/currency/currency.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/show-fields/currency/currency.html",
+    "<div class=\"carnival-show-fields field-currency\">\n" +
+    "  {{ toCurrency(data) }}\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("components/show-fields/date/date.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/show-fields/date/date.html",
+    "<div class=\"carnival-show-fields field-date\">\n" +
+    "  {{ toDate(data) }}\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("components/show-fields/enum/enum.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/show-fields/enum/enum.html",
+    "<div class=\"carnival-show-fields field-enum\">\n" +
+    "  {{ getValue(data) }}\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("components/show-fields/file/file.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/show-fields/file/file.html",
+    "<div class=\"carnival-show-fields field-file\">\n" +
+    "  <img ng-if=\"checkIfIsImage(data)\" ng-src=\"{{ data }}\" width=\"200\" height=\"120\"/>\n" +
+    "  <a ng-if=\"!checkIfIsImage(data)\" href=\"{{ data }}\">{{ data }}</a>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("components/show-fields/has-many/has-many.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/show-fields/has-many/has-many.html",
+    "<div class=\"carnival-show-fields field-has-many\">\n" +
+    "  <ul>\n" +
+    "    <li ng-repeat=\"item in data\">{{ item[field.field] }}</li>\n" +
+    "  </ul>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("components/show-fields/show-fields.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/show-fields/show-fields.html",
+    "<div>\n" +
+    "  <label class='carnival-form-label'>\n" +
+    "    {{ field.label }}\n" +
+    "  </label>\n" +
+    "  <div ng-switch=\"field.type\" class='carnival-form-field'>\n" +
+    "    <carnival-show-string ng-switch-when=\"text\" data=\"entity.datas[field.name]\"></carnival-show-string>\n" +
+    "    <carnival-show-wysiwyg ng-switch-when=\"wysiwyg\" data=\"entity.datas[field.name]\"></carnival-show-wysiwyg>\n" +
+    "    <carnival-show-boolean ng-switch-when=\"boolean\" data=\"entity.datas[field.name]\"></carnival-show-boolean>\n" +
+    "    <carnival-show-string ng-switch-when=\"string\" data=\"entity.datas[field.name]\"></carnival-show-string>\n" +
+    "    <carnival-show-string ng-switch-when=\"number\" data=\"entity.datas[field.name]\"></carnival-show-string>\n" +
+    "    <carnival-show-date ng-switch-when=\"date\" data=\"entity.datas[field.name]\"></carnival-show-date>\n" +
+    "    <carnival-show-file ng-switch-when=\"file\" data=\"entity.datas[field.name]\"></carnival-show-file>\n" +
+    "    <carnival-show-enum ng-switch-when=\"enum\" data=\"entity.datas[field.name]\" field=\"field\"></carnival-show-enum>\n" +
+    "    <carnival-show-currency ng-switch-when=\"currency\" data=\"entity.datas[field.name]\" field=\"field\"></carnival-show-currency>\n" +
+    "    <carnival-show-string ng-switch-when=\"belongsTo\" data=\"entity.datas[field.name][field.field]\"></carnival-show-string>\n" +
+    "    <carnival-show-has-many ng-switch-when=\"hasMany\" data=\"entity.datas[field.name]\" field=\"field\"></carnival-show-has-many>\n" +
+    "    <carnival-show-string ng-switch-default data=\"entity.datas[field.name]\"></carnival-text-field>\n" +
+    "  </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "");
+}]);
+
+angular.module("components/show-fields/string/string.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/show-fields/string/string.html",
+    "<div class=\"carnival-show-fields field-string\">\n" +
+    "  {{ data }}\n" +
+    "</div>\n" +
+    "\n" +
+    "");
+}]);
+
+angular.module("components/show-fields/wysiwyg/wysiwyg.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("components/show-fields/wysiwyg/wysiwyg.html",
+    "<div class=\"carnival-show-fields field-wysiwyg\">\n" +
+    "  {{ data }}\n" +
+    "</div>\n" +
+    "");
+}]);
+
 angular.module("components/summarized-items/summarized-items.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/summarized-items/summarized-items.html",
     "<div ng-click='openItems()'>\n" +
@@ -3344,34 +3650,18 @@ angular.module("states/main.list/list.html", []).run(["$templateCache", function
 
 angular.module("states/main.show/show.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("states/main.show/show.html",
-    "<div class=\"row\">\n" +
+    "<div class=\"carnival-show-state\">\n" +
     "\n" +
     "  <h3>{{ 'SHOW_STATE_TITLE' | translate }} {{ entity.label }}</h3>\n" +
-    "\n" +
-    "  <div class='row' ng-switch=\"field.type\" ng-repeat=\"field in entity.fields\">\n" +
-    "    <label class=\"column larger-2 control-label\">{{ field.label }}</label>\n" +
-    "    <div class=\"column larger-10\" ng-switch-when=\"belongsTo\">\n" +
-    "      {{entity.datas[field.name][field.field]}}\n" +
-    "    </div>\n" +
-    "    <div class=\"column larger-10\" ng-switch-when=\"hasMany\">\n" +
-    "       <ul>\n" +
-    "          <li ng-repeat=\"data in entity.datas[field.name]\">\n" +
-    "            {{data[field.field]}}\n" +
-    "          </li>\n" +
-    "       </ul>\n" +
-    "    </div>\n" +
-    "    <div class=\"column larger-10\" ng-switch-when=\"enum\">\n" +
-    "      {{ getValue(entity.datas[field.name], field) }}\n" +
-    "    </div>\n" +
-    "    <carnival-listing-field-file ng-switch-when=\"file\" item=\"entity.datas\" field=\"field\"></carnival-listing-field-file>\n" +
-    "    <carnival-listing-field-currency ng-switch-when=\"currency\" item=\"entity.datas\" field=\"field\"></carnival-listing-field-currency>\n" +
-    "    <div class=\"column larger-10\" ng-switch-default>\n" +
-    "      {{entity.datas[field.name]}}\n" +
-    "    </div>\n" +
+    "  \n" +
+    "  <div class=\"row\" ng-repeat=\"field in entity.fields\">\n" +
+    "    <carnival-show-fields class=\"column small-12\"></carnival-show-fields>\n" +
     "  </div>\n" +
-    "  <label class=\"column larger-2 control-label\">\n" +
-    "    <carnival-button label=\"Edit\" style=\"warning\" size=\"small\" ng-click=\"buttonAction()\"></carnival-button>\n" +
-    "  </label>\n" +
+    "\n" +
+    "  <div class=\"column small-12\">\n" +
+    "    <carnival-button label=\"{{ 'FORM_BUTTON_EDIT' | translate }}\" style=\"warning\" size=\"small\" ng-click=\"buttonAction()\"></carnival-button>\n" +
+    "  </div>\n" +
+    "\n" +
     "</div>\n" +
     "");
 }]);

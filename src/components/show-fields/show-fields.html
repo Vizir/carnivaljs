@@ -1,0 +1,20 @@
+<div>
+  <label class='carnival-form-label'>
+    {{ field.label }}
+  </label>
+  <div ng-switch="field.type" class='carnival-form-field'>
+    <carnival-show-string ng-switch-when="text" data="entity.datas[field.name]"></carnival-show-string>
+    <carnival-show-wysiwyg ng-switch-when="wysiwyg" data="entity.datas[field.name]"></carnival-show-wysiwyg>
+    <carnival-show-boolean ng-switch-when="boolean" data="entity.datas[field.name]"></carnival-show-boolean>
+    <carnival-show-string ng-switch-when="string" data="entity.datas[field.name]"></carnival-show-string>
+    <carnival-show-string ng-switch-when="number" data="entity.datas[field.name]"></carnival-show-string>
+    <carnival-show-date ng-switch-when="date" data="entity.datas[field.name]"></carnival-show-date>
+    <carnival-show-file ng-switch-when="file" data="entity.datas[field.name]"></carnival-show-file>
+    <carnival-show-enum ng-switch-when="enum" data="entity.datas[field.name]" field="field"></carnival-show-enum>
+    <carnival-show-currency ng-switch-when="currency" data="entity.datas[field.name]" field="field"></carnival-show-currency>
+    <carnival-show-string ng-switch-when="belongsTo" data="entity.datas[field.name][field.field]"></carnival-show-string>
+    <carnival-show-has-many ng-switch-when="hasMany" data="entity.datas[field.name]" field="field"></carnival-show-has-many>
+    <carnival-show-string ng-switch-default data="entity.datas[field.name]"></carnival-text-field>
+  </div>
+</div>
+
