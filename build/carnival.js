@@ -2940,7 +2940,6 @@ angular.module("components/column-listing/column-listing.html", []).run(["$templ
     "      <tr>\n" +
     "        <th ng-repeat=\"field in getListFields()\">\n" +
     "          {{ field.label }}\n" +
-    "          <carnival-order-ctrl field=\"field.name\"></carnival-order-ctrl>\n" +
     "        </th>\n" +
     "        <th>\n" +
     "        </th>\n" +
@@ -3242,7 +3241,6 @@ angular.module("components/has-many-table/has-many-table.html", []).run(["$templ
     "      <tr>\n" +
     "        <th ng-repeat=\"field in getListFields()\">\n" +
     "          {{ field.label }}\n" +
-    "          <carnival-order-ctrl field=\"field.name\"></carnival-order-ctrl>\n" +
     "        </th>\n" +
     "        <th>\n" +
     "        </th>\n" +
