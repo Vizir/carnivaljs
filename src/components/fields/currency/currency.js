@@ -51,7 +51,7 @@ angular.module('carnival.components.fields.currency', [])
 
       function parse (value) {
         if (!value) {
-          return value;
+          return null;
         }
         var actualNumber = value.replace(/[^\d]+/g,'');
         actualNumber = actualNumber.replace(/^[0]+([1-9])/,'$1');
