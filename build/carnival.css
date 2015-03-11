@@ -110,7 +110,7 @@ button.tiny, .button.tiny {
   float: right;
 }
 .nw-editor {
-  height: 230px !important;
+  min-height: 230px !important;
 }
 
 #master-form{
