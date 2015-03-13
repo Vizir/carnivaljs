@@ -109,9 +109,6 @@ button.tiny, .button.tiny {
 .close-nested{
   float: right;
 }
-.nw-editor {
-  min-height: 230px !important;
-}
 
 #master-form{
   position: relative;
