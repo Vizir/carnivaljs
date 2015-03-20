@@ -9,9 +9,6 @@ angular.module('carnival.components.fields.select', [])
       field: '=',
       identifier: '='
     },
-    templateUrl: 'components/fields/select/select.html',
-    controller: function ($rootScope, $scope, utils) {
-      $scope.utils = utils;
-    }
+    templateUrl: 'components/fields/select/select.html'
   };
 });

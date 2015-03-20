@@ -11,7 +11,12 @@ angular.module('carnival')
 
   var getRelatedResources = function(entity, endpoint){
     var relatedField = Configuration.getEntity(endpoint);
-    relatedField.getList().success(
+    var order, orderDir = null;
+    if (entity.defaultSort) {
+      order = entity.defaultSort.field;
+      orderDir = entity.defaultSort.dir;
+    }
+    relatedField.getList(null, null, order, orderDir).success(
       function (data, status, headers, config) {
         entity.relatedResources[endpoint] = data;
       });
