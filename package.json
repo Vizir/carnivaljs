@@ -1,6 +1,6 @@
 {
   "name": "carnivaljs",
-  "version": "0.1.2",
+  "version": "0.1.6",
   "description": "Carnival JS",
   "main": "index.js",
   "scripts": {
