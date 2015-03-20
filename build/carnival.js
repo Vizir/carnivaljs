@@ -568,10 +568,7 @@ angular.module('carnival.components.fields.select', [])
       field: '=',
       identifier: '='
     },
-    templateUrl: 'components/fields/select/select.html',
-    controller: ["$rootScope", "$scope", "utils", function ($rootScope, $scope, utils) {
-      $scope.utils = utils;
-    }]
+    templateUrl: 'components/fields/select/select.html'
   };
 });
 
@@ -2141,7 +2138,12 @@ angular.module('carnival')
 
   var getRelatedResources = function(entity, endpoint){
     var relatedField = Configuration.getEntity(endpoint);
-    relatedField.getList().success(
+    var order, orderDir = null;
+    if (entity.defaultSort) {
+      order = entity.defaultSort.field;
+      orderDir = entity.defaultSort.dir;
+    }
+    relatedField.getList(null, null, order, orderDir).success(
       function (data, status, headers, config) {
         entity.relatedResources[endpoint] = data;
       });
@@ -2804,7 +2806,6 @@ angular.module('carnival')
       if(entity.fields[i].type === 'belongsTo')
         fieldName = entity.fields[i].foreignKey;
       searchParams[fieldName] = urlParams.getParam('search.' + fieldName);
-
     }
     return (Object.keys(searchParams).length === 0) ? false : searchParams;
   };
@@ -3085,7 +3086,7 @@ angular.module("components/fields/number/number.html", []).run(["$templateCache"
 angular.module("components/fields/select/select.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/fields/select/select.html",
     "<div>\n" +
-    "<select ng-model=\"data\" ng-options=\"item[identifier] as utils.cutString(item[field], 25) for item in items\">\n" +
+    "<select ng-model=\"data\" ng-options=\"item[identifier] as item[field] for item in items\">\n" +
     "</select>\n" +
     "</div>\n" +
     "");
