@@ -1,6 +1,6 @@
 {
   "name": "carnivaljs",
-  "version": "0.1.2",
+  "version": "0.1.6",
   "authors": [],
   "main": "app/carnival.js",
   "license": "MIT",

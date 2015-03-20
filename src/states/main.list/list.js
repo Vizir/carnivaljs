@@ -38,7 +38,6 @@ angular.module('carnival')
       if(entity.fields[i].type === 'belongsTo')
         fieldName = entity.fields[i].foreignKey;
       searchParams[fieldName] = urlParams.getParam('search.' + fieldName);
-
     }
     return (Object.keys(searchParams).length === 0) ? false : searchParams;
   };

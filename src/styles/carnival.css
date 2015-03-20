@@ -64,6 +64,10 @@ button.tiny, .button.tiny {
   height: 3px;
 }
 
+.nw-editor {
+  min-height: 230px !important;
+}
+
 .close-nested-button{
   float: right;
 }
@@ -101,9 +105,6 @@ button.tiny, .button.tiny {
 }
 .close-nested{
   float: right;
-}
-.nw-editor {
-  min-height: 230px !important;
 }
 
 #master-form{
