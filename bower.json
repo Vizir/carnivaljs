@@ -16,7 +16,7 @@
     "angular-ui-router": "~0.2.13",
     "angular-translate": "~2.5.2",
     "angular-datepicker": "~1.0.3",
-    "string-mask": "~0.2.0",
+    "string-mask": "~0.2.2",
     "ng-wig": "~0.8.5",
     "angular-loading-bar": "~0.6.0",
     "foundation": "~5.5.1",
