@@ -32,6 +32,6 @@ module.exports = function (grunt) {
   grunt.registerTask('start',       ['html2js:dist', 'concat:dist', 'concat:css', 'ngAnnotate:dist', 'clean:tmp', 'connect:keep']);
   grunt.registerTask('start:watch', ['connect:server', 'watch:dev']);
   grunt.registerTask('test',        ['jshint', 'html2js:dist', 'karma:unit', 'clean:tmp']);
-  grunt.registerTask('build',       ['jshint', 'html2js:dist', 'concat:dist', 'concat:css', 'ngAnnotate:dist', 'uglify:dist', 'cssmin', 'clean:tmp']);
+  grunt.registerTask('build',       ['jshint', 'html2js:dist', 'concat:dist', 'concat:css', 'ngAnnotate:dist', 'karma:unit', 'uglify:dist', 'cssmin', 'clean:tmp']);
 
 };
