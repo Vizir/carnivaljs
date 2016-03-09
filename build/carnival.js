@@ -1,6 +1,3 @@
-/* CARNIVAL.JS */
-(function () {
-"use strict";
 angular.module('carnival', [
   'carnival.templates',
   'ui.router',
@@ -11298,4 +11295,3 @@ $templateCache.put('templates/datepicker.html',
 
 	return StringMask;
 }));
-})().bind(window);

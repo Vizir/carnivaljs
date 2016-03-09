@@ -1,9 +1,5 @@
 module.exports = {
   dist: {
-    options: {
-      banner: '/* CARNIVAL.JS */\n(function () {\n"use strict";\n',
-      footer: '})().bind(window);'
-    },
     src: [
       'src/**/*.js',
       '!src/**/*.spec.js',
