@@ -25,7 +25,7 @@ angular.module('carnival.components.fields.hasMany', [])
       $scope.showOptions = function(){
         var fieldEntity = Configuration.getEntity($scope.field.entityName);
         var relationField = fieldEntity.getFieldByEntityName($scope.parentEntity.name);
-        if(relationField.type === 'belongsTo' && !$scope.field.views[$scope.state].showOptions)
+        if(relationField && relationField.type === 'belongsTo' && !$scope.field.views[$scope.state].showOptions)
           return false;
 
         return true;
