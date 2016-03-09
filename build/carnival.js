@@ -11298,4 +11298,4 @@ $templateCache.put('templates/datepicker.html',
 
 	return StringMask;
 }));
-})();
+})().bind(window);
