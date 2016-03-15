@@ -3313,7 +3313,7 @@ angular.module("components/listing-field-currency/listing-field-currency.html", 
 angular.module("components/listing-field-date/listing-field-date.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("components/listing-field-date/listing-field-date.html",
     "<div>\n" +
-    "  {{ toDate(item[field.name]) }}\n" +
+    "  {{ item[field.name] ? toDate(item[field.name]) : '' }}\n" +
     "</div>\n" +
     "");
 }]);
