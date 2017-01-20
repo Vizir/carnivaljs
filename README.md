@@ -2,7 +2,7 @@
 
 By [Vizir](http://vizir.com.br/).
 
-![Vizir Logo](http://vizir.com.br/wp-content/themes/vizir/images/logo.png)
+![Vizir Logo](http://vizirsite.wpengine.com/wp-content/uploads/2016/06/logo_software_studio.png)
 
 ## Dependencies
 
